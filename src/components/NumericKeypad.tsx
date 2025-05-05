@@ -1,6 +1,6 @@
 
 import { cn } from "@/lib/utils";
-import { Delete, Backspace } from "lucide-react";
+import { Delete, ArrowLeft } from "lucide-react";
 import React from "react";
 
 interface NumericKeypadProps {
@@ -65,8 +65,8 @@ const NumericKeypad = ({
     lg: "h-16 w-16 text-2xl",
   }[size];
   
-  // Get the correct delete icon
-  const DeleteIconComponent = deleteIcon === "backspace" ? Backspace : Delete;
+  // Get the correct delete icon - using ArrowLeft instead of Backspace
+  const DeleteIconComponent = deleteIcon === "backspace" ? ArrowLeft : Delete;
   
   return (
     <div className={cn("numeric-keypad", className)}>
