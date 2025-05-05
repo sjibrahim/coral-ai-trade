@@ -1,6 +1,6 @@
 
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
 import { cn } from '@/lib/utils';
 
 interface PriceChartProps {
@@ -8,8 +8,30 @@ interface PriceChartProps {
   isPositive: boolean;
 }
 
-const PriceChart = ({ data, isPositive }: PriceChartProps) => {
+const PriceChart = ({ data: initialData, isPositive }: PriceChartProps) => {
   const [activeTimeframe, setActiveTimeframe] = useState('1m');
+  const [data, setData] = useState(initialData);
+  
+  // Simulate live data updates
+  useEffect(() => {
+    const interval = setInterval(() => {
+      // Add slight random variation to the last price point
+      const lastPrice = data[data.length - 1].price;
+      const change = (Math.random() - 0.5) * 50; // Random value between -25 and 25
+      const newPrice = Math.max(lastPrice + change, 100); // Ensure price doesn't go below 100
+      
+      // Clone the data and replace the last item
+      const newData = [...data];
+      newData[newData.length - 1] = {
+        ...newData[newData.length - 1],
+        price: newPrice
+      };
+      
+      setData(newData);
+    }, 3000);
+    
+    return () => clearInterval(interval);
+  }, [data]);
   
   const timeframes = [
     { id: '1m', label: '1m' },
@@ -18,6 +40,13 @@ const PriceChart = ({ data, isPositive }: PriceChartProps) => {
     { id: '15m', label: '15m' },
     { id: 'area', label: 'Area' },
   ];
+
+  // Get the min and max values for better chart scaling
+  const minValue = Math.min(...data.map(d => d.price)) - 100;
+  const maxValue = Math.max(...data.map(d => d.price)) + 100;
+
+  // Current price (latest data point)
+  const currentPrice = data[data.length - 1]?.price;
 
   return (
     <div className="space-y-4">
@@ -44,6 +73,12 @@ const PriceChart = ({ data, isPositive }: PriceChartProps) => {
             data={data}
             margin={{ top: 5, right: 5, left: 5, bottom: 5 }}
           >
+            <defs>
+              <linearGradient id="colorPrice" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor={isPositive ? "#22c55e" : "#ef4444"} stopOpacity={0.2}/>
+                <stop offset="95%" stopColor={isPositive ? "#22c55e" : "#ef4444"} stopOpacity={0}/>
+              </linearGradient>
+            </defs>
             <CartesianGrid strokeDasharray="3 3" stroke="#2d3748" vertical={false} />
             <XAxis 
               dataKey="time" 
@@ -52,7 +87,7 @@ const PriceChart = ({ data, isPositive }: PriceChartProps) => {
               tickLine={false}
             />
             <YAxis 
-              domain={['dataMin - 100', 'dataMax + 100']} 
+              domain={[minValue, maxValue]} 
               orientation="right"
               tick={{ fontSize: 10, fill: '#a0aec0' }}
               axisLine={{ stroke: '#2d3748' }}
@@ -66,6 +101,17 @@ const PriceChart = ({ data, isPositive }: PriceChartProps) => {
               }}
               itemStyle={{ color: '#e2e8f0' }}
               labelStyle={{ color: '#a0aec0' }}
+              formatter={(value) => [`$${value.toFixed(2)}`, 'Price']}
+            />
+            <ReferenceLine 
+              y={currentPrice} 
+              stroke="#4b5563" 
+              strokeDasharray="3 3" 
+              label={{ 
+                value: `$${currentPrice.toFixed(2)}`,
+                fill: '#a0aec0',
+                position: 'right'
+              }} 
             />
             <Line 
               type="monotone" 
@@ -74,6 +120,7 @@ const PriceChart = ({ data, isPositive }: PriceChartProps) => {
               strokeWidth={2}
               dot={false}
               activeDot={{ r: 4, strokeWidth: 1 }}
+              fill="url(#colorPrice)"
             />
           </LineChart>
         </ResponsiveContainer>

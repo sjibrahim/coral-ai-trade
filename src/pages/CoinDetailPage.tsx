@@ -7,9 +7,8 @@ import PriceChart from "@/components/PriceChart";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { X, ChevronRight, TrendingUp, TrendingDown, Info, Clock, Wallet } from "lucide-react";
-import NumericKeypad from "@/components/NumericKeypad";
 import { cn } from "@/lib/utils";
+import { X, ChevronRight, TrendingUp, TrendingDown, Info, Clock, Wallet } from "lucide-react";
 
 const CoinDetailPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -36,7 +35,7 @@ const CoinDetailPage = () => {
   if (!coin) {
     return (
       <MobileLayout showBackButton title="Coin Detail">
-        <div className="flex flex-col items-center justify-center h-screen p-4">
+        <div className="flex flex-col items-center justify-center h-full p-4">
           <p className="text-xl text-muted-foreground">Cryptocurrency not found</p>
         </div>
       </MobileLayout>
@@ -70,7 +69,7 @@ const CoinDetailPage = () => {
   
   return (
     <MobileLayout showBackButton title={`${coin.symbol}`}>
-      <div className="p-4 space-y-5 animate-fade-in">
+      <div className="p-4 space-y-5 pb-20 animate-fade-in">
         {/* Current Price */}
         <div className="card-glass rounded-xl p-4">
           <div className="flex items-center justify-between mb-3">
@@ -85,7 +84,7 @@ const CoinDetailPage = () => {
             </div>
             <span className={cn(
               "px-2.5 py-1 rounded-full text-sm font-medium",
-              isPositiveChange ? 'bg-market-increase/20 text-market-increase' : 'bg-market-decrease/20 text-market-decrease'
+              isPositiveChange ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'
             )}>
               {isPositiveChange ? '+' : ''}{coin.change}%
             </span>
@@ -182,7 +181,7 @@ const CoinDetailPage = () => {
           <div className="flex flex-col h-full">
             {/* Header */}
             <div className={cn(
-              "px-4 py-3 flex items-center justify-between",
+              "px-4 py-3 flex items-center justify-between rounded-t-xl",
               tradeDirection === 'CALL' 
                 ? "bg-gradient-to-r from-green-600/90 to-green-500/90" 
                 : "bg-gradient-to-r from-red-600/90 to-red-500/90"
@@ -287,7 +286,7 @@ const CoinDetailPage = () => {
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Direction</span>
-                    <span className={tradeDirection === 'CALL' ? 'text-market-increase font-medium' : 'text-market-decrease font-medium'}>
+                    <span className={tradeDirection === 'CALL' ? 'text-green-400 font-medium' : 'text-red-400 font-medium'}>
                       {tradeDirection}
                     </span>
                   </div>
@@ -305,7 +304,7 @@ const CoinDetailPage = () => {
                   </div>
                   <div className="flex justify-between pt-1.5 border-t border-border/50 mt-2">
                     <span className="text-muted-foreground">Potential Profit</span>
-                    <span className="text-market-increase font-medium">₹{calculateProfit().toLocaleString()}</span>
+                    <span className="text-green-400 font-medium">₹{calculateProfit().toLocaleString()}</span>
                   </div>
                 </div>
               </div>
@@ -314,7 +313,7 @@ const CoinDetailPage = () => {
               <Button 
                 onClick={handleConfirmTrade}
                 className={cn(
-                  "w-full py-5 text-base font-bold",
+                  "w-full py-6 text-base font-bold",
                   tradeDirection === 'CALL' 
                     ? "bg-gradient-to-r from-green-600 to-green-500 hover:from-green-700 hover:to-green-600" 
                     : "bg-gradient-to-r from-red-600 to-red-500 hover:from-red-700 hover:to-red-600"

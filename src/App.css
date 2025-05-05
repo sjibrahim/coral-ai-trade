@@ -7,6 +7,18 @@
   text-align: center;
   height: 100svh;
   overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Fix scrolling behavior for main content area */
+main {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  position: relative;
+  padding-bottom: 80px; /* Space for footer */
 }
 
 @keyframes logo-spin {

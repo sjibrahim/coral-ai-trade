@@ -33,10 +33,10 @@ const MobileLayout = ({
   const shouldShowNavbar = ['/home', '/market', '/team', '/profile', '/'].includes(location.pathname);
 
   return (
-    <div className="flex flex-col h-full w-full bg-background text-foreground">
+    <div className="flex flex-col h-full w-full bg-background text-foreground relative">
       {/* Header */}
       {(title || showBackButton) && (
-        <header className="sticky top-0 z-20 px-4 py-3 flex items-center justify-between bg-background/80 backdrop-blur-md border-b border-border/40">
+        <header className="sticky top-0 z-20 px-4 py-3 flex items-center justify-between bg-background/90 backdrop-blur-md border-b border-border/40">
           <div className="flex items-center gap-2">
             {showBackButton ? (
               <button 
@@ -73,12 +73,12 @@ const MobileLayout = ({
       {/* Side Menu */}
       <SideMenu isOpen={menuOpen} onClose={() => setMenuOpen(false)} />
 
-      {/* Main Content */}
-      <main className="flex-1 overflow-y-auto pb-20">
+      {/* Main Content - Fix scrolling issues */}
+      <main className="flex-1 overflow-y-auto webkit-overflow-scrolling-touch">
         {children}
       </main>
 
-      {/* Bottom Navigation */}
+      {/* Bottom Navigation - Fixed position to avoid layout shift */}
       {shouldShowNavbar && <MobileNavbar />}
     </div>
   );

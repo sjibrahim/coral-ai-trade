@@ -43,6 +43,9 @@
     --sidebar-accent-foreground: 210 40% 98%;
     --sidebar-border: 228 16% 22%;
     --sidebar-ring: 211 95% 63%;
+
+    --market-increase: 142 69% 58%;
+    --market-decrease: 358 70% 54%;
   }
 }
 
@@ -91,6 +94,17 @@
   input, select, textarea {
     @apply text-base;
     font-size: 16px !important;
+  }
+
+  /* Fix mobile bottom safe area for iPhone notch */
+  @supports (padding: env(safe-area-inset-bottom)) {
+    .pb-safe {
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    #root {
+      padding-bottom: env(safe-area-inset-bottom);
+    }
   }
 }
 
