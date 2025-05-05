@@ -6,12 +6,25 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { mockCryptoCurrencies, mockPriceChartData } from '@/data/mockData';
-import { ArrowUp, ArrowDown, ChevronRight } from 'lucide-react';
+import { ArrowUp, ArrowDown, ChevronRight, X } from 'lucide-react';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import NumericKeypad from '@/components/NumericKeypad';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
+import { toast } from '@/hooks/use-toast';
+import { Sheet, SheetContent } from '@/components/ui/sheet';
+import { cn } from '@/lib/utils';
 
 const CoinDetailPage = () => {
   const [activeTab, setActiveTab] = useState('chart');
   const [selectedTimeframe, setSelectedTimeframe] = useState('24h');
   const crypto = mockCryptoCurrencies[0]; // Using the first crypto from the list for demo
+  
+  // For buy/sell
+  const [tradeType, setTradeType] = useState<'buy' | 'sell'>('buy');
+  const [showTradeSheet, setShowTradeSheet] = useState(false);
+  const [tradeAmount, setTradeAmount] = useState('');
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   
   // Transform mockPriceChartData to have the timestamp property instead of time
   const transformedChartData = mockPriceChartData.map(item => ({
@@ -38,6 +51,29 @@ const CoinDetailPage = () => {
     
     return () => clearInterval(interval);
   }, [livePrice, priceChange]);
+
+  const handleOpenTradeSheet = (type: 'buy' | 'sell') => {
+    setTradeType(type);
+    setTradeAmount('');
+    setShowTradeSheet(true);
+  };
+
+  const handleConfirmTrade = () => {
+    setShowTradeSheet(false);
+    setShowConfirmDialog(false);
+    
+    // Success message
+    setTimeout(() => {
+      toast({
+        title: `${tradeType === 'buy' ? 'Purchase' : 'Sale'} Successful`,
+        description: `You have ${tradeType === 'buy' ? 'purchased' : 'sold'} ${tradeAmount} ${crypto.symbol} at $${livePrice.toFixed(2)}`,
+        variant: tradeType === 'buy' ? 'default' : 'destructive',
+      });
+      setTradeAmount('');
+    }, 500);
+  };
+
+  const estimatedTotal = tradeAmount ? (Number(tradeAmount) * livePrice).toFixed(2) : '0.00';
   
   return (
     <MobileLayout showBackButton title={crypto.name} noScroll>
@@ -195,14 +231,160 @@ const CoinDetailPage = () => {
         
         {/* Fixed Buy/Sell buttons at bottom */}
         <div className="fixed bottom-0 left-0 right-0 p-4 bg-[#0A0B14] border-t border-[#222] grid grid-cols-2 gap-3">
-          <Button className="py-5 bg-market-increase hover:bg-market-increase/90 text-white font-semibold rounded-xl">
+          <Button 
+            onClick={() => handleOpenTradeSheet('buy')}
+            className="py-5 bg-market-increase hover:bg-market-increase/90 text-white font-semibold rounded-xl"
+          >
             BUY
           </Button>
-          <Button className="py-5 bg-[#14151F] hover:bg-[#1C1D2A] text-market-decrease font-semibold border border-market-decrease rounded-xl">
+          <Button 
+            onClick={() => handleOpenTradeSheet('sell')}
+            className="py-5 bg-[#14151F] hover:bg-[#1C1D2A] text-market-decrease font-semibold border border-market-decrease rounded-xl"
+          >
             SELL
           </Button>
         </div>
       </div>
+
+      {/* Trade Sheet Modal (Buy/Sell) */}
+      <Sheet open={showTradeSheet} onOpenChange={setShowTradeSheet}>
+        <SheetContent side="bottom" className="h-[85%] bg-[#0A0B14] border-t border-[#222] rounded-t-3xl p-0">
+          <div className="flex flex-col h-full">
+            {/* Header */}
+            <div className="flex items-center justify-between p-4 border-b border-[#222]">
+              <h2 className="text-xl font-bold text-gray-100">
+                {tradeType === 'buy' ? 'Buy' : 'Sell'} {crypto.symbol}
+              </h2>
+              <button 
+                onClick={() => setShowTradeSheet(false)} 
+                className="p-2 rounded-full hover:bg-[#222]/50"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            {/* Content */}
+            <div className="flex-1 p-4 overflow-y-auto">
+              {/* Price */}
+              <div className="mb-6">
+                <div className="text-sm text-gray-400 mb-1">Current Price</div>
+                <div className="text-2xl font-bold text-gray-100">
+                  ${livePrice.toLocaleString(undefined, { maximumFractionDigits: 2 })}
+                </div>
+                <div className={`text-sm flex items-center ${priceChange > 0 ? 'text-market-increase' : 'text-market-decrease'}`}>
+                  {priceChange > 0 ? (
+                    <ArrowUp className="h-3 w-3 mr-1" />
+                  ) : (
+                    <ArrowDown className="h-3 w-3 mr-1" />
+                  )}
+                  {Math.abs(priceChange).toFixed(4)}% (24h)
+                </div>
+              </div>
+
+              {/* Amount Input */}
+              <div className="mb-6">
+                <div className="text-sm text-gray-400 mb-1">
+                  {tradeType === 'buy' ? 'Amount to Purchase' : 'Amount to Sell'}
+                </div>
+                <div className="flex items-center gap-2 bg-[#14151F] rounded-xl p-3 border border-[#222]">
+                  <div className="flex-1">
+                    <input
+                      type="text"
+                      value={tradeAmount}
+                      onChange={(e) => {
+                        // Only allow numbers and one decimal point
+                        const value = e.target.value;
+                        if (/^[0-9]*\.?[0-9]*$/.test(value)) {
+                          setTradeAmount(value);
+                        }
+                      }}
+                      className="w-full bg-transparent text-2xl font-bold text-gray-100 focus:outline-none"
+                      placeholder="0"
+                    />
+                  </div>
+                  <div className="text-gray-100 font-semibold">{crypto.symbol}</div>
+                </div>
+              </div>
+
+              {/* Estimated Total */}
+              <div className="mb-6">
+                <div className="text-sm text-gray-400 mb-1">
+                  {tradeType === 'buy' ? 'Estimated Cost' : 'Estimated Proceeds'}
+                </div>
+                <div className="text-xl font-bold text-gray-100">
+                  ${estimatedTotal}
+                </div>
+              </div>
+
+              {/* Quick Amount Buttons */}
+              <div className="grid grid-cols-3 gap-2 mb-6">
+                {[0.1, 0.5, 1].map((amount) => (
+                  <button
+                    key={amount}
+                    onClick={() => setTradeAmount(amount.toString())}
+                    className={cn(
+                      "py-2 px-1 rounded-xl transition-all duration-200",
+                      "border border-[#222] bg-[#14151F]/50",
+                      "hover:bg-primary/10 hover:border-primary/50",
+                      tradeAmount === amount.toString() && "bg-primary/20 border-primary/70"
+                    )}
+                  >
+                    <span className="text-sm font-medium text-gray-100">{amount} {crypto.symbol}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Bottom Button */}
+            <div className="border-t border-[#222] p-4">
+              <Button
+                onClick={() => setShowConfirmDialog(true)}
+                disabled={!tradeAmount || Number(tradeAmount) <= 0}
+                className={cn(
+                  "w-full py-5 rounded-xl font-semibold text-white",
+                  tradeType === 'buy'
+                    ? "bg-market-increase hover:bg-market-increase/90"
+                    : "bg-market-decrease hover:bg-market-decrease/90"
+                )}
+              >
+                {tradeType === 'buy' ? 'Buy' : 'Sell'} {tradeAmount || '0'} {crypto.symbol}
+              </Button>
+            </div>
+          </div>
+        </SheetContent>
+      </Sheet>
+
+      {/* Confirmation Dialog */}
+      <AlertDialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
+        <AlertDialogContent className="bg-[#14151F] border-[#222]">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-gray-100">
+              Confirm {tradeType === 'buy' ? 'Purchase' : 'Sale'}
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-gray-400">
+              You are about to {tradeType === 'buy' ? 'purchase' : 'sell'} {tradeAmount} {crypto.symbol} at ${livePrice.toFixed(2)} each.
+              {tradeType === 'buy'
+                ? ` This will cost approximately $${estimatedTotal}.`
+                : ` You will receive approximately $${estimatedTotal}.`}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="bg-[#222] text-gray-300 border-[#333]">
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleConfirmTrade}
+              className={
+                tradeType === 'buy'
+                  ? "bg-market-increase hover:bg-market-increase/90"
+                  : "bg-market-decrease hover:bg-market-decrease/90"
+              }
+            >
+              Confirm
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </MobileLayout>
   );
 };

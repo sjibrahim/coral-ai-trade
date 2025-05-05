@@ -45,7 +45,7 @@ const WithdrawPage = () => {
       )}
       noScroll
     >
-      <div className="flex flex-col h-full bg-background p-4 justify-between">
+      <div className="flex flex-col h-full bg-background p-4 pb-24">
         
         {/* Top Section */}
         <div>
@@ -104,18 +104,33 @@ const WithdrawPage = () => {
           </div>
         </div>
         
-        {/* Bottom Section */}
-        <div className="mt-auto w-full">
-          {/* Keypad */}
+        {/* Center Section - Keypad */}
+        <div className="flex-1 flex items-center justify-center">
           <NumericKeypad 
             value={amount}
             onChange={setAmount}
-            onConfirm={isValidAmount ? handleConfirm : undefined}
-            confirmButtonText="SUBMIT"
-            confirmButtonIcon={<Download className="h-4 w-4 mr-1" />}
             className="mx-auto"
+            fixedConfirmButton={true}
           />
         </div>
+      </div>
+      
+      {/* Fixed bottom button */}
+      <div className="fixed bottom-0 left-0 right-0 p-4 bg-background/95 backdrop-blur-md border-t border-border/20">
+        <button
+          onClick={isValidAmount ? handleConfirm : undefined}
+          disabled={!isValidAmount}
+          className={cn(
+            "w-full py-4 rounded-xl text-white text-base font-medium",
+            "disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200",
+            "flex items-center justify-center gap-1.5 shadow-lg",
+            "hover:bg-primary/90 active:scale-[0.98]",
+            isValidAmount ? "bg-primary" : "bg-primary/70"
+          )}
+        >
+          <Download className="h-4 w-4 mr-1" />
+          SUBMIT
+        </button>
       </div>
       
       {/* Success Modal */}
