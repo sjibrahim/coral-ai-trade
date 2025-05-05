@@ -5,30 +5,13 @@ import PriceChart from '@/components/PriceChart';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
-import { mockMarketData } from '@/data/mockData';
+import { mockCryptoCurrencies, mockPriceChartData } from '@/data/mockData';
 import { ArrowUp, ArrowDown, ChevronRight } from 'lucide-react';
 
 const CoinDetailPage = () => {
   const [activeTab, setActiveTab] = useState('chart');
-  const crypto = mockMarketData[0]; // Using the first crypto from the list for demo
+  const crypto = mockCryptoCurrencies[0]; // Using the first crypto from the list for demo
   
-  // Sample chart data - in a real app this would be fetched based on the crypto
-  const chartData = [
-    { timestamp: '2023-01-01T00:00', price: 42000 },
-    { timestamp: '2023-01-01T01:00', price: 42200 },
-    { timestamp: '2023-01-01T02:00', price: 42100 },
-    { timestamp: '2023-01-01T03:00', price: 42300 },
-    { timestamp: '2023-01-01T04:00', price: 42500 },
-    { timestamp: '2023-01-01T05:00', price: 42400 },
-    { timestamp: '2023-01-01T06:00', price: 42600 },
-    { timestamp: '2023-01-01T07:00', price: 42800 },
-    { timestamp: '2023-01-01T08:00', price: 42700 },
-    { timestamp: '2023-01-01T09:00', price: 42900 },
-    { timestamp: '2023-01-01T10:00', price: 43000 },
-    { timestamp: '2023-01-01T11:00', price: 42950 },
-    { timestamp: '2023-01-01T12:00', price: 43100 },
-  ];
-
   return (
     <MobileLayout showBackButton title={crypto.name}>
       <div className="p-4 max-w-md mx-auto">
@@ -36,7 +19,7 @@ const CoinDetailPage = () => {
           <div className="flex items-center">
             <div className="bg-card/70 backdrop-blur-sm rounded-full p-2 mr-3">
               <img 
-                src={crypto.icon} 
+                src={crypto.logo} 
                 alt={crypto.symbol}
                 className="w-10 h-10"
               />
@@ -70,7 +53,7 @@ const CoinDetailPage = () => {
             <Card>
               <CardContent className="pt-6">
                 <PriceChart 
-                  data={chartData} 
+                  data={mockPriceChartData} 
                   currentPrice={crypto.price}
                   previousPrice={crypto.price - (crypto.price * crypto.change / 100)}
                   height={220}
