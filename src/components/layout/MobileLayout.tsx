@@ -41,9 +41,14 @@ const MobileLayout = ({
 
   return (
     <div className="flex flex-col h-full w-full bg-[#0d0f17] text-foreground relative">
+      {/* Background animated particles */}
+      <div className="particle particle-1"></div>
+      <div className="particle particle-2"></div>
+      <div className="particle particle-3"></div>
+      
       {/* Header */}
       {(title || showBackButton) && (
-        <header className="sticky top-0 z-20 px-4 py-3 flex items-center justify-between bg-[#0d0f17]/95 backdrop-blur-md">
+        <header className="sticky top-0 z-20 px-4 py-3 flex items-center justify-between bg-[#0d0f17]/95 backdrop-blur-md border-b border-white/5">
           <div className="flex items-center gap-2">
             {showBackButton ? (
               <button 
@@ -61,7 +66,7 @@ const MobileLayout = ({
               </button>
             )}
             {title && (
-              <h1 className="text-xl font-semibold">{title}</h1>
+              <h1 className="text-xl font-semibold text-gradient">{title}</h1>
             )}
           </div>
           {rightActions ? (
@@ -69,7 +74,7 @@ const MobileLayout = ({
               {rightActions}
             </div>
           ) : (
-            <button className="p-1.5 rounded-full hover:bg-accent/50 transition-colors flex items-center justify-center relative">
+            <button className="p-1.5 rounded-full hover:bg-accent/50 transition-colors flex items-center justify-center relative animate-pulse-glow">
               <Bell className="h-5 w-5" />
               <span className="absolute top-0.5 right-0.5 w-1.5 h-1.5 bg-red-500 rounded-full"></span>
             </button>

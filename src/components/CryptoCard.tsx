@@ -13,16 +13,52 @@ interface CryptoCardProps {
   animationDelay?: number;
 }
 
+// Function to get crypto logo from CoinIcons CDN
+const getCryptoLogo = (symbol: string) => {
+  // Convert symbol to lowercase
+  const formattedSymbol = symbol.toLowerCase();
+  return `https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/128/color/${formattedSymbol}.png`;
+};
+
+// Fallback icons if the main source fails
+const getFallbackLogo = (symbol: string) => {
+  return `https://raw.githubusercontent.com/Pymmdrza/CryptoIconsCDN/mainx/PNG/${symbol.toUpperCase()}.png`;
+};
+
 const CryptoCard = ({ id, name, symbol, price, change, logo, animationDelay = 0 }: CryptoCardProps) => {
   const isPositiveChange = change >= 0;
   const changeText = `${isPositiveChange ? '+' : ''}${change.toFixed(3)}%`;
 
+  // Handle image error by using fallback
+  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+    const target = e.target as HTMLImageElement;
+    if (target.src !== getFallbackLogo(symbol)) {
+      target.src = getFallbackLogo(symbol);
+    } else {
+      // If fallback also fails, use a colored div with symbol text
+      target.style.display = 'none';
+      target.nextElementSibling?.classList.remove('hidden');
+    }
+  };
+
   return (
-    <Link to={`/coin/${id}`} style={{ animationDelay: `${animationDelay}ms` }} className="animate-fade-in">
-      <div className="flex items-center justify-between p-3.5 rounded-lg transition-all hover:bg-accent/30 border-b border-border/30">
+    <Link 
+      to={`/coin/${id}`} 
+      style={{ animationDelay: `${animationDelay}ms` }} 
+      className="animate-fade-in hover:bg-blue-500/5 transition-colors"
+    >
+      <div className="flex items-center justify-between p-3.5 rounded-lg hover:bg-accent/30 border-b border-border/30 group transition-all">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-full bg-secondary/40 backdrop-blur-sm flex items-center justify-center shadow-md">
-            <img src={logo} alt={name} className="w-6 h-6" />
+          <div className="w-9 h-9 rounded-full bg-secondary/40 backdrop-blur-sm flex items-center justify-center shadow-md overflow-hidden crypto-icon group-hover:scale-105 transition-transform">
+            <img 
+              src={getCryptoLogo(symbol)} 
+              alt={name} 
+              className="w-6 h-6"
+              onError={handleImageError}
+            />
+            <div className="hidden absolute inset-0 flex items-center justify-center font-bold text-xs">
+              {symbol.slice(0, 2)}
+            </div>
           </div>
           <div>
             <h3 className="font-medium text-sm">{name}</h3>

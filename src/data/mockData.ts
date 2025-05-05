@@ -1,60 +1,59 @@
-
 export const mockCryptoCurrencies = [
   {
     id: 'bitcoin',
     name: 'Bitcoin',
-    symbol: 'BTC',
+    symbol: 'btc',
     price: 94278.61,
     change: -1.645,
-    logo: 'https://cryptologos.cc/logos/bitcoin-btc-logo.png'
+    logo: 'https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/128/color/btc.png'
   },
   {
     id: 'ethereum',
     name: 'Ethereum',
-    symbol: 'ETH',
+    symbol: 'eth',
     price: 1809.13,
     change: -1.29,
-    logo: 'https://cryptologos.cc/logos/ethereum-eth-logo.png'
+    logo: 'https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/128/color/eth.png'
   },
   {
     id: 'binance-coin',
     name: 'Binance',
-    symbol: 'BNB',
+    symbol: 'bnb',
     price: 586.26,
     change: -2.217,
-    logo: 'https://cryptologos.cc/logos/bnb-bnb-logo.png'
+    logo: 'https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/128/color/bnb.png'
   },
   {
     id: 'toncoin',
     name: 'Toncoin',
-    symbol: 'TON',
+    symbol: 'ton',
     price: 3.02,
     change: -2.11,
-    logo: 'https://cryptologos.cc/logos/toncoin-ton-logo.png'
+    logo: 'https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/128/color/ton.png'
   },
   {
     id: 'band-protocol',
     name: 'Band',
-    symbol: 'BAND',
+    symbol: 'band',
     price: 0.76,
     change: -4.056,
-    logo: 'https://cryptologos.cc/logos/band-protocol-band-logo.png'
+    logo: 'https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/128/color/band.png'
   },
   {
     id: 'dogecoin',
     name: 'DogeCoin',
-    symbol: 'DOGE',
+    symbol: 'doge',
     price: 0.17,
     change: -3.065,
-    logo: 'https://cryptologos.cc/logos/dogecoin-doge-logo.png'
+    logo: 'https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/128/color/doge.png'
   },
   {
     id: 'dai',
     name: 'Dai',
-    symbol: 'DAI',
+    symbol: 'dai',
     price: 0.99,
     change: 0,
-    logo: 'https://cryptologos.cc/logos/multi-collateral-dai-dai-logo.png'
+    logo: 'https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/128/color/dai.png'
   }
 ];
 
@@ -112,8 +111,8 @@ export const mockTransactions = [
   {
     id: 1,
     coin: 'Bitcoin',
-    symbol: 'BTC',
-    logo: 'https://cryptologos.cc/logos/bitcoin-btc-logo.png',
+    symbol: 'btc',
+    logo: 'https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/128/color/btc.png',
     amount: 17286,
     buyTime: '22-04-25 17:12:53',
     obtainedPrice: 7392316.79,
@@ -125,8 +124,8 @@ export const mockTransactions = [
   {
     id: 2,
     coin: 'Tst',
-    symbol: 'TST',
-    logo: 'https://cryptologos.cc/logos/tether-usdt-logo.png',
+    symbol: 'usdt',
+    logo: 'https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/128/color/usdt.png',
     amount: 11119,
     buyTime: '15-04-25 17:01:38',
     obtainedPrice: 5.9280,
@@ -138,8 +137,8 @@ export const mockTransactions = [
   {
     id: 3,
     coin: 'DogeCoin',
-    symbol: 'DOGE',
-    logo: 'https://cryptologos.cc/logos/dogecoin-doge-logo.png',
+    symbol: 'doge',
+    logo: 'https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/128/color/doge.png',
     amount: 4773,
     buyTime: '07-04-25 17:17:48',
     obtainedPrice: 11.5230,
