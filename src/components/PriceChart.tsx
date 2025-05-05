@@ -108,7 +108,7 @@ const PriceChart = ({ data: initialData, isPositive }: PriceChartProps) => {
               stroke="#4b5563" 
               strokeDasharray="3 3" 
               label={{ 
-                value: `$${currentPrice.toFixed(2)}`,
+                value: `$${typeof currentPrice === 'number' ? currentPrice.toFixed(2) : '0.00'}`,
                 fill: '#a0aec0',
                 position: 'right'
               }} 
