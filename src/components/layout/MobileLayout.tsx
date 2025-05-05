@@ -74,7 +74,7 @@ const MobileLayout = ({
       <SideMenu isOpen={menuOpen} onClose={() => setMenuOpen(false)} />
 
       {/* Main Content - Fix scrolling issues */}
-      <main className="flex-1 overflow-y-auto webkit-overflow-scrolling-touch">
+      <main className="flex-1 overflow-y-auto webkit-overflow-scrolling-touch pb-safe">
         {children}
       </main>
 

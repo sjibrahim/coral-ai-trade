@@ -15,7 +15,7 @@ const TeamPage = () => {
   
   return (
     <MobileLayout title="Team">
-      <div className="p-4 space-y-6 animate-fade-in">
+      <div className="p-4 space-y-6 animate-fade-in pb-20">
         {/* Team Stats */}
         <div className="bg-card rounded-xl p-5">
           {mockTeamStats.levels.map((level) => (

@@ -1,7 +1,7 @@
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Delete, X } from "lucide-react";
+import { X, Delete } from "lucide-react";
 
 interface NumericKeypadProps {
   value: string;
@@ -88,7 +88,7 @@ const KeypadButton = ({ onClick, children, variant = 'default' }: KeypadButtonPr
       type="button"
       onClick={onClick}
       variant={variant}
-      className="h-14 rounded-full text-lg font-medium flex items-center justify-center animate-pulse-glow"
+      className="h-14 w-14 rounded-full text-lg font-medium flex items-center justify-center shadow-lg"
     >
       {children}
     </Button>

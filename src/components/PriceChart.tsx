@@ -48,8 +48,8 @@ const PriceChart = ({ data: initialData, isPositive }: PriceChartProps) => {
   // Current price (latest data point)
   const currentPrice = data[data.length - 1]?.price;
   
-  // Format price for display
-  const formattedPrice = typeof currentPrice === 'number' ? `$${currentPrice.toFixed(2)}` : '$0.00';
+  // Format price for display - ensure we handle the type properly
+  const formattedPrice = currentPrice !== undefined ? `$${currentPrice.toFixed(2)}` : '$0.00';
 
   return (
     <div className="space-y-4">

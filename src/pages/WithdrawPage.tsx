@@ -17,7 +17,7 @@ const WithdrawPage = () => {
   
   return (
     <MobileLayout showBackButton title="Withdrawal">
-      <div className="p-4 flex flex-col h-full animate-fade-in max-w-md mx-auto">
+      <div className="p-4 flex flex-col h-full animate-fade-in max-w-md mx-auto pb-8">
         {/* Amount Input */}
         <div className="bg-card/50 backdrop-blur-sm rounded-xl p-6 mb-4 border border-border/40">
           <div className="flex items-baseline mb-2">

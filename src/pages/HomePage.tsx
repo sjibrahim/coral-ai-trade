@@ -14,16 +14,31 @@ const HomePage = () => {
   
   return (
     <MobileLayout>
-      <div className="animate-fade-in space-y-4">
-        {/* Balance Section */}
-        <section className="bg-gradient-to-b from-accent/40 to-accent/10 backdrop-blur-sm rounded-b-3xl shadow-lg">
-          <BalanceSummary 
-            totalBalance={mockBalances.totalBalance}
-            totalDeposit={mockBalances.totalDeposit}
-            totalWithdrawal={mockBalances.totalWithdrawal}
-            availableBalance={mockBalances.availableBalance}
-          />
-          <ActionButtons />
+      <div className="animate-fade-in space-y-4 pb-20">
+        {/* Balance Section - With upgraded design similar to profile page */}
+        <section className="bg-gradient-to-br from-primary/30 via-accent/40 to-blue-900/30 backdrop-blur-sm rounded-b-3xl shadow-lg relative overflow-hidden">
+          {/* Background pattern */}
+          <div className="absolute inset-0 opacity-10">
+            <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+              <pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse">
+                <path d="M 10 0 L 0 0 0 10" fill="none" stroke="white" strokeWidth="0.5"/>
+              </pattern>
+              <rect width="100" height="100" fill="url(#grid)" />
+            </svg>
+          </div>
+          
+          <div className="relative">
+            <BalanceSummary 
+              totalBalance={mockBalances.totalBalance}
+              totalDeposit={mockBalances.totalDeposit}
+              totalWithdrawal={mockBalances.totalWithdrawal}
+              availableBalance={mockBalances.availableBalance}
+            />
+            <ActionButtons />
+          </div>
+          
+          {/* Decoration Elements */}
+          <div className="h-4 w-full bg-gradient-to-r from-blue-500/20 via-primary/20 to-purple-500/20"></div>
         </section>
         
         {/* Market Section */}
