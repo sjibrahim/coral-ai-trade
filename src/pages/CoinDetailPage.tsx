@@ -5,12 +5,20 @@ import PriceChart from '@/components/PriceChart';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
 import { mockCryptoCurrencies, mockPriceChartData } from '@/data/mockData';
-import { ArrowUp, ArrowDown, ChevronRight } from 'lucide-react';
+import { ArrowUp, ArrowDown, ChevronRight, X } from 'lucide-react';
 
 const CoinDetailPage = () => {
   const [activeTab, setActiveTab] = useState('chart');
   const [selectedTimeframe, setSelectedTimeframe] = useState('24h');
+  const [isBuyModalOpen, setIsBuyModalOpen] = useState(false);
+  const [isSellModalOpen, setIsSellModalOpen] = useState(false);
+  const [selectedTimePeriod, setSelectedTimePeriod] = useState('1min');
+  const [tradeAmount, setTradeAmount] = useState('1000');
+  const [direction, setDirection] = useState('Call'); // 'Call' or 'Put'
+  
   const crypto = mockCryptoCurrencies[0]; // Using the first crypto from the list for demo
   
   // Transform mockPriceChartData to have the timestamp property instead of time
@@ -38,6 +46,25 @@ const CoinDetailPage = () => {
     
     return () => clearInterval(interval);
   }, [livePrice, priceChange]);
+
+  const handleBuyClick = () => {
+    setDirection('Call');
+    setIsBuyModalOpen(true);
+  };
+
+  const handleSellClick = () => {
+    setDirection('Put');
+    setIsSellModalOpen(true);
+  };
+  
+  const handleConfirmTrade = () => {
+    console.log(`Confirmed ${direction} trade for ${tradeAmount} on ${crypto.symbol} with ${selectedTimePeriod} timeframe`);
+    setIsBuyModalOpen(false);
+    setIsSellModalOpen(false);
+    // In a real app, you would submit the trade here
+  };
+
+  const predefinedAmounts = ['600', '1000', '2000', '3000', '5000', '10000'];
   
   return (
     <MobileLayout showBackButton title={crypto.name} noScroll>
@@ -181,10 +208,10 @@ const CoinDetailPage = () => {
             <TabsContent value="trade">
               <Card className="bg-[#14151F] border-[#222] text-gray-100">
                 <CardContent className="pt-6 flex flex-col gap-4">
-                  <Button className="bg-market-increase hover:bg-market-increase/90">
+                  <Button className="bg-market-increase hover:bg-market-increase/90" onClick={handleBuyClick}>
                     Buy {crypto.symbol}
                   </Button>
-                  <Button variant="outline" className="border-market-decrease text-market-decrease">
+                  <Button variant="outline" className="border-market-decrease text-market-decrease" onClick={handleSellClick}>
                     Sell {crypto.symbol}
                   </Button>
                 </CardContent>
@@ -194,15 +221,125 @@ const CoinDetailPage = () => {
         </Tabs>
         
         {/* Fixed Buy/Sell buttons at bottom */}
-        <div className="fixed bottom-0 left-0 right-0 p-4 bg-[#0A0B14] border-t border-[#222] grid grid-cols-2 gap-3">
-          <Button className="py-5 bg-market-increase hover:bg-market-increase/90 text-white font-semibold rounded-xl">
-            BUY
+        <div className="fixed bottom-0 left-0 right-0 p-4 pb-safe bg-[#0A0B14] border-t border-[#222] grid grid-cols-2 gap-3">
+          <Button 
+            className="py-5 bg-market-increase hover:bg-market-increase/90 text-white font-semibold rounded-xl"
+            onClick={handleBuyClick}
+          >
+            BUY CALL
           </Button>
-          <Button className="py-5 bg-[#14151F] hover:bg-[#1C1D2A] text-market-decrease font-semibold border border-market-decrease rounded-xl">
-            SELL
+          <Button 
+            className="py-5 bg-[#14151F] hover:bg-[#1C1D2A] text-market-decrease font-semibold border border-market-decrease rounded-xl"
+            onClick={handleSellClick}
+          >
+            BUY PUT
           </Button>
         </div>
       </div>
+      
+      {/* Buy/Sell Modal Dialog */}
+      <Dialog open={isBuyModalOpen || isSellModalOpen} onOpenChange={() => {
+        setIsBuyModalOpen(false);
+        setIsSellModalOpen(false);
+      }}>
+        <DialogContent className="bg-[#14151F] border-[#222] text-white p-0 sm:max-w-md rounded-xl overflow-hidden">
+          <div className="relative p-6">
+            <button 
+              className="absolute right-4 top-4 p-2 rounded-full bg-[#222430] hover:bg-[#2A2C3A] transition-colors"
+              onClick={() => {
+                setIsBuyModalOpen(false);
+                setIsSellModalOpen(false);
+              }}
+            >
+              <X className="h-4 w-4" />
+            </button>
+            
+            <h2 className="text-xl font-semibold mb-5">
+              {crypto.symbol}/INR
+            </h2>
+            
+            <div className="space-y-6">
+              {/* Time Period Selector */}
+              <div className="space-y-2">
+                <label className="text-sm text-gray-400">Select Time Period</label>
+                <div className="flex gap-2 overflow-x-auto pb-2">
+                  {['1min', '2min', '5min', '10min', '15min'].map((period) => (
+                    <button
+                      key={period}
+                      className={`px-5 py-3 rounded-full text-sm ${
+                        selectedTimePeriod === period
+                          ? 'bg-blue-600 text-white'
+                          : 'bg-[#222430] text-gray-300'
+                      }`}
+                      onClick={() => setSelectedTimePeriod(period)}
+                    >
+                      {period}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              
+              {/* Available Balance */}
+              <div className="space-y-2">
+                <div className="flex justify-between">
+                  <span className="text-sm text-gray-400">Available:</span>
+                  <span className="text-sm">₹ 20023</span>
+                </div>
+                
+                {/* Trade Amount Input */}
+                <Input
+                  className="bg-[#1A1B26] border-[#2A2C3A] text-white text-lg p-4 h-14"
+                  placeholder="Enter amount"
+                  value={tradeAmount}
+                  onChange={(e) => setTradeAmount(e.target.value)}
+                  type="text"
+                />
+                
+                {/* Predefined Amount Buttons */}
+                <div className="grid grid-cols-3 gap-2 mt-3">
+                  {predefinedAmounts.map((amount) => (
+                    <button
+                      key={amount}
+                      className="bg-[#222430] hover:bg-[#2A2C3A] rounded-full py-2 px-3 text-sm"
+                      onClick={() => setTradeAmount(amount)}
+                    >
+                      ₹{amount}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              
+              {/* Trade Summary */}
+              <div className="bg-[#1A1B26] rounded-xl p-4">
+                <div className="grid grid-cols-3 text-center">
+                  <div className="text-sm">
+                    <div className="text-gray-400">Direction</div>
+                    <div className="mt-1 font-medium">{direction}</div>
+                  </div>
+                  <div className="text-sm">
+                    <div className="text-gray-400">Price</div>
+                    <div className="mt-1 font-medium text-green-500">
+                      {livePrice.toLocaleString(undefined, { maximumFractionDigits: 3 })}
+                    </div>
+                  </div>
+                  <div className="text-sm">
+                    <div className="text-gray-400">Amount</div>
+                    <div className="mt-1 font-medium">₹ {tradeAmount}</div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Confirm Button */}
+              <Button 
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-6 font-medium text-lg rounded-xl"
+                onClick={handleConfirmTrade}
+              >
+                CONFIRM
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </MobileLayout>
   );
 };

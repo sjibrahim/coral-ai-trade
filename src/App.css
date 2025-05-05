@@ -94,3 +94,22 @@ nav.fixed.bottom-0 {
   height: 100% !important;
   -webkit-overflow-scrolling: touch !important;
 }
+
+/* Styling for the trade modal */
+[data-radix-popper-content-wrapper] {
+  z-index: 100 !important;
+}
+
+/* Ensure dialog is centered and sized properly for mobile */
+[role="dialog"] {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-height: 90vh;
+  width: 100%;
+}
+
+/* Update Market Page styles */
+.market-page-content {
+  padding-bottom: 120px;
+}

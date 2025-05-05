@@ -7,7 +7,7 @@ import { Sparkles } from "lucide-react";
 const MarketPage = () => {
   return (
     <MobileLayout title="Market">
-      <div className="p-4 space-y-4 pb-20">
+      <div className="p-4 space-y-4 pb-20 market-page-content">
         {/* Header with animation */}
         <div className="flex items-center mb-3">
           <Sparkles className="w-5 h-5 text-blue-400 mr-2 animate-pulse-glow" />
