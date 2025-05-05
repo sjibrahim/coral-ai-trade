@@ -57,6 +57,10 @@ main {
   position: relative;
   overflow: hidden;
 }
+.force-full-blue {
+  width: 100% !important;
+  background-color: rgb(37 99 235 / 0.5) !important;
+}
 
 /* Fix mobile nav bottom spacing for iOS notch/home indicator */
 nav.fixed.bottom-0 {
