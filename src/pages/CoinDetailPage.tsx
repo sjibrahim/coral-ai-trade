@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import MobileLayout from '@/components/layout/MobileLayout';
 import PriceChart from '@/components/PriceChart';
@@ -83,6 +82,7 @@ const CoinDetailPage = () => {
     setIsSellModalOpen(false);
   };
   
+  // Toggle fullscreen chart view
   const toggleFullscreen = () => {
     setIsChartFullscreen(!isChartFullscreen);
   };

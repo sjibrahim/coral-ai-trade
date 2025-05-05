@@ -169,26 +169,35 @@ const PriceChart = ({
     if (showVolume) {
       return (
         <ComposedChart data={data}>
-          {showGridLines && <CartesianGrid strokeDasharray="3 3" stroke="#333" vertical={false} />}
+          {showGridLines && <CartesianGrid strokeDasharray="3 3" stroke={isFullscreen ? "#2D3348" : "#333"} vertical={false} />}
           <XAxis 
             dataKey="timestamp" 
-            tick={false} 
-            axisLine={{ stroke: '#333' }} 
+            tick={isFullscreen ? { fontSize: 10, fill: '#888' } : false} 
+            axisLine={{ stroke: isFullscreen ? "#2D3348" : '#333' }} 
+            tickFormatter={formatDate}
             padding={{ left: 5, right: 5 }}
+            height={isFullscreen ? 30 : 0}
           />
           <YAxis 
             yAxisId="price" 
             domain={['auto', 'auto']} 
             axisLine={false} 
             tickLine={false}
-            tick={{ fontSize: 10, fill: '#999' }}
+            tick={{ fontSize: isFullscreen ? 11 : 10, fill: '#999' }}
             orientation="right"
-            width={40}
+            width={isFullscreen ? 60 : 40}
+            tickFormatter={(value) => isFullscreen ? formatPrice(value) : ''}
           />
           <YAxis 
             yAxisId="volume" 
             domain={[0, 'dataMax']} 
-            hide 
+            hide={!isFullscreen}
+            orientation="left"
+            axisLine={false}
+            tickLine={false}
+            tick={{ fontSize: 10, fill: '#888' }}
+            width={50}
+            tickFormatter={(value) => isFullscreen ? `${(value / 1000).toFixed(0)}K` : ''}
           />
           {enhancedTooltip ? 
             <Tooltip content={<EnhancedTooltip />} cursor={{ stroke: '#555', strokeDasharray: '3 3' }} /> : 
@@ -199,13 +208,17 @@ const PriceChart = ({
               <stop offset="5%" stopColor={isIncreasing ? "#22c55e" : "#ef4444"} stopOpacity={0.3} />
               <stop offset="95%" stopColor={isIncreasing ? "#22c55e" : "#ef4444"} stopOpacity={0} />
             </linearGradient>
+            <linearGradient id="volumeGradient" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8} />
+              <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.1} />
+            </linearGradient>
           </defs>
           <Area 
             yAxisId="price"
             type="monotone" 
             dataKey="price" 
             stroke={isIncreasing ? "#22c55e" : "#ef4444"} 
-            strokeWidth={1.5}
+            strokeWidth={isFullscreen ? 2 : 1.5}
             fillOpacity={1}
             fill="url(#colorGradient)"
             activeDot={{ r: 4, fill: isIncreasing ? "#22c55e" : "#ef4444" }}
@@ -217,7 +230,7 @@ const PriceChart = ({
                 type="monotone" 
                 dataKey="high" 
                 stroke="#22c55e" 
-                strokeWidth={1}
+                strokeWidth={isFullscreen ? 1.5 : 1}
                 dot={false}
                 strokeDasharray="3 3"
                 activeDot={false}
@@ -227,7 +240,7 @@ const PriceChart = ({
                 type="monotone" 
                 dataKey="low" 
                 stroke="#ef4444" 
-                strokeWidth={1}
+                strokeWidth={isFullscreen ? 1.5 : 1}
                 dot={false}
                 strokeDasharray="3 3"
                 activeDot={false}
@@ -237,9 +250,9 @@ const PriceChart = ({
           <Bar 
             yAxisId="volume" 
             dataKey="volume" 
-            fill="#3b82f6" 
-            opacity={0.3} 
-            barSize={6}
+            fill="url(#volumeGradient)" 
+            opacity={isFullscreen ? 0.7 : 0.3} 
+            barSize={isFullscreen ? 10 : 6}
           />
         </ComposedChart>
       );
