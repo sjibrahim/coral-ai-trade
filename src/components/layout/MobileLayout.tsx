@@ -33,11 +33,6 @@ const MobileLayout = ({
   
   // Only show the navbar on main pages
   const shouldShowNavbar = ['/home', '/market', '/team', '/profile', '/'].includes(location.pathname);
-  
-  // Calculate content style - remove flex-1 from the scrollable container
-  const contentStyle = noScroll 
-    ? "flex-1 flex flex-col" 
-    : "flex-1";
 
   return (
     <div className="flex flex-col h-full w-full bg-[#0d0f17] text-foreground relative">
@@ -114,9 +109,9 @@ const MobileLayout = ({
       {/* Side Menu */}
       <SideMenu isOpen={menuOpen} onClose={() => setMenuOpen(false)} />
 
-      {/* Main Content with proper scrolling setup */}
-      <main className={contentStyle}>
-        <div className={noScroll ? "h-full" : "h-full overflow-y-auto pb-safe"}>
+      {/* Main Content with fixed scrolling */}
+      <main className="flex-1 flex flex-col overflow-hidden">
+        <div className={noScroll ? "h-full" : "h-full overflow-auto -webkit-overflow-scrolling-touch"}>
           {children}
         </div>
       </main>
