@@ -3,7 +3,7 @@ import { useState } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
 import NumericKeypad from "@/components/NumericKeypad";
 import { mockBalances } from "@/data/mockData";
-import { Bell, IndianRupee } from "lucide-react";
+import { Bell, ChevronLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -46,7 +46,7 @@ const WithdrawPage = () => {
       )}
       noScroll
     >
-      <div className="flex flex-col h-full bg-[#14131b] justify-between">
+      <div className="flex flex-col h-full bg-[#14131b]">
         {/* Top Section - Amount Display */}
         <div className="pt-8 px-6">
           <div className="flex items-center">
@@ -85,21 +85,20 @@ const WithdrawPage = () => {
         </div>
 
         {/* Bottom Section - Keypad */}
-        <div className="flex flex-col flex-grow justify-end">
-          <div className="flex justify-center">
+        <div className="flex flex-col flex-grow justify-end pb-6">
+          <div className="mx-auto w-full max-w-xs">
             <NumericKeypad 
               value={amount}
               onChange={setAmount}
               size="lg"
               deleteIcon="backspace"
               clearText="clr"
-              className="mx-auto pb-4"
             />
           </div>
 
-          <div className="px-4 pb-6">
+          <div className="px-6 mt-6">
             <button 
-              onClick={isValidAmount ? handleConfirm : undefined}
+              onClick={handleConfirm}
               disabled={!isValidAmount}
               className={cn(
                 "w-full py-4 rounded-lg text-white text-xl font-medium transition-all",

@@ -65,12 +65,12 @@ const NumericKeypad = ({
     lg: "h-20 w-20 text-3xl",
   }[size];
   
-  // Get the correct delete icon - using ArrowLeft instead of Backspace
+  // Get the correct delete icon - using ArrowLeft for backspace
   const DeleteIconComponent = deleteIcon === "backspace" ? ArrowLeft : Delete;
   
   return (
     <div className={cn("numeric-keypad w-full max-w-xs mx-auto", className)}>
-      <div className="grid grid-cols-3 gap-x-10 gap-y-6">
+      <div className="grid grid-cols-3 gap-x-6 md:gap-x-10 gap-y-6">
         {/* First row */}
         <KeypadButton size={size} onClick={() => handleKeyPress('1')}>1</KeypadButton>
         <KeypadButton size={size} onClick={() => handleKeyPress('2')}>2</KeypadButton>
@@ -97,22 +97,6 @@ const NumericKeypad = ({
           )} />
         </KeypadButton>
       </div>
-      
-      {onConfirm && (
-        <button 
-          onClick={onConfirm}
-          disabled={!onConfirm}
-          className={cn(
-            "w-full py-4 rounded-lg bg-primary text-white text-lg font-medium mt-6",
-            "disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200",
-            "flex items-center justify-center gap-1.5",
-            "hover:bg-primary/90 active:scale-[0.98]"
-          )}
-        >
-          {confirmButtonIcon}
-          {confirmButtonText}
-        </button>
-      )}
     </div>
   );
 };
@@ -137,8 +121,9 @@ const KeypadButton = ({ onClick, children, variant = 'default', size = "md" }: K
       type="button"
       onClick={onClick}
       className={cn(
-        "font-medium flex items-center justify-center",
-        "transition-all duration-200 active:scale-95",
+        "font-medium flex items-center justify-center rounded-full",
+        "transition-all duration-200 active:scale-95 bg-[#1A1F2C]/80 hover:bg-[#1A1F2C]",
+        "border border-white/5 shadow-lg",
         sizeClasses,
         variant === 'secondary' 
           ? "text-gray-400" 
