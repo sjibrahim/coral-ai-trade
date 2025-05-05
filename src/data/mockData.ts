@@ -1,4 +1,3 @@
-
 export const mockCryptoCurrencies = [
   {
     id: 'bitcoin',
@@ -151,17 +150,20 @@ export const mockTransactions = [
 ];
 
 export const mockPriceChartData = [
-  { time: '04:56', price: 94560 },
-  { time: '05:00', price: 94520 },
-  { time: '05:04', price: 94450 },
-  { time: '05:08', price: 94200 },
-  { time: '05:12', price: 94160 },
-  { time: '05:16', price: 94240 },
-  { time: '05:20', price: 94280 },
-  { time: '05:24', price: 94220 },
-  { time: '05:28', price: 94300 },
-  { time: '05:32', price: 94240 },
-  { time: '05:36', price: 94212 }
+  { time: '06:40', price: 94500 },
+  { time: '06:43', price: 94450 },
+  { time: '06:46', price: 94300 },
+  { time: '06:49', price: 94600 },
+  { time: '06:52', price: 94400 },
+  { time: '06:55', price: 94350 },
+  { time: '06:58', price: 94200 },
+  { time: '07:01', price: 94100 },
+  { time: '07:04', price: 93800 },
+  { time: '07:07', price: 94000 },
+  { time: '07:10', price: 94100 },
+  { time: '07:13', price: 94000 },
+  { time: '07:16', price: 93904 },
+  { time: '07:19', price: 93904 }
 ];
 
 export const mockReferralData = {
