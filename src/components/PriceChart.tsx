@@ -47,6 +47,9 @@ const PriceChart = ({ data: initialData, isPositive }: PriceChartProps) => {
 
   // Current price (latest data point)
   const currentPrice = data[data.length - 1]?.price;
+  
+  // Format price for display
+  const formattedPrice = typeof currentPrice === 'number' ? `$${currentPrice.toFixed(2)}` : '$0.00';
 
   return (
     <div className="space-y-4">
@@ -108,7 +111,7 @@ const PriceChart = ({ data: initialData, isPositive }: PriceChartProps) => {
               stroke="#4b5563" 
               strokeDasharray="3 3" 
               label={{ 
-                value: `$${typeof currentPrice === 'number' ? currentPrice.toFixed(2) : '0.00'}`,
+                value: formattedPrice,
                 fill: '#a0aec0',
                 position: 'right'
               }} 
