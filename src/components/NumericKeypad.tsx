@@ -60,17 +60,17 @@ const NumericKeypad = ({
 
   // Size classes for buttons
   const sizeClasses = {
-    sm: "h-12 w-12 text-base",
-    md: "h-14 w-14 text-lg",
-    lg: "h-16 w-16 text-2xl",
+    sm: "h-14 w-14 text-base",
+    md: "h-16 w-16 text-lg",
+    lg: "h-20 w-20 text-3xl",
   }[size];
   
   // Get the correct delete icon - using ArrowLeft instead of Backspace
   const DeleteIconComponent = deleteIcon === "backspace" ? ArrowLeft : Delete;
   
   return (
-    <div className={cn("numeric-keypad", className)}>
-      <div className="grid grid-cols-3 gap-x-6 gap-y-6">
+    <div className={cn("numeric-keypad w-full max-w-xs mx-auto", className)}>
+      <div className="grid grid-cols-3 gap-x-10 gap-y-6">
         {/* First row */}
         <KeypadButton size={size} onClick={() => handleKeyPress('1')}>1</KeypadButton>
         <KeypadButton size={size} onClick={() => handleKeyPress('2')}>2</KeypadButton>
@@ -88,7 +88,7 @@ const NumericKeypad = ({
         
         {/* Fourth row */}
         <KeypadButton size={size} variant="secondary" onClick={() => handleKeyPress('clear')}>
-          <span className="text-sm">{clearText}</span>
+          <span className="text-lg">{clearText}</span>
         </KeypadButton>
         <KeypadButton size={size} onClick={() => handleKeyPress('0')}>0</KeypadButton>
         <KeypadButton size={size} variant="secondary" onClick={() => handleKeyPress('delete')}>
@@ -103,7 +103,7 @@ const NumericKeypad = ({
           onClick={onConfirm}
           disabled={!onConfirm}
           className={cn(
-            "w-full py-3.5 rounded-xl bg-primary text-white text-base font-medium mt-6",
+            "w-full py-4 rounded-lg bg-primary text-white text-lg font-medium mt-6",
             "disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200",
             "flex items-center justify-center gap-1.5",
             "hover:bg-primary/90 active:scale-[0.98]"
@@ -127,9 +127,9 @@ interface KeypadButtonProps {
 const KeypadButton = ({ onClick, children, variant = 'default', size = "md" }: KeypadButtonProps) => {
   // Size classes
   const sizeClasses = {
-    sm: "h-12 w-12 text-base",
-    md: "h-14 w-14 text-lg",
-    lg: "h-16 w-16 text-2xl",
+    sm: "h-14 w-14 text-xl",
+    md: "h-16 w-16 text-2xl",
+    lg: "h-20 w-20 text-3xl",
   }[size];
 
   return (
@@ -137,12 +137,12 @@ const KeypadButton = ({ onClick, children, variant = 'default', size = "md" }: K
       type="button"
       onClick={onClick}
       className={cn(
-        "rounded-full font-medium flex items-center justify-center",
+        "font-medium flex items-center justify-center",
         "transition-all duration-200 active:scale-95",
         sizeClasses,
         variant === 'secondary' 
-          ? "bg-transparent text-gray-400" 
-          : "bg-transparent text-white"
+          ? "text-gray-400" 
+          : "text-white"
       )}
     >
       {children}
