@@ -30,18 +30,21 @@ const BalanceSummary = ({
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-lg text-muted-foreground">TOTAL BALANCE</h2>
-        <button onClick={toggleBalanceVisibility} className="p-1">
+        <button 
+          onClick={toggleBalanceVisibility} 
+          className="p-1 rounded-full hover:bg-white/10 transition-colors"
+        >
           {hideBalance ? <EyeOff size={20} /> : <Eye size={20} />}
         </button>
       </div>
       
       <div className="flex items-center">
         <span className="text-2xl">₹</span>
-        <span className="text-4xl font-semibold ml-2">{displayAmount(totalBalance)}</span>
+        <span className="text-4xl font-semibold ml-2 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">{displayAmount(totalBalance)}</span>
       </div>
       
       <div className="grid grid-cols-3 gap-4">
-        <div className="text-center">
+        <div className="text-center glass-card p-3 rounded-xl backdrop-blur-sm animate-fade-in">
           <p className={cn(
             "text-xl font-medium",
             totalDeposit < 0 ? "text-market-decrease" : ""
@@ -51,14 +54,14 @@ const BalanceSummary = ({
           <p className="text-sm text-muted-foreground mt-1">Total Deposit</p>
         </div>
         
-        <div className="text-center">
+        <div className="text-center glass-card p-3 rounded-xl backdrop-blur-sm animate-fade-in" style={{animationDelay: "50ms"}}>
           <p className="text-xl font-medium">
             ₹ {displayAmount(totalWithdrawal)}
           </p>
           <p className="text-sm text-muted-foreground mt-1">Total Withdrawal</p>
         </div>
         
-        <div className="text-center">
+        <div className="text-center glass-card p-3 rounded-xl backdrop-blur-sm animate-fade-in" style={{animationDelay: "100ms"}}>
           <p className="text-xl font-medium">
             ₹ {displayAmount(availableBalance)}
           </p>

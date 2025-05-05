@@ -1,7 +1,7 @@
 
 import { ReactNode } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, ChevronLeft, Bell } from 'lucide-react';
 import { useState } from 'react';
 import MobileNavbar from './MobileNavbar';
 import SideMenu from './SideMenu';
@@ -39,22 +39,33 @@ const MobileLayout = ({
         <header className="sticky top-0 z-20 px-4 py-4 flex items-center justify-between bg-background/80 backdrop-blur-md border-b border-border/40">
           <div className="flex items-center gap-2">
             {showBackButton ? (
-              <button onClick={goBack} className="p-2 rounded-full hover:bg-accent/50 transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                </svg>
+              <button 
+                onClick={goBack} 
+                className="p-2 rounded-full hover:bg-accent/50 transition-colors flex items-center justify-center"
+              >
+                <ChevronLeft className="h-6 w-6 text-primary" />
               </button>
             ) : (
-              <button onClick={toggleMenu} className="p-2 rounded-full hover:bg-accent/50 transition-colors">
+              <button 
+                onClick={toggleMenu} 
+                className="p-2 rounded-full hover:bg-accent/50 transition-colors flex items-center justify-center"
+              >
                 {menuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
               </button>
             )}
-            {title && <h1 className="text-xl font-semibold">{title}</h1>}
+            {title && (
+              <h1 className="text-xl font-semibold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">{title}</h1>
+            )}
           </div>
-          {rightActions && (
+          {rightActions ? (
             <div className="flex items-center gap-2">
               {rightActions}
             </div>
+          ) : (
+            <button className="p-2 rounded-full hover:bg-accent/50 transition-colors flex items-center justify-center relative">
+              <Bell className="h-6 w-6" />
+              <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+            </button>
           )}
         </header>
       )}

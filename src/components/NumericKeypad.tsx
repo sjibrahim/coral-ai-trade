@@ -1,6 +1,7 @@
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { Delete, X } from "lucide-react";
 
 interface NumericKeypadProps {
   value: string;
@@ -47,28 +48,28 @@ const NumericKeypad = ({
   
   return (
     <div className={cn("numeric-keypad space-y-4", className)}>
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-3 gap-4 animate-fade-in">
         <KeypadButton onClick={() => handleKeyPress('1')}>1</KeypadButton>
         <KeypadButton onClick={() => handleKeyPress('2')}>2</KeypadButton>
         <KeypadButton onClick={() => handleKeyPress('3')}>3</KeypadButton>
       </div>
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-3 gap-4 animate-fade-in" style={{ animationDelay: "50ms" }}>
         <KeypadButton onClick={() => handleKeyPress('4')}>4</KeypadButton>
         <KeypadButton onClick={() => handleKeyPress('5')}>5</KeypadButton>
         <KeypadButton onClick={() => handleKeyPress('6')}>6</KeypadButton>
       </div>
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-3 gap-4 animate-fade-in" style={{ animationDelay: "100ms" }}>
         <KeypadButton onClick={() => handleKeyPress('7')}>7</KeypadButton>
         <KeypadButton onClick={() => handleKeyPress('8')}>8</KeypadButton>
         <KeypadButton onClick={() => handleKeyPress('9')}>9</KeypadButton>
       </div>
-      <div className="grid grid-cols-3 gap-4">
-        <KeypadButton variant="secondary" onClick={() => handleKeyPress('clear')}>Clear</KeypadButton>
+      <div className="grid grid-cols-3 gap-4 animate-fade-in" style={{ animationDelay: "150ms" }}>
+        <KeypadButton variant="secondary" onClick={() => handleKeyPress('clear')}>
+          <X className="h-5 w-5" />
+        </KeypadButton>
         <KeypadButton onClick={() => handleKeyPress('0')}>0</KeypadButton>
         <KeypadButton variant="secondary" onClick={() => handleKeyPress('delete')}>
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />
-          </svg>
+          <Delete className="h-5 w-5" />
         </KeypadButton>
       </div>
     </div>
@@ -87,7 +88,7 @@ const KeypadButton = ({ onClick, children, variant = 'default' }: KeypadButtonPr
       type="button"
       onClick={onClick}
       variant={variant}
-      className="h-14 rounded-full text-lg font-medium flex items-center justify-center"
+      className="h-14 rounded-full text-lg font-medium flex items-center justify-center animate-pulse-glow"
     >
       {children}
     </Button>
