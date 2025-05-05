@@ -4,7 +4,7 @@ import {
   AreaChart, Area, LineChart, Line, XAxis, YAxis, CartesianGrid, 
   Tooltip, ResponsiveContainer, Bar, BarChart, ComposedChart
 } from 'recharts';
-import { ArrowUp, ArrowDown } from 'lucide-react';
+import { ArrowUp, ArrowDown, Maximize, Minimize } from 'lucide-react';
 
 interface PriceChartProps {
   data: {
@@ -24,6 +24,8 @@ interface PriceChartProps {
   areaChart?: boolean;
   showVolume?: boolean;
   enhancedTooltip?: boolean;
+  onToggleFullscreen?: () => void;
+  isFullscreen?: boolean;
 }
 
 const calculatePercentageChange = (currentPrice: number, previousPrice: number) => {
@@ -48,6 +50,8 @@ const PriceChart = ({
   areaChart = false,
   showVolume = false,
   enhancedTooltip = false,
+  onToggleFullscreen,
+  isFullscreen = false,
 }: PriceChartProps) => {
   const [selectedTimeframe, setSelectedTimeframe] = useState(timeframe);
   const [isIncreasing, setIsIncreasing] = useState<boolean | null>(null);
@@ -301,33 +305,33 @@ const PriceChart = ({
   };
 
   return (
-    <div className="w-full">
-      {/* Price Statistics */}
-      {currentPrice && (
-        <div className="flex justify-between items-baseline mb-2">
-          <div>
-            <h2 className="text-2xl font-bold">
-              {typeof currentPrice === 'number' ? formatPrice(currentPrice) : currentPrice}
-            </h2>
-            {previousPrice && (
-              <div className={`flex items-center ${isIncreasing ? 'text-market-increase' : 'text-market-decrease'}`}>
-                <span className="text-sm mr-1">
-                  {isIncreasing ? (
-                    <ArrowUp className="h-3 w-3 inline" />
-                  ) : (
-                    <ArrowDown className="h-3 w-3 inline" />
-                  )}
-                </span>
-                <span className="text-xs">
-                  {calculatePercentageChange(
-                    typeof currentPrice === 'number' ? currentPrice : 0,
-                    typeof previousPrice === 'number' ? previousPrice : 0
-                  )}%
-                </span>
-              </div>
-            )}
-          </div>
-          
+    <div className={`w-full ${isFullscreen ? 'fullscreen-chart' : ''}`}>
+      {/* Price Statistics with Fullscreen Toggle */}
+      <div className="flex justify-between items-baseline mb-2">
+        <div>
+          <h2 className="text-2xl font-bold">
+            {typeof currentPrice === 'number' ? formatPrice(currentPrice) : currentPrice}
+          </h2>
+          {previousPrice && (
+            <div className={`flex items-center ${isIncreasing ? 'text-market-increase' : 'text-market-decrease'}`}>
+              <span className="text-sm mr-1">
+                {isIncreasing ? (
+                  <ArrowUp className="h-3 w-3 inline" />
+                ) : (
+                  <ArrowDown className="h-3 w-3 inline" />
+                )}
+              </span>
+              <span className="text-xs">
+                {calculatePercentageChange(
+                  typeof currentPrice === 'number' ? currentPrice : 0,
+                  typeof previousPrice === 'number' ? previousPrice : 0
+                )}%
+              </span>
+            </div>
+          )}
+        </div>
+        
+        <div className="flex items-center gap-2">
           {/* Timeframe controls */}
           {showControls && (
             <div className="flex space-x-1.5 text-xs">
@@ -346,11 +350,26 @@ const PriceChart = ({
               ))}
             </div>
           )}
+          
+          {/* Fullscreen toggle button */}
+          {onToggleFullscreen && (
+            <button 
+              onClick={onToggleFullscreen}
+              className="ml-2 p-1 rounded-full bg-accent hover:bg-accent/80 text-accent-foreground"
+              aria-label={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
+            >
+              {isFullscreen ? (
+                <Minimize className="h-4 w-4" />
+              ) : (
+                <Maximize className="h-4 w-4" />
+              )}
+            </button>
+          )}
         </div>
-      )}
+      </div>
 
       {/* Chart */}
-      <div style={{ height, width: '100%' }}>
+      <div style={{ height: isFullscreen ? '70vh' : height, width: '100%' }}>
         <ResponsiveContainer width="100%" height="100%">
           {renderChart()}
         </ResponsiveContainer>

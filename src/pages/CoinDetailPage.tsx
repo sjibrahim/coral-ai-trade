@@ -19,6 +19,7 @@ const CoinDetailPage = () => {
   const [tradeAmount, setTradeAmount] = useState('1000');
   const [direction, setDirection] = useState('Call'); // 'Call' or 'Put'
   const [chartData, setChartData] = useState(mockPriceChartData);
+  const [isChartFullscreen, setIsChartFullscreen] = useState(false);
   
   const crypto = mockCryptoCurrencies[0]; // Using the first crypto from the list for demo
   
@@ -82,172 +83,217 @@ const CoinDetailPage = () => {
     setIsSellModalOpen(false);
   };
   
-  return (
-    <MobileLayout showBackButton title={crypto.name} noScroll={false}>
-      <div className="flex flex-col h-full bg-[#0A0B14] pb-24">
-        <div className="p-4">
-          {/* Coin Header Info */}
-          <div className="flex justify-between items-start mb-6">
-            <div className="flex items-center">
-              <div className="bg-[#14151F]/70 backdrop-blur-sm rounded-full p-2 mr-3">
-                <img 
-                  src={crypto.logo} 
-                  alt={crypto.symbol}
-                  className="w-10 h-10"
-                />
-              </div>
-              <div className="text-left">
-                <h2 className="text-xl font-bold text-gray-100">{crypto.name}</h2>
-                <p className="text-sm text-gray-400">{crypto.symbol}</p>
-              </div>
-            </div>
-            <div className="text-right">
-              <div className="text-xl font-bold text-gray-100">${livePrice.toLocaleString(undefined, { maximumFractionDigits: 2 })}</div>
-              <div className={`text-sm flex items-center justify-end ${priceChange > 0 ? 'text-market-increase' : 'text-market-decrease'}`}>
-                {priceChange > 0 ? (
-                  <ArrowUp className="h-3 w-3 mr-1" />
-                ) : (
-                  <ArrowDown className="h-3 w-3 mr-1" />
-                )}
-                {Math.abs(priceChange).toFixed(4)}%
-              </div>
-            </div>
-          </div>
-        </div>
+  const toggleFullscreen = () => {
+    setIsChartFullscreen(!isChartFullscreen);
+  };
 
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col">
-          {/* Tabs */}
-          <TabsList className="bg-[#14151F] mx-4 grid grid-cols-3 mb-4 rounded-xl">
-            <TabsTrigger value="chart" className="rounded-lg text-gray-100 data-[state=active]:bg-[#222430] data-[state=active]:text-blue-400">Chart</TabsTrigger>
-            <TabsTrigger value="about" className="rounded-lg text-gray-100 data-[state=active]:bg-[#222430] data-[state=active]:text-blue-400">About</TabsTrigger>
-            <TabsTrigger value="trade" className="rounded-lg text-gray-100 data-[state=active]:bg-[#222430] data-[state=active]:text-blue-400">Trade</TabsTrigger>
-          </TabsList>
-          
-          <div className="flex-1 overflow-y-auto px-4 styled-scrollbar">
-            {/* Tab Content */}
-            <TabsContent value="chart" className="space-y-4 mt-0 flex-1">
-              <Card className="bg-[#14151F] border-[#222] text-gray-100">
-                <CardContent className="pt-6">
-                  <PriceChart 
-                    data={transformedChartData} 
-                    currentPrice={livePrice}
-                    previousPrice={livePrice - (livePrice * priceChange / 100)}
-                    height={220}
-                    timeframe={selectedTimeframe}
-                    showControls={false}
-                    areaChart={true}
-                    showVolume={true}
-                    showGridLines={true}
-                    enhancedTooltip={true}
+  // Handle escape key to exit fullscreen
+  useEffect(() => {
+    const handleEscKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isChartFullscreen) {
+        setIsChartFullscreen(false);
+      }
+    };
+
+    window.addEventListener('keydown', handleEscKey);
+    return () => window.removeEventListener('keydown', handleEscKey);
+  }, [isChartFullscreen]);
+  
+  return (
+    <MobileLayout showBackButton title={crypto.name} noScroll={isChartFullscreen}>
+      <div className={`flex flex-col h-full bg-[#0A0B14] ${isChartFullscreen ? 'fullscreen-container' : 'pb-24'}`}>
+        {/* Hide header info in fullscreen mode */}
+        {!isChartFullscreen && (
+          <div className="p-4">
+            {/* Coin Header Info */}
+            <div className="flex justify-between items-start mb-6">
+              <div className="flex items-center">
+                <div className="bg-[#14151F]/70 backdrop-blur-sm rounded-full p-2 mr-3">
+                  <img 
+                    src={crypto.logo} 
+                    alt={crypto.symbol}
+                    className="w-10 h-10"
                   />
-                  
-                  <div className="flex space-x-2 mt-4 justify-center">
-                    {['1h', '24h', '7d', '30d'].map(tf => (
-                      <button
-                        key={tf}
-                        onClick={() => setSelectedTimeframe(tf)}
-                        className={`px-4 py-1.5 rounded-lg text-sm ${
-                          selectedTimeframe === tf
-                            ? 'bg-blue-600 text-white'
-                            : 'bg-[#222430] text-gray-300'
-                        }`}
-                      >
-                        {tf}
-                      </button>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-              
-              {/* Market Stats */}
-              <Card className="bg-[#14151F] border-[#222] text-gray-100">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-lg">Market Stats</CardTitle>
-                </CardHeader>
-                <CardContent className="py-0">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <p className="text-sm text-gray-400">Market Cap</p>
-                      <p className="font-medium">${(livePrice * 19000000).toLocaleString(undefined, { maximumFractionDigits: 0 })}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-400">24h Volume</p>
-                      <p className="font-medium">${(livePrice * 800000).toLocaleString(undefined, { maximumFractionDigits: 0 })}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-400">Circulating Supply</p>
-                      <p className="font-medium">19,000,000</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-400">Max Supply</p>
-                      <p className="font-medium">21,000,000</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-              
-              {/* Price History */}
-              <Card className="bg-[#14151F] border-[#222] text-gray-100">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-lg">Price History</CardTitle>
-                </CardHeader>
-                <CardContent className="py-0">
-                  <div className="grid grid-cols-3 gap-4">
-                    <div>
-                      <p className="text-sm text-gray-400">1h</p>
-                      <p className={priceChange > 0 ? 'text-market-increase' : 'text-market-decrease'}>
-                        {priceChange > 0 ? '+' : ''}{(priceChange * 0.1).toFixed(2)}%
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-400">24h</p>
-                      <p className={priceChange > 0 ? 'text-market-increase' : 'text-market-decrease'}>
-                        {priceChange > 0 ? '+' : ''}{priceChange.toFixed(2)}%
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-400">7d</p>
-                      <p className={priceChange > 0 ? 'text-market-increase' : 'text-market-decrease'}>
-                        {priceChange > 0 ? '+' : ''}{(priceChange * 2.5).toFixed(2)}%
-                      </p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-            
-            {/* About Tab */}
-            <TabsContent value="about">
-              <Card className="bg-[#14151F] border-[#222] text-gray-100">
-                <CardContent className="pt-6">
-                  <p className="mb-4">
-                    {crypto.name} ({crypto.symbol}) is a digital currency that enables instant payments to anyone, anywhere in the world.
-                  </p>
-                  <p>
-                    {crypto.name} uses peer-to-peer technology to operate with no central authority: managing transactions and issuing money are carried out collectively by the network.
-                  </p>
-                </CardContent>
-              </Card>
-            </TabsContent>
-            
-            {/* Trade Tab */}
-            <TabsContent value="trade">
-              <Card className="bg-[#14151F] border-[#222] text-gray-100">
-                <CardContent className="pt-6 flex flex-col gap-4">
-                  <Button className="bg-market-increase hover:bg-market-increase/90" onClick={handleBuyClick}>
-                    Buy {crypto.symbol}
-                  </Button>
-                  <Button variant="outline" className="border-market-decrease text-market-decrease" onClick={handleSellClick}>
-                    Sell {crypto.symbol}
-                  </Button>
-                </CardContent>
-              </Card>
-            </TabsContent>
+                </div>
+                <div className="text-left">
+                  <h2 className="text-xl font-bold text-gray-100">{crypto.name}</h2>
+                  <p className="text-sm text-gray-400">{crypto.symbol}</p>
+                </div>
+              </div>
+              <div className="text-right">
+                <div className="text-xl font-bold text-gray-100">${livePrice.toLocaleString(undefined, { maximumFractionDigits: 2 })}</div>
+                <div className={`text-sm flex items-center justify-end ${priceChange > 0 ? 'text-market-increase' : 'text-market-decrease'}`}>
+                  {priceChange > 0 ? (
+                    <ArrowUp className="h-3 w-3 mr-1" />
+                  ) : (
+                    <ArrowDown className="h-3 w-3 mr-1" />
+                  )}
+                  {Math.abs(priceChange).toFixed(4)}%
+                </div>
+              </div>
+            </div>
           </div>
-        </Tabs>
+        )}
+
+        {/* Fullscreen Chart */}
+        {isChartFullscreen ? (
+          <div className="flex-1 flex flex-col p-4">
+            <Card className="bg-[#14151F] border-[#222] text-gray-100 flex-1">
+              <CardContent className="pt-6 flex flex-col h-full">
+                <PriceChart 
+                  data={transformedChartData} 
+                  currentPrice={livePrice}
+                  previousPrice={livePrice - (livePrice * priceChange / 100)}
+                  height="100%"
+                  timeframe={selectedTimeframe}
+                  showControls={true}
+                  areaChart={true}
+                  showVolume={true}
+                  showGridLines={true}
+                  enhancedTooltip={true}
+                  onToggleFullscreen={toggleFullscreen}
+                  isFullscreen={true}
+                />
+              </CardContent>
+            </Card>
+          </div>
+        ) : (
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col">
+            {/* Tabs */}
+            <TabsList className="bg-[#14151F] mx-4 grid grid-cols-3 mb-4 rounded-xl">
+              <TabsTrigger value="chart" className="rounded-lg text-gray-100 data-[state=active]:bg-[#222430] data-[state=active]:text-blue-400">Chart</TabsTrigger>
+              <TabsTrigger value="about" className="rounded-lg text-gray-100 data-[state=active]:bg-[#222430] data-[state=active]:text-blue-400">About</TabsTrigger>
+              <TabsTrigger value="trade" className="rounded-lg text-gray-100 data-[state=active]:bg-[#222430] data-[state=active]:text-blue-400">Trade</TabsTrigger>
+            </TabsList>
+            
+            <div className="flex-1 overflow-y-auto px-4 styled-scrollbar tabs-content-scrollable">
+              {/* Tab Content */}
+              <TabsContent value="chart" className="space-y-4 mt-0 flex-1">
+                <Card className="bg-[#14151F] border-[#222] text-gray-100">
+                  <CardContent className="pt-6">
+                    <PriceChart 
+                      data={transformedChartData} 
+                      currentPrice={livePrice}
+                      previousPrice={livePrice - (livePrice * priceChange / 100)}
+                      height={220}
+                      timeframe={selectedTimeframe}
+                      showControls={false}
+                      areaChart={true}
+                      showVolume={true}
+                      showGridLines={true}
+                      enhancedTooltip={true}
+                      onToggleFullscreen={toggleFullscreen}
+                      isFullscreen={false}
+                    />
+                    
+                    <div className="flex space-x-2 mt-4 justify-center">
+                      {['1h', '24h', '7d', '30d'].map(tf => (
+                        <button
+                          key={tf}
+                          onClick={() => setSelectedTimeframe(tf)}
+                          className={`px-4 py-1.5 rounded-lg text-sm ${
+                            selectedTimeframe === tf
+                              ? 'bg-blue-600 text-white'
+                              : 'bg-[#222430] text-gray-300'
+                          }`}
+                        >
+                          {tf}
+                        </button>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+                
+                {/* Market Stats */}
+                <Card className="bg-[#14151F] border-[#222] text-gray-100">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-lg">Market Stats</CardTitle>
+                  </CardHeader>
+                  <CardContent className="py-0">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <p className="text-sm text-gray-400">Market Cap</p>
+                        <p className="font-medium">${(livePrice * 19000000).toLocaleString(undefined, { maximumFractionDigits: 0 })}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-400">24h Volume</p>
+                        <p className="font-medium">${(livePrice * 800000).toLocaleString(undefined, { maximumFractionDigits: 0 })}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-400">Circulating Supply</p>
+                        <p className="font-medium">19,000,000</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-400">Max Supply</p>
+                        <p className="font-medium">21,000,000</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+                
+                {/* Price History */}
+                <Card className="bg-[#14151F] border-[#222] text-gray-100">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-lg">Price History</CardTitle>
+                  </CardHeader>
+                  <CardContent className="py-0">
+                    <div className="grid grid-cols-3 gap-4">
+                      <div>
+                        <p className="text-sm text-gray-400">1h</p>
+                        <p className={priceChange > 0 ? 'text-market-increase' : 'text-market-decrease'}>
+                          {priceChange > 0 ? '+' : ''}{(priceChange * 0.1).toFixed(2)}%
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-400">24h</p>
+                        <p className={priceChange > 0 ? 'text-market-increase' : 'text-market-decrease'}>
+                          {priceChange > 0 ? '+' : ''}{priceChange.toFixed(2)}%
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-400">7d</p>
+                        <p className={priceChange > 0 ? 'text-market-increase' : 'text-market-decrease'}>
+                          {priceChange > 0 ? '+' : ''}{(priceChange * 2.5).toFixed(2)}%
+                        </p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+              
+              {/* About Tab */}
+              <TabsContent value="about">
+                <Card className="bg-[#14151F] border-[#222] text-gray-100">
+                  <CardContent className="pt-6">
+                    <p className="mb-4">
+                      {crypto.name} ({crypto.symbol}) is a digital currency that enables instant payments to anyone, anywhere in the world.
+                    </p>
+                    <p>
+                      {crypto.name} uses peer-to-peer technology to operate with no central authority: managing transactions and issuing money are carried out collectively by the network.
+                    </p>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+              
+              {/* Trade Tab */}
+              <TabsContent value="trade">
+                <Card className="bg-[#14151F] border-[#222] text-gray-100">
+                  <CardContent className="pt-6 flex flex-col gap-4">
+                    <Button className="bg-market-increase hover:bg-market-increase/90" onClick={handleBuyClick}>
+                      Buy {crypto.symbol}
+                    </Button>
+                    <Button variant="outline" className="border-market-decrease text-market-decrease" onClick={handleSellClick}>
+                      Sell {crypto.symbol}
+                    </Button>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+            </div>
+          </Tabs>
+        )}
         
-        {/* Fixed Buy/Sell buttons at bottom */}
-        <div className="fixed bottom-0 left-0 right-0 p-4 pb-safe bg-[#0A0B14] border-t border-[#222] grid grid-cols-2 gap-3 z-10">
+        {/* Fixed Buy/Sell buttons at bottom - always visible, even in fullscreen */}
+        <div className={`fixed bottom-0 left-0 right-0 p-4 pb-safe bg-[#0A0B14] border-t border-[#222] grid grid-cols-2 gap-3 z-10 ${isChartFullscreen ? 'fullscreen-actions' : ''}`}>
           <Button 
             className="py-5 bg-market-increase hover:bg-market-increase/90 text-white font-semibold rounded-xl"
             onClick={handleBuyClick}
