@@ -11,8 +11,8 @@ const MobileNavbar = () => {
   };
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-20 bg-background/60 backdrop-blur-lg border-t border-border/40 px-2 rounded-t-xl">
-      <div className="flex justify-around items-center h-16 max-w-md mx-auto">
+    <nav className="fixed bottom-0 left-0 right-0 z-20 bg-background/90 backdrop-blur-lg border-t border-border/40 px-6 rounded-t-xl h-16">
+      <div className="flex justify-between items-center h-full max-w-md mx-auto">
         <NavItem 
           to="/home" 
           icon={<Home className="h-5 w-5" />} 
@@ -54,20 +54,20 @@ const NavItem = ({ to, icon, label, active }: NavItemProps) => {
     <Link 
       to={to} 
       className={cn(
-        "flex flex-col items-center justify-center w-full h-full transition-all",
-        active 
-          ? "text-primary scale-110" 
-          : "text-muted-foreground hover:text-foreground"
+        "flex flex-col items-center justify-center px-1 transition-all",
+        active ? "scale-110" : ""
       )}
     >
       <div className={cn(
-        "flex items-center justify-center p-1.5 rounded-full",
-        active && "bg-primary/10"
+        "flex items-center justify-center p-1.5 rounded-full transition-colors",
+        active 
+          ? "bg-primary/20 text-primary" 
+          : "text-muted-foreground hover:text-foreground"
       )}>
         {icon}
       </div>
       <span className="text-xs mt-0.5">{label}</span>
-      {active && <div className="w-1.5 h-1.5 rounded-full bg-primary mt-0.5 animate-pulse"></div>}
+      {active && <div className="w-1 h-1 rounded-full bg-primary mt-0.5"></div>}
     </Link>
   );
 };

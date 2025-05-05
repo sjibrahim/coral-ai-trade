@@ -51,19 +51,28 @@
     @apply border-border selection:bg-primary/10 selection:text-primary;
   }
   
+  html, body {
+    @apply overflow-auto h-full w-full m-0 p-0;
+    touch-action: manipulation;
+  }
+  
   body {
     @apply bg-background text-foreground antialiased;
     font-feature-settings: "ss01", "ss02", "cv01", "cv02", "cv03";
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cpath fill='%231d4ed8' fill-opacity='0.03' d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z'%3E%3C/path%3E%3C/svg%3E");
+    background-size: 200px;
   }
   
-  html {
-    @apply scroll-smooth;
+  /* Fix app container styles */
+  #root {
+    @apply max-w-md mx-auto h-[100svh] overflow-hidden relative;
+    max-height: 100%;
+    padding: 0;
   }
 
   /* Custom scrollbar */
   ::-webkit-scrollbar {
-    @apply w-2;
+    @apply w-1.5;
   }
 
   ::-webkit-scrollbar-track {
@@ -76,6 +85,12 @@
 
   ::-webkit-scrollbar-thumb:hover {
     @apply bg-muted-foreground;
+  }
+  
+  /* Prevent zoom on input focus on mobile */
+  input, select, textarea {
+    @apply text-base;
+    font-size: 16px !important;
   }
 }
 
@@ -98,7 +113,7 @@
 
   /* Updated button styles for NumericKeypad */
   .numeric-keypad button {
-    @apply rounded-full bg-secondary/60 backdrop-blur-sm hover:bg-accent transition-colors w-16 h-16 text-2xl font-medium flex items-center justify-center shadow-lg border border-border/30;
+    @apply rounded-full bg-secondary/60 backdrop-blur-sm hover:bg-accent transition-colors w-14 h-14 text-xl font-medium flex items-center justify-center shadow-lg border border-border/30;
   }
 
   .shimmer {
@@ -134,5 +149,21 @@
       opacity: 0.8;
       box-shadow: 0 0 15px rgba(59, 130, 246, 0.3);
     }
+  }
+  
+  .neo-gradient {
+    @apply bg-gradient-to-b from-white/5 via-white/2 to-white/1;
+  }
+  
+  .card-glass {
+    @apply bg-card/60 backdrop-blur-lg border border-white/5 shadow-xl;
+  }
+  
+  .text-gradient {
+    @apply bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent;
+  }
+  
+  .text-gradient-primary {
+    @apply bg-gradient-to-r from-primary via-blue-400 to-blue-300 bg-clip-text text-transparent;
   }
 }

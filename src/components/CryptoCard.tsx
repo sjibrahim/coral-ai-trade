@@ -19,25 +19,25 @@ const CryptoCard = ({ id, name, symbol, price, change, logo, animationDelay = 0 
 
   return (
     <Link to={`/coin/${id}`} style={{ animationDelay: `${animationDelay}ms` }} className="animate-fade-in">
-      <div className="flex items-center justify-between p-4 rounded-xl transition-all hover:bg-accent/30 border-b border-border/40">
+      <div className="flex items-center justify-between p-3.5 rounded-lg transition-all hover:bg-accent/30 border-b border-border/30">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-secondary/50 backdrop-blur-sm flex items-center justify-center shadow-md">
-            <img src={logo} alt={name} className="w-8 h-8" />
+          <div className="w-9 h-9 rounded-full bg-secondary/40 backdrop-blur-sm flex items-center justify-center shadow-md">
+            <img src={logo} alt={name} className="w-6 h-6" />
           </div>
           <div>
-            <h3 className="font-medium">{name}</h3>
-            <p className="text-sm text-muted-foreground">{symbol}</p>
+            <h3 className="font-medium text-sm">{name}</h3>
+            <p className="text-xs text-muted-foreground">{symbol}</p>
           </div>
         </div>
         <div className="text-right">
-          <p className="font-medium">${price.toLocaleString()}</p>
+          <p className="font-medium text-sm">${price.toLocaleString()}</p>
           <p className={cn(
-            "text-sm flex items-center justify-end gap-0.5",
+            "text-xs flex items-center justify-end gap-0.5",
             isPositiveChange ? "text-market-increase" : "text-market-decrease"
           )}>
             {isPositiveChange ? 
-              <TrendingUp className="w-3.5 h-3.5" /> : 
-              <TrendingDown className="w-3.5 h-3.5" />
+              <TrendingUp className="w-3 h-3" /> : 
+              <TrendingDown className="w-3 h-3" />
             }
             {changeText}
           </p>

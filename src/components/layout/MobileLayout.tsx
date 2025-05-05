@@ -33,28 +33,28 @@ const MobileLayout = ({
   const shouldShowNavbar = ['/home', '/market', '/team', '/profile', '/'].includes(location.pathname);
 
   return (
-    <div className="flex flex-col min-h-screen bg-background text-foreground overflow-hidden">
+    <div className="flex flex-col h-full w-full bg-background text-foreground">
       {/* Header */}
       {(title || showBackButton) && (
-        <header className="sticky top-0 z-20 px-4 py-4 flex items-center justify-between bg-background/80 backdrop-blur-md border-b border-border/40">
+        <header className="sticky top-0 z-20 px-4 py-3 flex items-center justify-between bg-background/80 backdrop-blur-md border-b border-border/40">
           <div className="flex items-center gap-2">
             {showBackButton ? (
               <button 
                 onClick={goBack} 
-                className="p-2 rounded-full hover:bg-accent/50 transition-colors flex items-center justify-center"
+                className="p-1.5 rounded-full hover:bg-accent/50 transition-colors flex items-center justify-center"
               >
-                <ChevronLeft className="h-6 w-6 text-primary" />
+                <ChevronLeft className="h-5 w-5 text-primary" />
               </button>
             ) : (
               <button 
                 onClick={toggleMenu} 
-                className="p-2 rounded-full hover:bg-accent/50 transition-colors flex items-center justify-center"
+                className="p-1.5 rounded-full hover:bg-accent/50 transition-colors flex items-center justify-center"
               >
-                {menuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+                {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
               </button>
             )}
             {title && (
-              <h1 className="text-xl font-semibold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">{title}</h1>
+              <h1 className="text-lg font-semibold text-gradient">{title}</h1>
             )}
           </div>
           {rightActions ? (
@@ -62,9 +62,9 @@ const MobileLayout = ({
               {rightActions}
             </div>
           ) : (
-            <button className="p-2 rounded-full hover:bg-accent/50 transition-colors flex items-center justify-center relative">
-              <Bell className="h-6 w-6" />
-              <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+            <button className="p-1.5 rounded-full hover:bg-accent/50 transition-colors flex items-center justify-center relative">
+              <Bell className="h-5 w-5" />
+              <span className="absolute top-0.5 right-0.5 w-1.5 h-1.5 bg-red-500 rounded-full"></span>
             </button>
           )}
         </header>
