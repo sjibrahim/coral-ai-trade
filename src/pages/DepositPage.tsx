@@ -3,9 +3,10 @@ import { useState } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
 import NumericKeypad from "@/components/NumericKeypad";
 import { cn } from "@/lib/utils";
-import { Bell, IndianRupee, Upload, Check } from "lucide-react";
+import { Bell, IndianRupee, Wallet, Upload, Check } from "lucide-react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 
 const DepositPage = () => {
   const [amount, setAmount] = useState("");
@@ -42,7 +43,7 @@ const DepositPage = () => {
       )}
       noScroll
     >
-      <div className="flex flex-col h-full bg-background p-4 pb-24">
+      <div className="flex flex-col h-full bg-background p-4 justify-between">
         
         {/* Top Section */}
         <div>
@@ -103,33 +104,18 @@ const DepositPage = () => {
           </div>
         </div>
         
-        {/* Center Section - Keypad */}
-        <div className="flex-1 flex items-center justify-center">
+        {/* Bottom Section */}
+        <div className="mt-auto w-full">
+          {/* Keypad */}
           <NumericKeypad 
             value={amount}
             onChange={setAmount}
+            onConfirm={isValidAmount ? handleConfirm : undefined}
+            confirmButtonText="CONFIRM"
+            confirmButtonIcon={<Upload className="h-4 w-4 mr-1" />}
             className="mx-auto"
-            fixedConfirmButton={true}
           />
         </div>
-      </div>
-      
-      {/* Fixed bottom button */}
-      <div className="fixed bottom-0 left-0 right-0 p-4 bg-background/95 backdrop-blur-md border-t border-border/20">
-        <button
-          onClick={isValidAmount ? handleConfirm : undefined}
-          disabled={!isValidAmount}
-          className={cn(
-            "w-full py-4 rounded-xl text-white text-base font-medium",
-            "disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200",
-            "flex items-center justify-center gap-1.5 shadow-lg",
-            "hover:bg-primary/90 active:scale-[0.98]",
-            isValidAmount ? "bg-primary" : "bg-primary/70"
-          )}
-        >
-          <Upload className="h-4 w-4 mr-1" />
-          CONFIRM
-        </button>
       </div>
       
       {/* Success Modal */}

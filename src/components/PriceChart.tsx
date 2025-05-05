@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { AreaChart, Area, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
+import { AreaChart, Area, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { ArrowUp, ArrowDown } from 'lucide-react';
 
 interface PriceChartProps {
@@ -24,7 +24,8 @@ const calculatePercentageChange = (currentPrice: number, previousPrice: number) 
 };
 
 const formatDate = (timestamp: string) => {
-  return timestamp; // Already formatted from the parent component
+  const date = new Date(timestamp);
+  return `${date.getHours()}:${date.getMinutes().toString().padStart(2, '0')}`;
 };
 
 const PriceChart = ({
@@ -64,6 +65,25 @@ const PriceChart = ({
     }
   };
 
+  const renderCustomizedDot = (props: any) => {
+    const { cx, cy, index } = props;
+    
+    // Only show dots at certain intervals or at the end
+    if (index === data.length - 1 || index % Math.ceil(data.length / 5) === 0) {
+      return (
+        <circle
+          cx={cx}
+          cy={cy}
+          r={3}
+          fill={isIncreasing ? "#22c55e" : "#ef4444"}
+          stroke={isIncreasing ? "#22c55e" : "#ef4444"}
+          strokeWidth={1}
+        />
+      );
+    }
+    return null;
+  };
+  
   const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
       const priceValue = payload[0].value;
@@ -72,10 +92,10 @@ const PriceChart = ({
         : priceValue;
       
       return (
-        <div className="custom-tooltip bg-[#1E2235]/90 backdrop-blur-sm border border-[#252A43]/70 p-2 rounded-md shadow-md">
-          <p className="text-xs font-medium text-white">{priceFormatted}</p>
+        <div className="custom-tooltip bg-background/80 backdrop-blur-sm border border-border p-2 rounded-md shadow-md">
+          <p className="text-xs font-medium">{priceFormatted}</p>
           {payload[0].payload.timestamp && (
-            <p className="text-xs text-gray-400">{payload[0].payload.timestamp}</p>
+            <p className="text-xs text-muted-foreground">{formatDate(payload[0].payload.timestamp)}</p>
           )}
         </div>
       );
@@ -84,16 +104,16 @@ const PriceChart = ({
   };
 
   return (
-    <div className="w-full h-full">
+    <div className="w-full">
       {/* Price Statistics */}
-      {currentPrice && showControls && (
+      {currentPrice && (
         <div className="flex justify-between items-baseline mb-2">
           <div>
-            <h2 className="text-2xl font-bold text-white">
+            <h2 className="text-2xl font-bold">
               {typeof currentPrice === 'number' ? formatPrice(currentPrice) : currentPrice}
             </h2>
             {previousPrice && (
-              <div className={`flex items-center ${isIncreasing ? 'text-green-400' : 'text-red-400'}`}>
+              <div className={`flex items-center ${isIncreasing ? 'text-market-increase' : 'text-market-decrease'}`}>
                 <span className="text-sm mr-1">
                   {isIncreasing ? (
                     <ArrowUp className="h-3 w-3 inline" />
@@ -120,8 +140,8 @@ const PriceChart = ({
                   onClick={() => handleTimeframeChange(tf)}
                   className={`px-2 py-1 rounded-md ${
                     selectedTimeframe === tf
-                      ? 'bg-[#252A43] text-white'
-                      : 'bg-[#151824] text-gray-400 hover:bg-[#1A1F2C]'
+                      ? 'bg-primary text-primary-foreground'
+                      : 'bg-accent text-accent-foreground hover:bg-accent/80'
                   }`}
                 >
                   {tf}
@@ -133,43 +153,18 @@ const PriceChart = ({
       )}
 
       {/* Chart */}
-      <div style={{ height: height, width: '100%' }} className="flex-1">
+      <div style={{ height, width: '100%' }}>
         <ResponsiveContainer width="100%" height="100%">
           {areaChart ? (
-            <AreaChart data={data} margin={{ top: 5, right: 5, bottom: 5, left: 5 }}>
-              {showGridLines && (
-                <CartesianGrid 
-                  strokeDasharray="3 3" 
-                  vertical={false} 
-                  stroke="#252A43" 
-                  opacity={0.5}
-                />
-              )}
+            <AreaChart data={data}>
+              {showGridLines && <CartesianGrid strokeDasharray="3 3" stroke="#333" />}
               <XAxis 
                 dataKey="timestamp" 
                 tick={false} 
-                axisLine={{ stroke: '#252A43' }} 
-                opacity={0.5}
+                axisLine={{ stroke: '#333' }} 
               />
-              <YAxis 
-                domain={['auto', 'auto']} 
-                tick={{ fontSize: 10, fill: '#666' }} 
-                axisLine={false}
-                tickLine={false}
-                dx={-5}
-              />
+              <YAxis domain={['auto', 'auto']} hide />
               {tooltipVisible && <Tooltip content={<CustomTooltip />} />}
-              
-              {/* Reference line at current price */}
-              {currentPrice && (
-                <ReferenceLine 
-                  y={currentPrice} 
-                  stroke={isIncreasing ? "#22c55e" : "#ef4444"} 
-                  strokeWidth={1} 
-                  strokeDasharray="3 3" 
-                />
-              )}
-              
               <defs>
                 <linearGradient id="colorGradient" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="5%" stopColor={isIncreasing ? "#22c55e" : "#ef4444"} stopOpacity={0.3} />
@@ -183,44 +178,19 @@ const PriceChart = ({
                 strokeWidth={1.5}
                 fillOpacity={1}
                 fill="url(#colorGradient)"
-                animationDuration={300}
+                activeDot={{ r: 4, fill: isIncreasing ? "#22c55e" : "#ef4444" }}
               />
             </AreaChart>
           ) : (
-            <LineChart data={data} margin={{ top: 5, right: 5, bottom: 5, left: 5 }}>
-              {showGridLines && (
-                <CartesianGrid 
-                  strokeDasharray="3 3" 
-                  vertical={false} 
-                  stroke="#252A43" 
-                  opacity={0.5}
-                />
-              )}
+            <LineChart data={data}>
+              {showGridLines && <CartesianGrid strokeDasharray="3 3" stroke="#333" />}
               <XAxis 
                 dataKey="timestamp" 
                 tick={false} 
-                axisLine={{ stroke: '#252A43' }} 
-                opacity={0.5}
+                axisLine={{ stroke: '#333' }} 
               />
-              <YAxis 
-                domain={['auto', 'auto']} 
-                tick={{ fontSize: 10, fill: '#666' }} 
-                axisLine={false}
-                tickLine={false}
-                dx={-5}
-              />
+              <YAxis domain={['auto', 'auto']} hide />
               {tooltipVisible && <Tooltip content={<CustomTooltip />} />}
-              
-              {/* Reference line at current price */}
-              {currentPrice && (
-                <ReferenceLine 
-                  y={currentPrice} 
-                  stroke={isIncreasing ? "#22c55e" : "#ef4444"} 
-                  strokeWidth={1} 
-                  strokeDasharray="3 3" 
-                />
-              )}
-              
               <Line
                 type="monotone"
                 dataKey="price"
@@ -228,8 +198,8 @@ const PriceChart = ({
                 strokeWidth={1.5}
                 dot={false}
                 activeDot={{ r: 4, fill: isIncreasing ? "#22c55e" : "#ef4444" }}
-                animationDuration={300}
-                animationEasing="ease-in-out"
+                animationDuration={500}
+                animationEasing="linear"
                 connectNulls
               />
             </LineChart>
