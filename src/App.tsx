@@ -6,21 +6,18 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter } from "react-router-dom";
 import AppRoutes from "./routes";
 
-// Create a new QueryClient outside of the component
 const queryClient = new QueryClient();
 
-const App = () => {
-  return (
-    <QueryClientProvider client={queryClient}>
+const App = () => (
+  <QueryClientProvider client={queryClient}>
+    <TooltipProvider>
+      <Toaster />
+      <Sonner />
       <BrowserRouter>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <AppRoutes />
-        </TooltipProvider>
+        <AppRoutes />
       </BrowserRouter>
-    </QueryClientProvider>
-  );
-};
+    </TooltipProvider>
+  </QueryClientProvider>
+);
 
 export default App;

@@ -1,7 +1,6 @@
 
 import { cn } from "@/lib/utils";
-import { Delete, ArrowLeft } from "lucide-react";
-import React from "react";
+import { X, Delete } from "lucide-react";
 
 interface NumericKeypadProps {
   value: string;
@@ -10,11 +9,6 @@ interface NumericKeypadProps {
   className?: string;
   onConfirm?: () => void;
   confirmButtonText?: string;
-  confirmButtonIcon?: React.ReactNode;
-  size?: "sm" | "md" | "lg";
-  deleteIcon?: "delete" | "backspace";
-  clearText?: string;
-  confirmDisabled?: boolean;
 }
 
 const NumericKeypad = ({ 
@@ -23,12 +17,7 @@ const NumericKeypad = ({
   maxLength = 10,
   className,
   onConfirm,
-  confirmButtonText = "CONFIRM",
-  confirmButtonIcon,
-  size = "md",
-  deleteIcon = "delete",
-  clearText = "clr",
-  confirmDisabled = false,
+  confirmButtonText = "CONFIRM"
 }: NumericKeypadProps) => {
   
   const handleKeyPress = (key: string) => {
@@ -59,60 +48,39 @@ const NumericKeypad = ({
     
     onChange(value + key);
   };
-
-  // Size classes for buttons - darker styling to match the reference design
-  const sizeClasses = {
-    sm: "h-12 w-12 text-lg",
-    md: "h-16 w-16 text-2xl",
-    lg: "h-[76px] w-[76px] text-3xl",
-  }[size];
-  
-  // Get the correct delete icon - using ArrowLeft for backspace
-  const DeleteIconComponent = deleteIcon === "backspace" ? ArrowLeft : Delete;
   
   return (
     <div className={cn("numeric-keypad w-full", className)}>
-      <div className="grid grid-cols-3 gap-2 sm:gap-4 ml-[30px] mb-[10px]">
-        {/* First row */}
-        <KeypadButton size={size} onClick={() => handleKeyPress('1')}>1</KeypadButton>
-        <KeypadButton size={size} onClick={() => handleKeyPress('2')}>2</KeypadButton>
-        <KeypadButton size={size} onClick={() => handleKeyPress('3')}>3</KeypadButton>
-        
-        {/* Second row */}
-        <KeypadButton size={size} onClick={() => handleKeyPress('4')}>4</KeypadButton>
-        <KeypadButton size={size} onClick={() => handleKeyPress('5')}>5</KeypadButton>
-        <KeypadButton size={size} onClick={() => handleKeyPress('6')}>6</KeypadButton>
-        
-        {/* Third row */}
-        <KeypadButton size={size} onClick={() => handleKeyPress('7')}>7</KeypadButton>
-        <KeypadButton size={size} onClick={() => handleKeyPress('8')}>8</KeypadButton>
-        <KeypadButton size={size} onClick={() => handleKeyPress('9')}>9</KeypadButton>
-        
-        {/* Fourth row */}
-        <KeypadButton size={size} variant="secondary" onClick={() => handleKeyPress('clear')}>
-          <span className="text-sm">{clearText}</span>
+      <div className="grid grid-cols-3 gap-4">
+        <KeypadButton onClick={() => handleKeyPress('1')}>1</KeypadButton>
+        <KeypadButton onClick={() => handleKeyPress('2')}>2</KeypadButton>
+        <KeypadButton onClick={() => handleKeyPress('3')}>3</KeypadButton>
+      </div>
+      <div className="grid grid-cols-3 gap-4 mt-4">
+        <KeypadButton onClick={() => handleKeyPress('4')}>4</KeypadButton>
+        <KeypadButton onClick={() => handleKeyPress('5')}>5</KeypadButton>
+        <KeypadButton onClick={() => handleKeyPress('6')}>6</KeypadButton>
+      </div>
+      <div className="grid grid-cols-3 gap-4 mt-4">
+        <KeypadButton onClick={() => handleKeyPress('7')}>7</KeypadButton>
+        <KeypadButton onClick={() => handleKeyPress('8')}>8</KeypadButton>
+        <KeypadButton onClick={() => handleKeyPress('9')}>9</KeypadButton>
+      </div>
+      <div className="grid grid-cols-3 gap-4 mt-4">
+        <KeypadButton variant="secondary" onClick={() => handleKeyPress('clear')}>
+          <span className="text-sm">clr</span>
         </KeypadButton>
-        <KeypadButton size={size} onClick={() => handleKeyPress('0')}>0</KeypadButton>
-        <KeypadButton size={size} variant="secondary" onClick={() => handleKeyPress('delete')}>
-          <DeleteIconComponent className={cn(
-            size === "lg" ? "h-6 w-6" : size === "md" ? "h-5 w-5" : "h-4 w-4"
-          )} />
+        <KeypadButton onClick={() => handleKeyPress('0')}>0</KeypadButton>
+        <KeypadButton variant="secondary" onClick={() => handleKeyPress('delete')}>
+          <Delete className="h-5 w-5" />
         </KeypadButton>
       </div>
       
-      {/* Confirm Button - shown only if onConfirm is provided */}
       {onConfirm && (
         <button 
           onClick={onConfirm}
-          disabled={confirmDisabled}
-          className={cn(
-            "force-full-blue py-4 rounded-lg text-white text-lg font-medium transition-all cursor-not-allowed",
-            confirmDisabled 
-              ? "bg-blue-600/50 cursor-not-allowed" 
-              : "bg-blue-600 hover:bg-blue-700 active:scale-[0.98]"
-          )}
+          className="w-full py-4 rounded-xl bg-blue-600 text-white text-base font-medium mt-6"
         >
-          {confirmButtonIcon && <span className="mr-2">{confirmButtonIcon}</span>}
           {confirmButtonText}
         </button>
       )}
@@ -124,30 +92,16 @@ interface KeypadButtonProps {
   onClick: () => void;
   children: React.ReactNode;
   variant?: 'default' | 'secondary';
-  size?: "sm" | "md" | "lg";
 }
 
-const KeypadButton = ({ onClick, children, variant = 'default', size = "md" }: KeypadButtonProps) => {
-  // Size classes
-  const sizeClasses = {
-    sm: "h-12 w-12 text-lg",
-    md: "h-16 w-16 text-2xl",
-    lg: "h-[76px] w-[76px] text-2xl font-medium",
-  }[size];
-
+const KeypadButton = ({ onClick, children, variant = 'default' }: KeypadButtonProps) => {
   return (
     <button
       type="button"
       onClick={onClick}
       className={cn(
-        "flex items-center justify-center rounded-full",
-        "transition-all duration-200 active:scale-95",
-        "bg-[#1a1e2a] hover:bg-[#232736]", // Darker button color to match the design
-        "border border-white/5",
-        sizeClasses,
-        variant === 'secondary' 
-          ? "text-gray-300" 
-          : "text-white"
+        "h-14 w-full rounded-lg text-xl font-medium flex items-center justify-center",
+        variant === 'secondary' ? "text-blue-300" : "text-white"
       )}
     >
       {children}

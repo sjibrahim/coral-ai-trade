@@ -181,7 +181,3 @@
     @apply bg-gradient-to-r from-primary via-blue-400 to-blue-300 bg-clip-text text-transparent;
   }
 }
-.force-full-blue {
-  width: 100% !important;
-  background-color: rgb(37 99 235 / 0.5) !important;
-}
