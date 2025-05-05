@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -54,8 +55,9 @@
   }
   
   html, body {
-    @apply overflow-hidden h-full w-full m-0 p-0;
+    @apply h-full w-full m-0 p-0;
     touch-action: manipulation;
+    overscroll-behavior: none; /* Prevent bounce effect */
   }
   
   body {
@@ -82,7 +84,7 @@
   
   /* Fix app container styles */
   #root {
-    @apply max-w-md mx-auto h-[100svh] overflow-hidden relative;
+    @apply max-w-md mx-auto h-[100svh] relative;
     max-height: 100%;
     padding: 0;
     background-color: #0d0f17;
@@ -165,11 +167,15 @@
   /* Ensure main content can scroll properly */
   main {
     height: 100%;
-    overflow: hidden;
+    position: relative;
   }
   
-  main > div {
-    -webkit-overflow-scrolling: touch; /* For smoother scrolling on iOS */
+  /* Make the ScrollArea properly configured for mobile scrolling */
+  [data-radix-scroll-area-viewport] {
+    width: 100% !important;
+    height: 100% !important;
+    -webkit-overflow-scrolling: touch !important;
+    overscroll-behavior: none;
   }
 }
 

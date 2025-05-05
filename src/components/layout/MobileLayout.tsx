@@ -5,6 +5,7 @@ import { Menu, X, ChevronLeft, Bell, Sparkles } from 'lucide-react';
 import { useState } from 'react';
 import MobileNavbar from './MobileNavbar';
 import SideMenu from './SideMenu';
+import { ScrollArea } from "../ui/scroll-area";
 
 interface MobileLayoutProps {
   children: ReactNode;
@@ -109,11 +110,13 @@ const MobileLayout = ({
       {/* Side Menu */}
       <SideMenu isOpen={menuOpen} onClose={() => setMenuOpen(false)} />
 
-      {/* Main Content with fixed scrolling */}
-      <main className="flex-1 flex flex-col overflow-hidden">
-        <div className={noScroll ? "h-full" : "h-full overflow-auto -webkit-overflow-scrolling-touch"}>
-          {children}
-        </div>
+      {/* Main Content with ScrollArea for reliable scrolling */}
+      <main className="flex-1 overflow-hidden relative">
+        {noScroll ? (
+          <div className="h-full">{children}</div>
+        ) : (
+          <ScrollArea className="h-full w-full">{children}</ScrollArea>
+        )}
       </main>
 
       {/* Bottom Navigation - Fixed position to avoid layout shift */}

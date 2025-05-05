@@ -5,7 +5,7 @@
   margin: 0 auto;
   padding: 0;
   text-align: center;
-  height: 100svh;
+  height: 100svh; /* Use svh for better mobile height support */
   overflow: hidden;
   position: relative;
   display: flex;
@@ -21,11 +21,12 @@ main {
   position: relative;
 }
 
-main > div {
-  flex: 1;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  padding-bottom: env(safe-area-inset-bottom, 0);
+/* Let ScrollArea component handle the scrolling */
+.scrollarea-viewport {
+  height: 100% !important;
+  width: 100% !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch !important;
 }
 
 @keyframes logo-spin {
@@ -85,4 +86,11 @@ nav.fixed.bottom-0 {
   padding-right: env(safe-area-inset-right, 1rem);
   padding-left: constant(safe-area-inset-left, 1rem);
   padding-right: constant(safe-area-inset-right, 1rem);
+}
+
+/* Make the main content scrollable even within ScrollArea */
+[data-radix-scroll-area-viewport] {
+  width: 100% !important;
+  height: 100% !important;
+  -webkit-overflow-scrolling: touch !important;
 }

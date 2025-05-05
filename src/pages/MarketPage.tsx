@@ -7,7 +7,7 @@ import { Sparkles } from "lucide-react";
 const MarketPage = () => {
   return (
     <MobileLayout title="Market">
-      <div className="p-4 space-y-4 animate-fade-in">
+      <div className="p-4 space-y-4 pb-20">
         {/* Header with animation */}
         <div className="flex items-center mb-3">
           <Sparkles className="w-5 h-5 text-blue-400 mr-2 animate-pulse-glow" />
@@ -33,6 +33,9 @@ const MarketPage = () => {
         
         {/* Animated decoration */}
         <div className="w-full h-0.5 bg-gradient-to-r from-blue-500/0 via-blue-500/20 to-blue-500/0 mt-8 animate-pulse-glow"></div>
+        
+        {/* Add extra padding at the bottom to ensure content is scrollable past the navbar */}
+        <div className="h-16"></div>
       </div>
     </MobileLayout>
   );
