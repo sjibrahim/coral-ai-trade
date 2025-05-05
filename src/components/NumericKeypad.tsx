@@ -72,7 +72,7 @@ const NumericKeypad = ({
   
   return (
     <div className={cn("numeric-keypad w-full", className)}>
-      <div className="grid grid-cols-3 gap-2 sm:gap-4">
+      <div className="grid grid-cols-3 gap-2 sm:gap-4 ml-[30px] mb-[10px]">
         {/* First row */}
         <KeypadButton size={size} onClick={() => handleKeyPress('1')}>1</KeypadButton>
         <KeypadButton size={size} onClick={() => handleKeyPress('2')}>2</KeypadButton>
