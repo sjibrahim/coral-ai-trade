@@ -1,12 +1,18 @@
 
 import React, { useState, useEffect } from 'react';
-import { AreaChart, Area, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { 
+  AreaChart, Area, LineChart, Line, XAxis, YAxis, CartesianGrid, 
+  Tooltip, ResponsiveContainer, Bar, BarChart, ComposedChart
+} from 'recharts';
 import { ArrowUp, ArrowDown } from 'lucide-react';
 
 interface PriceChartProps {
   data: {
     timestamp: string;
     price: number;
+    volume?: number;
+    high?: number;
+    low?: number;
   }[];
   timeframe?: string;
   showControls?: boolean;
@@ -16,6 +22,8 @@ interface PriceChartProps {
   showGridLines?: boolean;
   tooltipVisible?: boolean;
   areaChart?: boolean;
+  showVolume?: boolean;
+  enhancedTooltip?: boolean;
 }
 
 const calculatePercentageChange = (currentPrice: number, previousPrice: number) => {
@@ -38,6 +46,8 @@ const PriceChart = ({
   showGridLines = false,
   tooltipVisible = true,
   areaChart = false,
+  showVolume = false,
+  enhancedTooltip = false,
 }: PriceChartProps) => {
   const [selectedTimeframe, setSelectedTimeframe] = useState(timeframe);
   const [isIncreasing, setIsIncreasing] = useState<boolean | null>(null);
@@ -84,7 +94,54 @@ const PriceChart = ({
     return null;
   };
   
-  const CustomTooltip = ({ active, payload }: any) => {
+  const EnhancedTooltip = ({ active, payload, label }: any) => {
+    if (active && payload && payload.length) {
+      const priceData = payload.find((p: any) => p.dataKey === 'price');
+      const volumeData = payload.find((p: any) => p.dataKey === 'volume');
+      const highData = payload.find((p: any) => p.dataKey === 'high');
+      const lowData = payload.find((p: any) => p.dataKey === 'low');
+      
+      const price = priceData?.value;
+      const volume = volumeData?.value;
+      const high = highData?.value;
+      const low = lowData?.value;
+      
+      return (
+        <div className="custom-tooltip bg-[#1A1F2C]/95 backdrop-blur-md border border-gray-800 px-3 py-2 rounded-md shadow-xl">
+          <div className="text-xs font-medium text-gray-300 mb-1">
+            {payload[0].payload.timestamp && formatDate(payload[0].payload.timestamp)}
+          </div>
+          <div className="space-y-1.5">
+            <div className="flex justify-between gap-4">
+              <span className="text-xs text-gray-400">Price:</span>
+              <span className="text-xs font-medium text-white">{formatPrice(price)}</span>
+            </div>
+            {high && (
+              <div className="flex justify-between gap-4">
+                <span className="text-xs text-gray-400">High:</span>
+                <span className="text-xs font-medium text-market-increase">{formatPrice(high)}</span>
+              </div>
+            )}
+            {low && (
+              <div className="flex justify-between gap-4">
+                <span className="text-xs text-gray-400">Low:</span>
+                <span className="text-xs font-medium text-market-decrease">{formatPrice(low)}</span>
+              </div>
+            )}
+            {volume && (
+              <div className="flex justify-between gap-4">
+                <span className="text-xs text-gray-400">Volume:</span>
+                <span className="text-xs font-medium text-blue-400">${volume.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    }
+    return null;
+  };
+  
+  const SimpleTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
       const priceValue = payload[0].value;
       const priceFormatted = typeof priceValue === 'number' 
@@ -101,6 +158,146 @@ const PriceChart = ({
       );
     }
     return null;
+  };
+
+  // Determine which type of chart to render
+  const renderChart = () => {
+    if (showVolume) {
+      return (
+        <ComposedChart data={data}>
+          {showGridLines && <CartesianGrid strokeDasharray="3 3" stroke="#333" vertical={false} />}
+          <XAxis 
+            dataKey="timestamp" 
+            tick={false} 
+            axisLine={{ stroke: '#333' }} 
+            padding={{ left: 5, right: 5 }}
+          />
+          <YAxis 
+            yAxisId="price" 
+            domain={['auto', 'auto']} 
+            axisLine={false} 
+            tickLine={false}
+            tick={{ fontSize: 10, fill: '#999' }}
+            orientation="right"
+            width={40}
+          />
+          <YAxis 
+            yAxisId="volume" 
+            domain={[0, 'dataMax']} 
+            hide 
+          />
+          {enhancedTooltip ? 
+            <Tooltip content={<EnhancedTooltip />} cursor={{ stroke: '#555', strokeDasharray: '3 3' }} /> : 
+            tooltipVisible && <Tooltip content={<SimpleTooltip />} />
+          }
+          <defs>
+            <linearGradient id="colorGradient" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="5%" stopColor={isIncreasing ? "#22c55e" : "#ef4444"} stopOpacity={0.3} />
+              <stop offset="95%" stopColor={isIncreasing ? "#22c55e" : "#ef4444"} stopOpacity={0} />
+            </linearGradient>
+          </defs>
+          <Area 
+            yAxisId="price"
+            type="monotone" 
+            dataKey="price" 
+            stroke={isIncreasing ? "#22c55e" : "#ef4444"} 
+            strokeWidth={1.5}
+            fillOpacity={1}
+            fill="url(#colorGradient)"
+            activeDot={{ r: 4, fill: isIncreasing ? "#22c55e" : "#ef4444" }}
+          />
+          {data[0]?.high && (
+            <>
+              <Line 
+                yAxisId="price"
+                type="monotone" 
+                dataKey="high" 
+                stroke="#22c55e" 
+                strokeWidth={1}
+                dot={false}
+                strokeDasharray="3 3"
+                activeDot={false}
+              />
+              <Line 
+                yAxisId="price"
+                type="monotone" 
+                dataKey="low" 
+                stroke="#ef4444" 
+                strokeWidth={1}
+                dot={false}
+                strokeDasharray="3 3"
+                activeDot={false}
+              />
+            </>
+          )}
+          <Bar 
+            yAxisId="volume" 
+            dataKey="volume" 
+            fill="#3b82f6" 
+            opacity={0.3} 
+            barSize={6}
+          />
+        </ComposedChart>
+      );
+    } else if (areaChart) {
+      return (
+        <AreaChart data={data}>
+          {showGridLines && <CartesianGrid strokeDasharray="3 3" stroke="#333" />}
+          <XAxis 
+            dataKey="timestamp" 
+            tick={false} 
+            axisLine={{ stroke: '#333' }} 
+          />
+          <YAxis domain={['auto', 'auto']} hide />
+          {enhancedTooltip ? 
+            <Tooltip content={<EnhancedTooltip />} cursor={{ stroke: '#555', strokeDasharray: '3 3' }} /> : 
+            tooltipVisible && <Tooltip content={<SimpleTooltip />} />
+          }
+          <defs>
+            <linearGradient id="colorGradient" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="5%" stopColor={isIncreasing ? "#22c55e" : "#ef4444"} stopOpacity={0.3} />
+              <stop offset="95%" stopColor={isIncreasing ? "#22c55e" : "#ef4444"} stopOpacity={0} />
+            </linearGradient>
+          </defs>
+          <Area 
+            type="monotone" 
+            dataKey="price" 
+            stroke={isIncreasing ? "#22c55e" : "#ef4444"} 
+            strokeWidth={1.5}
+            fillOpacity={1}
+            fill="url(#colorGradient)"
+            activeDot={{ r: 4, fill: isIncreasing ? "#22c55e" : "#ef4444" }}
+          />
+        </AreaChart>
+      );
+    } else {
+      return (
+        <LineChart data={data}>
+          {showGridLines && <CartesianGrid strokeDasharray="3 3" stroke="#333" />}
+          <XAxis 
+            dataKey="timestamp" 
+            tick={false} 
+            axisLine={{ stroke: '#333' }} 
+          />
+          <YAxis domain={['auto', 'auto']} hide />
+          {enhancedTooltip ? 
+            <Tooltip content={<EnhancedTooltip />} cursor={{ stroke: '#555', strokeDasharray: '3 3' }} /> : 
+            tooltipVisible && <Tooltip content={<SimpleTooltip />} />
+          }
+          <Line
+            type="monotone"
+            dataKey="price"
+            stroke={isIncreasing ? "#22c55e" : "#ef4444"}
+            strokeWidth={1.5}
+            dot={false}
+            activeDot={{ r: 4, fill: isIncreasing ? "#22c55e" : "#ef4444" }}
+            animationDuration={500}
+            animationEasing="linear"
+            connectNulls
+          />
+        </LineChart>
+      );
+    }
   };
 
   return (
@@ -155,55 +352,7 @@ const PriceChart = ({
       {/* Chart */}
       <div style={{ height, width: '100%' }}>
         <ResponsiveContainer width="100%" height="100%">
-          {areaChart ? (
-            <AreaChart data={data}>
-              {showGridLines && <CartesianGrid strokeDasharray="3 3" stroke="#333" />}
-              <XAxis 
-                dataKey="timestamp" 
-                tick={false} 
-                axisLine={{ stroke: '#333' }} 
-              />
-              <YAxis domain={['auto', 'auto']} hide />
-              {tooltipVisible && <Tooltip content={<CustomTooltip />} />}
-              <defs>
-                <linearGradient id="colorGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor={isIncreasing ? "#22c55e" : "#ef4444"} stopOpacity={0.3} />
-                  <stop offset="95%" stopColor={isIncreasing ? "#22c55e" : "#ef4444"} stopOpacity={0} />
-                </linearGradient>
-              </defs>
-              <Area 
-                type="monotone" 
-                dataKey="price" 
-                stroke={isIncreasing ? "#22c55e" : "#ef4444"} 
-                strokeWidth={1.5}
-                fillOpacity={1}
-                fill="url(#colorGradient)"
-                activeDot={{ r: 4, fill: isIncreasing ? "#22c55e" : "#ef4444" }}
-              />
-            </AreaChart>
-          ) : (
-            <LineChart data={data}>
-              {showGridLines && <CartesianGrid strokeDasharray="3 3" stroke="#333" />}
-              <XAxis 
-                dataKey="timestamp" 
-                tick={false} 
-                axisLine={{ stroke: '#333' }} 
-              />
-              <YAxis domain={['auto', 'auto']} hide />
-              {tooltipVisible && <Tooltip content={<CustomTooltip />} />}
-              <Line
-                type="monotone"
-                dataKey="price"
-                stroke={isIncreasing ? "#22c55e" : "#ef4444"}
-                strokeWidth={1.5}
-                dot={false}
-                activeDot={{ r: 4, fill: isIncreasing ? "#22c55e" : "#ef4444" }}
-                animationDuration={500}
-                animationEasing="linear"
-                connectNulls
-              />
-            </LineChart>
-          )}
+          {renderChart()}
         </ResponsiveContainer>
       </div>
     </div>

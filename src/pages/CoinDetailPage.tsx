@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import MobileLayout from '@/components/layout/MobileLayout';
 import PriceChart from '@/components/PriceChart';
@@ -17,13 +18,17 @@ const CoinDetailPage = () => {
   const [selectedTimePeriod, setSelectedTimePeriod] = useState('1min');
   const [tradeAmount, setTradeAmount] = useState('1000');
   const [direction, setDirection] = useState('Call'); // 'Call' or 'Put'
+  const [chartData, setChartData] = useState(mockPriceChartData);
   
   const crypto = mockCryptoCurrencies[0]; // Using the first crypto from the list for demo
   
   // Transform mockPriceChartData to have the timestamp property instead of time
-  const transformedChartData = mockPriceChartData.map(item => ({
+  const transformedChartData = chartData.map(item => ({
     timestamp: item.time,
-    price: item.price
+    price: item.price,
+    volume: Math.random() * 100000, // Add random volume data for demonstration
+    high: item.price * (1 + Math.random() * 0.01), // Add high price
+    low: item.price * (1 - Math.random() * 0.01), // Add low price
   }));
 
   // Simulate live price updates
@@ -41,6 +46,13 @@ const CoinDetailPage = () => {
       // Update change percentage
       const newChange = priceChange + (fluctuation * 100);
       setPriceChange(newChange);
+      
+      // Add new data point to chart
+      const newDataPoint = {
+        time: new Date().toISOString(),
+        price: newPrice,
+      };
+      setChartData(prevData => [...prevData.slice(1), newDataPoint]);
     }, 3000);
     
     return () => clearInterval(interval);
@@ -71,10 +83,10 @@ const CoinDetailPage = () => {
   };
   
   return (
-    <MobileLayout showBackButton title={crypto.name} noScroll>
-      <div className="flex flex-col h-full bg-[#0A0B14]">
+    <MobileLayout showBackButton title={crypto.name} noScroll={false}>
+      <div className="flex flex-col h-full bg-[#0A0B14] pb-24">
         <div className="p-4">
-          {/* Coin Header Info - Keep existing code */}
+          {/* Coin Header Info */}
           <div className="flex justify-between items-start mb-6">
             <div className="flex items-center">
               <div className="bg-[#14151F]/70 backdrop-blur-sm rounded-full p-2 mr-3">
@@ -104,15 +116,15 @@ const CoinDetailPage = () => {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col">
-          {/* Tabs - Keep existing code */}
+          {/* Tabs */}
           <TabsList className="bg-[#14151F] mx-4 grid grid-cols-3 mb-4 rounded-xl">
             <TabsTrigger value="chart" className="rounded-lg text-gray-100 data-[state=active]:bg-[#222430] data-[state=active]:text-blue-400">Chart</TabsTrigger>
             <TabsTrigger value="about" className="rounded-lg text-gray-100 data-[state=active]:bg-[#222430] data-[state=active]:text-blue-400">About</TabsTrigger>
             <TabsTrigger value="trade" className="rounded-lg text-gray-100 data-[state=active]:bg-[#222430] data-[state=active]:text-blue-400">Trade</TabsTrigger>
           </TabsList>
           
-          <div className="flex-1 overflow-y-auto px-4 pb-24">
-            {/* Tab Content - Keep existing code */}
+          <div className="flex-1 overflow-y-auto px-4 styled-scrollbar">
+            {/* Tab Content */}
             <TabsContent value="chart" className="space-y-4 mt-0 flex-1">
               <Card className="bg-[#14151F] border-[#222] text-gray-100">
                 <CardContent className="pt-6">
@@ -123,7 +135,10 @@ const CoinDetailPage = () => {
                     height={220}
                     timeframe={selectedTimeframe}
                     showControls={false}
-                    areaChart
+                    areaChart={true}
+                    showVolume={true}
+                    showGridLines={true}
+                    enhancedTooltip={true}
                   />
                   
                   <div className="flex space-x-2 mt-4 justify-center">
@@ -144,7 +159,7 @@ const CoinDetailPage = () => {
                 </CardContent>
               </Card>
               
-              {/* Market Stats - Keep existing code */}
+              {/* Market Stats */}
               <Card className="bg-[#14151F] border-[#222] text-gray-100">
                 <CardHeader className="pb-2">
                   <CardTitle className="text-lg">Market Stats</CardTitle>
@@ -171,7 +186,7 @@ const CoinDetailPage = () => {
                 </CardContent>
               </Card>
               
-              {/* Price History - Keep existing code */}
+              {/* Price History */}
               <Card className="bg-[#14151F] border-[#222] text-gray-100">
                 <CardHeader className="pb-2">
                   <CardTitle className="text-lg">Price History</CardTitle>
@@ -201,7 +216,7 @@ const CoinDetailPage = () => {
               </Card>
             </TabsContent>
             
-            {/* About Tab - Keep existing code */}
+            {/* About Tab */}
             <TabsContent value="about">
               <Card className="bg-[#14151F] border-[#222] text-gray-100">
                 <CardContent className="pt-6">
@@ -215,7 +230,7 @@ const CoinDetailPage = () => {
               </Card>
             </TabsContent>
             
-            {/* Trade Tab - Keep existing code */}
+            {/* Trade Tab */}
             <TabsContent value="trade">
               <Card className="bg-[#14151F] border-[#222] text-gray-100">
                 <CardContent className="pt-6 flex flex-col gap-4">
@@ -231,8 +246,8 @@ const CoinDetailPage = () => {
           </div>
         </Tabs>
         
-        {/* Fixed Buy/Sell buttons at bottom - Keep existing code */}
-        <div className="fixed bottom-0 left-0 right-0 p-4 pb-safe bg-[#0A0B14] border-t border-[#222] grid grid-cols-2 gap-3">
+        {/* Fixed Buy/Sell buttons at bottom */}
+        <div className="fixed bottom-0 left-0 right-0 p-4 pb-safe bg-[#0A0B14] border-t border-[#222] grid grid-cols-2 gap-3 z-10">
           <Button 
             className="py-5 bg-market-increase hover:bg-market-increase/90 text-white font-semibold rounded-xl"
             onClick={handleBuyClick}
@@ -289,7 +304,7 @@ const CoinDetailPage = () => {
             </div>
           </div>
           
-          <div className="p-5 space-y-5">
+          <div className="p-5 space-y-5 max-h-[calc(100vh-120px)] overflow-y-auto styled-scrollbar">
             {/* Time Period Selection */}
             <div className="space-y-3">
               <p className="text-gray-300 font-medium flex items-center gap-1.5">
