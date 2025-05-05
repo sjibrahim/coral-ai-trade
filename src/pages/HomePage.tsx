@@ -6,6 +6,7 @@ import CryptoCard from "@/components/CryptoCard";
 import { Link } from "react-router-dom";
 import { mockCryptoCurrencies, mockBalances } from "@/data/mockData";
 import { ChevronRight, Sparkles } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 const HomePage = () => {
   // Only show first 4 cryptocurrencies on home page
