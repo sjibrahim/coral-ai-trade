@@ -11,12 +11,12 @@ const MarketPage = () => {
         {/* Header with animation */}
         <div className="flex items-center mb-3">
           <Sparkles className="w-5 h-5 text-blue-400 mr-2 animate-pulse-glow" />
-          <h2 className="text-lg font-semibold bg-gradient-to-r from-blue-300 to-blue-100 bg-clip-text text-transparent">
+          <h2 className="text-lg font-semibold bg-gradient-to-r from-blue-400 to-blue-100 bg-clip-text text-transparent">
             Live Markets
           </h2>
         </div>
         
-        <div className="bg-card/50 rounded-xl overflow-hidden backdrop-blur-sm border border-white/5">
+        <div className="bg-card/50 rounded-xl overflow-hidden backdrop-blur-sm border border-white/5 shadow-lg">
           {mockCryptoCurrencies.map((crypto, index) => (
             <CryptoCard
               key={crypto.id}
