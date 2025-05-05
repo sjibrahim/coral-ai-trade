@@ -18,11 +18,20 @@ import WithdrawalRecordsPage from '@/pages/WithdrawalRecordsPage';
 import ContractRecordPage from '@/pages/ContractRecordPage';
 import CommissionRecordPage from '@/pages/CommissionRecordPage';
 import SalaryRecordPage from '@/pages/SalaryRecordPage';
+import RewardsPage from '@/pages/RewardsPage';
+import SettingsPage from '@/pages/SettingsPage';
+import LoginPage from '@/pages/LoginPage';
+import RegisterPage from '@/pages/RegisterPage';
 import NotFound from '@/pages/NotFound';
 
 const AppRoutes = () => {
   return (
     <Routes>
+      {/* Auth Routes */}
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/register" element={<RegisterPage />} />
+      
+      {/* Main App Routes */}
       <Route path="/" element={<Navigate to="/home" replace />} />
       <Route path="/home" element={<HomePage />} />
       <Route path="/market" element={<MarketPage />} />
@@ -40,6 +49,8 @@ const AppRoutes = () => {
       <Route path="/contract-record" element={<ContractRecordPage />} />
       <Route path="/commission-record" element={<CommissionRecordPage />} />
       <Route path="/salary-record" element={<SalaryRecordPage />} />
+      <Route path="/rewards" element={<RewardsPage />} />
+      <Route path="/settings" element={<SettingsPage />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

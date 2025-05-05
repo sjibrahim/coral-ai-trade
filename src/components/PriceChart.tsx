@@ -1,133 +1,122 @@
 
-import { useState, useEffect } from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
+import React from 'react';
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  ReferenceLine,
+} from 'recharts';
 import { cn } from '@/lib/utils';
 
 interface PriceChartProps {
-  data: { time: string; price: number }[];
-  isPositive: boolean;
+  data: {
+    timestamp: number;
+    price: number;
+  }[];
+  period?: '1H' | '24H' | '7D' | '30D' | 'ALL';
+  percentChange: number;
+  currentPrice: number;
+  height?: number | string;
+  lineColor?: string;
+  showLabels?: boolean;
+  showGrid?: boolean;
+  className?: string;
+  showCurrentPriceMarker?: boolean;
+  showTooltip?: boolean;
 }
 
-const PriceChart = ({ data: initialData, isPositive }: PriceChartProps) => {
-  const [activeTimeframe, setActiveTimeframe] = useState('1m');
-  const [data, setData] = useState(initialData);
-  
-  // Simulate live data updates
-  useEffect(() => {
-    const interval = setInterval(() => {
-      // Add slight random variation to the last price point
-      const lastPrice = data[data.length - 1].price;
-      const change = (Math.random() - 0.5) * 50; // Random value between -25 and 25
-      const newPrice = Math.max(lastPrice + change, 100); // Ensure price doesn't go below 100
-      
-      // Clone the data and replace the last item
-      const newData = [...data];
-      newData[newData.length - 1] = {
-        ...newData[newData.length - 1],
-        price: newPrice
-      };
-      
-      setData(newData);
-    }, 3000);
-    
-    return () => clearInterval(interval);
-  }, [data]);
-  
-  const timeframes = [
-    { id: '1m', label: '1m' },
-    { id: '3m', label: '3m' },
-    { id: '5m', label: '5m' },
-    { id: '15m', label: '15m' },
-    { id: 'area', label: 'Area' },
-  ];
+const PriceChart = ({
+  data,
+  percentChange,
+  currentPrice,
+  height = 150,
+  lineColor,
+  showLabels = false,
+  showGrid = false,
+  className,
+  showCurrentPriceMarker = true,
+  showTooltip = false,
+}: PriceChartProps) => {
+  const chartData = data.map(item => ({
+    timestamp: item.timestamp,
+    price: item.price,
+  }));
 
-  // Get the min and max values for better chart scaling
-  const minValue = Math.min(...data.map(d => d.price)) - 100;
-  const maxValue = Math.max(...data.map(d => d.price)) + 100;
+  const color = lineColor || (percentChange >= 0 ? 'hsl(var(--market-increase))' : 'hsl(var(--market-decrease))');
+  const strokeWidth = 1.5;
 
-  // Current price (latest data point)
-  const currentPrice = data[data.length - 1]?.price;
-  
-  // Format price for display - ensure we handle the type properly
-  const formattedPrice = currentPrice !== undefined ? `$${currentPrice.toFixed(2)}` : '$0.00';
+  const CustomTooltip = ({ active, payload }: any) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="bg-background/90 backdrop-blur-md border border-border/40 p-2 rounded-md text-xs shadow-lg">
+          <p className="text-foreground">${parseFloat(payload[0].value).toFixed(2)}</p>
+        </div>
+      );
+    }
+    return null;
+  };
+
+  // Safe formatting for reference line label
+  const formatReferenceLinePrice = (value: any) => {
+    if (typeof value === 'number') {
+      return value.toFixed(2);
+    }
+    return String(value);
+  };
 
   return (
-    <div className="space-y-4">
-      <div className="flex justify-between mb-2">
-        {timeframes.map((timeframe) => (
-          <button
-            key={timeframe.id}
-            className={cn(
-              "px-4 py-1 text-sm rounded-full transition-colors",
-              activeTimeframe === timeframe.id 
-                ? "bg-muted text-foreground" 
-                : "text-muted-foreground hover:text-foreground"
-            )}
-            onClick={() => setActiveTimeframe(timeframe.id)}
-          >
-            {timeframe.label}
-          </button>
-        ))}
-      </div>
-      
-      <div className="h-72 w-full">
-        <ResponsiveContainer width="100%" height="100%">
-          <LineChart
-            data={data}
-            margin={{ top: 5, right: 5, left: 5, bottom: 5 }}
-          >
-            <defs>
-              <linearGradient id="colorPrice" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor={isPositive ? "#22c55e" : "#ef4444"} stopOpacity={0.2}/>
-                <stop offset="95%" stopColor={isPositive ? "#22c55e" : "#ef4444"} stopOpacity={0}/>
-              </linearGradient>
-            </defs>
-            <CartesianGrid strokeDasharray="3 3" stroke="#2d3748" vertical={false} />
-            <XAxis 
-              dataKey="time" 
-              tick={{ fontSize: 10, fill: '#a0aec0' }}
-              axisLine={{ stroke: '#2d3748' }}
-              tickLine={false}
-            />
-            <YAxis 
-              domain={[minValue, maxValue]} 
-              orientation="right"
-              tick={{ fontSize: 10, fill: '#a0aec0' }}
-              axisLine={{ stroke: '#2d3748' }}
-              tickLine={false}
-            />
-            <Tooltip 
-              contentStyle={{ 
-                backgroundColor: '#1a202c', 
-                borderColor: '#2d3748',
-                borderRadius: '0.375rem',
-              }}
-              itemStyle={{ color: '#e2e8f0' }}
-              labelStyle={{ color: '#a0aec0' }}
-              formatter={(value) => [`$${value.toFixed(2)}`, 'Price']}
-            />
+    <div className={cn("w-full overflow-hidden", className)} style={{ height }}>
+      <ResponsiveContainer width="100%" height="100%">
+        <LineChart data={chartData} margin={{ top: 5, right: 5, bottom: 5, left: 5 }}>
+          {showLabels && (
+            <>
+              <XAxis 
+                dataKey="timestamp" 
+                hide={!showLabels} 
+                axisLine={false}
+                tickLine={false}
+                tickFormatter={(value) => new Date(value).toLocaleTimeString()}
+              />
+              <YAxis 
+                hide={!showLabels}
+                domain={['dataMin', 'dataMax']}
+                axisLine={false}
+                tickLine={false}
+                tickCount={3}
+                tickFormatter={(value) => `$${value}`}
+              />
+            </>
+          )}
+          {showCurrentPriceMarker && (
             <ReferenceLine 
               y={currentPrice} 
-              stroke="#4b5563" 
-              strokeDasharray="3 3" 
-              label={{ 
-                value: formattedPrice,
-                fill: '#a0aec0',
-                position: 'right'
-              }} 
+              stroke={color} 
+              strokeDasharray="3 3"
+              strokeOpacity={0.7}
+              label={{
+                position: 'left',
+                fill: color,
+                fontSize: 10,
+                value: `$${formatReferenceLinePrice(currentPrice)}`,
+                backgroundColor: '#000'
+              }}
             />
-            <Line 
-              type="monotone" 
-              dataKey="price" 
-              stroke={isPositive ? "#22c55e" : "#ef4444"} 
-              strokeWidth={2}
-              dot={false}
-              activeDot={{ r: 4, strokeWidth: 1 }}
-              fill="url(#colorPrice)"
-            />
-          </LineChart>
-        </ResponsiveContainer>
-      </div>
+          )}
+          {showTooltip && <Tooltip content={<CustomTooltip />} cursor={false} />}
+          <Line
+            type="monotone"
+            dataKey="price"
+            stroke={color}
+            strokeWidth={strokeWidth}
+            dot={false}
+            activeDot={{ r: 3, fill: color, stroke: 'white', strokeWidth: 1 }}
+            animationDuration={1000}
+          />
+        </LineChart>
+      </ResponsiveContainer>
     </div>
   );
 };

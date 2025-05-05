@@ -3,7 +3,7 @@ import { useState } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
 import NumericKeypad from "@/components/NumericKeypad";
 import { cn } from "@/lib/utils";
-import { ArrowDownCircle, Info, AlertCircle, Check } from "lucide-react";
+import { ArrowDownCircle, Info, AlertCircle } from "lucide-react";
 
 const DepositPage = () => {
   const [amount, setAmount] = useState("");
@@ -14,9 +14,9 @@ const DepositPage = () => {
   
   return (
     <MobileLayout showBackButton title="Deposit">
-      <div className="p-4 flex flex-col h-full animate-fade-in max-w-md mx-auto pb-8">
+      <div className="flex flex-col h-full pb-4 px-4 max-w-md mx-auto">
         {/* Amount Input */}
-        <div className="bg-card/50 backdrop-blur-sm rounded-xl p-6 mb-4 border border-border/40">
+        <div className="bg-background/70 backdrop-blur-sm rounded-xl p-6 mb-4 border border-border/40 shadow-lg">
           <div className="flex items-baseline mb-2">
             <span className="text-4xl font-bold mr-2 text-primary">₹</span>
             <span className="text-6xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
@@ -36,7 +36,7 @@ const DepositPage = () => {
             <button
               key={value}
               onClick={() => setAmount(value.toString())}
-              className="py-2 rounded-lg bg-secondary/50 hover:bg-accent/70 transition-colors border border-border/20 text-sm font-medium"
+              className="py-3 rounded-xl bg-background/50 hover:bg-accent/70 transition-colors border border-border/20 text-sm font-medium"
             >
               ₹{value.toLocaleString()}
             </button>
@@ -46,17 +46,17 @@ const DepositPage = () => {
         {/* Payment Channels */}
         <div className="mb-6">
           <h2 className="text-base font-medium mb-3 flex items-center">
-            <Info className="w-4 h-4 mr-1.5 text-primary" />
+            <Info className="w-4 h-4 mr-1.5 text-blue-400" />
             Payment Channels
           </h2>
-          <div className="bg-secondary/50 rounded-xl p-2 flex justify-between">
+          <div className="bg-background/50 rounded-xl p-2 flex justify-between">
             {paymentChannels.map((channel) => (
               <button 
                 key={channel}
                 className={cn(
                   "py-2 px-4 rounded-lg transition-colors flex-1 text-center text-sm",
                   selectedChannel === channel 
-                    ? 'bg-primary text-white font-medium shadow-md' 
+                    ? 'bg-blue-500 text-white font-medium shadow-md' 
                     : 'text-muted-foreground hover:bg-accent/50'
                 )}
                 onClick={() => setSelectedChannel(channel)}
@@ -72,7 +72,7 @@ const DepositPage = () => {
           <NumericKeypad 
             value={amount}
             onChange={setAmount}
-            className="mb-4"
+            className="mb-6 mx-auto"
           />
           
           <button 
@@ -80,7 +80,7 @@ const DepositPage = () => {
               "w-full py-4 rounded-xl text-white text-base font-medium flex items-center justify-center gap-2 transition-all",
               isValidAmount 
                 ? "bg-gradient-to-r from-blue-600 to-blue-500 shadow-lg shadow-blue-500/20" 
-                : "bg-gray-500/50 opacity-70"
+                : "bg-gray-600/50 opacity-70"
             )}
             disabled={!isValidAmount}
           >

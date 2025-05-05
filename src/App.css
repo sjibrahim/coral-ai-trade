@@ -43,3 +43,15 @@ main {
 .read-the-docs {
   color: #888;
 }
+
+/* Fix iOS safe area */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+/* Keypad styling */
+.numeric-keypad button {
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}

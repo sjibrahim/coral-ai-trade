@@ -11,7 +11,7 @@ const MobileNavbar = () => {
   };
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-20 bg-background/90 backdrop-blur-lg border-t border-border/40 px-6 pb-safe rounded-t-xl h-16">
+    <nav className="fixed bottom-0 left-0 right-0 z-20 bg-background/90 backdrop-blur-lg border-t border-border/40 px-6 pb-safe h-16">
       <div className="flex justify-between items-center h-full max-w-md mx-auto">
         <NavItem 
           to="/home" 

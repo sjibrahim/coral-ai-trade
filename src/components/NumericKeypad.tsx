@@ -1,6 +1,5 @@
 
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
 import { X, Delete } from "lucide-react";
 
 interface NumericKeypadProps {
@@ -48,22 +47,22 @@ const NumericKeypad = ({
   
   return (
     <div className={cn("numeric-keypad space-y-4", className)}>
-      <div className="grid grid-cols-3 gap-4 animate-fade-in">
+      <div className="grid grid-cols-3 gap-4">
         <KeypadButton onClick={() => handleKeyPress('1')}>1</KeypadButton>
         <KeypadButton onClick={() => handleKeyPress('2')}>2</KeypadButton>
         <KeypadButton onClick={() => handleKeyPress('3')}>3</KeypadButton>
       </div>
-      <div className="grid grid-cols-3 gap-4 animate-fade-in" style={{ animationDelay: "50ms" }}>
+      <div className="grid grid-cols-3 gap-4">
         <KeypadButton onClick={() => handleKeyPress('4')}>4</KeypadButton>
         <KeypadButton onClick={() => handleKeyPress('5')}>5</KeypadButton>
         <KeypadButton onClick={() => handleKeyPress('6')}>6</KeypadButton>
       </div>
-      <div className="grid grid-cols-3 gap-4 animate-fade-in" style={{ animationDelay: "100ms" }}>
+      <div className="grid grid-cols-3 gap-4">
         <KeypadButton onClick={() => handleKeyPress('7')}>7</KeypadButton>
         <KeypadButton onClick={() => handleKeyPress('8')}>8</KeypadButton>
         <KeypadButton onClick={() => handleKeyPress('9')}>9</KeypadButton>
       </div>
-      <div className="grid grid-cols-3 gap-4 animate-fade-in" style={{ animationDelay: "150ms" }}>
+      <div className="grid grid-cols-3 gap-4">
         <KeypadButton variant="secondary" onClick={() => handleKeyPress('clear')}>
           <X className="h-5 w-5" />
         </KeypadButton>
@@ -84,14 +83,17 @@ interface KeypadButtonProps {
 
 const KeypadButton = ({ onClick, children, variant = 'default' }: KeypadButtonProps) => {
   return (
-    <Button
+    <button
       type="button"
       onClick={onClick}
-      variant={variant}
-      className="h-14 w-14 rounded-full text-lg font-medium flex items-center justify-center shadow-lg"
+      className={cn(
+        "h-16 w-16 rounded-full text-xl font-medium flex items-center justify-center",
+        "bg-secondary/30 border border-white/5 shadow-lg hover:bg-secondary/60 transition-colors",
+        variant === 'secondary' ? "bg-secondary/40 text-muted-foreground" : "text-foreground"
+      )}
     >
       {children}
-    </Button>
+    </button>
   );
 };
 
