@@ -46,7 +46,7 @@ const WithdrawPage = () => {
       )}
       noScroll
     >
-      <div className="flex flex-col h-full bg-[#0d0e14]">
+      <div className="flex flex-col h-full bg-[#0d0f17]">
         {/* Top Section - Amount Display */}
         <div className="pt-4 px-6 text-left">
           <div className="flex items-start">

@@ -40,10 +40,10 @@ const MobileLayout = ({
     : "flex-1 overflow-y-auto webkit-overflow-scrolling-touch pb-safe";
 
   return (
-    <div className="flex flex-col h-full w-full bg-background text-foreground relative">
+    <div className="flex flex-col h-full w-full bg-[#0d0f17] text-foreground relative">
       {/* Header */}
       {(title || showBackButton) && (
-        <header className="sticky top-0 z-20 px-4 py-3 flex items-center justify-between bg-background/95 backdrop-blur-md">
+        <header className="sticky top-0 z-20 px-4 py-3 flex items-center justify-between bg-[#0d0f17]/95 backdrop-blur-md">
           <div className="flex items-center gap-2">
             {showBackButton ? (
               <button 
