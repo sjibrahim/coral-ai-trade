@@ -3,7 +3,7 @@ import { useState } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
 import NumericKeypad from "@/components/NumericKeypad";
 import { cn } from "@/lib/utils";
-import { ArrowDownCircle, Info, AlertCircle } from "lucide-react";
+import { Bell } from "lucide-react";
 
 const DepositPage = () => {
   const [amount, setAmount] = useState("");
@@ -18,51 +18,44 @@ const DepositPage = () => {
   };
   
   return (
-    <MobileLayout showBackButton title="Deposit">
-      <div className="flex flex-col h-full pb-4 px-4 max-w-md mx-auto">
-        {/* Amount Input */}
-        <div className="bg-[#0F1219]/90 backdrop-blur-sm rounded-xl p-6 mb-4 border border-border/40 shadow-lg">
-          <div className="flex items-baseline mb-2">
-            <span className="text-4xl font-bold mr-2 text-primary">₹</span>
-            <span className="text-6xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
-              {amount ? amount : "0"}
-            </span>
-          </div>
-          
-          <div className="flex items-center gap-1 mt-2 text-right ml-auto">
-            <AlertCircle className="w-4 h-4 text-amber-400" />
-            <p className="text-muted-foreground">Minimum Deposit ₹600</p>
-          </div>
+    <MobileLayout 
+      showBackButton 
+      title="Deposit"
+      rightActions={(
+        <button className="p-1.5 rounded-full hover:bg-accent/50 transition-colors flex items-center justify-center relative">
+          <Bell className="h-5 w-5" />
+          <span className="absolute top-0.5 right-0.5 w-1.5 h-1.5 bg-red-500 rounded-full"></span>
+        </button>
+      )}
+    >
+      <div className="flex flex-col h-full p-4">
+        {/* Amount Display */}
+        <div className="flex items-baseline text-left mb-2">
+          <span className="text-4xl font-bold mr-2">₹</span>
+          <span className="text-7xl font-bold">
+            {amount ? amount : "0"}
+          </span>
         </div>
         
-        {/* Quick Amount Buttons */}
-        <div className="grid grid-cols-3 gap-2 mb-6">
-          {[1000, 2000, 5000, 10000, 20000, 50000].map((value) => (
-            <button
-              key={value}
-              onClick={() => setAmount(value.toString())}
-              className="py-3 rounded-xl bg-[#1A1F2C]/50 hover:bg-[#1A1F2C]/70 transition-colors border border-border/20 text-sm font-medium"
-            >
-              ₹{value.toLocaleString()}
-            </button>
-          ))}
+        {/* Minimum Deposit Info */}
+        <div className="text-right mb-12">
+          <p className="text-gray-400">Minimum Deposit ₹600</p>
         </div>
         
         {/* Payment Channels */}
-        <div className="mb-6">
-          <h2 className="text-base font-medium mb-3 flex items-center">
-            <Info className="w-4 h-4 mr-1.5 text-blue-400" />
+        <div className="mb-8">
+          <h2 className="text-xl font-medium mb-4 text-center">
             Payment Channels
           </h2>
-          <div className="bg-[#1A1F2C]/50 rounded-xl p-2 flex justify-between">
+          <div className="bg-[#0F1219]/60 backdrop-blur-sm rounded-full p-1.5 flex justify-between">
             {paymentChannels.map((channel) => (
               <button 
                 key={channel}
                 className={cn(
-                  "py-2 px-4 rounded-lg transition-colors flex-1 text-center text-sm",
+                  "py-2 px-6 rounded-full transition-colors flex-1 text-center",
                   selectedChannel === channel 
-                    ? 'bg-blue-500 text-white font-medium shadow-md' 
-                    : 'text-muted-foreground hover:bg-accent/50'
+                    ? 'bg-blue-600 text-white font-medium' 
+                    : 'text-white'
                 )}
                 onClick={() => setSelectedChannel(channel)}
               >
@@ -73,27 +66,13 @@ const DepositPage = () => {
         </div>
         
         {/* Keypad */}
-        <div className="flex-1 flex flex-col justify-end mt-auto">
+        <div className="flex-1 flex flex-col justify-end">
           <NumericKeypad 
             value={amount}
             onChange={setAmount}
-            className="mx-auto"
-            showConfirmButton={false}
+            onConfirm={isValidAmount ? handleConfirm : undefined}
+            confirmButtonText="CONFIRM"
           />
-          
-          <button 
-            onClick={handleConfirm}
-            className={cn(
-              "w-full py-4 rounded-xl text-white text-base font-medium flex items-center justify-center gap-2 transition-all mt-6",
-              isValidAmount 
-                ? "bg-primary shadow-lg shadow-blue-500/20" 
-                : "bg-gray-600/50 opacity-70"
-            )}
-            disabled={!isValidAmount}
-          >
-            <ArrowDownCircle className="w-5 h-5" />
-            {isValidAmount ? 'CONFIRM DEPOSIT' : 'ENTER VALID AMOUNT'}
-          </button>
         </div>
       </div>
     </MobileLayout>

@@ -1,179 +1,211 @@
 
-import React, { useRef, useEffect, useState } from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { ChartProps } from '@/components/ui/chart';
-import { cn } from '@/lib/utils';
-
-// Define the data structure
-interface ChartData {
-  timestamp: number;
-  price: number;
-}
+import React, { useState, useEffect } from 'react';
+import { AreaChart, Area, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { ArrowUp, ArrowDown } from 'lucide-react';
 
 interface PriceChartProps {
-  data: ChartData[];
-  timeRange?: '1D' | '1W' | '1M' | '3M' | '1Y' | 'ALL';
+  data: {
+    timestamp: string;
+    price: number;
+  }[];
+  timeframe?: string;
   showControls?: boolean;
-  height?: number;
-  className?: string;
+  height?: number | string;
+  currentPrice?: number;
+  previousPrice?: number;
+  showGridLines?: boolean;
+  tooltipVisible?: boolean;
+  areaChart?: boolean;
 }
 
+const calculatePercentageChange = (currentPrice: number, previousPrice: number) => {
+  const change = ((currentPrice - previousPrice) / previousPrice) * 100;
+  return change.toFixed(2);
+};
+
+const formatDate = (timestamp: string) => {
+  const date = new Date(timestamp);
+  return `${date.getHours()}:${date.getMinutes().toString().padStart(2, '0')}`;
+};
+
 const PriceChart = ({
-  data = [],
-  timeRange = '1D',
-  showControls = false,
-  height = 200,
-  className
+  data,
+  timeframe = '24h',
+  showControls = true,
+  height = 180,
+  currentPrice,
+  previousPrice,
+  showGridLines = false,
+  tooltipVisible = true,
+  areaChart = false,
 }: PriceChartProps) => {
-  const chartRef = useRef<HTMLDivElement>(null);
-  const [currentPrice, setCurrentPrice] = useState<number | null>(null);
-  
+  const [selectedTimeframe, setSelectedTimeframe] = useState(timeframe);
+  const [isIncreasing, setIsIncreasing] = useState<boolean | null>(null);
+
   useEffect(() => {
-    if (data.length > 0) {
-      setCurrentPrice(data[data.length - 1].price);
+    if (currentPrice && previousPrice) {
+      setIsIncreasing(currentPrice > previousPrice);
+    } else if (data.length > 1) {
+      setIsIncreasing(data[data.length - 1].price > data[0].price);
     }
-  }, [data]);
-  
-  if (data.length === 0) {
-    return <div className="flex items-center justify-center h-40 text-muted-foreground">No price data available</div>;
-  }
-  
-  // Calculate price change
-  const firstPrice = data[0]?.price || 0;
-  const lastPrice = data[data.length - 1]?.price || 0;
-  const priceChange = lastPrice - firstPrice;
-  const priceChangePercent = firstPrice !== 0 ? (priceChange / firstPrice) * 100 : 0;
-  const isPriceUp = priceChange >= 0;
-  
-  const formatTimestamp = (timestamp: number) => {
-    const date = new Date(timestamp);
-    
-    switch (timeRange) {
-      case '1D':
-        return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      case '1W':
-        return date.toLocaleDateString([], { weekday: 'short' });
-      case '1M':
-        return date.toLocaleDateString([], { day: 'numeric', month: 'short' });
-      default:
-        return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
+  }, [currentPrice, previousPrice, data]);
+
+  const handleTimeframeChange = (newTimeframe: string) => {
+    setSelectedTimeframe(newTimeframe);
+    // In a real app, this would fetch new data based on timeframe
+  };
+
+  const formatPrice = (price: number) => {
+    if (price >= 1000) {
+      return `$${price.toLocaleString()}`;
+    } else if (price >= 1) {
+      return `$${price.toFixed(2)}`;
+    } else {
+      return `$${price.toFixed(4)}`;
     }
   };
-  
-  // Custom tooltip component
-  const CustomTooltip = ({ active, payload }: any) => {
-    if (active && payload && payload.length) {
-      const date = new Date(payload[0].payload.timestamp);
+
+  const renderCustomizedDot = (props: any) => {
+    const { cx, cy, index } = props;
+    
+    // Only show dots at certain intervals or at the end
+    if (index === data.length - 1 || index % Math.ceil(data.length / 5) === 0) {
       return (
-        <div className="bg-background/80 backdrop-blur-md p-2 rounded-lg border border-border shadow-lg">
-          <p className="text-xs text-muted-foreground mb-1">
-            {date.toLocaleDateString()} {date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-          </p>
-          <p className="font-medium text-sm">
-            ₹{payload[0].value.toLocaleString(undefined, {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
-            })}
-          </p>
-        </div>
+        <circle
+          cx={cx}
+          cy={cy}
+          r={3}
+          fill={isIncreasing ? "#22c55e" : "#ef4444"}
+          stroke={isIncreasing ? "#22c55e" : "#ef4444"}
+          strokeWidth={1}
+        />
       );
     }
-    
     return null;
   };
   
-  const renderCustomizedDot = (props: any) => {
-    const { cx, cy, index, dataKey } = props;
-    
-    // Only show dot for the last data point
-    if (index === data.length - 1) {
+  const CustomTooltip = ({ active, payload }: any) => {
+    if (active && payload && payload.length) {
+      const priceValue = payload[0].value;
+      const priceFormatted = typeof priceValue === 'number' 
+        ? formatPrice(priceValue) 
+        : priceValue;
+      
       return (
-        <svg x={cx - 6} y={cy - 6} width={12} height={12} viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="6" cy="6" r="5" fill={isPriceUp ? 'var(--market-increase)' : 'var(--market-decrease)'} stroke="var(--background)" strokeWidth="1.5" />
-        </svg>
+        <div className="custom-tooltip bg-background/80 backdrop-blur-sm border border-border p-2 rounded-md shadow-md">
+          <p className="text-xs font-medium">{priceFormatted}</p>
+          {payload[0].payload.timestamp && (
+            <p className="text-xs text-muted-foreground">{formatDate(payload[0].payload.timestamp)}</p>
+          )}
+        </div>
       );
     }
     return null;
   };
 
-  // Format the current price for display
-  const formattedPrice = typeof currentPrice === 'number' 
-    ? currentPrice.toFixed(2) 
-    : 'N/A';
-  
   return (
-    <div className={cn("w-full chart-container", className)} ref={chartRef}>
-      {currentPrice !== null && (
-        <div className="flex items-baseline gap-2 mb-2">
-          <span className="text-xl font-semibold">₹{formattedPrice}</span>
-          <span className={cn(
-            "text-sm font-medium",
-            isPriceUp ? "text-market-increase" : "text-market-decrease"
-          )}>
-            {isPriceUp ? '+' : ''}{priceChange.toFixed(2)} ({priceChangePercent.toFixed(2)}%)
-          </span>
+    <div className="w-full">
+      {/* Price Statistics */}
+      {currentPrice && (
+        <div className="flex justify-between items-baseline mb-2">
+          <div>
+            <h2 className="text-2xl font-bold">
+              {typeof currentPrice === 'number' ? formatPrice(currentPrice) : currentPrice}
+            </h2>
+            {previousPrice && (
+              <div className={`flex items-center ${isIncreasing ? 'text-market-increase' : 'text-market-decrease'}`}>
+                <span className="text-sm mr-1">
+                  {isIncreasing ? (
+                    <ArrowUp className="h-3 w-3 inline" />
+                  ) : (
+                    <ArrowDown className="h-3 w-3 inline" />
+                  )}
+                </span>
+                <span className="text-xs">
+                  {calculatePercentageChange(
+                    typeof currentPrice === 'number' ? currentPrice : 0,
+                    typeof previousPrice === 'number' ? previousPrice : 0
+                  )}%
+                </span>
+              </div>
+            )}
+          </div>
+          
+          {/* Timeframe controls */}
+          {showControls && (
+            <div className="flex space-x-1.5 text-xs">
+              {['1h', '24h', '7d', '30d'].map(tf => (
+                <button
+                  key={tf}
+                  onClick={() => handleTimeframeChange(tf)}
+                  className={`px-2 py-1 rounded-md ${
+                    selectedTimeframe === tf
+                      ? 'bg-primary text-primary-foreground'
+                      : 'bg-accent text-accent-foreground hover:bg-accent/80'
+                  }`}
+                >
+                  {tf}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       )}
-      
-      <div className="w-full" style={{ height }}>
+
+      {/* Chart */}
+      <div style={{ height, width: '100%' }}>
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart
-            data={data}
-            margin={{ top: 5, right: 5, left: 0, bottom: 5 }}
-          >
-            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border)" strokeOpacity={0.4} />
-            <XAxis 
-              dataKey="timestamp" 
-              tickFormatter={formatTimestamp}
-              axisLine={false}
-              tickLine={false}
-              tick={{ fontSize: 10, fill: 'var(--muted-foreground)' }}
-              minTickGap={30}
-            />
-            <YAxis 
-              domain={['dataMin', 'dataMax']}
-              axisLine={false}
-              tickLine={false}
-              tick={{ fontSize: 10, fill: 'var(--muted-foreground)' }}
-              orientation="right"
-              mirror
-              tickFormatter={(value) => `₹${value.toLocaleString()}`}
-            />
-            <Tooltip content={<CustomTooltip />} />
-            <Line 
-              type="monotone" 
-              dataKey="price" 
-              stroke={isPriceUp ? 'var(--market-increase)' : 'var(--market-decrease)'} 
-              dot={false}
-              activeDot={{ r: 4, fill: isPriceUp ? 'var(--market-increase)' : 'var(--market-decrease)' }}
-              strokeWidth={1.5}
-              isAnimationActive={false}
-              animationDuration={0}
-              animationEasing="linear"
-              connectNulls
-              dot={renderCustomizedDot}
-            />
-          </LineChart>
+          {areaChart ? (
+            <AreaChart data={data}>
+              {showGridLines && <CartesianGrid strokeDasharray="3 3" stroke="#333" />}
+              <XAxis 
+                dataKey="timestamp" 
+                tick={false} 
+                axisLine={{ stroke: '#333' }} 
+              />
+              <YAxis domain={['auto', 'auto']} hide />
+              {tooltipVisible && <Tooltip content={<CustomTooltip />} />}
+              <defs>
+                <linearGradient id="colorGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor={isIncreasing ? "#22c55e" : "#ef4444"} stopOpacity={0.3} />
+                  <stop offset="95%" stopColor={isIncreasing ? "#22c55e" : "#ef4444"} stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <Area 
+                type="monotone" 
+                dataKey="price" 
+                stroke={isIncreasing ? "#22c55e" : "#ef4444"} 
+                strokeWidth={1.5}
+                fillOpacity={1}
+                fill="url(#colorGradient)"
+                activeDot={{ r: 4, fill: isIncreasing ? "#22c55e" : "#ef4444" }}
+              />
+            </AreaChart>
+          ) : (
+            <LineChart data={data}>
+              {showGridLines && <CartesianGrid strokeDasharray="3 3" stroke="#333" />}
+              <XAxis 
+                dataKey="timestamp" 
+                tick={false} 
+                axisLine={{ stroke: '#333' }} 
+              />
+              <YAxis domain={['auto', 'auto']} hide />
+              {tooltipVisible && <Tooltip content={<CustomTooltip />} />}
+              <Line
+                type="monotone"
+                dataKey="price"
+                stroke={isIncreasing ? "#22c55e" : "#ef4444"}
+                strokeWidth={1.5}
+                dot={false}
+                activeDot={{ r: 4, fill: isIncreasing ? "#22c55e" : "#ef4444" }}
+                animationDuration={500}
+                animationEasing="linear"
+                connectNulls
+              />
+            </LineChart>
+          )}
         </ResponsiveContainer>
       </div>
-      
-      {showControls && (
-        <div className="flex justify-center gap-2 mt-4">
-          {(['1D', '1W', '1M', '3M', '1Y', 'ALL'] as const).map((range) => (
-            <button
-              key={range}
-              className={cn(
-                "px-3 py-1 rounded-md text-xs font-medium transition-colors",
-                timeRange === range 
-                  ? "bg-primary/20 text-primary" 
-                  : "text-muted-foreground hover:bg-accent/50"
-              )}
-            >
-              {range}
-            </button>
-          ))}
-        </div>
-      )}
     </div>
   );
 };

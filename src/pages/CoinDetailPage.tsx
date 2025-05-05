@@ -1,179 +1,168 @@
 
-import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 import MobileLayout from '@/components/layout/MobileLayout';
-import { Button } from '@/components/ui/button';
 import PriceChart from '@/components/PriceChart';
-import { mockCryptoData } from '@/data/mockData';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Button } from '@/components/ui/button';
+import { mockMarketData } from '@/data/mockData';
 import { ArrowUp, ArrowDown, ChevronRight } from 'lucide-react';
 
 const CoinDetailPage = () => {
-  const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
-  const [coin, setCoin] = useState<any>(null);
+  const [activeTab, setActiveTab] = useState('chart');
+  const crypto = mockMarketData[0]; // Using the first crypto from the list for demo
   
-  useEffect(() => {
-    // Find coin by id or symbol
-    const coinData = mockCryptoData.find((item) => 
-      item.id === id || 
-      item.symbol.toLowerCase() === id?.toLowerCase()
-    );
-    
-    if (coinData) {
-      setCoin(coinData);
-    } else {
-      // Coin not found
-      navigate('/market', { replace: true });
-    }
-  }, [id, navigate]);
-  
-  if (!coin) {
-    return (
-      <MobileLayout showBackButton title="Loading...">
-        <div className="flex items-center justify-center h-full">
-          <div className="animate-pulse text-muted-foreground">Loading...</div>
-        </div>
-      </MobileLayout>
-    );
-  }
-  
-  // Determine if price is up or down
-  const isPriceUp = coin.priceChangePercent > 0;
-  
-  // Generate some dummy chart data
-  const generateChartData = () => {
-    const now = Date.now();
-    const data = [];
-    const volatility = 0.05; // 5% volatility
-    
-    for (let i = 0; i < 24; i++) {
-      // Start with the current price and add random volatility
-      const randomFactor = 1 + (Math.random() * volatility * 2 - volatility);
-      const timestamp = now - (24 - i) * 3600 * 1000 / 24;
-      const price = coin.price * randomFactor;
-      
-      data.push({
-        timestamp: timestamp,
-        price: price
-      });
-    }
-    
-    return data;
-  };
-  
-  const chartData = generateChartData();
-  
+  // Sample chart data - in a real app this would be fetched based on the crypto
+  const chartData = [
+    { timestamp: '2023-01-01T00:00', price: 42000 },
+    { timestamp: '2023-01-01T01:00', price: 42200 },
+    { timestamp: '2023-01-01T02:00', price: 42100 },
+    { timestamp: '2023-01-01T03:00', price: 42300 },
+    { timestamp: '2023-01-01T04:00', price: 42500 },
+    { timestamp: '2023-01-01T05:00', price: 42400 },
+    { timestamp: '2023-01-01T06:00', price: 42600 },
+    { timestamp: '2023-01-01T07:00', price: 42800 },
+    { timestamp: '2023-01-01T08:00', price: 42700 },
+    { timestamp: '2023-01-01T09:00', price: 42900 },
+    { timestamp: '2023-01-01T10:00', price: 43000 },
+    { timestamp: '2023-01-01T11:00', price: 42950 },
+    { timestamp: '2023-01-01T12:00', price: 43100 },
+  ];
+
   return (
-    <MobileLayout showBackButton title={`${coin.name} (${coin.symbol})`}>
-      <div className="px-4 py-2">
-        {/* Price Summary */}
-        <div className="flex items-center space-x-3 mb-6">
-          <img
-            src={coin.image}
-            alt={coin.name}
-            className="w-12 h-12 rounded-full bg-background p-1"
-          />
-          <div className="flex-1">
-            <div className="flex items-center">
-              <h2 className="text-xl font-medium">{coin.symbol.toUpperCase()}/{coin.pairWith}</h2>
-              <span 
-                className={`ml-2 text-sm font-medium px-2 py-0.5 rounded-full ${
-                  isPriceUp ? 'bg-market-increase/10 text-market-increase' : 'bg-market-decrease/10 text-market-decrease'
-                }`}
-              >
-                {isPriceUp ? '+' : ''}{coin.priceChangePercent.toFixed(2)}%
-              </span>
+    <MobileLayout showBackButton title={crypto.name}>
+      <div className="p-4 max-w-md mx-auto">
+        <div className="flex justify-between items-start mb-6">
+          <div className="flex items-center">
+            <div className="bg-card/70 backdrop-blur-sm rounded-full p-2 mr-3">
+              <img 
+                src={crypto.icon} 
+                alt={crypto.symbol}
+                className="w-10 h-10"
+              />
             </div>
-            <div className="text-2xl font-semibold">₹{coin.price.toLocaleString(undefined, { minimumFractionDigits: 2 })}</div>
+            <div className="text-left">
+              <h2 className="text-xl font-bold">{crypto.name}</h2>
+              <p className="text-sm text-muted-foreground">{crypto.symbol}</p>
+            </div>
+          </div>
+          <div className="text-right">
+            <div className="text-xl font-bold">${crypto.price.toLocaleString()}</div>
+            <div className={`text-sm flex items-center justify-end ${crypto.change > 0 ? 'text-market-increase' : 'text-market-decrease'}`}>
+              {crypto.change > 0 ? (
+                <ArrowUp className="h-3 w-3 mr-1" />
+              ) : (
+                <ArrowDown className="h-3 w-3 mr-1" />
+              )}
+              {Math.abs(crypto.change)}%
+            </div>
           </div>
         </div>
-        
-        {/* Chart */}
-        <div className="bg-card/50 rounded-xl p-4 mb-4">
-          <PriceChart data={chartData} showControls height={220} />
-        </div>
-        
-        {/* Action Buttons */}
-        <div className="grid grid-cols-2 gap-3 mb-6">
-          <Button 
-            className="bg-market-increase hover:bg-market-increase/90 text-white"
-          >
-            <ArrowUp className="mr-1 h-4 w-4" /> Buy
-          </Button>
-          <Button 
-            variant="destructive"
-            className="bg-market-decrease hover:bg-market-decrease/90"
-          >
-            <ArrowDown className="mr-1 h-4 w-4" /> Sell
-          </Button>
-        </div>
-        
-        {/* Market Information */}
-        <div className="space-y-4">
-          <h3 className="text-lg font-medium">Market Information</h3>
+
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="grid grid-cols-3 mb-4">
+            <TabsTrigger value="chart">Chart</TabsTrigger>
+            <TabsTrigger value="about">About</TabsTrigger>
+            <TabsTrigger value="trade">Trade</TabsTrigger>
+          </TabsList>
           
-          <div className="bg-card/50 rounded-xl divide-y divide-border/50">
-            <InfoRow label="24h Volume" value={`₹${coin.volume24h.toLocaleString()}`} />
-            <InfoRow label="24h High" value={`₹${(coin.price * 1.05).toFixed(2)}`} />
-            <InfoRow label="24h Low" value={`₹${(coin.price * 0.95).toFixed(2)}`} />
-            <InfoRow label="Market Cap" value={`₹${(coin.price * coin.circulatingSupply).toLocaleString()}`} />
-            <InfoRow label="Circulating Supply" value={`${coin.circulatingSupply.toLocaleString()} ${coin.symbol.toUpperCase()}`} />
-          </div>
-          
-          {/* Transaction History */}
-          <div className="mt-6">
-            <div className="flex items-center justify-between mb-2">
-              <h3 className="text-lg font-medium">Recent Transactions</h3>
-              <button className="text-primary text-sm flex items-center">
-                See all <ChevronRight className="ml-1 h-4 w-4" />
-              </button>
-            </div>
+          <TabsContent value="chart" className="space-y-4">
+            <Card>
+              <CardContent className="pt-6">
+                <PriceChart 
+                  data={chartData} 
+                  currentPrice={crypto.price}
+                  previousPrice={crypto.price - (crypto.price * crypto.change / 100)}
+                  height={220}
+                  areaChart
+                />
+              </CardContent>
+            </Card>
             
-            <div className="bg-card/50 rounded-xl overflow-hidden">
-              {[1, 2, 3].map((item) => (
-                <div key={item} className="flex items-center justify-between p-4 border-b border-border/50 last:border-0">
-                  <div className="flex items-center">
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center mr-3 ${
-                      item % 2 === 0 ? 'bg-market-increase/10 text-market-increase' : 'bg-market-decrease/10 text-market-decrease'
-                    }`}>
-                      {item % 2 === 0 ? 
-                        <ArrowUp className="h-4 w-4" /> : 
-                        <ArrowDown className="h-4 w-4" />
-                      }
-                    </div>
-                    <div>
-                      <div className="font-medium">
-                        {item % 2 === 0 ? 'Buy' : 'Sell'} {coin.symbol.toUpperCase()}
-                      </div>
-                      <div className="text-xs text-muted-foreground">
-                        {new Date(Date.now() - item * 3600000).toLocaleString()}
-                      </div>
-                    </div>
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-lg">Market Stats</CardTitle>
+              </CardHeader>
+              <CardContent className="py-0">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-sm text-muted-foreground">Market Cap</p>
+                    <p className="font-medium">${(crypto.price * 19000000).toLocaleString()}</p>
                   </div>
-                  <div className="text-right">
-                    <div className="font-medium">
-                      {item % 2 === 0 ? '+' : '-'}{(Math.random() * 0.5).toFixed(4)} {coin.symbol.toUpperCase()}
-                    </div>
-                    <div className="text-xs text-muted-foreground">
-                      ₹{(coin.price * Math.random() * 0.5).toFixed(2)}
-                    </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">24h Volume</p>
+                    <p className="font-medium">${(crypto.price * 800000).toLocaleString()}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Circulating Supply</p>
+                    <p className="font-medium">19,000,000</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Max Supply</p>
+                    <p className="font-medium">21,000,000</p>
                   </div>
                 </div>
-              ))}
-            </div>
-          </div>
-        </div>
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-lg">Price History</CardTitle>
+              </CardHeader>
+              <CardContent className="py-0">
+                <div className="grid grid-cols-3 gap-4">
+                  <div>
+                    <p className="text-sm text-muted-foreground">1h</p>
+                    <p className={crypto.change > 0 ? 'text-market-increase' : 'text-market-decrease'}>
+                      {crypto.change > 0 ? '+' : ''}{(crypto.change * 0.1).toFixed(2)}%
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">24h</p>
+                    <p className={crypto.change > 0 ? 'text-market-increase' : 'text-market-decrease'}>
+                      {crypto.change > 0 ? '+' : ''}{crypto.change}%
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">7d</p>
+                    <p className={crypto.change > 0 ? 'text-market-increase' : 'text-market-decrease'}>
+                      {crypto.change > 0 ? '+' : ''}{(crypto.change * 2.5).toFixed(2)}%
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+          
+          <TabsContent value="about">
+            <Card>
+              <CardContent className="pt-6">
+                <p className="mb-4">
+                  {crypto.name} ({crypto.symbol}) is a digital currency that enables instant payments to anyone, anywhere in the world.
+                </p>
+                <p>
+                  {crypto.name} uses peer-to-peer technology to operate with no central authority: managing transactions and issuing money are carried out collectively by the network.
+                </p>
+              </CardContent>
+            </Card>
+          </TabsContent>
+          
+          <TabsContent value="trade">
+            <Card>
+              <CardContent className="pt-6 flex flex-col gap-4">
+                <Button className="bg-market-increase hover:bg-market-increase/90">
+                  Buy {crypto.symbol}
+                </Button>
+                <Button variant="outline">
+                  Sell {crypto.symbol}
+                </Button>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
       </div>
     </MobileLayout>
   );
 };
-
-// Helper component for info rows
-const InfoRow = ({ label, value }: { label: string; value: string }) => (
-  <div className="flex items-center justify-between py-3 px-4">
-    <span className="text-muted-foreground">{label}</span>
-    <span className="font-medium">{value}</span>
-  </div>
-);
 
 export default CoinDetailPage;

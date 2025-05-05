@@ -11,13 +11,15 @@ interface MobileLayoutProps {
   title?: string;
   showBackButton?: boolean;
   rightActions?: ReactNode;
+  noScroll?: boolean;
 }
 
 const MobileLayout = ({ 
   children, 
   title,
   showBackButton = false,
-  rightActions 
+  rightActions,
+  noScroll = false
 }: MobileLayoutProps) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
@@ -31,19 +33,24 @@ const MobileLayout = ({
   
   // Only show the navbar on main pages
   const shouldShowNavbar = ['/home', '/market', '/team', '/profile', '/'].includes(location.pathname);
+  
+  // Calculate content style - either scrollable or fixed height
+  const contentStyle = noScroll 
+    ? "flex-1 flex flex-col" 
+    : "flex-1 overflow-y-auto webkit-overflow-scrolling-touch pb-safe";
 
   return (
     <div className="flex flex-col h-full w-full bg-background text-foreground relative">
       {/* Header */}
       {(title || showBackButton) && (
-        <header className="sticky top-0 z-20 px-4 py-3 flex items-center justify-between bg-background/90 backdrop-blur-md border-b border-border/40">
+        <header className="sticky top-0 z-20 px-4 py-3 flex items-center justify-between bg-background/95 backdrop-blur-md">
           <div className="flex items-center gap-2">
             {showBackButton ? (
               <button 
                 onClick={goBack} 
                 className="p-1.5 rounded-full hover:bg-accent/50 transition-colors flex items-center justify-center"
               >
-                <ChevronLeft className="h-5 w-5 text-primary" />
+                <ChevronLeft className="h-5 w-5" />
               </button>
             ) : (
               <button 
@@ -54,7 +61,7 @@ const MobileLayout = ({
               </button>
             )}
             {title && (
-              <h1 className="text-lg font-semibold text-gradient">{title}</h1>
+              <h1 className="text-xl font-semibold">{title}</h1>
             )}
           </div>
           {rightActions ? (
@@ -73,8 +80,8 @@ const MobileLayout = ({
       {/* Side Menu */}
       <SideMenu isOpen={menuOpen} onClose={() => setMenuOpen(false)} />
 
-      {/* Main Content - Fix scrolling issues */}
-      <main className="flex-1 overflow-y-auto webkit-overflow-scrolling-touch pb-safe">
+      {/* Main Content */}
+      <main className={contentStyle}>
         {children}
       </main>
 

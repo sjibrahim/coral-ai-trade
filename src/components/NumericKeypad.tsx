@@ -8,7 +8,7 @@ interface NumericKeypadProps {
   maxLength?: number;
   className?: string;
   onConfirm?: () => void;
-  showConfirmButton?: boolean;
+  confirmButtonText?: string;
 }
 
 const NumericKeypad = ({ 
@@ -17,7 +17,7 @@ const NumericKeypad = ({
   maxLength = 10,
   className,
   onConfirm,
-  showConfirmButton = true
+  confirmButtonText = "CONFIRM"
 }: NumericKeypadProps) => {
   
   const handleKeyPress = (key: string) => {
@@ -50,23 +50,23 @@ const NumericKeypad = ({
   };
   
   return (
-    <div className={cn("numeric-keypad space-y-4", className)}>
+    <div className={cn("numeric-keypad w-full", className)}>
       <div className="grid grid-cols-3 gap-4">
         <KeypadButton onClick={() => handleKeyPress('1')}>1</KeypadButton>
         <KeypadButton onClick={() => handleKeyPress('2')}>2</KeypadButton>
         <KeypadButton onClick={() => handleKeyPress('3')}>3</KeypadButton>
       </div>
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-3 gap-4 mt-4">
         <KeypadButton onClick={() => handleKeyPress('4')}>4</KeypadButton>
         <KeypadButton onClick={() => handleKeyPress('5')}>5</KeypadButton>
         <KeypadButton onClick={() => handleKeyPress('6')}>6</KeypadButton>
       </div>
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-3 gap-4 mt-4">
         <KeypadButton onClick={() => handleKeyPress('7')}>7</KeypadButton>
         <KeypadButton onClick={() => handleKeyPress('8')}>8</KeypadButton>
         <KeypadButton onClick={() => handleKeyPress('9')}>9</KeypadButton>
       </div>
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-3 gap-4 mt-4">
         <KeypadButton variant="secondary" onClick={() => handleKeyPress('clear')}>
           <span className="text-sm">clr</span>
         </KeypadButton>
@@ -76,15 +76,13 @@ const NumericKeypad = ({
         </KeypadButton>
       </div>
       
-      {showConfirmButton && (
-        <div className="mt-6">
-          <button 
-            onClick={onConfirm}
-            className="w-full py-4 rounded-xl bg-primary text-white text-base font-medium"
-          >
-            CONFIRM
-          </button>
-        </div>
+      {onConfirm && (
+        <button 
+          onClick={onConfirm}
+          className="w-full py-4 rounded-xl bg-blue-600 text-white text-base font-medium mt-6"
+        >
+          {confirmButtonText}
+        </button>
       )}
     </div>
   );
@@ -102,9 +100,8 @@ const KeypadButton = ({ onClick, children, variant = 'default' }: KeypadButtonPr
       type="button"
       onClick={onClick}
       className={cn(
-        "h-14 w-14 rounded-full text-xl font-medium flex items-center justify-center",
-        "bg-[#1A1F2C]/80 hover:bg-[#1A1F2C] transition-colors",
-        variant === 'secondary' ? "text-muted-foreground" : "text-white"
+        "h-14 w-full rounded-lg text-xl font-medium flex items-center justify-center",
+        variant === 'secondary' ? "text-blue-300" : "text-white"
       )}
     >
       {children}

@@ -18,7 +18,7 @@ main {
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   position: relative;
-  padding-bottom: 80px; /* Space for footer */
+  padding-bottom: 0; /* Removed default padding */
 }
 
 @keyframes logo-spin {
@@ -52,24 +52,10 @@ main {
 
 /* Keypad styling */
 .numeric-keypad button {
-  backdrop-filter: blur(4px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.1);
+  background: transparent; /* Transparent background */
+  border: none; /* No border */
   position: relative;
   overflow: hidden;
-}
-
-/* Adding a subtle inner shadow effect to keypad buttons */
-.numeric-keypad button::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.1), transparent);
-  border-radius: inherit;
-  pointer-events: none;
 }
 
 /* Fix mobile nav bottom spacing for iOS notch/home indicator */
@@ -93,4 +79,3 @@ nav.fixed.bottom-0 {
   padding-left: constant(safe-area-inset-left, 1rem);
   padding-right: constant(safe-area-inset-right, 1rem);
 }
-
