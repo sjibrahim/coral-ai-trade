@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import MobileLayout from '@/components/layout/MobileLayout';
 import PriceChart from '@/components/PriceChart';
@@ -11,6 +10,12 @@ import { ArrowUp, ArrowDown, ChevronRight } from 'lucide-react';
 const CoinDetailPage = () => {
   const [activeTab, setActiveTab] = useState('chart');
   const crypto = mockCryptoCurrencies[0]; // Using the first crypto from the list for demo
+  
+  // Transform mockPriceChartData to have the timestamp property instead of time
+  const transformedChartData = mockPriceChartData.map(item => ({
+    timestamp: item.time,
+    price: item.price
+  }));
   
   return (
     <MobileLayout showBackButton title={crypto.name}>
@@ -53,7 +58,7 @@ const CoinDetailPage = () => {
             <Card>
               <CardContent className="pt-6">
                 <PriceChart 
-                  data={mockPriceChartData} 
+                  data={transformedChartData} 
                   currentPrice={crypto.price}
                   previousPrice={crypto.price - (crypto.price * crypto.change / 100)}
                   height={220}
