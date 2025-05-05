@@ -1,14 +1,13 @@
-
 import { useState, useEffect } from 'react';
 import MobileLayout from '@/components/layout/MobileLayout';
 import PriceChart from '@/components/PriceChart';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { mockCryptoCurrencies, mockPriceChartData } from '@/data/mockData';
-import { ArrowUp, ArrowDown, ChevronRight, X } from 'lucide-react';
+import { ArrowUp, ArrowDown, ChevronRight, X, Info } from 'lucide-react';
 
 const CoinDetailPage = () => {
   const [activeTab, setActiveTab] = useState('chart');
@@ -75,6 +74,7 @@ const CoinDetailPage = () => {
     <MobileLayout showBackButton title={crypto.name} noScroll>
       <div className="flex flex-col h-full bg-[#0A0B14]">
         <div className="p-4">
+          {/* Coin Header Info - Keep existing code */}
           <div className="flex justify-between items-start mb-6">
             <div className="flex items-center">
               <div className="bg-[#14151F]/70 backdrop-blur-sm rounded-full p-2 mr-3">
@@ -104,6 +104,7 @@ const CoinDetailPage = () => {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col">
+          {/* Tabs - Keep existing code */}
           <TabsList className="bg-[#14151F] mx-4 grid grid-cols-3 mb-4 rounded-xl">
             <TabsTrigger value="chart" className="rounded-lg text-gray-100 data-[state=active]:bg-[#222430] data-[state=active]:text-blue-400">Chart</TabsTrigger>
             <TabsTrigger value="about" className="rounded-lg text-gray-100 data-[state=active]:bg-[#222430] data-[state=active]:text-blue-400">About</TabsTrigger>
@@ -111,6 +112,7 @@ const CoinDetailPage = () => {
           </TabsList>
           
           <div className="flex-1 overflow-y-auto px-4 pb-24">
+            {/* Tab Content - Keep existing code */}
             <TabsContent value="chart" className="space-y-4 mt-0 flex-1">
               <Card className="bg-[#14151F] border-[#222] text-gray-100">
                 <CardContent className="pt-6">
@@ -142,6 +144,7 @@ const CoinDetailPage = () => {
                 </CardContent>
               </Card>
               
+              {/* Market Stats - Keep existing code */}
               <Card className="bg-[#14151F] border-[#222] text-gray-100">
                 <CardHeader className="pb-2">
                   <CardTitle className="text-lg">Market Stats</CardTitle>
@@ -168,6 +171,7 @@ const CoinDetailPage = () => {
                 </CardContent>
               </Card>
               
+              {/* Price History - Keep existing code */}
               <Card className="bg-[#14151F] border-[#222] text-gray-100">
                 <CardHeader className="pb-2">
                   <CardTitle className="text-lg">Price History</CardTitle>
@@ -197,6 +201,7 @@ const CoinDetailPage = () => {
               </Card>
             </TabsContent>
             
+            {/* About Tab - Keep existing code */}
             <TabsContent value="about">
               <Card className="bg-[#14151F] border-[#222] text-gray-100">
                 <CardContent className="pt-6">
@@ -210,6 +215,7 @@ const CoinDetailPage = () => {
               </Card>
             </TabsContent>
             
+            {/* Trade Tab - Keep existing code */}
             <TabsContent value="trade">
               <Card className="bg-[#14151F] border-[#222] text-gray-100">
                 <CardContent className="pt-6 flex flex-col gap-4">
@@ -225,7 +231,7 @@ const CoinDetailPage = () => {
           </div>
         </Tabs>
         
-        {/* Fixed Buy/Sell buttons at bottom */}
+        {/* Fixed Buy/Sell buttons at bottom - Keep existing code */}
         <div className="fixed bottom-0 left-0 right-0 p-4 pb-safe bg-[#0A0B14] border-t border-[#222] grid grid-cols-2 gap-3">
           <Button 
             className="py-5 bg-market-increase hover:bg-market-increase/90 text-white font-semibold rounded-xl"
@@ -244,34 +250,60 @@ const CoinDetailPage = () => {
       
       {/* Redesigned Buy/Sell Modal */}
       <Dialog open={isBuyModalOpen || isSellModalOpen} onOpenChange={closeModal}>
-        <DialogContent className="bg-[#1A1C2A] border-none shadow-xl p-0 max-w-sm mx-auto rounded-2xl overflow-hidden">
-          {/* Modal Header */}
-          <div className="relative border-b border-gray-800">
-            <div className="px-4 py-4 flex justify-between items-center">
-              <h2 className="text-lg font-semibold text-white">
-                {crypto.symbol}/INR
-              </h2>
+        <DialogContent className="bg-gradient-to-b from-[#1E2032] to-[#141525] border-none shadow-xl p-0 max-w-sm mx-auto rounded-2xl overflow-hidden">
+          {/* Modal Header with Title for accessibility */}
+          <DialogTitle className="sr-only">
+            {direction === 'Call' ? 'Buy' : 'Sell'} {crypto.symbol}
+          </DialogTitle>
+          
+          <div className="relative border-b border-gray-800/30">
+            <div className="px-5 py-4 flex justify-between items-center">
+              <div className="flex items-center gap-3">
+                <div className="bg-[#252739]/70 backdrop-blur-sm rounded-full p-1.5">
+                  <img 
+                    src={crypto.logo} 
+                    alt={crypto.symbol}
+                    className="w-6 h-6"
+                  />
+                </div>
+                <div>
+                  <h2 className="text-lg font-semibold text-white flex items-center gap-2">
+                    {crypto.symbol}/INR
+                    <span className={`px-2 py-0.5 text-xs rounded-full ${
+                      direction === 'Call' 
+                        ? 'bg-market-increase/20 text-market-increase' 
+                        : 'bg-market-decrease/20 text-market-decrease'
+                    }`}>
+                      {direction}
+                    </span>
+                  </h2>
+                </div>
+              </div>
               <button 
                 onClick={closeModal}
-                className="rounded-full p-1 hover:bg-[#2A2C3A] transition-colors"
+                className="rounded-full p-2 bg-[#252739] hover:bg-[#313450] transition-colors"
+                aria-label="Close dialog"
               >
-                <X className="h-5 w-5 text-gray-400" />
+                <X className="h-4 w-4 text-gray-400" />
               </button>
             </div>
           </div>
           
-          <div className="p-4 space-y-5">
+          <div className="p-5 space-y-5">
             {/* Time Period Selection */}
             <div className="space-y-3">
-              <p className="text-gray-400 text-sm">Select Time Period</p>
-              <div className="flex w-full overflow-x-auto gap-2 pb-1 scrollbar-none -mx-1 px-1">
+              <p className="text-gray-300 font-medium flex items-center gap-1.5">
+                <span>Time Period</span>
+                <Info className="h-3.5 w-3.5 text-gray-500" />
+              </p>
+              <div className="grid grid-cols-5 gap-2">
                 {['1min', '2min', '5min', '10min', '15min'].map((period) => (
                   <button
                     key={period}
-                    className={`px-4 py-2.5 rounded-full whitespace-nowrap transition-colors ${
+                    className={`px-2 py-2.5 rounded-xl text-sm transition-all ${
                       selectedTimePeriod === period
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-[#262838] text-gray-300'
+                      ? `${direction === 'Call' ? 'bg-[#0F4686]' : 'bg-[#461F1E]'} text-white font-medium`
+                      : 'bg-[#252739] text-gray-400 hover:bg-[#313450]'
                     }`}
                     onClick={() => setSelectedTimePeriod(period)}
                   >
@@ -282,16 +314,17 @@ const CoinDetailPage = () => {
             </div>
             
             {/* Available Balance */}
-            <div className="space-y-2">
-              <div className="flex justify-between">
-                <p className="text-gray-400 text-sm">Available:</p>
-                <p className="text-gray-300 text-sm">₹ 20023</p>
+            <div className="space-y-4">
+              <div className="flex justify-between items-center">
+                <p className="text-gray-400 text-sm">Available Balance</p>
+                <p className="text-gray-200 text-sm font-medium">₹ 20,023</p>
               </div>
               
               {/* Trade Amount Input */}
               <div className="relative">
+                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-medium">₹</div>
                 <Input
-                  className="bg-[#262838] border-none text-white text-lg py-6 px-4 rounded-lg"
+                  className="bg-[#252739] border-none text-white text-xl py-6 pl-8 pr-4 rounded-xl font-medium focus:ring-1 focus:ring-blue-600/50"
                   placeholder="Enter amount"
                   value={tradeAmount}
                   onChange={(e) => setTradeAmount(e.target.value)}
@@ -301,45 +334,59 @@ const CoinDetailPage = () => {
               </div>
               
               {/* Predefined Amount Buttons */}
-              <div className="grid grid-cols-3 gap-2 mt-3">
+              <div className="grid grid-cols-3 gap-2.5">
                 {predefinedAmounts.map((amount) => (
                   <button
                     key={amount}
-                    className="bg-[#262838] hover:bg-[#2F3146] transition-colors rounded-lg py-2 text-sm text-gray-300"
+                    className={`bg-[#252739] hover:bg-[#313450] transition-all rounded-xl py-3 text-sm font-medium ${
+                      tradeAmount === amount 
+                        ? 'ring-1 ring-blue-500 text-gray-100' 
+                        : 'text-gray-400'
+                    }`}
                     onClick={() => setTradeAmount(amount)}
                   >
-                    ₹{amount}
+                    ₹{parseInt(amount).toLocaleString()}
                   </button>
                 ))}
               </div>
             </div>
             
             {/* Trade Summary */}
-            <div className="bg-[#262838] rounded-xl p-4">
-              <div className="grid grid-cols-3 gap-2">
+            <div className="bg-[#252739]/70 rounded-xl p-4">
+              <div className="grid grid-cols-3 gap-4">
                 <div className="text-center">
-                  <p className="text-gray-400 text-xs mb-1">Direction</p>
-                  <p className="text-white font-medium">{direction}</p>
+                  <p className="text-gray-400 text-xs mb-1.5">Direction</p>
+                  <p className={`font-medium text-sm ${
+                    direction === 'Call' ? 'text-market-increase' : 'text-market-decrease'
+                  }`}>
+                    {direction}
+                  </p>
                 </div>
-                <div className="text-center">
-                  <p className="text-gray-400 text-xs mb-1">Price</p>
-                  <p className={`font-medium ${priceChange > 0 ? 'text-market-increase' : 'text-market-decrease'}`}>
-                    {livePrice.toLocaleString(undefined, { maximumFractionDigits: 2 })}
+                <div className="text-center border-x border-gray-700/30">
+                  <p className="text-gray-400 text-xs mb-1.5">Current Price</p>
+                  <p className="font-medium text-sm text-gray-200">
+                    ₹{livePrice.toLocaleString(undefined, { maximumFractionDigits: 2 })}
                   </p>
                 </div>
                 <div className="text-center">
-                  <p className="text-gray-400 text-xs mb-1">Amount</p>
-                  <p className="text-white font-medium">₹ {tradeAmount}</p>
+                  <p className="text-gray-400 text-xs mb-1.5">Investment</p>
+                  <p className="font-medium text-sm text-gray-200">
+                    ₹{parseInt(tradeAmount).toLocaleString()}
+                  </p>
                 </div>
               </div>
             </div>
             
             {/* Confirm Button */}
             <Button 
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-5 font-medium text-lg rounded-xl"
+              className={`w-full py-5 font-medium text-base rounded-xl ${
+                direction === 'Call'
+                ? 'bg-market-increase hover:bg-market-increase/90'
+                : 'bg-market-decrease hover:bg-market-decrease/90'
+              } text-white`}
               onClick={handleConfirmTrade}
             >
-              CONFIRM
+              {direction === 'Call' ? 'BUY' : 'SELL'} {selectedTimePeriod}
             </Button>
           </div>
         </DialogContent>
