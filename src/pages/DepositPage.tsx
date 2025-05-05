@@ -94,7 +94,7 @@ const DepositPage = () => {
             />
           </div>
 
-          <div className="px-4 mt-4">
+          <div className="px-4">
             <button 
               onClick={isValidAmount ? handleConfirm : undefined}
               disabled={!isValidAmount}
