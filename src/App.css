@@ -1,3 +1,4 @@
+
 /* Remove default padding that causes zoom issues */
 #root {
   max-width: 100%;
@@ -223,4 +224,23 @@ nav.fixed.bottom-0 {
   backdrop-filter: blur(8px);
   border-radius: 16px;
   box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* New styles for enhanced mobile chart experience */
+.chart-fullscreen-header {
+  border-bottom: 1px solid rgba(75, 85, 99, 0.2);
+  background-color: rgba(17, 24, 39, 0.95);
+  backdrop-filter: blur(10px);
+}
+
+.chart-fullscreen-container {
+  background: linear-gradient(180deg, #0A0B14 0%, #151824 100%);
+}
+
+.chart-mobile-timeframe-btn {
+  transition: all 0.2s ease;
+}
+
+.chart-mobile-timeframe-btn:active {
+  transform: scale(0.95);
 }
