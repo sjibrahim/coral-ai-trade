@@ -44,67 +44,57 @@ const WithdrawPage = () => {
           </button>
         </div>
       )}
+      noScroll
     >
-      <div className="flex flex-col min-h-full bg-[#0d0e14]">
+      <div className="flex flex-col h-full bg-[#0d0e14]">
         {/* Top Section - Amount Display */}
-        <div className="pt-6 px-6 text-left">
+        <div className="pt-4 px-6 text-left">
           <div className="flex items-start">
-            <span className="text-2xl font-bold text-white mt-2 mr-1">₹</span>
-            <span className="text-8xl font-bold text-white">
+            <span className="text-xl font-bold text-white mt-2 mr-1">₹</span>
+            <span className="text-6xl font-bold text-white">
               {amount ? amount : "0"}
             </span>
           </div>
           
           <div className="mt-1 text-right">
-            <p className="text-gray-400 text-base">
+            <p className="text-gray-400 text-sm">
               Minimum Withdrawal <span className="text-blue-400">₹300</span>
             </p>
           </div>
         </div>
         
         {/* Middle Section - Balance & Bank info */}
-        <div className="bg-[#12131a] py-4 px-6 mt-6">
-          <div className="text-center mb-4">
-            <h3 className="text-gray-400 mb-1">Withdrawal Balance</h3>
-            <p className="text-4xl font-bold text-white">₹{availableBalance.toLocaleString()}</p>
+        <div className="bg-[#12131a] py-3 px-6 mt-4">
+          <div className="text-center mb-3">
+            <h3 className="text-gray-400 text-sm mb-1">Withdrawal Balance</h3>
+            <p className="text-3xl font-bold text-white">₹{availableBalance.toLocaleString()}</p>
           </div>
           
-          <div className="grid grid-cols-2 gap-4">
-            <div className="bg-[#1a1e29] rounded-xl p-4">
-              <p className="text-blue-400 text-sm mb-1 text-left">Bank Account</p>
-              <p className="text-white text-xl font-medium text-left">{bankAccount}</p>
+          <div className="grid grid-cols-2 gap-3">
+            <div className="bg-[#1a1e29] rounded-xl p-3">
+              <p className="text-blue-400 text-xs mb-1 text-left">Bank Account</p>
+              <p className="text-white text-base font-medium text-left">{bankAccount}</p>
             </div>
-            <div className="bg-[#1a1e29] rounded-xl p-4">
-              <p className="text-blue-400 text-sm mb-1 text-left">IFSC code</p>
-              <p className="text-white text-xl font-medium text-left">{ifscCode}</p>
+            <div className="bg-[#1a1e29] rounded-xl p-3">
+              <p className="text-blue-400 text-xs mb-1 text-left">IFSC code</p>
+              <p className="text-white text-base font-medium text-left">{ifscCode}</p>
             </div>
           </div>
         </div>
 
         {/* Bottom Section - Keypad */}
-        <div className="flex-grow flex flex-col justify-end px-4 py-6">
+        <div className="flex-1 flex flex-col justify-end px-4 py-2">
           <NumericKeypad 
             value={amount}
             onChange={setAmount}
-            size="lg"
+            size="sm"
             deleteIcon="backspace"
             clearText="clr"
+            className="mb-2"
+            onConfirm={handleConfirm}
+            confirmButtonText="SUBMIT"
+            confirmDisabled={!isValidAmount}
           />
-          
-          <div className="px-2 mt-6">
-            <button 
-              onClick={handleConfirm}
-              disabled={!isValidAmount}
-              className={cn(
-                "w-full py-4 rounded-lg text-white text-xl font-medium transition-all",
-                isValidAmount 
-                  ? "bg-blue-600 hover:bg-blue-700 active:scale-[0.98]" 
-                  : "bg-blue-600/50 cursor-not-allowed"
-              )}
-            >
-              SUBMIT
-            </button>
-          </div>
         </div>
       </div>
       

@@ -14,6 +14,7 @@ interface NumericKeypadProps {
   size?: "sm" | "md" | "lg";
   deleteIcon?: "delete" | "backspace";
   clearText?: string;
+  confirmDisabled?: boolean;
 }
 
 const NumericKeypad = ({ 
@@ -26,7 +27,8 @@ const NumericKeypad = ({
   confirmButtonIcon,
   size = "md",
   deleteIcon = "delete",
-  clearText = "clr"
+  clearText = "clr",
+  confirmDisabled = false,
 }: NumericKeypadProps) => {
   
   const handleKeyPress = (key: string) => {
@@ -60,7 +62,7 @@ const NumericKeypad = ({
 
   // Size classes for buttons - darker styling to match the reference design
   const sizeClasses = {
-    sm: "h-14 w-14 text-xl",
+    sm: "h-12 w-12 text-lg",
     md: "h-16 w-16 text-2xl",
     lg: "h-[76px] w-[76px] text-3xl",
   }[size];
@@ -70,7 +72,7 @@ const NumericKeypad = ({
   
   return (
     <div className={cn("numeric-keypad w-full", className)}>
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-3 gap-2 sm:gap-4">
         {/* First row */}
         <KeypadButton size={size} onClick={() => handleKeyPress('1')}>1</KeypadButton>
         <KeypadButton size={size} onClick={() => handleKeyPress('2')}>2</KeypadButton>
@@ -88,7 +90,7 @@ const NumericKeypad = ({
         
         {/* Fourth row */}
         <KeypadButton size={size} variant="secondary" onClick={() => handleKeyPress('clear')}>
-          <span className="text-lg">{clearText}</span>
+          <span className="text-sm">{clearText}</span>
         </KeypadButton>
         <KeypadButton size={size} onClick={() => handleKeyPress('0')}>0</KeypadButton>
         <KeypadButton size={size} variant="secondary" onClick={() => handleKeyPress('delete')}>
@@ -97,6 +99,23 @@ const NumericKeypad = ({
           )} />
         </KeypadButton>
       </div>
+      
+      {/* Confirm Button - shown only if onConfirm is provided */}
+      {onConfirm && (
+        <button 
+          onClick={onConfirm}
+          disabled={confirmDisabled}
+          className={cn(
+            "w-full py-3 mt-4 rounded-lg text-white text-lg font-medium transition-all",
+            confirmDisabled 
+              ? "bg-blue-600/50 cursor-not-allowed" 
+              : "bg-blue-600 hover:bg-blue-700 active:scale-[0.98]"
+          )}
+        >
+          {confirmButtonIcon && <span className="mr-2">{confirmButtonIcon}</span>}
+          {confirmButtonText}
+        </button>
+      )}
     </div>
   );
 };
@@ -111,7 +130,7 @@ interface KeypadButtonProps {
 const KeypadButton = ({ onClick, children, variant = 'default', size = "md" }: KeypadButtonProps) => {
   // Size classes
   const sizeClasses = {
-    sm: "h-14 w-14 text-xl",
+    sm: "h-12 w-12 text-lg",
     md: "h-16 w-16 text-2xl",
     lg: "h-[76px] w-[76px] text-2xl font-medium",
   }[size];
