@@ -1,6 +1,6 @@
 
 import { cn } from "@/lib/utils";
-import { Delete } from "lucide-react";
+import { Delete, Backspace } from "lucide-react";
 import React from "react";
 
 interface NumericKeypadProps {
@@ -11,6 +11,9 @@ interface NumericKeypadProps {
   onConfirm?: () => void;
   confirmButtonText?: string;
   confirmButtonIcon?: React.ReactNode;
+  size?: "sm" | "md" | "lg";
+  deleteIcon?: "delete" | "backspace";
+  clearText?: string;
 }
 
 const NumericKeypad = ({ 
@@ -20,7 +23,10 @@ const NumericKeypad = ({
   className,
   onConfirm,
   confirmButtonText = "CONFIRM",
-  confirmButtonIcon
+  confirmButtonIcon,
+  size = "md",
+  deleteIcon = "delete",
+  clearText = "clear"
 }: NumericKeypadProps) => {
   
   const handleKeyPress = (key: string) => {
@@ -51,32 +57,44 @@ const NumericKeypad = ({
     
     onChange(value + key);
   };
+
+  // Size classes for buttons
+  const sizeClasses = {
+    sm: "h-12 w-12 text-base",
+    md: "h-14 w-14 text-lg",
+    lg: "h-16 w-16 text-2xl",
+  }[size];
+  
+  // Get the correct delete icon
+  const DeleteIconComponent = deleteIcon === "backspace" ? Backspace : Delete;
   
   return (
-    <div className={cn("numeric-keypad w-full max-w-xs", className)}>
-      <div className="grid grid-cols-3 gap-x-4 gap-y-4">
+    <div className={cn("numeric-keypad", className)}>
+      <div className="grid grid-cols-3 gap-x-6 gap-y-6">
         {/* First row */}
-        <KeypadButton onClick={() => handleKeyPress('1')}>1</KeypadButton>
-        <KeypadButton onClick={() => handleKeyPress('2')}>2</KeypadButton>
-        <KeypadButton onClick={() => handleKeyPress('3')}>3</KeypadButton>
+        <KeypadButton size={size} onClick={() => handleKeyPress('1')}>1</KeypadButton>
+        <KeypadButton size={size} onClick={() => handleKeyPress('2')}>2</KeypadButton>
+        <KeypadButton size={size} onClick={() => handleKeyPress('3')}>3</KeypadButton>
         
         {/* Second row */}
-        <KeypadButton onClick={() => handleKeyPress('4')}>4</KeypadButton>
-        <KeypadButton onClick={() => handleKeyPress('5')}>5</KeypadButton>
-        <KeypadButton onClick={() => handleKeyPress('6')}>6</KeypadButton>
+        <KeypadButton size={size} onClick={() => handleKeyPress('4')}>4</KeypadButton>
+        <KeypadButton size={size} onClick={() => handleKeyPress('5')}>5</KeypadButton>
+        <KeypadButton size={size} onClick={() => handleKeyPress('6')}>6</KeypadButton>
         
         {/* Third row */}
-        <KeypadButton onClick={() => handleKeyPress('7')}>7</KeypadButton>
-        <KeypadButton onClick={() => handleKeyPress('8')}>8</KeypadButton>
-        <KeypadButton onClick={() => handleKeyPress('9')}>9</KeypadButton>
+        <KeypadButton size={size} onClick={() => handleKeyPress('7')}>7</KeypadButton>
+        <KeypadButton size={size} onClick={() => handleKeyPress('8')}>8</KeypadButton>
+        <KeypadButton size={size} onClick={() => handleKeyPress('9')}>9</KeypadButton>
         
         {/* Fourth row */}
-        <KeypadButton variant="secondary" onClick={() => handleKeyPress('clear')}>
-          <span className="text-sm">clr</span>
+        <KeypadButton size={size} variant="secondary" onClick={() => handleKeyPress('clear')}>
+          <span className="text-sm">{clearText}</span>
         </KeypadButton>
-        <KeypadButton onClick={() => handleKeyPress('0')}>0</KeypadButton>
-        <KeypadButton variant="secondary" onClick={() => handleKeyPress('delete')}>
-          <Delete className="h-5 w-5" />
+        <KeypadButton size={size} onClick={() => handleKeyPress('0')}>0</KeypadButton>
+        <KeypadButton size={size} variant="secondary" onClick={() => handleKeyPress('delete')}>
+          <DeleteIconComponent className={cn(
+            size === "lg" ? "h-6 w-6" : size === "md" ? "h-5 w-5" : "h-4 w-4"
+          )} />
         </KeypadButton>
       </div>
       
@@ -103,20 +121,28 @@ interface KeypadButtonProps {
   onClick: () => void;
   children: React.ReactNode;
   variant?: 'default' | 'secondary';
+  size?: "sm" | "md" | "lg";
 }
 
-const KeypadButton = ({ onClick, children, variant = 'default' }: KeypadButtonProps) => {
+const KeypadButton = ({ onClick, children, variant = 'default', size = "md" }: KeypadButtonProps) => {
+  // Size classes
+  const sizeClasses = {
+    sm: "h-12 w-12 text-base",
+    md: "h-14 w-14 text-lg",
+    lg: "h-16 w-16 text-2xl",
+  }[size];
+
   return (
     <button
       type="button"
       onClick={onClick}
       className={cn(
-        "h-14 w-14 rounded-full backdrop-blur-sm text-lg font-medium flex items-center justify-center",
+        "rounded-full font-medium flex items-center justify-center",
         "transition-all duration-200 active:scale-95",
-        "border shadow-sm hover:shadow-md",
+        sizeClasses,
         variant === 'secondary' 
-          ? "bg-[#1A1F2C]/80 text-primary/90 border-[#222]/50" 
-          : "bg-[#14151F]/80 text-gray-100 border-[#222]/50"
+          ? "bg-transparent text-gray-400" 
+          : "bg-transparent text-white"
       )}
     >
       {children}

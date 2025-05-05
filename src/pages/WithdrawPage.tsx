@@ -3,7 +3,7 @@ import { useState } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
 import NumericKeypad from "@/components/NumericKeypad";
 import { mockBalances } from "@/data/mockData";
-import { Bell, IndianRupee, Wallet, Download, Check } from "lucide-react";
+import { Bell, IndianRupee, Download, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -31,90 +31,84 @@ const WithdrawPage = () => {
     }, 3000);
   };
   
-  const quickAmounts = [1000, 2000, 5000, 10000];
-  
   return (
     <MobileLayout 
       showBackButton 
       title="Withdrawal"
       rightActions={(
-        <button className="p-1.5 rounded-full hover:bg-accent/50 transition-colors flex items-center justify-center relative">
-          <Bell className="h-5 w-5" />
-          <span className="absolute top-0.5 right-0.5 w-1.5 h-1.5 bg-red-500 rounded-full"></span>
-        </button>
+        <div className="flex items-center space-x-2">
+          <button className="p-1.5 rounded-full hover:bg-accent/50 transition-colors flex items-center justify-center relative">
+            <Bell className="h-5 w-5" />
+            <span className="absolute top-0.5 right-0.5 w-1.5 h-1.5 bg-red-500 rounded-full"></span>
+          </button>
+        </div>
       )}
       noScroll
     >
-      <div className="flex flex-col h-full bg-background p-4 justify-between">
+      <div className="flex flex-col h-full bg-background justify-between">
         
-        {/* Top Section */}
-        <div>
-          {/* Amount Display */}
-          <div className="flex items-center justify-center pt-4">
-            <div className="relative">
-              <div className="absolute -left-6 top-4">
-                <IndianRupee className="h-7 w-7 text-primary/90" />
-              </div>
-              <span className="text-7xl font-bold text-gradient-primary tracking-tighter">
+        {/* Top Section - Amount Display */}
+        <div className="pt-8 px-4 text-center">
+          <div className="flex items-center justify-center mb-2">
+            <div className="relative flex items-center justify-center">
+              <IndianRupee className="absolute -left-8 top-3 h-8 w-8 text-gray-300" />
+              <span className="text-8xl font-bold text-gray-200">
                 {amount ? amount : "0"}
               </span>
             </div>
           </div>
           
-          {/* Min Withdrawal Info */}
-          <div className="text-center mt-2">
-            <p className="text-muted-foreground text-sm">Minimum Withdrawal <span className="text-primary">₹300</span></p>
-          </div>
-          
-          {/* Withdrawal Balance */}
-          <div className="flex justify-center items-center gap-2 mt-4">
-            <Wallet className="h-5 w-5 text-primary/80" />
-            <span className="text-muted-foreground text-sm">Balance:</span>
-            <span className="text-foreground font-semibold">₹{availableBalance.toLocaleString()}</span>
-          </div>
-          
-          {/* Quick Amount Selection */}
-          <div className="grid grid-cols-4 gap-2 mt-6">
-            {quickAmounts.map((amt) => (
-              <button
-                key={amt}
-                onClick={() => setAmount(amt.toString())}
-                className={cn(
-                  "py-2 px-1 rounded-xl transition-all duration-200",
-                  "border border-border/50 bg-card/50 backdrop-blur-sm",
-                  "hover:bg-primary/10 hover:border-primary/50",
-                  amount === amt.toString() && "bg-primary/20 border-primary/70 ring-1 ring-primary/50"
-                )}
-              >
-                <span className="text-sm font-medium">₹{amt.toLocaleString()}</span>
-              </button>
-            ))}
-          </div>
-          
-          {/* Bank Account Info */}
-          <div className="grid grid-cols-2 gap-3 mt-8">
-            <div className="flex flex-col bg-card/50 backdrop-blur-sm rounded-xl p-3 border border-border/40">
-              <span className="text-primary/80 text-xs mb-1">Bank Account</span>
-              <span className="text-foreground font-medium">{bankAccount}</span>
-            </div>
-            <div className="flex flex-col bg-card/50 backdrop-blur-sm rounded-xl p-3 border border-border/40">
-              <span className="text-primary/80 text-xs mb-1">IFSC Code</span>
-              <span className="text-foreground font-medium">{ifscCode}</span>
-            </div>
+          <div className="mt-1 text-right">
+            <p className="text-gray-400 text-base">Minimum Withdrawal <span className="text-primary">₹300</span></p>
           </div>
         </div>
         
-        {/* Bottom Section */}
-        <div className="mt-auto w-full">
-          {/* Keypad */}
-          <NumericKeypad 
-            value={amount}
-            onChange={setAmount}
-            onConfirm={isValidAmount ? handleConfirm : undefined}
-            confirmButtonText="SUBMIT"
-            confirmButtonIcon={<Download className="h-4 w-4 mr-1" />}
-            className="mx-auto"
-          />
+        {/* Middle Section - Balance & Bank info */}
+        <div className="px-4 space-y-4">
+          <div className="text-center">
+            <h3 className="text-xl text-gray-300 mb-1">Withdrawal Balance</h3>
+            <p className="text-3xl font-bold text-white">₹{availableBalance.toLocaleString()}</p>
+          </div>
+          
+          <div className="grid grid-cols-2 gap-4">
+            <div className="bg-[#1a1c25] rounded-xl p-3">
+              <p className="text-blue-500 text-sm mb-1">Bank Account</p>
+              <p className="text-white text-lg">{bankAccount}</p>
+            </div>
+            <div className="bg-[#1a1c25] rounded-xl p-3">
+              <p className="text-blue-500 text-sm mb-1">IFSC code</p>
+              <p className="text-white text-lg">{ifscCode}</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom Section - Keypad */}
+        <div className="pt-4 pb-6 flex flex-col">
+          <div className="flex justify-center">
+            <NumericKeypad 
+              value={amount}
+              onChange={setAmount}
+              size="lg"
+              deleteIcon="backspace"
+              clearText="clr"
+              className="mx-auto"
+            />
+          </div>
+
+          <div className="px-4 mt-4">
+            <button 
+              onClick={isValidAmount ? handleConfirm : undefined}
+              disabled={!isValidAmount}
+              className={cn(
+                "w-full py-4 rounded-lg text-white text-lg font-medium transition-all",
+                isValidAmount 
+                  ? "bg-blue-600 hover:bg-blue-700 active:scale-[0.98]" 
+                  : "bg-blue-600/50 cursor-not-allowed"
+              )}
+            >
+              SUBMIT
+            </button>
+          </div>
         </div>
       </div>
       
