@@ -1,5 +1,6 @@
+
 import React, { useState, useEffect } from 'react';
-import { AreaChart, Area, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
+import { AreaChart, Area, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { ArrowUp, ArrowDown } from 'lucide-react';
 
 interface PriceChartProps {
@@ -15,8 +16,6 @@ interface PriceChartProps {
   showGridLines?: boolean;
   tooltipVisible?: boolean;
   areaChart?: boolean;
-  showHorizontalLine?: boolean;
-  currentPriceLabel?: string;
 }
 
 const calculatePercentageChange = (currentPrice: number, previousPrice: number) => {
@@ -39,34 +38,16 @@ const PriceChart = ({
   showGridLines = false,
   tooltipVisible = true,
   areaChart = false,
-  showHorizontalLine = false,
-  currentPriceLabel,
 }: PriceChartProps) => {
   const [selectedTimeframe, setSelectedTimeframe] = useState(timeframe);
   const [isIncreasing, setIsIncreasing] = useState<boolean | null>(null);
 
-  // Generate time labels for the chart based on current time
-  const [timeLabels, setTimeLabels] = useState<string[]>([]);
-  
   useEffect(() => {
     if (currentPrice && previousPrice) {
       setIsIncreasing(currentPrice > previousPrice);
     } else if (data.length > 1) {
       setIsIncreasing(data[data.length - 1].price > data[0].price);
     }
-    
-    // Generate time labels
-    const now = new Date();
-    const labels = [];
-    
-    // Go back in time based on the number of data points
-    for (let i = data.length; i >= 0; i -= Math.ceil(data.length / 6)) {
-      const time = new Date(now.getTime() - (i * 60000));
-      labels.push(`${String(time.getHours()).padStart(2, '0')}:${String(time.getMinutes()).padStart(2, '0')}`);
-    }
-    
-    setTimeLabels(labels);
-    
   }, [currentPrice, previousPrice, data]);
 
   const handleTimeframeChange = (newTimeframe: string) => {
@@ -122,25 +103,10 @@ const PriceChart = ({
     return null;
   };
 
-  // Custom tick formatter for Y axis
-  const formatYAxis = (value: number) => {
-    return `${value.toFixed(0)}.00`;
-  };
-
-  // Custom tick formatter for X axis to show time
-  const formatXAxis = (value: string, index: number) => {
-    // Use pre-generated time labels if available
-    if (timeLabels.length > index) {
-      return timeLabels[index];
-    }
-    return formatDate(value);
-  };
-
-  // Modified chart style to match the reference image
   return (
-    <div className="w-full h-full relative">
+    <div className="w-full">
       {/* Price Statistics */}
-      {currentPrice && showControls && (
+      {currentPrice && (
         <div className="flex justify-between items-baseline mb-2">
           <div>
             <h2 className="text-2xl font-bold">
@@ -187,55 +153,32 @@ const PriceChart = ({
       )}
 
       {/* Chart */}
-      <div style={{ height: height, width: '100%' }}>
+      <div style={{ height, width: '100%' }}>
         <ResponsiveContainer width="100%" height="100%">
-          {timeframe === 'Area' || areaChart ? (
+          {areaChart ? (
             <AreaChart data={data}>
               {showGridLines && <CartesianGrid strokeDasharray="3 3" stroke="#333" />}
               <XAxis 
-                dataKey="timestamp"
-                tick={{ fontSize: 12, fill: '#666' }}
-                tickFormatter={formatXAxis}
-                axisLine={{ stroke: '#333' }}
-                tickLine={{ stroke: '#333' }}
+                dataKey="timestamp" 
+                tick={false} 
+                axisLine={{ stroke: '#333' }} 
               />
-              <YAxis 
-                domain={['auto', 'auto']} 
-                orientation="right"
-                tick={{ fontSize: 12, fill: '#666' }}
-                tickFormatter={formatYAxis}
-                axisLine={{ stroke: '#333' }}
-                tickLine={{ stroke: '#333' }}
-              />
+              <YAxis domain={['auto', 'auto']} hide />
               {tooltipVisible && <Tooltip content={<CustomTooltip />} />}
-              {showHorizontalLine && currentPrice && (
-                <ReferenceLine 
-                  y={currentPrice} 
-                  stroke="#F25F5C" 
-                  strokeDasharray="3 3"
-                  strokeWidth={2}
-                  label={{ 
-                    value: currentPriceLabel || currentPrice?.toString(), 
-                    position: 'right',
-                    fill: '#F25F5C',
-                    fontSize: 12
-                  }} 
-                />
-              )}
               <defs>
                 <linearGradient id="colorGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3} />
-                  <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
+                  <stop offset="5%" stopColor={isIncreasing ? "#22c55e" : "#ef4444"} stopOpacity={0.3} />
+                  <stop offset="95%" stopColor={isIncreasing ? "#22c55e" : "#ef4444"} stopOpacity={0} />
                 </linearGradient>
               </defs>
               <Area 
                 type="monotone" 
                 dataKey="price" 
-                stroke="#3b82f6" 
-                strokeWidth={2}
+                stroke={isIncreasing ? "#22c55e" : "#ef4444"} 
+                strokeWidth={1.5}
                 fillOpacity={1}
                 fill="url(#colorGradient)"
-                activeDot={{ r: 4, fill: "#3b82f6" }}
+                activeDot={{ r: 4, fill: isIncreasing ? "#22c55e" : "#ef4444" }}
               />
             </AreaChart>
           ) : (
@@ -243,41 +186,18 @@ const PriceChart = ({
               {showGridLines && <CartesianGrid strokeDasharray="3 3" stroke="#333" />}
               <XAxis 
                 dataKey="timestamp" 
-                tick={{ fontSize: 12, fill: '#666' }}
-                tickFormatter={formatXAxis}
-                axisLine={{ stroke: '#333' }}
-                tickLine={{ stroke: '#333' }}
+                tick={false} 
+                axisLine={{ stroke: '#333' }} 
               />
-              <YAxis 
-                domain={['auto', 'auto']} 
-                orientation="right"
-                tick={{ fontSize: 12, fill: '#666' }}
-                tickFormatter={formatYAxis}
-                axisLine={{ stroke: '#333' }}
-                tickLine={{ stroke: '#333' }}
-              />
+              <YAxis domain={['auto', 'auto']} hide />
               {tooltipVisible && <Tooltip content={<CustomTooltip />} />}
-              {showHorizontalLine && currentPrice && (
-                <ReferenceLine 
-                  y={currentPrice} 
-                  stroke="#F25F5C" 
-                  strokeDasharray="3 3"
-                  strokeWidth={2}
-                  label={{ 
-                    value: currentPriceLabel || currentPrice?.toString(), 
-                    position: 'right',
-                    fill: '#F25F5C',
-                    fontSize: 12
-                  }} 
-                />
-              )}
               <Line
                 type="monotone"
                 dataKey="price"
-                stroke="#3b82f6"
-                strokeWidth={2}
+                stroke={isIncreasing ? "#22c55e" : "#ef4444"}
+                strokeWidth={1.5}
                 dot={false}
-                activeDot={{ r: 4, fill: "#3b82f6" }}
+                activeDot={{ r: 4, fill: isIncreasing ? "#22c55e" : "#ef4444" }}
                 animationDuration={500}
                 animationEasing="linear"
                 connectNulls
