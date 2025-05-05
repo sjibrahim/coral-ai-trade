@@ -1,5 +1,6 @@
 
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
 interface NumericKeypadProps {
   value: string;
@@ -47,47 +48,49 @@ const NumericKeypad = ({
   return (
     <div className={cn("numeric-keypad space-y-4", className)}>
       <div className="grid grid-cols-3 gap-4">
-        <Button onClick={() => handleKeyPress('1')}>1</Button>
-        <Button onClick={() => handleKeyPress('2')}>2</Button>
-        <Button onClick={() => handleKeyPress('3')}>3</Button>
+        <KeypadButton onClick={() => handleKeyPress('1')}>1</KeypadButton>
+        <KeypadButton onClick={() => handleKeyPress('2')}>2</KeypadButton>
+        <KeypadButton onClick={() => handleKeyPress('3')}>3</KeypadButton>
       </div>
       <div className="grid grid-cols-3 gap-4">
-        <Button onClick={() => handleKeyPress('4')}>4</Button>
-        <Button onClick={() => handleKeyPress('5')}>5</Button>
-        <Button onClick={() => handleKeyPress('6')}>6</Button>
+        <KeypadButton onClick={() => handleKeyPress('4')}>4</KeypadButton>
+        <KeypadButton onClick={() => handleKeyPress('5')}>5</KeypadButton>
+        <KeypadButton onClick={() => handleKeyPress('6')}>6</KeypadButton>
       </div>
       <div className="grid grid-cols-3 gap-4">
-        <Button onClick={() => handleKeyPress('7')}>7</Button>
-        <Button onClick={() => handleKeyPress('8')}>8</Button>
-        <Button onClick={() => handleKeyPress('9')}>9</Button>
+        <KeypadButton onClick={() => handleKeyPress('7')}>7</KeypadButton>
+        <KeypadButton onClick={() => handleKeyPress('8')}>8</KeypadButton>
+        <KeypadButton onClick={() => handleKeyPress('9')}>9</KeypadButton>
       </div>
       <div className="grid grid-cols-3 gap-4">
-        <Button onClick={() => handleKeyPress('clear')}>clr</Button>
-        <Button onClick={() => handleKeyPress('0')}>0</Button>
-        <Button onClick={() => handleKeyPress('delete')}>
+        <KeypadButton variant="secondary" onClick={() => handleKeyPress('clear')}>Clear</KeypadButton>
+        <KeypadButton onClick={() => handleKeyPress('0')}>0</KeypadButton>
+        <KeypadButton variant="secondary" onClick={() => handleKeyPress('delete')}>
           <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />
           </svg>
-        </Button>
+        </KeypadButton>
       </div>
     </div>
   );
 };
 
-interface ButtonProps {
+interface KeypadButtonProps {
   onClick: () => void;
   children: React.ReactNode;
+  variant?: 'default' | 'secondary';
 }
 
-const Button = ({ onClick, children }: ButtonProps) => {
+const KeypadButton = ({ onClick, children, variant = 'default' }: KeypadButtonProps) => {
   return (
-    <button
+    <Button
       type="button"
       onClick={onClick}
-      className="flex items-center justify-center"
+      variant={variant}
+      className="h-14 rounded-full text-lg font-medium flex items-center justify-center"
     >
       {children}
-    </button>
+    </Button>
   );
 };
 

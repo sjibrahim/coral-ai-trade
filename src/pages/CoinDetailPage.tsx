@@ -1,11 +1,21 @@
 
 import { useParams } from "react-router-dom";
+import { useState } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
-import { mockCryptoCurrencies, mockPriceChartData } from "@/data/mockData";
+import { mockCryptoCurrencies, mockPriceChartData, mockBalances } from "@/data/mockData";
 import PriceChart from "@/components/PriceChart";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { X } from "lucide-react";
+import NumericKeypad from "@/components/NumericKeypad";
 
 const CoinDetailPage = () => {
   const { id } = useParams<{ id: string }>();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [tradeDirection, setTradeDirection] = useState<'CALL' | 'PUT'>('CALL');
+  const [selectedAmount, setSelectedAmount] = useState(mockBalances.availableBalance.toString());
+  const [selectedTimePeriod, setSelectedTimePeriod] = useState<'1min' | '2min' | '5min' | '10min' | '15min'>('1min');
   
   // Find the cryptocurrency by ID
   const coin = mockCryptoCurrencies.find(crypto => crypto.id === id);
@@ -21,7 +31,22 @@ const CoinDetailPage = () => {
   }
   
   const isPositiveChange = coin.change >= 0;
+  
+  const handleOpenTrade = (direction: 'CALL' | 'PUT') => {
+    setTradeDirection(direction);
+    setIsDialogOpen(true);
+  };
+  
+  const handleConfirmTrade = () => {
+    // In a real app, this would submit the trade to an API
+    console.log(`Confirming ${tradeDirection} trade for ${selectedAmount} on ${coin.symbol} with ${selectedTimePeriod} timeframe`);
+    setIsDialogOpen(false);
+  };
 
+  const predefinedAmounts = [600, 1000, 2000, 3000, 5000, 10000];
+  
+  const currentPrice = Math.floor(coin.price * 83.25); // Converting to INR for demo
+  
   return (
     <MobileLayout showBackButton title={`${coin.name} (${coin.symbol})`}>
       <div className="p-4 space-y-6 animate-fade-in">
@@ -48,10 +73,16 @@ const CoinDetailPage = () => {
         
         {/* Trade Buttons */}
         <div className="grid grid-cols-2 gap-4 pt-4">
-          <button className="bg-primary rounded-xl py-4 text-white font-semibold text-lg">
+          <button 
+            className="bg-primary rounded-xl py-4 text-white font-semibold text-lg"
+            onClick={() => handleOpenTrade('CALL')}
+          >
             BUY CALL
           </button>
-          <button className="bg-transparent border border-muted rounded-xl py-4 font-semibold text-lg">
+          <button 
+            className="bg-transparent border border-muted rounded-xl py-4 font-semibold text-lg"
+            onClick={() => handleOpenTrade('PUT')}
+          >
             BUY PUT
           </button>
         </div>
@@ -83,6 +114,95 @@ const CoinDetailPage = () => {
           </div>
         </div>
       </div>
+      
+      {/* Trade Dialog */}
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="bg-background border-none p-0 max-w-md rounded-xl sm:max-w-md">
+          <div className="p-6 space-y-6">
+            {/* Header with close button */}
+            <div className="flex items-center justify-between">
+              <h2 className="text-2xl font-bold">{coin.symbol}/INR</h2>
+              <button 
+                onClick={() => setIsDialogOpen(false)} 
+                className="rounded-full p-2 hover:bg-muted"
+              >
+                <X className="h-6 w-6" />
+              </button>
+            </div>
+            
+            {/* Time period selection */}
+            <div className="space-y-2">
+              <label className="text-lg font-medium">Select Time Period</label>
+              <div className="flex items-center justify-between rounded-full bg-muted/30 p-1.5">
+                {['1min', '2min', '5min', '10min', '15min'].map((period) => (
+                  <button
+                    key={period}
+                    onClick={() => setSelectedTimePeriod(period as any)}
+                    className={`rounded-full px-4 py-2 text-sm ${
+                      selectedTimePeriod === period 
+                        ? 'bg-primary text-white' 
+                        : 'hover:bg-muted'
+                    }`}
+                  >
+                    {period}
+                  </button>
+                ))}
+              </div>
+            </div>
+            
+            {/* Available balance */}
+            <div>
+              <p className="text-lg">Available : ₹{mockBalances.availableBalance}</p>
+            </div>
+            
+            {/* Amount input */}
+            <div className="space-y-2">
+              <Input 
+                value={selectedAmount} 
+                onChange={(e) => setSelectedAmount(e.target.value)}
+                className="text-center text-xl p-6 bg-card border border-border"
+              />
+              
+              {/* Quick amount buttons */}
+              <div className="grid grid-cols-3 gap-2">
+                {predefinedAmounts.map(amount => (
+                  <button
+                    key={amount}
+                    onClick={() => setSelectedAmount(amount.toString())}
+                    className="bg-muted/30 rounded-full py-2 hover:bg-muted"
+                  >
+                    ₹{amount}
+                  </button>
+                ))}
+              </div>
+            </div>
+            
+            {/* Trade Summary */}
+            <div className="bg-card border border-border p-4 rounded-lg">
+              <div className="grid grid-cols-3 text-lg">
+                <div>Direction</div>
+                <div>Price</div>
+                <div>Amount</div>
+                <div className={tradeDirection === 'CALL' ? 'text-market-increase' : 'text-market-decrease'}>
+                  {tradeDirection === 'CALL' ? 'Call' : 'Put'}
+                </div>
+                <div className="text-market-increase">
+                  {currentPrice.toLocaleString()}.165
+                </div>
+                <div>₹{selectedAmount}</div>
+              </div>
+            </div>
+            
+            {/* Confirm Button */}
+            <Button 
+              onClick={handleConfirmTrade}
+              className="w-full py-6 text-lg font-bold"
+            >
+              CONFIRM
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </MobileLayout>
   );
 };
