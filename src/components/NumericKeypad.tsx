@@ -110,7 +110,7 @@ const NumericKeypad = ({
             backgroundColor: 'rgb(37 99 235 / 0.5) !important',
           }}
           className={cn(
-            "w-full py-4 rounded-lg text-white text-lg font-medium transition-all bg-blue-600/50 cursor-not-allowed",
+            "py-4 rounded-lg text-white text-lg font-medium transition-all cursor-not-allowed",
             confirmDisabled 
               ? "bg-blue-600/50 cursor-not-allowed" 
               : "bg-blue-600 hover:bg-blue-700 active:scale-[0.98]"
