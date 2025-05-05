@@ -66,6 +66,11 @@ const CoinDetailPage = () => {
 
   const predefinedAmounts = ['600', '1000', '2000', '3000', '5000', '10000'];
   
+  const closeModal = () => {
+    setIsBuyModalOpen(false);
+    setIsSellModalOpen(false);
+  };
+  
   return (
     <MobileLayout showBackButton title={crypto.name} noScroll>
       <div className="flex flex-col h-full bg-[#0A0B14]">
@@ -237,107 +242,105 @@ const CoinDetailPage = () => {
         </div>
       </div>
       
-      {/* Buy/Sell Modal Dialog - Updated for better mobile responsiveness */}
-      <Dialog open={isBuyModalOpen || isSellModalOpen} onOpenChange={() => {
-        setIsBuyModalOpen(false);
-        setIsSellModalOpen(false);
-      }}>
-        <DialogContent className="bg-[#14151F] border-[#222] text-white p-0 sm:max-w-md max-w-[95vw] w-full mx-auto rounded-xl overflow-hidden">
-          <div className="relative p-4 sm:p-6">
-            <button 
-              className="absolute right-3 top-3 p-1.5 rounded-full bg-[#222430] hover:bg-[#2A2C3A] transition-colors"
-              onClick={() => {
-                setIsBuyModalOpen(false);
-                setIsSellModalOpen(false);
-              }}
-            >
-              <X className="h-4 w-4" />
-            </button>
+      {/* Redesigned Buy/Sell Modal */}
+      <Dialog open={isBuyModalOpen || isSellModalOpen} onOpenChange={closeModal}>
+        <DialogContent className="bg-[#1A1C2A] border-none shadow-xl p-0 max-w-sm mx-auto rounded-2xl overflow-hidden">
+          {/* Modal Header */}
+          <div className="relative border-b border-gray-800">
+            <div className="px-4 py-4 flex justify-between items-center">
+              <h2 className="text-lg font-semibold text-white">
+                {crypto.symbol}/INR
+              </h2>
+              <button 
+                onClick={closeModal}
+                className="rounded-full p-1 hover:bg-[#2A2C3A] transition-colors"
+              >
+                <X className="h-5 w-5 text-gray-400" />
+              </button>
+            </div>
+          </div>
+          
+          <div className="p-4 space-y-5">
+            {/* Time Period Selection */}
+            <div className="space-y-3">
+              <p className="text-gray-400 text-sm">Select Time Period</p>
+              <div className="flex w-full overflow-x-auto gap-2 pb-1 scrollbar-none -mx-1 px-1">
+                {['1min', '2min', '5min', '10min', '15min'].map((period) => (
+                  <button
+                    key={period}
+                    className={`px-4 py-2.5 rounded-full whitespace-nowrap transition-colors ${
+                      selectedTimePeriod === period
+                      ? 'bg-blue-600 text-white'
+                      : 'bg-[#262838] text-gray-300'
+                    }`}
+                    onClick={() => setSelectedTimePeriod(period)}
+                  >
+                    {period}
+                  </button>
+                ))}
+              </div>
+            </div>
             
-            <h2 className="text-lg sm:text-xl font-semibold mb-4 sm:mb-5 mt-1">
-              {crypto.symbol}/INR
-            </h2>
-            
-            <div className="space-y-4 sm:space-y-6">
-              {/* Time Period Selector - Made more touch-friendly */}
-              <div className="space-y-2">
-                <label className="text-sm text-gray-400">Select Time Period</label>
-                <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-none -mx-1 px-1">
-                  {['1min', '2min', '5min', '10min', '15min'].map((period) => (
-                    <button
-                      key={period}
-                      className={`px-4 py-2.5 sm:px-5 sm:py-3 rounded-full text-sm whitespace-nowrap ${
-                        selectedTimePeriod === period
-                          ? 'bg-blue-600 text-white'
-                          : 'bg-[#222430] text-gray-300'
-                      }`}
-                      onClick={() => setSelectedTimePeriod(period)}
-                    >
-                      {period}
-                    </button>
-                  ))}
-                </div>
+            {/* Available Balance */}
+            <div className="space-y-2">
+              <div className="flex justify-between">
+                <p className="text-gray-400 text-sm">Available:</p>
+                <p className="text-gray-300 text-sm">₹ 20023</p>
               </div>
               
-              {/* Available Balance */}
-              <div className="space-y-2">
-                <div className="flex justify-between">
-                  <span className="text-sm text-gray-400">Available:</span>
-                  <span className="text-sm">₹ 20023</span>
-                </div>
-                
-                {/* Trade Amount Input */}
+              {/* Trade Amount Input */}
+              <div className="relative">
                 <Input
-                  className="bg-[#1A1B26] border-[#2A2C3A] text-white text-lg p-4 h-12 sm:h-14"
+                  className="bg-[#262838] border-none text-white text-lg py-6 px-4 rounded-lg"
                   placeholder="Enter amount"
                   value={tradeAmount}
                   onChange={(e) => setTradeAmount(e.target.value)}
                   type="text"
                   inputMode="decimal"
                 />
-                
-                {/* Predefined Amount Buttons */}
-                <div className="grid grid-cols-3 gap-1.5 sm:gap-2 mt-2 sm:mt-3">
-                  {predefinedAmounts.map((amount) => (
-                    <button
-                      key={amount}
-                      className="bg-[#222430] hover:bg-[#2A2C3A] rounded-full py-1.5 sm:py-2 px-2 sm:px-3 text-xs sm:text-sm"
-                      onClick={() => setTradeAmount(amount)}
-                    >
-                      ₹{amount}
-                    </button>
-                  ))}
-                </div>
               </div>
               
-              {/* Trade Summary */}
-              <div className="bg-[#1A1B26] rounded-xl p-3 sm:p-4">
-                <div className="grid grid-cols-3 text-center">
-                  <div className="text-xs sm:text-sm">
-                    <div className="text-gray-400">Direction</div>
-                    <div className="mt-1 font-medium">{direction}</div>
-                  </div>
-                  <div className="text-xs sm:text-sm">
-                    <div className="text-gray-400">Price</div>
-                    <div className="mt-1 font-medium text-green-500">
-                      {livePrice.toLocaleString(undefined, { maximumFractionDigits: 3 })}
-                    </div>
-                  </div>
-                  <div className="text-xs sm:text-sm">
-                    <div className="text-gray-400">Amount</div>
-                    <div className="mt-1 font-medium">₹ {tradeAmount}</div>
-                  </div>
-                </div>
+              {/* Predefined Amount Buttons */}
+              <div className="grid grid-cols-3 gap-2 mt-3">
+                {predefinedAmounts.map((amount) => (
+                  <button
+                    key={amount}
+                    className="bg-[#262838] hover:bg-[#2F3146] transition-colors rounded-lg py-2 text-sm text-gray-300"
+                    onClick={() => setTradeAmount(amount)}
+                  >
+                    ₹{amount}
+                  </button>
+                ))}
               </div>
-              
-              {/* Confirm Button */}
-              <Button 
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 sm:py-6 font-medium text-base sm:text-lg rounded-xl"
-                onClick={handleConfirmTrade}
-              >
-                CONFIRM
-              </Button>
             </div>
+            
+            {/* Trade Summary */}
+            <div className="bg-[#262838] rounded-xl p-4">
+              <div className="grid grid-cols-3 gap-2">
+                <div className="text-center">
+                  <p className="text-gray-400 text-xs mb-1">Direction</p>
+                  <p className="text-white font-medium">{direction}</p>
+                </div>
+                <div className="text-center">
+                  <p className="text-gray-400 text-xs mb-1">Price</p>
+                  <p className={`font-medium ${priceChange > 0 ? 'text-market-increase' : 'text-market-decrease'}`}>
+                    {livePrice.toLocaleString(undefined, { maximumFractionDigits: 2 })}
+                  </p>
+                </div>
+                <div className="text-center">
+                  <p className="text-gray-400 text-xs mb-1">Amount</p>
+                  <p className="text-white font-medium">₹ {tradeAmount}</p>
+                </div>
+              </div>
+            </div>
+            
+            {/* Confirm Button */}
+            <Button 
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-5 font-medium text-lg rounded-xl"
+              onClick={handleConfirmTrade}
+            >
+              CONFIRM
+            </Button>
           </div>
         </DialogContent>
       </Dialog>
