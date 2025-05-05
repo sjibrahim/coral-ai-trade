@@ -11,29 +11,29 @@ const MobileNavbar = () => {
   };
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-20 bg-background/90 backdrop-blur-lg border-t border-border/40 px-6 pb-safe h-16">
-      <div className="flex justify-between items-center h-full max-w-md mx-auto">
+    <nav className="fixed bottom-0 left-0 right-0 z-20 bg-[#0F1219] backdrop-blur-lg border-t border-border/20 h-16 pb-safe">
+      <div className="flex justify-between items-center h-full px-8 max-w-md mx-auto">
         <NavItem 
           to="/home" 
-          icon={<Home className="h-5 w-5" />} 
+          icon={<Home className="h-6 w-6" />} 
           label="Home" 
           active={isActive('/home') || isActive('/')} 
         />
         <NavItem 
           to="/market" 
-          icon={<LayoutDashboard className="h-5 w-5" />} 
+          icon={<LayoutDashboard className="h-6 w-6" />} 
           label="Market" 
           active={isActive('/market')} 
         />
         <NavItem 
           to="/team" 
-          icon={<Users className="h-5 w-5" />} 
+          icon={<Users className="h-6 w-6" />} 
           label="Team" 
           active={isActive('/team')} 
         />
         <NavItem 
           to="/profile" 
-          icon={<UserCircle className="h-5 w-5" />} 
+          icon={<UserCircle className="h-6 w-6" />} 
           label="Profile" 
           active={isActive('/profile')} 
         />
@@ -54,19 +54,24 @@ const NavItem = ({ to, icon, label, active }: NavItemProps) => {
     <Link 
       to={to} 
       className={cn(
-        "flex flex-col items-center justify-center px-1 transition-all",
+        "flex flex-col items-center justify-center transition-all",
         active ? "scale-110" : ""
       )}
     >
       <div className={cn(
-        "flex items-center justify-center p-1.5 rounded-full transition-colors",
+        "flex items-center justify-center rounded-full transition-colors",
         active 
-          ? "bg-primary/20 text-primary" 
-          : "text-muted-foreground hover:text-foreground"
+          ? "text-primary" 
+          : "text-muted-foreground"
       )}>
         {icon}
       </div>
-      <span className="text-xs mt-0.5">{label}</span>
+      <span className={cn(
+        "text-xs mt-0.5",
+        active ? "text-primary" : "text-muted-foreground"
+      )}>
+        {label}
+      </span>
       {active && <div className="w-1 h-1 rounded-full bg-primary mt-0.5"></div>}
     </Link>
   );

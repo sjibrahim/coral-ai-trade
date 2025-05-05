@@ -12,11 +12,16 @@ const DepositPage = () => {
   const paymentChannels = ["PAY1", "PAY2", "PAY3", "PAY4"];
   const isValidAmount = Number(amount) >= 600;
   
+  const handleConfirm = () => {
+    // Handle deposit confirmation
+    console.log("Confirm deposit of", amount);
+  };
+  
   return (
     <MobileLayout showBackButton title="Deposit">
       <div className="flex flex-col h-full pb-4 px-4 max-w-md mx-auto">
         {/* Amount Input */}
-        <div className="bg-background/70 backdrop-blur-sm rounded-xl p-6 mb-4 border border-border/40 shadow-lg">
+        <div className="bg-[#0F1219]/90 backdrop-blur-sm rounded-xl p-6 mb-4 border border-border/40 shadow-lg">
           <div className="flex items-baseline mb-2">
             <span className="text-4xl font-bold mr-2 text-primary">₹</span>
             <span className="text-6xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
@@ -36,7 +41,7 @@ const DepositPage = () => {
             <button
               key={value}
               onClick={() => setAmount(value.toString())}
-              className="py-3 rounded-xl bg-background/50 hover:bg-accent/70 transition-colors border border-border/20 text-sm font-medium"
+              className="py-3 rounded-xl bg-[#1A1F2C]/50 hover:bg-[#1A1F2C]/70 transition-colors border border-border/20 text-sm font-medium"
             >
               ₹{value.toLocaleString()}
             </button>
@@ -49,7 +54,7 @@ const DepositPage = () => {
             <Info className="w-4 h-4 mr-1.5 text-blue-400" />
             Payment Channels
           </h2>
-          <div className="bg-background/50 rounded-xl p-2 flex justify-between">
+          <div className="bg-[#1A1F2C]/50 rounded-xl p-2 flex justify-between">
             {paymentChannels.map((channel) => (
               <button 
                 key={channel}
@@ -72,14 +77,16 @@ const DepositPage = () => {
           <NumericKeypad 
             value={amount}
             onChange={setAmount}
-            className="mb-6 mx-auto"
+            className="mx-auto"
+            showConfirmButton={false}
           />
           
           <button 
+            onClick={handleConfirm}
             className={cn(
-              "w-full py-4 rounded-xl text-white text-base font-medium flex items-center justify-center gap-2 transition-all",
+              "w-full py-4 rounded-xl text-white text-base font-medium flex items-center justify-center gap-2 transition-all mt-6",
               isValidAmount 
-                ? "bg-gradient-to-r from-blue-600 to-blue-500 shadow-lg shadow-blue-500/20" 
+                ? "bg-primary shadow-lg shadow-blue-500/20" 
                 : "bg-gray-600/50 opacity-70"
             )}
             disabled={!isValidAmount}

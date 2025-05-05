@@ -7,13 +7,17 @@ interface NumericKeypadProps {
   onChange: (value: string) => void;
   maxLength?: number;
   className?: string;
+  onConfirm?: () => void;
+  showConfirmButton?: boolean;
 }
 
 const NumericKeypad = ({ 
   value, 
   onChange, 
   maxLength = 10,
-  className 
+  className,
+  onConfirm,
+  showConfirmButton = true
 }: NumericKeypadProps) => {
   
   const handleKeyPress = (key: string) => {
@@ -64,13 +68,24 @@ const NumericKeypad = ({
       </div>
       <div className="grid grid-cols-3 gap-4">
         <KeypadButton variant="secondary" onClick={() => handleKeyPress('clear')}>
-          <X className="h-5 w-5" />
+          <span className="text-sm">clr</span>
         </KeypadButton>
         <KeypadButton onClick={() => handleKeyPress('0')}>0</KeypadButton>
         <KeypadButton variant="secondary" onClick={() => handleKeyPress('delete')}>
           <Delete className="h-5 w-5" />
         </KeypadButton>
       </div>
+      
+      {showConfirmButton && (
+        <div className="mt-6">
+          <button 
+            onClick={onConfirm}
+            className="w-full py-4 rounded-xl bg-primary text-white text-base font-medium"
+          >
+            CONFIRM
+          </button>
+        </div>
+      )}
     </div>
   );
 };
@@ -87,9 +102,9 @@ const KeypadButton = ({ onClick, children, variant = 'default' }: KeypadButtonPr
       type="button"
       onClick={onClick}
       className={cn(
-        "h-16 w-16 rounded-full text-xl font-medium flex items-center justify-center",
-        "bg-secondary/30 border border-white/5 shadow-lg hover:bg-secondary/60 transition-colors",
-        variant === 'secondary' ? "bg-secondary/40 text-muted-foreground" : "text-foreground"
+        "h-14 w-14 rounded-full text-xl font-medium flex items-center justify-center",
+        "bg-[#1A1F2C]/80 hover:bg-[#1A1F2C] transition-colors",
+        variant === 'secondary' ? "text-muted-foreground" : "text-white"
       )}
     >
       {children}
