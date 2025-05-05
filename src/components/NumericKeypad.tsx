@@ -26,7 +26,7 @@ const NumericKeypad = ({
   confirmButtonIcon,
   size = "md",
   deleteIcon = "delete",
-  clearText = "clear"
+  clearText = "clr"
 }: NumericKeypadProps) => {
   
   const handleKeyPress = (key: string) => {
@@ -58,19 +58,19 @@ const NumericKeypad = ({
     onChange(value + key);
   };
 
-  // Size classes for buttons
+  // Size classes for buttons - darker styling to match the reference design
   const sizeClasses = {
-    sm: "h-14 w-14 text-base",
-    md: "h-16 w-16 text-lg",
-    lg: "h-20 w-20 text-3xl",
+    sm: "h-14 w-14 text-xl",
+    md: "h-16 w-16 text-2xl",
+    lg: "h-[76px] w-[76px] text-3xl",
   }[size];
   
   // Get the correct delete icon - using ArrowLeft for backspace
   const DeleteIconComponent = deleteIcon === "backspace" ? ArrowLeft : Delete;
   
   return (
-    <div className={cn("numeric-keypad w-full max-w-xs mx-auto", className)}>
-      <div className="grid grid-cols-3 gap-x-6 md:gap-x-10 gap-y-6">
+    <div className={cn("numeric-keypad w-full", className)}>
+      <div className="grid grid-cols-3 gap-4">
         {/* First row */}
         <KeypadButton size={size} onClick={() => handleKeyPress('1')}>1</KeypadButton>
         <KeypadButton size={size} onClick={() => handleKeyPress('2')}>2</KeypadButton>
@@ -113,7 +113,7 @@ const KeypadButton = ({ onClick, children, variant = 'default', size = "md" }: K
   const sizeClasses = {
     sm: "h-14 w-14 text-xl",
     md: "h-16 w-16 text-2xl",
-    lg: "h-20 w-20 text-3xl",
+    lg: "h-[76px] w-[76px] text-2xl font-medium",
   }[size];
 
   return (
@@ -121,12 +121,13 @@ const KeypadButton = ({ onClick, children, variant = 'default', size = "md" }: K
       type="button"
       onClick={onClick}
       className={cn(
-        "font-medium flex items-center justify-center rounded-full",
-        "transition-all duration-200 active:scale-95 bg-[#1A1F2C]/80 hover:bg-[#1A1F2C]",
-        "border border-white/5 shadow-lg",
+        "flex items-center justify-center rounded-full",
+        "transition-all duration-200 active:scale-95",
+        "bg-[#1a1e2a] hover:bg-[#232736]", // Darker button color to match the design
+        "border border-white/5",
         sizeClasses,
         variant === 'secondary' 
-          ? "text-gray-400" 
+          ? "text-gray-300" 
           : "text-white"
       )}
     >

@@ -44,21 +44,18 @@ const WithdrawPage = () => {
           </button>
         </div>
       )}
-      noScroll
     >
-      <div className="flex flex-col h-full bg-[#14131b]">
+      <div className="flex flex-col min-h-full bg-[#0d0e14]">
         {/* Top Section - Amount Display */}
-        <div className="pt-8 px-6">
-          <div className="flex items-center">
-            <div className="relative flex items-start">
-              <span className="text-4xl font-bold text-white mr-1">₹</span>
-              <span className="text-8xl font-bold text-white">
-                {amount ? amount : "0"}
-              </span>
-            </div>
+        <div className="pt-6 px-6 text-left">
+          <div className="flex items-start">
+            <span className="text-2xl font-bold text-white mt-2 mr-1">₹</span>
+            <span className="text-8xl font-bold text-white">
+              {amount ? amount : "0"}
+            </span>
           </div>
           
-          <div className="text-right mt-1">
+          <div className="mt-1 text-right">
             <p className="text-gray-400 text-base">
               Minimum Withdrawal <span className="text-blue-400">₹300</span>
             </p>
@@ -66,37 +63,35 @@ const WithdrawPage = () => {
         </div>
         
         {/* Middle Section - Balance & Bank info */}
-        <div className="bg-[#1a1b25] py-6 px-6">
+        <div className="bg-[#12131a] py-4 px-6 mt-6">
           <div className="text-center mb-4">
             <h3 className="text-gray-400 mb-1">Withdrawal Balance</h3>
-            <p className="text-3xl font-bold text-white">₹{availableBalance.toLocaleString()}</p>
+            <p className="text-4xl font-bold text-white">₹{availableBalance.toLocaleString()}</p>
           </div>
           
           <div className="grid grid-cols-2 gap-4">
-            <div className="bg-[#20212c] rounded-xl p-4">
-              <p className="text-blue-500 text-sm mb-1">Bank Account</p>
-              <p className="text-white text-lg font-medium">{bankAccount}</p>
+            <div className="bg-[#1a1e29] rounded-xl p-4">
+              <p className="text-blue-400 text-sm mb-1 text-left">Bank Account</p>
+              <p className="text-white text-xl font-medium text-left">{bankAccount}</p>
             </div>
-            <div className="bg-[#20212c] rounded-xl p-4">
-              <p className="text-blue-500 text-sm mb-1">IFSC code</p>
-              <p className="text-white text-lg font-medium">{ifscCode}</p>
+            <div className="bg-[#1a1e29] rounded-xl p-4">
+              <p className="text-blue-400 text-sm mb-1 text-left">IFSC code</p>
+              <p className="text-white text-xl font-medium text-left">{ifscCode}</p>
             </div>
           </div>
         </div>
 
         {/* Bottom Section - Keypad */}
-        <div className="flex flex-col flex-grow justify-end pb-6">
-          <div className="mx-auto w-full max-w-xs">
-            <NumericKeypad 
-              value={amount}
-              onChange={setAmount}
-              size="lg"
-              deleteIcon="backspace"
-              clearText="clr"
-            />
-          </div>
-
-          <div className="px-6 mt-6">
+        <div className="flex-grow flex flex-col justify-end px-4 py-6">
+          <NumericKeypad 
+            value={amount}
+            onChange={setAmount}
+            size="lg"
+            deleteIcon="backspace"
+            clearText="clr"
+          />
+          
+          <div className="px-2 mt-6">
             <button 
               onClick={handleConfirm}
               disabled={!isValidAmount}
@@ -115,7 +110,7 @@ const WithdrawPage = () => {
       
       {/* Success Modal */}
       <Dialog open={showSuccessModal} onOpenChange={setShowSuccessModal}>
-        <DialogContent className="sm:max-w-md bg-[#20212c] border-border/50 p-0 overflow-hidden">
+        <DialogContent className="sm:max-w-md bg-[#1a1e29] border-border/50 p-0 overflow-hidden">
           <div className="flex flex-col items-center justify-center p-6 space-y-4">
             <div className="w-20 h-20 rounded-full bg-green-500/20 flex items-center justify-center animate-pulse-glow">
               <Check className="h-10 w-10 text-green-500" />
