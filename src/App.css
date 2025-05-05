@@ -98,6 +98,8 @@ nav.fixed.bottom-0 {
 /* Styling for the trade modal */
 [data-radix-popper-content-wrapper] {
   z-index: 100 !important;
+  max-width: 95vw !important;
+  width: 100% !important;
 }
 
 /* Ensure dialog is centered and sized properly for mobile */
@@ -112,4 +114,14 @@ nav.fixed.bottom-0 {
 /* Update Market Page styles */
 .market-page-content {
   padding-bottom: 120px;
+}
+
+/* Prevent horizontal scrolling on small screens in modals */
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
 }
