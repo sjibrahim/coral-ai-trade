@@ -54,7 +54,7 @@
   }
   
   html, body {
-    @apply overflow-auto h-full w-full m-0 p-0;
+    @apply overflow-hidden h-full w-full m-0 p-0;
     touch-action: manipulation;
   }
   
@@ -88,6 +88,8 @@
     background-color: #0d0f17;
     position: relative;
     z-index: 1;
+    display: flex;
+    flex-direction: column;
   }
 
   /* Add floating particles */
@@ -158,6 +160,16 @@
     #root {
       padding-bottom: env(safe-area-inset-bottom);
     }
+  }
+  
+  /* Ensure main content can scroll properly */
+  main {
+    height: 100%;
+    overflow: hidden;
+  }
+  
+  main > div {
+    -webkit-overflow-scrolling: touch; /* For smoother scrolling on iOS */
   }
 }
 
