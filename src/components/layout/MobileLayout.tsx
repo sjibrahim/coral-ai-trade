@@ -114,9 +114,11 @@ const MobileLayout = ({
       {/* Side Menu */}
       <SideMenu isOpen={menuOpen} onClose={() => setMenuOpen(false)} />
 
-      {/* Main Content */}
+      {/* Main Content - Fixed the scrolling here */}
       <main className={contentStyle}>
-        {children}
+        <div className="h-full overflow-y-auto">
+          {children}
+        </div>
       </main>
 
       {/* Bottom Navigation - Fixed position to avoid layout shift */}
