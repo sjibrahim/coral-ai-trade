@@ -1,320 +1,207 @@
+
 import { useState, useEffect } from 'react';
 import MobileLayout from '@/components/layout/MobileLayout';
 import PriceChart from '@/components/PriceChart';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogClose } from '@/components/ui/dialog';
-import { X } from 'lucide-react';
-import { mockCryptoCurrencies, mockBalances } from '@/data/mockData';
-import NumericKeypad from '@/components/NumericKeypad';
-
-// Create more detailed mock price data
-const generateDetailedMockData = () => {
-  const basePrice = 94300;
-  const now = new Date();
-  const data = [];
-  
-  // Generate 60 data points for the last hour (one per minute)
-  for (let i = 60; i >= 0; i--) {
-    const time = new Date(now.getTime() - i * 60000);
-    const timeString = `${time.getHours().toString().padStart(2, '0')}:${time.getMinutes().toString().padStart(2, '0')}`;
-    
-    // Create some price movements, more volatile at the beginning and end
-    let volatility;
-    if (i > 45) volatility = 150;
-    else if (i > 30) volatility = 100;
-    else if (i > 15) volatility = 200;
-    else volatility = 160;
-    
-    // Create some patterns in the price
-    const randomFactor = Math.sin(i / 5) * volatility + (Math.random() - 0.5) * volatility;
-    
-    // Create a downward trend, then upward at the end
-    const trendFactor = i > 20 ? -30 : 20;
-    
-    const price = basePrice + randomFactor + (60 - i) * trendFactor / 10;
-    
-    data.push({
-      timestamp: timeString,
-      price: parseFloat(price.toFixed(2))
-    });
-  }
-  
-  return data;
-};
-
-const detailedMockPriceData = generateDetailedMockData();
+import { mockCryptoCurrencies, mockPriceChartData } from '@/data/mockData';
+import { ArrowUp, ArrowDown, ChevronRight } from 'lucide-react';
 
 const CoinDetailPage = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [tradeType, setTradeType] = useState<'call' | 'put'>('call');
-  const [selectedTimeframe, setSelectedTimeframe] = useState('1m');
-  const [livePrice, setLivePrice] = useState(94278.61);
-  const [priceChange, setPriceChange] = useState(0.0009);
-  const [amount, setAmount] = useState(mockBalances.availableBalance.toString());
-  const [selectedTime, setSelectedTime] = useState('1min');
-  const [chartData, setChartData] = useState(detailedMockPriceData);
+  const [activeTab, setActiveTab] = useState('chart');
+  const [selectedTimeframe, setSelectedTimeframe] = useState('24h');
+  const crypto = mockCryptoCurrencies[0]; // Using the first crypto from the list for demo
+  
+  // Transform mockPriceChartData to have the timestamp property instead of time
+  const transformedChartData = mockPriceChartData.map(item => ({
+    timestamp: item.time,
+    price: item.price
+  }));
 
-  const crypto = mockCryptoCurrencies[0]; // Using Bitcoin
+  // Simulate live price updates
+  const [livePrice, setLivePrice] = useState(crypto.price);
+  const [priceChange, setPriceChange] = useState(crypto.change);
 
-  // Simulate live price updates with a more sophisticated pattern
+  // Create a live price effect
   useEffect(() => {
-    const updateInterval = setInterval(() => {
-      // Create a more realistic price movement
-      const marketMood = Math.random(); // market sentiment
-      
-      let priceDelta;
-      if (marketMood > 0.95) {
-        // Occasional larger moves
-        priceDelta = (Math.random() - 0.3) * 100;
-      } else if (marketMood > 0.5) {
-        // Slight upward bias
-        priceDelta = (Math.random() - 0.45) * 20;
-      } else {
-        // Slight downward bias
-        priceDelta = (Math.random() - 0.55) * 20;
-      }
-      
-      const newPrice = livePrice + priceDelta;
+    const interval = setInterval(() => {
+      // Random price fluctuation between -0.5% and +0.5%
+      const fluctuation = (Math.random() - 0.5) * 0.01;
+      const newPrice = livePrice * (1 + fluctuation);
       setLivePrice(newPrice);
-
-      // Calculate change percentage
-      const changePercent = (priceDelta / livePrice) * 100;
-      setPriceChange(prevChange => {
-        let newChange = prevChange + changePercent;
-        // Keep the change within reasonable bounds
-        if (Math.abs(newChange) > 5) {
-          newChange = newChange > 0 ? 5 : -5;
-        }
-        return newChange;
-      });
-
-      // Update chart with new data point
-      const now = new Date();
-      const timeString = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
       
-      setChartData(prevData => {
-        const newData = [...prevData.slice(1), { timestamp: timeString, price: newPrice }];
-        return newData;
-      });
+      // Update change percentage
+      const newChange = priceChange + (fluctuation * 100);
+      setPriceChange(newChange);
     }, 3000);
     
-    return () => clearInterval(updateInterval);
-  }, [livePrice]);
-
-  const handleOpenModal = (type: 'call' | 'put') => {
-    setTradeType(type);
-    setIsModalOpen(true);
-  };
-
-  const handleAmountChange = (value: string) => {
-    setAmount(value);
-  };
-
-  const handleQuickAmountSelect = (value: number) => {
-    setAmount(value.toString());
-  };
-
-  const formatCurrency = (value: number) => {
-    return value.toLocaleString('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-    });
-  };
-
-  const formatLargeNumber = (value: number) => {
-    if (value >= 1000000) {
-      return `${(value / 1000000).toFixed(2)}M`;
-    } else if (value >= 1000) {
-      return `${(value / 1000).toFixed(2)}K`;
-    }
-    return value.toString();
-  };
-
+    return () => clearInterval(interval);
+  }, [livePrice, priceChange]);
+  
   return (
-    <MobileLayout showBackButton title="" noScroll>
+    <MobileLayout showBackButton title={crypto.name} noScroll>
       <div className="flex flex-col h-full bg-[#0A0B14]">
-        {/* Header with coin info */}
-        <div className="flex items-center justify-center py-2 border-b border-[#222] bg-[#0F1018]">
-          <div className="flex items-center gap-2">
-            <img 
-              src={crypto.logo}
-              alt={crypto.symbol}
-              className="w-8 h-8"
-            />
-            <span className="text-xl font-bold text-gray-100">{crypto.name} ({crypto.symbol})</span>
-          </div>
-        </div>
-
-        {/* Price information */}
-        <div className="px-4 pt-6 pb-2">
-          <div className="flex justify-between items-baseline">
-            <div>
-              <h2 className="text-3xl font-bold text-gray-100">
-                ${livePrice.toLocaleString(undefined, { maximumFractionDigits: 2 })}
-              </h2>
-              <p className="text-sm text-gray-400">
-                ({crypto.price.toLocaleString(undefined, { maximumFractionDigits: 7 })})
-              </p>
-            </div>
-            <div className={`px-4 py-2 rounded-full ${priceChange >= 0 ? 'bg-[#063D21]/20 text-[#22c55e]' : 'bg-[#450A0A]/20 text-[#ef4444]'}`}>
-              <span className="text-base font-medium">
-                {priceChange >= 0 ? '↑' : '↓'} {Math.abs(priceChange).toFixed(4)}%
-              </span>
-            </div>
-          </div>
-        </div>
-
-        {/* Time period selection */}
-        <div className="px-4 pb-2">
-          <div className="flex space-x-3 mb-1">
-            {['1m', '3m', '5m', '15m', 'Area'].map((tf) => (
-              <button
-                key={tf}
-                onClick={() => setSelectedTimeframe(tf)}
-                className={`px-3 py-1 text-sm rounded-lg ${
-                  selectedTimeframe === tf
-                    ? 'bg-[#1D1E2A] text-gray-100 font-medium'
-                    : 'bg-transparent text-gray-400'
-                }`}
-              >
-                {tf}
-              </button>
-            ))}
-          </div>
-          
-          <div className="text-[10px] text-gray-400 flex space-x-6 px-1">
-            <span>Time: {new Date().toLocaleString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })}</span>
-            <span>Open: {(livePrice - 10).toFixed(2)}</span>
-            <span>Close: {livePrice.toFixed(2)}</span>
-          </div>
-        </div>
-
-        {/* Chart container */}
-        <div className="flex-1 w-full overflow-hidden pb-20">
-          <PriceChart
-            data={chartData}
-            currentPrice={livePrice}
-            previousPrice={livePrice - (livePrice * priceChange / 100)}
-            showControls={false}
-            height="100%"
-            areaChart={selectedTimeframe === 'Area'}
-          />
-        </div>
-
-        {/* Fixed Buy/Sell buttons at bottom */}
-        <div className="fixed bottom-0 left-0 right-0 p-4 bg-[#0A0B14] border-t border-[#222] grid grid-cols-2 gap-4">
-          <Button 
-            onClick={() => handleOpenModal('call')}
-            className="bg-[#3861FB] hover:bg-[#3861FB]/90 text-white font-bold py-3 rounded-xl text-lg"
-          >
-            BUY CALL
-          </Button>
-          <Button 
-            onClick={() => handleOpenModal('put')}
-            className="bg-transparent hover:bg-[#1C1D2A] text-white font-bold py-3 border-2 border-[#3861FB] rounded-xl text-lg"
-          >
-            BUY PUT
-          </Button>
-        </div>
-
-        {/* Trading Modal */}
-        <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-          <DialogContent className="bg-[#14151F] border border-[#222] text-white p-0 rounded-2xl w-[90%] max-w-md">
-            <div className="p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-bold">
-                  {crypto.symbol}/USD
-                </h2>
-                <DialogClose className="bg-[#1A1F2C]/80 rounded-full p-2">
-                  <X className="h-5 w-5" />
-                </DialogClose>
-              </div>
-
-              {/* Time selection */}
-              <div className="mb-6">
-                <h3 className="text-lg font-medium mb-3">Select Time Period</h3>
-                <div className="bg-[#1A1F2C]/60 p-1 rounded-full flex justify-between">
-                  {['1min', '2min', '5min', '10min', '15min'].map((time) => (
-                    <button
-                      key={time}
-                      onClick={() => setSelectedTime(time)}
-                      className={`rounded-full py-2 px-3 text-sm ${
-                        selectedTime === time
-                          ? 'bg-[#3861FB] text-white'
-                          : 'text-gray-300'
-                      }`}
-                    >
-                      {time}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Available balance */}
-              <div className="mb-4">
-                <p className="text-gray-400">
-                  Available: ${mockBalances.availableBalance}
-                </p>
-              </div>
-
-              {/* Amount input */}
-              <div className="bg-[#1A1F2C]/30 border border-[#333] rounded-xl p-4 mb-4">
-                <input
-                  type="text"
-                  value={amount}
-                  onChange={(e) => handleAmountChange(e.target.value)}
-                  className="w-full bg-transparent text-xl font-bold focus:outline-none"
+        <div className="p-4">
+          <div className="flex justify-between items-start mb-6">
+            <div className="flex items-center">
+              <div className="bg-[#14151F]/70 backdrop-blur-sm rounded-full p-2 mr-3">
+                <img 
+                  src={crypto.logo} 
+                  alt={crypto.symbol}
+                  className="w-10 h-10"
                 />
               </div>
-
-              {/* Quick amount selection */}
-              <div className="grid grid-cols-3 gap-3 mb-6">
-                {[600, 1000, 2000, 3000, 5000, 10000].map((value) => (
-                  <button
-                    key={value}
-                    onClick={() => handleQuickAmountSelect(value)}
-                    className="bg-[#1A1F2C]/80 hover:bg-[#1A1F2C] rounded-full py-2 px-1 text-sm transition"
-                  >
-                    ${value}
-                  </button>
-                ))}
+              <div className="text-left">
+                <h2 className="text-xl font-bold text-gray-100">{crypto.name}</h2>
+                <p className="text-sm text-gray-400">{crypto.symbol}</p>
               </div>
-
-              {/* Trade summary */}
-              <div className="bg-[#1A1F2C]/30 border border-[#333] rounded-xl p-4 mb-6">
-                <div className="grid grid-cols-3 gap-4 text-center">
-                  <div>
-                    <p className="text-gray-400 text-sm mb-1">Direction</p>
-                    <p className="text-white font-medium">
-                      {tradeType === 'call' ? 'Call' : 'Put'}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-gray-400 text-sm mb-1">Price</p>
-                    <p className={`${priceChange >= 0 ? 'text-[#22c55e]' : 'text-[#ef4444]'} font-medium`}>
-                      {livePrice.toLocaleString(undefined, { maximumFractionDigits: 2 })}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-gray-400 text-sm mb-1">Amount</p>
-                    <p className="text-white font-medium">
-                      {parseFloat(amount).toLocaleString()}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Confirm button */}
-              <Button
-                className="w-full bg-[#3861FB] hover:bg-[#3861FB]/90 py-6 rounded-xl text-lg font-bold"
-              >
-                CONFIRM
-              </Button>
             </div>
-          </DialogContent>
-        </Dialog>
+            <div className="text-right">
+              <div className="text-xl font-bold text-gray-100">${livePrice.toLocaleString(undefined, { maximumFractionDigits: 2 })}</div>
+              <div className={`text-sm flex items-center justify-end ${priceChange > 0 ? 'text-market-increase' : 'text-market-decrease'}`}>
+                {priceChange > 0 ? (
+                  <ArrowUp className="h-3 w-3 mr-1" />
+                ) : (
+                  <ArrowDown className="h-3 w-3 mr-1" />
+                )}
+                {Math.abs(priceChange).toFixed(4)}%
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col">
+          <TabsList className="bg-[#14151F] mx-4 grid grid-cols-3 mb-4 rounded-xl">
+            <TabsTrigger value="chart" className="rounded-lg text-gray-100 data-[state=active]:bg-[#222430] data-[state=active]:text-blue-400">Chart</TabsTrigger>
+            <TabsTrigger value="about" className="rounded-lg text-gray-100 data-[state=active]:bg-[#222430] data-[state=active]:text-blue-400">About</TabsTrigger>
+            <TabsTrigger value="trade" className="rounded-lg text-gray-100 data-[state=active]:bg-[#222430] data-[state=active]:text-blue-400">Trade</TabsTrigger>
+          </TabsList>
+          
+          <div className="flex-1 overflow-y-auto px-4 pb-24">
+            <TabsContent value="chart" className="space-y-4 mt-0 flex-1">
+              <Card className="bg-[#14151F] border-[#222] text-gray-100">
+                <CardContent className="pt-6">
+                  <PriceChart 
+                    data={transformedChartData} 
+                    currentPrice={livePrice}
+                    previousPrice={livePrice - (livePrice * priceChange / 100)}
+                    height={220}
+                    timeframe={selectedTimeframe}
+                    showControls={false}
+                    areaChart
+                  />
+                  
+                  <div className="flex space-x-2 mt-4 justify-center">
+                    {['1h', '24h', '7d', '30d'].map(tf => (
+                      <button
+                        key={tf}
+                        onClick={() => setSelectedTimeframe(tf)}
+                        className={`px-4 py-1.5 rounded-lg text-sm ${
+                          selectedTimeframe === tf
+                            ? 'bg-blue-600 text-white'
+                            : 'bg-[#222430] text-gray-300'
+                        }`}
+                      >
+                        {tf}
+                      </button>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <Card className="bg-[#14151F] border-[#222] text-gray-100">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-lg">Market Stats</CardTitle>
+                </CardHeader>
+                <CardContent className="py-0">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <p className="text-sm text-gray-400">Market Cap</p>
+                      <p className="font-medium">${(livePrice * 19000000).toLocaleString(undefined, { maximumFractionDigits: 0 })}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-400">24h Volume</p>
+                      <p className="font-medium">${(livePrice * 800000).toLocaleString(undefined, { maximumFractionDigits: 0 })}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-400">Circulating Supply</p>
+                      <p className="font-medium">19,000,000</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-400">Max Supply</p>
+                      <p className="font-medium">21,000,000</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <Card className="bg-[#14151F] border-[#222] text-gray-100">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-lg">Price History</CardTitle>
+                </CardHeader>
+                <CardContent className="py-0">
+                  <div className="grid grid-cols-3 gap-4">
+                    <div>
+                      <p className="text-sm text-gray-400">1h</p>
+                      <p className={priceChange > 0 ? 'text-market-increase' : 'text-market-decrease'}>
+                        {priceChange > 0 ? '+' : ''}{(priceChange * 0.1).toFixed(2)}%
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-400">24h</p>
+                      <p className={priceChange > 0 ? 'text-market-increase' : 'text-market-decrease'}>
+                        {priceChange > 0 ? '+' : ''}{priceChange.toFixed(2)}%
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-400">7d</p>
+                      <p className={priceChange > 0 ? 'text-market-increase' : 'text-market-decrease'}>
+                        {priceChange > 0 ? '+' : ''}{(priceChange * 2.5).toFixed(2)}%
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+            
+            <TabsContent value="about">
+              <Card className="bg-[#14151F] border-[#222] text-gray-100">
+                <CardContent className="pt-6">
+                  <p className="mb-4">
+                    {crypto.name} ({crypto.symbol}) is a digital currency that enables instant payments to anyone, anywhere in the world.
+                  </p>
+                  <p>
+                    {crypto.name} uses peer-to-peer technology to operate with no central authority: managing transactions and issuing money are carried out collectively by the network.
+                  </p>
+                </CardContent>
+              </Card>
+            </TabsContent>
+            
+            <TabsContent value="trade">
+              <Card className="bg-[#14151F] border-[#222] text-gray-100">
+                <CardContent className="pt-6 flex flex-col gap-4">
+                  <Button className="bg-market-increase hover:bg-market-increase/90">
+                    Buy {crypto.symbol}
+                  </Button>
+                  <Button variant="outline" className="border-market-decrease text-market-decrease">
+                    Sell {crypto.symbol}
+                  </Button>
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </div>
+        </Tabs>
+        
+        {/* Fixed Buy/Sell buttons at bottom */}
+        <div className="fixed bottom-0 left-0 right-0 p-4 bg-[#0A0B14] border-t border-[#222] grid grid-cols-2 gap-3">
+          <Button className="py-5 bg-market-increase hover:bg-market-increase/90 text-white font-semibold rounded-xl">
+            BUY
+          </Button>
+          <Button className="py-5 bg-[#14151F] hover:bg-[#1C1D2A] text-market-decrease font-semibold border border-market-decrease rounded-xl">
+            SELL
+          </Button>
+        </div>
       </div>
     </MobileLayout>
   );
