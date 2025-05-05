@@ -30,11 +30,11 @@ const WithdrawPage = () => {
         </button>
       )}
     >
-      <div className="flex flex-col h-full p-4">
+      <div className="flex flex-col h-full bg-[#0A0B14] p-4">
         {/* Amount Display */}
         <div className="flex items-baseline text-left mb-2">
-          <span className="text-4xl font-bold mr-2">₹</span>
-          <span className="text-7xl font-bold">
+          <span className="text-4xl font-bold mr-2 text-gray-100">₹</span>
+          <span className="text-8xl font-bold text-gray-100">
             {amount ? amount : "0"}
           </span>
         </div>
@@ -47,28 +47,29 @@ const WithdrawPage = () => {
         {/* Withdrawal Balance */}
         <div className="text-center mb-6">
           <p className="text-gray-400 mb-1">Withdrawal Balance</p>
-          <p className="text-3xl font-bold">₹{availableBalance.toLocaleString()}</p>
+          <p className="text-4xl font-bold text-gray-100">₹{availableBalance.toLocaleString()}</p>
         </div>
         
         {/* Bank Account Info */}
         <div className="grid grid-cols-2 gap-4 mb-6">
-          <div className="bg-[#0F1219]/40 backdrop-blur-sm rounded-xl p-3 border border-[#222]">
+          <div className="bg-[#14151F] backdrop-blur-sm rounded-xl p-3 border border-[#222]">
             <p className="text-blue-400 text-sm mb-1">Bank Account</p>
-            <p className="text-lg">{bankAccount}</p>
+            <p className="text-lg text-gray-100">{bankAccount}</p>
           </div>
-          <div className="bg-[#0F1219]/40 backdrop-blur-sm rounded-xl p-3 border border-[#222]">
+          <div className="bg-[#14151F] backdrop-blur-sm rounded-xl p-3 border border-[#222]">
             <p className="text-blue-400 text-sm mb-1">IFSC code</p>
-            <p className="text-lg">{ifscCode}</p>
+            <p className="text-lg text-gray-100">{ifscCode}</p>
           </div>
         </div>
         
         {/* Keypad */}
-        <div className="flex-1 flex flex-col justify-end">
+        <div className="flex-1 flex flex-col justify-end mt-auto">
           <NumericKeypad 
             value={amount}
             onChange={setAmount}
             onConfirm={isValidAmount ? handleConfirm : undefined}
             confirmButtonText="SUBMIT"
+            className="mx-auto"
           />
         </div>
       </div>

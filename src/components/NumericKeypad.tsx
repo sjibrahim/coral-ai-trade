@@ -1,6 +1,6 @@
 
 import { cn } from "@/lib/utils";
-import { X, Delete } from "lucide-react";
+import { Delete } from "lucide-react";
 
 interface NumericKeypadProps {
   value: string;
@@ -50,23 +50,20 @@ const NumericKeypad = ({
   };
   
   return (
-    <div className={cn("numeric-keypad w-full", className)}>
-      <div className="grid grid-cols-3 gap-4">
+    <div className={cn("numeric-keypad w-full max-w-xs", className)}>
+      <div className="grid grid-cols-3 gap-x-8 gap-y-6">
         <KeypadButton onClick={() => handleKeyPress('1')}>1</KeypadButton>
         <KeypadButton onClick={() => handleKeyPress('2')}>2</KeypadButton>
         <KeypadButton onClick={() => handleKeyPress('3')}>3</KeypadButton>
-      </div>
-      <div className="grid grid-cols-3 gap-4 mt-4">
+        
         <KeypadButton onClick={() => handleKeyPress('4')}>4</KeypadButton>
         <KeypadButton onClick={() => handleKeyPress('5')}>5</KeypadButton>
         <KeypadButton onClick={() => handleKeyPress('6')}>6</KeypadButton>
-      </div>
-      <div className="grid grid-cols-3 gap-4 mt-4">
+        
         <KeypadButton onClick={() => handleKeyPress('7')}>7</KeypadButton>
         <KeypadButton onClick={() => handleKeyPress('8')}>8</KeypadButton>
         <KeypadButton onClick={() => handleKeyPress('9')}>9</KeypadButton>
-      </div>
-      <div className="grid grid-cols-3 gap-4 mt-4">
+        
         <KeypadButton variant="secondary" onClick={() => handleKeyPress('clear')}>
           <span className="text-sm">clr</span>
         </KeypadButton>
@@ -79,7 +76,8 @@ const NumericKeypad = ({
       {onConfirm && (
         <button 
           onClick={onConfirm}
-          className="w-full py-4 rounded-xl bg-blue-600 text-white text-base font-medium mt-6"
+          disabled={!onConfirm}
+          className="w-full py-4 rounded-xl bg-blue-600 text-white text-base font-medium mt-6 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {confirmButtonText}
         </button>
@@ -100,8 +98,8 @@ const KeypadButton = ({ onClick, children, variant = 'default' }: KeypadButtonPr
       type="button"
       onClick={onClick}
       className={cn(
-        "h-14 w-full rounded-lg text-xl font-medium flex items-center justify-center",
-        variant === 'secondary' ? "text-blue-300" : "text-white"
+        "h-14 w-14 rounded-full bg-[#14151F]/80 border border-[#222] text-xl font-medium flex items-center justify-center shadow-md",
+        variant === 'secondary' ? "text-blue-300" : "text-gray-100"
       )}
     >
       {children}

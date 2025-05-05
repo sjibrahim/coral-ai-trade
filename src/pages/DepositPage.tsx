@@ -28,11 +28,11 @@ const DepositPage = () => {
         </button>
       )}
     >
-      <div className="flex flex-col h-full p-4">
+      <div className="flex flex-col h-full bg-[#0A0B14] p-4">
         {/* Amount Display */}
         <div className="flex items-baseline text-left mb-2">
-          <span className="text-4xl font-bold mr-2">₹</span>
-          <span className="text-7xl font-bold">
+          <span className="text-4xl font-bold mr-2 text-gray-100">₹</span>
+          <span className="text-8xl font-bold text-gray-100">
             {amount ? amount : "0"}
           </span>
         </div>
@@ -44,10 +44,10 @@ const DepositPage = () => {
         
         {/* Payment Channels */}
         <div className="mb-8">
-          <h2 className="text-xl font-medium mb-4 text-center">
+          <h2 className="text-xl font-medium mb-4 text-center text-gray-100">
             Payment Channels
           </h2>
-          <div className="bg-[#0F1219]/60 backdrop-blur-sm rounded-full p-1.5 flex justify-between">
+          <div className="bg-[#14151F] rounded-full p-1.5 flex justify-between">
             {paymentChannels.map((channel) => (
               <button 
                 key={channel}
@@ -55,7 +55,7 @@ const DepositPage = () => {
                   "py-2 px-6 rounded-full transition-colors flex-1 text-center",
                   selectedChannel === channel 
                     ? 'bg-blue-600 text-white font-medium' 
-                    : 'text-white'
+                    : 'text-gray-300'
                 )}
                 onClick={() => setSelectedChannel(channel)}
               >
@@ -66,12 +66,13 @@ const DepositPage = () => {
         </div>
         
         {/* Keypad */}
-        <div className="flex-1 flex flex-col justify-end">
+        <div className="flex-1 flex flex-col justify-end mt-auto">
           <NumericKeypad 
             value={amount}
             onChange={setAmount}
             onConfirm={isValidAmount ? handleConfirm : undefined}
             confirmButtonText="CONFIRM"
+            className="mx-auto"
           />
         </div>
       </div>
