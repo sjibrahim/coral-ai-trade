@@ -16,12 +16,12 @@ const ProfileOption = ({ icon, label, to, className, badge }: ProfileOptionProps
     <Link 
       to={to}
       className={cn(
-        "flex items-center justify-between p-3 rounded-lg transition-all hover:bg-accent/20 border border-border/40 animate-fade-in",
+        "flex items-center justify-between p-3.5 rounded-lg transition-all hover:bg-accent/20 border border-border/30 animate-fade-in bg-card/40",
         className
       )}
     >
       <div className="flex items-center gap-3">
-        <div className="w-8 h-8 rounded-full bg-secondary/50 backdrop-blur-sm border border-border/40 flex items-center justify-center">
+        <div className="w-8 h-8 rounded-full bg-secondary/30 backdrop-blur-sm border border-border/30 flex items-center justify-center">
           {icon}
         </div>
         <span className="text-sm font-medium">{label}</span>

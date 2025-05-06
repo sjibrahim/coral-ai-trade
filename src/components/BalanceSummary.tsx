@@ -8,13 +8,15 @@ interface BalanceSummaryProps {
   totalDeposit: number;
   totalWithdrawal: number;
   availableBalance: number;
+  asUSDT?: boolean;
 }
 
 const BalanceSummary = ({ 
   totalBalance, 
   totalDeposit, 
   totalWithdrawal, 
-  availableBalance 
+  availableBalance,
+  asUSDT = false
 }: BalanceSummaryProps) => {
   const [hideBalance, setHideBalance] = useState(false);
   
@@ -25,6 +27,8 @@ const BalanceSummary = ({
   const displayAmount = (amount: number) => {
     return hideBalance ? "****.**" : amount.toLocaleString();
   };
+
+  const currencySymbol = asUSDT ? 'USDT' : '₹';
 
   return (
     <div className="p-5 space-y-4">
@@ -39,7 +43,7 @@ const BalanceSummary = ({
       </div>
       
       <div className="flex items-center">
-        <span className="text-xl">₹</span>
+        <span className="text-xl font-normal">{currencySymbol}</span>
         <span className="text-3xl font-semibold ml-1 text-gradient">{displayAmount(totalBalance)}</span>
       </div>
       
@@ -49,21 +53,21 @@ const BalanceSummary = ({
             "text-base font-medium",
             totalDeposit < 0 ? "text-market-decrease" : ""
           )}>
-            ₹ {displayAmount(totalDeposit)}
+            {currencySymbol} {displayAmount(totalDeposit)}
           </p>
           <p className="text-xs text-muted-foreground mt-0.5">Total Deposit</p>
         </div>
         
         <div className="text-center glass-card p-2.5 rounded-lg backdrop-blur-sm animate-fade-in" style={{animationDelay: "50ms"}}>
           <p className="text-base font-medium">
-            ₹ {displayAmount(totalWithdrawal)}
+            {currencySymbol} {displayAmount(totalWithdrawal)}
           </p>
           <p className="text-xs text-muted-foreground mt-0.5">Total Withdrawal</p>
         </div>
         
         <div className="text-center glass-card p-2.5 rounded-lg backdrop-blur-sm animate-fade-in" style={{animationDelay: "100ms"}}>
           <p className="text-base font-medium">
-            ₹ {displayAmount(availableBalance)}
+            {currencySymbol} {displayAmount(availableBalance)}
           </p>
           <p className="text-xs text-muted-foreground mt-0.5">Available</p>
         </div>

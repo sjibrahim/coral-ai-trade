@@ -5,9 +5,12 @@ import { mockUser } from "@/data/mockData";
 import ProfileOption from "@/components/ProfileOption";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { 
-  ArrowUpCircle, ArrowDownCircle, Share2, Building, KeySquare, HelpCircle, 
-  FileText, LogOut, Wallet, Star, Bell, Settings, Gift, Shield, User
+  ArrowUpCircle, ArrowDownCircle, FileText, LogOut, 
+  Wallet, Star, User, FileCheck, ListTree, CreditCard
 } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
+import { Card, CardContent } from "@/components/ui/card";
+import BalanceSummary from "@/components/BalanceSummary";
 import { cn } from "@/lib/utils";
 
 const getRandomAvatarUrl = () => {
@@ -41,197 +44,185 @@ const ProfilePage = () => {
   
   return (
     <MobileLayout>
-      <div className="animate-fade-in space-y-6 pb-24">
-        {/* Profile Header - Modern Design */}
-        <div className="bg-gradient-to-br from-primary/30 via-accent/40 to-blue-900/30 backdrop-blur-sm rounded-b-3xl overflow-hidden relative">
-          {/* Background pattern */}
-          <div className="absolute inset-0 opacity-10">
-            <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
-              <pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse">
-                <path d="M 10 0 L 0 0 0 10" fill="none" stroke="white" strokeWidth="0.5"/>
-              </pattern>
-              <rect width="100" height="100" fill="url(#grid)" />
-            </svg>
-          </div>
-          
-          <div className="relative p-6 pt-8">
-            {/* VIP Badge - Top section */}
-            <div className="flex justify-end mb-5">
-              <div className="bg-gradient-to-r from-amber-500 to-yellow-300 text-black rounded-full px-3 py-1.5 text-xs font-semibold shadow-lg flex items-center gap-1.5">
-                <Star className="h-3.5 w-3.5" />
-                VIP {mockUser.vipLevel}
-              </div>
+      <div className="animate-fade-in space-y-4 pb-24">
+        {/* Profile Header with Logo and VIP Level */}
+        <div className="relative px-5 pt-4 pb-2 flex items-center">
+          <div className="flex items-center gap-3">
+            <div className="relative">
+              <Avatar className="w-14 h-14 border-2 border-primary/30">
+                {isLoading ? (
+                  <div className="w-full h-full animate-pulse bg-secondary rounded-full flex items-center justify-center">
+                    <User className="w-6 h-6 text-muted-foreground/50" />
+                  </div>
+                ) : (
+                  <AvatarImage 
+                    src={avatarUrl} 
+                    alt={mockUser.name} 
+                    className="object-cover"
+                  />
+                )}
+                <AvatarFallback className="bg-primary/20">
+                  {mockUser.name.charAt(0)}
+                </AvatarFallback>
+              </Avatar>
             </div>
             
-            {/* User Info and Avatar */}
-            <div className="flex items-center gap-4">
-              <div className="relative">
-                <div className="rounded-full bg-gradient-to-r from-violet-500 via-blue-500 to-primary p-1 shadow-2xl shadow-primary/30">
-                  <Avatar className="w-20 h-20 border-4 border-background">
-                    {isLoading ? (
-                      <div className="w-full h-full animate-pulse bg-secondary rounded-full flex items-center justify-center">
-                        <User className="w-8 h-8 text-muted-foreground/50" />
-                      </div>
-                    ) : (
-                      <AvatarImage src={avatarUrl} alt={mockUser.name} className="object-cover" />
-                    )}
-                    <AvatarFallback className="bg-primary/20">{mockUser.name.charAt(0)}</AvatarFallback>
-                  </Avatar>
+            <div className="flex flex-col">
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium">UID: {mockUser.id}</span>
+                <div className="bg-gradient-to-r from-amber-500 to-yellow-300 text-black rounded-full px-2 py-0.5 text-xs font-semibold shadow-sm flex items-center gap-1">
+                  <Star className="h-3 w-3" />
+                  VIP {mockUser.vipLevel}
                 </div>
-                
-                {/* Online status indicator */}
-                <span className="absolute bottom-1 right-1 h-3 w-3 rounded-full bg-green-500 border-2 border-background"></span>
+              </div>
+              <h2 className="text-base font-bold">{mockUser.name}</h2>
+            </div>
+          </div>
+          
+          {/* Chat icon */}
+          <div className="absolute right-5 top-1/2 -translate-y-1/2">
+            <div className="w-9 h-9 rounded-full flex items-center justify-center text-primary bg-primary/10 border border-primary/20">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M14 9a2 2 0 0 1-2 2H6l-4 4V4c0-1.1.9-2 2-2h8a2 2 0 0 1 2 2v5Z" />
+                <path d="M18 9h2a2 2 0 0 1 2 2v11l-4-4h-6a2 2 0 0 1-2-2v-1" />
+              </svg>
+            </div>
+          </div>
+        </div>
+        
+        {/* Financial Summaries */}
+        <div className="px-4">
+          <Card className="bg-gradient-to-br from-sky-50/5 to-blue-100/10 border border-blue-200/20 overflow-hidden">
+            <CardContent className="p-4 space-y-3">
+              <div className="flex justify-between items-center">
+                <div className="space-y-1">
+                  <p className="text-sm text-muted-foreground">Total Assets</p>
+                  <div className="flex items-baseline">
+                    <span className="text-xl font-bold">6851.06₹</span>
+                    <span className="text-xs text-muted-foreground ml-2">(USDT:81.56)</span>
+                  </div>
+                </div>
               </div>
               
-              <div className="flex-1">
-                <div className="flex items-center gap-2 mb-1">
-                  <h1 className="text-xl font-bold bg-gradient-to-r from-white to-blue-100 bg-clip-text text-transparent">
-                    {mockUser.name}
-                  </h1>
-                  <Shield className="w-4 h-4 text-primary" />
+              <Separator className="bg-blue-200/20" />
+              
+              <div className="flex justify-between items-center">
+                <div className="space-y-1">
+                  <p className="text-sm text-muted-foreground">Contract Amount</p>
+                  <div className="flex items-baseline">
+                    <span className="text-xl font-bold">4046.00₹</span>
+                    <span className="text-xs text-muted-foreground ml-2">(USDT:48.16)</span>
+                  </div>
                 </div>
-                <p className="text-sm text-muted-foreground flex items-center gap-1 mb-1">
-                  <Bell className="h-3.5 w-3.5" />
-                  {mockUser.phone}
-                </p>
-                <p className="text-sm text-muted-foreground flex items-center gap-1">
-                  <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                  </svg>
-                  {mockUser.email}
-                </p>
               </div>
-            </div>
+              
+              <Separator className="bg-blue-200/20" />
+              
+              <div className="flex justify-between items-center">
+                <div className="space-y-1">
+                  <p className="text-sm text-muted-foreground">Total withdrawal</p>
+                  <div className="flex items-baseline">
+                    <span className="text-xl font-bold">11396.00₹</span>
+                    <span className="text-xs text-muted-foreground ml-2">(USDT:135.66)</span>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+        
+        {/* Quick Action Buttons */}
+        <div className="px-4 grid grid-cols-3 gap-2">
+          <button className="bg-primary text-white rounded-md py-3 font-medium text-sm shadow-lg shadow-primary/30">
+            Recharge
+          </button>
+          <button className="bg-secondary border border-blue-300/20 rounded-md py-3 font-medium text-sm">
+            Withdraw
+          </button>
+          <button className="bg-secondary border border-blue-300/20 rounded-md py-3 font-medium text-sm">
+            Details
+          </button>
+        </div>
+        
+        {/* Revenue Stats with Highlighted Area (Marked in Green) */}
+        <div className="mx-4 mt-4 rounded-xl overflow-hidden bg-gradient-to-b from-blue-50/10 to-blue-100/20 border border-blue-200/30">
+          {/* Total Revenue */}
+          <div className="p-4 pb-2">
+            <h3 className="text-sm text-muted-foreground mb-1">Total Revenue</h3>
+            <h2 className="text-2xl font-bold">10221.26₹</h2>
             
-            {/* Statistics Cards */}
-            <div className="grid grid-cols-3 gap-3 mt-6">
-              <div className="glass-card rounded-xl p-3 text-center">
-                <p className="text-xs text-muted-foreground mb-1">Trades</p>
-                <p className="text-lg font-bold">324</p>
+            {/* Income Breakdown */}
+            <div className="grid grid-cols-3 gap-2 mt-3 border-t border-blue-200/20 pt-2">
+              <div className="text-center">
+                <p className="text-xs text-muted-foreground">Yesterday's income</p>
+                <p className="font-semibold">344.12₹</p>
               </div>
-              <div className="glass-card rounded-xl p-3 text-center">
-                <p className="text-xs text-muted-foreground mb-1">Win Rate</p>
-                <p className="text-lg font-bold text-green-400">68%</p>
+              <div className="text-center">
+                <p className="text-xs text-muted-foreground">Today's income</p>
+                <p className="font-semibold">0.00₹</p>
               </div>
-              <div className="glass-card rounded-xl p-3 text-center">
-                <p className="text-xs text-muted-foreground mb-1">Team</p>
-                <p className="text-lg font-bold">12</p>
+              <div className="text-center">
+                <p className="text-xs text-muted-foreground">Salary income</p>
+                <p className="font-semibold">2300.00₹</p>
               </div>
             </div>
           </div>
           
-          {/* Decoration Elements */}
-          <div className="h-4 w-full bg-gradient-to-r from-blue-500/20 via-primary/20 to-purple-500/20"></div>
-        </div>
-        
-        {/* Actions */}
-        <div className="p-5 grid grid-cols-2 gap-4">
-          <button className="bg-gradient-to-r from-blue-600 to-blue-500 rounded-xl flex items-center justify-center gap-2 py-3.5 text-white shadow-lg shadow-blue-500/20">
-            <ArrowDownCircle size={20} />
-            <span className="font-medium">Deposit</span>
-          </button>
-          <button className="bg-card border border-primary/30 backdrop-blur-sm rounded-xl flex items-center justify-center gap-2 py-3.5 shadow-lg">
-            <ArrowUpCircle size={20} className="text-primary" />
-            <span className="font-medium">Withdrawal</span>
-          </button>
-        </div>
-        
-        {/* Account Section */}
-        <div className="px-5 space-y-4">
-          <h2 className="text-xl font-semibold flex items-center gap-2">
-            <Wallet className="h-5 w-5 text-primary" />
-            <span className="bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
-              Account Settings
-            </span>
-          </h2>
-          <div className="space-y-3">
-            <ProfileOption 
-              icon={<Share2 className="h-5 w-5 text-purple-400" />}
-              label="Share & Earn"
-              to="/invite"
-              badge="Earn 5%"
-              className="hover:border-purple-400/30 hover:bg-purple-400/5"
-            />
-            <ProfileOption 
-              icon={<Building className="h-5 w-5 text-blue-400" />}
-              label="Bank Details"
-              to="/bank"
-              className="hover:border-blue-400/30 hover:bg-blue-400/5"
-            />
-            <ProfileOption 
-              icon={<KeySquare className="h-5 w-5 text-amber-400" />}
-              label="Security & Password"
-              to="/change-password"
-              className="hover:border-amber-400/30 hover:bg-amber-400/5"
-            />
-            <ProfileOption 
-              icon={<Gift className="h-5 w-5 text-pink-400" />}
-              label="Bonus & Rewards"
-              to="/rewards"
-              badge="New"
-              className="hover:border-pink-400/30 hover:bg-pink-400/5"
-            />
-            <ProfileOption 
-              icon={<Settings className="h-5 w-5 text-slate-400" />}
-              label="Preferences"
-              to="/settings"
-              className="hover:border-slate-400/30 hover:bg-slate-400/5"
-            />
-            <ProfileOption 
-              icon={<HelpCircle className="h-5 w-5 text-green-400" />}
-              label="Customer Service"
-              to="/support"
-              badge="24/7"
-              className="hover:border-green-400/30 hover:bg-green-400/5"
-            />
+          {/* Profit Margins Section - Highlighted in Green in the reference */}
+          <div className="bg-gradient-to-br from-blue-400/20 to-blue-300/30 p-4">
+            <div className="grid grid-cols-3 gap-2">
+              <div className="text-center">
+                <p className="text-xs text-blue-100">Current Profit Margin</p>
+                <p className="font-semibold text-lg">5.5%</p>
+                <div className="h-1 bg-blue-200/30 rounded-full mt-2 w-3/4 mx-auto">
+                  <div className="h-1 bg-blue-500 rounded-full w-[55%]"></div>
+                </div>
+              </div>
+              <div className="text-center">
+                <p className="text-xs text-blue-100">Next Profit Margin</p>
+                <p className="font-semibold text-lg">6.0%</p>
+                <div className="h-1 bg-blue-200/30 rounded-full mt-2 w-3/4 mx-auto">
+                  <div className="h-1 bg-blue-500 rounded-full w-[60%]"></div>
+                </div>
+              </div>
+              <div className="text-center">
+                <p className="text-xs text-blue-100">Upgrade by valid invitation</p>
+                <p className="font-semibold text-lg">13/20</p>
+                <div className="h-1 bg-blue-200/30 rounded-full mt-2 w-3/4 mx-auto">
+                  <div className="h-1 bg-blue-500 rounded-full w-[65%]"></div>
+                </div>
+              </div>
+            </div>
+            <div className="mt-2 h-0.5 bg-blue-300/30 w-full">
+              <div className="bg-primary h-0.5 w-[65%] relative">
+                <div className="absolute right-0 -bottom-1 h-2 w-2 rounded-full bg-primary"></div>
+                <div className="absolute right-0 -top-6 text-xs font-medium bg-primary text-white px-1 rounded">
+                  13/20
+                </div>
+              </div>
+            </div>
           </div>
         </div>
         
-        {/* Records Section */}
-        <div className="px-5 pt-2">
-          <h2 className="text-xl font-semibold flex items-center gap-2 mb-4">
-            <FileText className="h-5 w-5 text-blue-400" />
-            <span className="bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
-              Transaction Records
-            </span>
-          </h2>
-          <div className="space-y-3">
-            <ProfileOption 
-              icon={<FileText className="h-5 w-5 text-blue-300" />}
-              label="Deposit Records"
-              to="/deposit-records"
-              className="hover:border-blue-300/30 hover:bg-blue-300/5"
-            />
-            <ProfileOption 
-              icon={<FileText className="h-5 w-5 text-green-300" />}
-              label="Withdrawal Records"
-              to="/withdrawal-records"
-              className="hover:border-green-300/30 hover:bg-green-300/5"
-            />
-            <ProfileOption 
-              icon={<FileText className="h-5 w-5 text-purple-300" />}
-              label="Contract Records"
-              to="/contract-record"
-              className="hover:border-purple-300/30 hover:bg-purple-300/5"
-            />
-            <ProfileOption 
-              icon={<FileText className="h-5 w-5 text-amber-300" />}
-              label="Commission Records"
-              to="/commission-record"
-              className="hover:border-amber-300/30 hover:bg-amber-300/5"
-            />
-            <ProfileOption 
-              icon={<FileText className="h-5 w-5 text-red-300" />}
-              label="Salary Records"
-              to="/salary-record"
-              className="hover:border-red-300/30 hover:bg-red-300/5"
-            />
-          </div>
+        {/* Records Links */}
+        <div className="px-4 space-y-2.5 mt-2">
+          <ProfileOption
+            icon={<FileCheck className="h-5 w-5 text-teal-400" />}
+            label="Account change records"
+            to="/account-records"
+          />
           
-          <button className="w-full mt-10 bg-gradient-to-r from-red-600/80 to-red-500/80 backdrop-blur-sm shadow-lg shadow-red-500/20 rounded-xl py-4 text-white flex items-center justify-center gap-2">
-            <LogOut className="w-5 h-5" />
-            <span className="font-medium">LOGOUT</span>
-          </button>
+          <ProfileOption
+            icon={<ListTree className="h-5 w-5 text-violet-400" />}
+            label="Transaction Record"
+            to="/transaction-record"
+          />
+          
+          <ProfileOption
+            icon={<CreditCard className="h-5 w-5 text-emerald-400" />}
+            label="Bank info"
+            to="/bank"
+          />
         </div>
       </div>
     </MobileLayout>
