@@ -3,142 +3,251 @@ import MobileLayout from "@/components/layout/MobileLayout";
 import { mockTeamStats } from "@/data/mockData";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
-import { Users, UserPlus, Share2 } from "lucide-react";
+import { Users, UserPlus, Share2, ArrowRight, TrendingUp, DollarSign, User, ArrowUpRight } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 const TeamPage = () => {
   const [activeLevel, setActiveLevel] = useState('Level 1');
   const [showInviteDialog, setShowInviteDialog] = useState(false);
+
+  // Sample stats data - replace with actual API calls in production
+  const teamStats = {
+    teamSize: 55,
+    validUsers: 42,
+    totalRecharge: 12500,
+    todaysNewMembers: 3,
+    validToday: 2,
+    totalWithdrawal: 5800,
+    commission: 150,
+    levels: {
+      'Level 1': 50,
+      'Level 2': 3,
+      'Level 3': 2
+    },
+    members: [
+      {
+        id: 1,
+        name: 'Nikhil',
+        avatar: '/lovable-uploads/96bbf5be-34b4-46fc-b37f-6e38b84f6772.png',
+        joinDate: '4/12/2025',
+        investment: 3750,
+        status: 'Inactive'
+      },
+      {
+        id: 2,
+        name: 'Rahul',
+        joinDate: '24/04/2025',
+        investment: 5000,
+        status: 'Active'
+      },
+      {
+        id: 3,
+        name: 'Priya',
+        joinDate: '30/04/2025',
+        investment: 2500,
+        status: 'Active'
+      }
+    ]
+  };
   
-  const levels = [
-    'Level 1',
-    'Level 2',
-    'Level 3'
-  ];
+  // Get level colors
+  const getLevelColor = (level: string) => {
+    if (level === 'Level 1') return 'bg-emerald-500';
+    if (level === 'Level 2') return 'bg-sky-500';
+    return 'bg-violet-500';
+  };
   
-  const getLevelMembers = (level: string) => {
-    // Return filtered members based on level
-    return mockTeamStats.members;
+  // Get status colors
+  const getStatusColor = (status: string) => {
+    return status.toLowerCase() === 'active' 
+      ? 'text-emerald-500' 
+      : 'text-amber-500';
+  };
+  
+  // Get avatar fallback text from name
+  const getAvatarText = (name: string) => {
+    return name.charAt(0).toUpperCase();
+  };
+  
+  // Get level progress percentage
+  const getLevelProgressPercentage = (level: string) => {
+    const memberCount = teamStats.levels[level as keyof typeof teamStats.levels];
+    if (level === 'Level 1') return (memberCount / 100) * 100;
+    if (level === 'Level 2') return (memberCount / 10) * 100;
+    return (memberCount / 5) * 100;
   };
 
-  const currentLevelMembers = getLevelMembers(activeLevel);
-  const currentLevelData = mockTeamStats.levels.find(level => level.id === `L${activeLevel.charAt(6)}`);
-  
   return (
     <MobileLayout title="Team">
-      <div className="p-4 space-y-6 animate-fade-in pb-20">
-        {/* Team Banner */}
-        <div className="bg-primary/10 rounded-xl p-4 flex items-center">
-          <div className="h-14 w-14 rounded-full bg-primary/20 flex items-center justify-center mr-4">
-            <Users size={24} className="text-primary" />
-          </div>
-          <div className="flex-1">
-            <h3 className="text-lg font-medium">My Team</h3>
-            <p className="text-sm text-muted-foreground">Build your network</p>
-          </div>
-          <Button 
-            variant="outline" 
-            size="sm" 
-            className="bg-primary/10 border-primary/20"
-            onClick={() => setShowInviteDialog(true)}
-          >
-            <UserPlus size={16} className="mr-1" /> Invite
-          </Button>
+      <div className="p-4 space-y-5 animate-fade-in pb-20 bg-[#f8f9fa]/50">
+        {/* Team Header */}
+        <div className="bg-gradient-to-r from-emerald-50 to-emerald-100/50 rounded-xl p-5">
+          <h1 className="text-2xl font-bold text-emerald-800">My Team</h1>
+          <p className="text-sm text-emerald-600">Manage your downline and track commissions</p>
         </div>
         
-        {/* Team Stats */}
-        <Card className="overflow-hidden">
-          <div className="bg-gradient-to-r from-primary/5 to-primary/10 p-4">
-            <h3 className="text-base font-medium mb-1">Team Overview</h3>
-            <p className="text-xs text-muted-foreground">Track your team growth</p>
-          </div>
+        {/* Stats Grid */}
+        <div className="grid grid-cols-2 gap-4">
+          <Card className="overflow-hidden bg-gradient-to-br from-emerald-400 to-emerald-500 border-0 text-white shadow-lg shadow-emerald-500/30">
+            <CardContent className="p-4 space-y-1">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+                  <Users size={18} className="text-white" />
+                </div>
+                <h3 className="text-sm font-medium text-white/90">Team Size</h3>
+              </div>
+              <div className="text-3xl font-bold">{teamStats.teamSize}</div>
+              <p className="text-xs text-white/90">Level 1: {teamStats.levels['Level 1']}</p>
+            </CardContent>
+          </Card>
           
-          <CardContent className="p-0">
-            <div className="grid grid-cols-3 divide-x divide-border">
-              {mockTeamStats.levels.map((level) => (
-                <div key={level.id} className="py-4 text-center">
-                  <p className="text-sm mb-1 text-muted-foreground">{level.id}</p>
-                  <p className="text-lg font-medium">
-                    <span className="text-primary">{level.current}</span>
-                    <span className="text-muted-foreground">/{level.total}</span>
+          <Card className="overflow-hidden bg-gradient-to-br from-emerald-400 to-emerald-500 border-0 text-white shadow-lg shadow-emerald-500/30">
+            <CardContent className="p-4 space-y-1">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+                  <DollarSign size={18} className="text-white" />
+                </div>
+                <h3 className="text-sm font-medium text-white/90">Commission</h3>
+              </div>
+              <div className="text-3xl font-bold">₹{teamStats.commission}</div>
+              <p className="text-xs text-white/90">Total earnings</p>
+            </CardContent>
+          </Card>
+        </div>
+        
+        {/* More Stats Summary */}
+        <Card>
+          <CardContent className="p-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <p className="text-xs text-muted-foreground mb-1">Valid Users</p>
+                <p className="text-lg font-medium">{teamStats.validUsers}</p>
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground mb-1">Total Recharge</p>
+                <p className="text-lg font-medium">₹{teamStats.totalRecharge}</p>
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground mb-1">Today's New Members</p>
+                <p className="text-lg font-medium">{teamStats.todaysNewMembers}</p>
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground mb-1">Valid Today</p>
+                <p className="text-lg font-medium">{teamStats.validToday}</p>
+              </div>
+              <div className="col-span-2">
+                <p className="text-xs text-muted-foreground mb-1">Total Withdrawal</p>
+                <p className="text-lg font-medium">₹{teamStats.totalWithdrawal}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        
+        {/* Commission Note */}
+        <div className="bg-blue-50 rounded-lg p-3 text-sm border border-blue-100">
+          <p className="text-blue-800">
+            Team Commission: <span className="font-medium">10%</span> on Level 1, 
+            <span className="font-medium"> 0%</span> on Level 2-3
+          </p>
+        </div>
+        
+        {/* Invite Button */}
+        <Button 
+          className="w-full bg-gradient-to-r from-emerald-500 to-emerald-600 h-14 text-base shadow-lg shadow-emerald-500/20"
+          onClick={() => setShowInviteDialog(true)}
+        >
+          <UserPlus size={20} className="mr-2" />
+          Invite New Members
+        </Button>
+        
+        {/* Level Tabs */}
+        <div className="mt-6 space-y-2">
+          <Tabs defaultValue="Level 1" className="w-full">
+            <TabsList className="w-full grid grid-cols-3 h-10">
+              {Object.keys(teamStats.levels).map((level) => (
+                <TabsTrigger 
+                  key={level} 
+                  value={level}
+                  className="data-[state=active]:bg-emerald-500 data-[state=active]:text-white"
+                  onClick={() => setActiveLevel(level)}
+                >
+                  {level}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+            
+            {/* Progress bar row */}
+            <div className="flex w-full mt-2">
+              {Object.entries(teamStats.levels).map(([level, count]) => (
+                <div key={level} className="flex-1 px-1">
+                  <div className="h-1 w-full bg-gray-100 rounded-full overflow-hidden">
+                    <div 
+                      className={cn("h-full", getLevelColor(level))}
+                      style={{ width: `${getLevelProgressPercentage(level)}%` }}
+                    ></div>
+                  </div>
+                  <p className="text-xs text-emerald-600 text-center mt-1">
+                    {count} members
                   </p>
                 </div>
               ))}
             </div>
-          </CardContent>
-        </Card>
-        
-        {/* Level Tabs */}
-        <div className="flex rounded-lg overflow-hidden border border-border">
-          {levels.map((level) => (
-            <button
-              key={level}
-              className={cn(
-                "flex-1 py-3 text-center transition-colors",
-                activeLevel === level 
-                  ? "bg-primary text-white" 
-                  : "bg-card text-muted-foreground hover:bg-muted/50"
-              )}
-              onClick={() => setActiveLevel(level)}
-            >
-              {level}
-            </button>
-          ))}
-        </div>
-        
-        {/* Current Level Info */}
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <h3 className="font-medium">{activeLevel}</h3>
-              <div className="text-sm">
-                <span className="text-primary font-medium">{currentLevelData?.current || 0}</span>
-                <span className="text-muted-foreground">/{currentLevelData?.total || 0} members</span>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        
-        {/* Team Members */}
-        <div className="space-y-4">
-          {currentLevelMembers.length === 0 ? (
-            <div className="bg-muted/30 rounded-xl p-8 text-center">
-              <div className="w-16 h-16 bg-muted/50 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Users size={24} className="text-muted-foreground" />
-              </div>
-              <p className="text-muted-foreground">No team members found in this level</p>
-              <Button 
-                variant="outline" 
-                size="sm" 
-                className="mt-4"
-                onClick={() => setShowInviteDialog(true)}
-              >
-                <UserPlus size={16} className="mr-1" /> Invite New Members
-              </Button>
-            </div>
-          ) : (
-            currentLevelMembers.map((member) => (
-              <div key={member.id} className="bg-card rounded-xl p-4 border border-border/40 flex justify-between">
-                <div>
-                  <div className="flex items-center mb-2">
-                    <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center mr-2">
-                      <Users size={16} className="text-primary" />
-                    </div>
-                    <p className="font-medium">{member.id}</p>
+            
+            {/* Level Content */}
+            {Object.keys(teamStats.levels).map((level) => (
+              <TabsContent key={level} value={level} className="mt-4 space-y-1">
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center gap-2">
+                    <User size={16} className="text-emerald-600" />
+                    <h3 className="text-emerald-800 font-medium">{level} Members</h3>
                   </div>
-                  <p className="text-xs text-muted-foreground mb-1">Joined on</p>
-                  <p className="text-sm">{member.date}</p>
+                  <span className="text-sm text-emerald-600 font-medium">
+                    {teamStats.levels[level as keyof typeof teamStats.levels]} members
+                  </span>
                 </div>
-                <div className="text-right">
-                  <p className="text-xs text-muted-foreground mb-1">Contribution</p>
-                  <p className="text-lg font-medium">₹{member.amount}</p>
+                
+                {/* Members List */}
+                <div className="space-y-3 mt-3">
+                  {teamStats.members.map((member) => (
+                    <Card key={member.id} className="overflow-hidden">
+                      <CardContent className="p-3">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <Avatar className="h-12 w-12 bg-emerald-100">
+                              <AvatarFallback className="bg-emerald-100 text-emerald-800">
+                                {getAvatarText(member.name)}
+                              </AvatarFallback>
+                            </Avatar>
+                            
+                            <div>
+                              <p className="font-medium text-gray-900">{member.name}</p>
+                              <p className="text-xs text-emerald-600">Joined: {member.joinDate}</p>
+                              <div className="flex items-center mt-1">
+                                <p className="text-xs text-gray-500">Investment: <span className="font-medium">₹{member.investment}</span></p>
+                                <span className="mx-2 text-gray-300">•</span>
+                                <p className={cn("text-xs font-medium", getStatusColor(member.status))}>
+                                  {member.status}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <div className="h-8 w-8 rounded-full bg-emerald-50 flex items-center justify-center">
+                            <ArrowRight size={16} className="text-emerald-500" />
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
                 </div>
-              </div>
-            ))
-          )}
+              </TabsContent>
+            ))}
+          </Tabs>
         </div>
       </div>
       
@@ -150,12 +259,12 @@ const TeamPage = () => {
           </DialogHeader>
           
           <div className="py-4">
-            <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
-              <Share2 size={24} className="text-primary" />
+            <div className="w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center mx-auto mb-4">
+              <Share2 size={24} className="text-emerald-600" />
             </div>
             
             <p className="text-center text-sm mb-4">
-              Share your referral code with friends and earn rewards when they join
+              Share your referral code with friends and earn 10% commission on Level 1 members
             </p>
             
             <div className="bg-muted p-3 rounded-lg flex justify-between items-center mb-4">
@@ -166,7 +275,7 @@ const TeamPage = () => {
             <Separator className="my-4" />
             
             <div className="flex justify-center gap-4">
-              <Button className="flex flex-col h-auto py-2 px-4 gap-1">
+              <Button className="flex flex-col h-auto py-2 px-4 gap-1 bg-emerald-500 hover:bg-emerald-600">
                 <Share2 size={20} />
                 <span className="text-xs">Share</span>
               </Button>
