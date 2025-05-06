@@ -1,15 +1,17 @@
 
 import MobileLayout from "@/components/layout/MobileLayout";
 import { useState } from "react";
-import { Users, UserPlus, Share2, ArrowRight, User, ArrowUpRight, Copy, ChevronRight } from "lucide-react";
+import { Users, UserPlus, Share2, ArrowRight, User, ArrowUpRight, Copy, ChevronRight, Share, Mail } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from "@/components/ui/dialog";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 const TeamPage = () => {
   const [activeLevel, setActiveLevel] = useState('Level 1');
@@ -87,6 +89,24 @@ const TeamPage = () => {
     if (level === 'Level 1') return (memberCount / 100) * 100;
     if (level === 'Level 2') return (memberCount / 10) * 100;
     return (memberCount / 5) * 100;
+  };
+
+  // Handle share action
+  const handleShare = async () => {
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: 'Join my team',
+          text: 'Join my team using my referral code: 558544',
+          url: window.location.origin
+        });
+        toast.success('Invitation shared successfully');
+      } else {
+        toast.info('Share functionality not supported on your device');
+      }
+    } catch (error) {
+      toast.error('Failed to share invitation');
+    }
   };
 
   return (
@@ -258,41 +278,109 @@ const TeamPage = () => {
         </div>
       </div>
       
-      {/* Invite Dialog */}
+      {/* Redesigned Invite Dialog */}
       <Dialog open={showInviteDialog} onOpenChange={setShowInviteDialog}>
-        <DialogContent className="max-w-sm mx-auto bg-[#0d0f17]/95 border border-blue-500/20 backdrop-blur-xl">
-          <DialogHeader>
-            <DialogTitle className="text-center text-gradient-primary">Invite Team Members</DialogTitle>
-          </DialogHeader>
+        <DialogContent className="max-w-sm mx-auto bg-gradient-to-b from-[#0d0f17]/95 to-[#0f1527]/95 border border-blue-500/30 backdrop-blur-xl rounded-xl p-0 overflow-hidden">
+          <div className="absolute inset-0 overflow-hidden z-0">
+            <div className="absolute -top-16 -left-16 w-32 h-32 bg-blue-500/10 rounded-full blur-xl animate-pulse-glow"></div>
+            <div className="absolute top-1/2 -right-20 w-40 h-40 bg-blue-600/10 rounded-full blur-xl animate-pulse-glow" style={{ animationDelay: '1s' }}></div>
+            <div className="absolute -bottom-12 left-12 w-36 h-36 bg-blue-400/10 rounded-full blur-xl animate-pulse-glow" style={{ animationDelay: '2s' }}></div>
+          </div>
+
+          <DialogClose className="absolute right-3 top-3 z-10 rounded-full bg-blue-900/40 p-1.5 text-blue-400 hover:bg-blue-800/60 transition-colors">
+            <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-4 w-4">
+              <path d="M11.7816 4.03157C12.0062 3.80702 12.0062 3.44295 11.7816 3.2184C11.5571 2.99385 11.193 2.99385 10.9685 3.2184L7.50005 6.68682L4.03164 3.2184C3.80708 2.99385 3.44301 2.99385 3.21846 3.2184C2.99391 3.44295 2.99391 3.80702 3.21846 4.03157L6.68688 7.49999L3.21846 10.9684C2.99391 11.193 2.99391 11.557 3.21846 11.7816C3.44301 12.0061 3.80708 12.0061 4.03164 11.7816L7.50005 8.31316L10.9685 11.7816C11.193 12.0061 11.5571 12.0061 11.7816 11.7816C12.0062 11.557 12.0062 11.193 11.7816 10.9684L8.31322 7.49999L11.7816 4.03157Z" fill="currentColor" fillRule="evenodd" clipRule="evenodd"></path>
+            </svg>
+          </DialogClose>
           
-          <div className="py-4">
-            <div className="w-16 h-16 rounded-full bg-blue-500/20 flex items-center justify-center mx-auto mb-4">
-              <Share2 size={24} className="text-blue-500" />
+          <div className="relative z-10 pt-7 px-4 pb-4">
+            <div className="flex flex-col items-center">
+              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-blue-400/20 to-blue-600/20 border border-blue-500/30 flex items-center justify-center mb-4 shadow-lg shadow-blue-500/20 animate-bounce" style={{ animationDuration: '3s' }}>
+                <Share2 size={32} className="text-blue-400" />
+              </div>
+              
+              <h2 className="text-xl font-bold bg-gradient-to-r from-blue-300 to-blue-500 bg-clip-text text-transparent pb-1">Invite Team Members</h2>
+              
+              <p className="text-center text-sm my-4 text-blue-300/90 max-w-[250px]">
+                Share your referral code with friends and earn <span className="text-blue-400 font-medium">10% commission</span> on Level 1 members
+              </p>
             </div>
-            
-            <p className="text-center text-sm mb-4 text-blue-300">
-              Share your referral code with friends and earn 10% commission on Level 1 members
-            </p>
-            
-            <div className="bg-blue-900/20 p-3.5 rounded-lg flex justify-between items-center mb-4 border border-blue-500/20">
-              <span className="text-base font-medium text-blue-200">558544</span>
-              <Button variant="outline" size="sm" className="h-8 border-blue-500/30 text-blue-400 hover:bg-blue-500/20" onClick={copyReferralCode}>
-                <Copy size={14} className="mr-1" />
-                Copy
-              </Button>
+
+            {/* Referral code section with animated glow */}
+            <div className="relative mt-2 mb-6 overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-600/0 via-blue-600/30 to-blue-600/0 animate-[shimmer_2s_infinite]"></div>
+              <div className="relative bg-blue-900/30 p-4 rounded-xl flex justify-between items-center border border-blue-500/30">
+                <div className="flex flex-col">
+                  <span className="text-xs text-blue-400 mb-1">Your Referral Code</span>
+                  <span className="text-xl font-bold text-white font-mono tracking-wider">558544</span>
+                </div>
+                <Button 
+                  onClick={copyReferralCode} 
+                  variant="outline" 
+                  size="sm" 
+                  className="h-9 border-blue-500/30 bg-blue-500/20 text-blue-300 hover:bg-blue-500/30 hover:text-blue-200 transition-all duration-300"
+                >
+                  <Copy size={14} className="mr-1" />
+                  Copy
+                </Button>
+              </div>
             </div>
-            
-            <Separator className="my-4 bg-blue-500/20" />
-            
-            <div className="flex justify-center gap-4">
-              <Button className="flex flex-col h-auto py-2 px-4 gap-1 bg-blue-500 hover:bg-blue-600">
-                <Share2 size={20} />
+
+            <Separator className="my-5 bg-blue-500/20" />
+
+            {/* Share options with improved styling */}
+            <div className="grid grid-cols-3 gap-3 mt-3">
+              <Button 
+                onClick={handleShare}
+                className="flex flex-col items-center gap-1.5 h-auto py-3 px-0 bg-gradient-to-b from-blue-500/80 to-blue-600 hover:from-blue-500 hover:to-blue-600/90 shadow-md shadow-blue-900/30 border border-blue-400/30 transition-all duration-300"
+              >
+                <Share size={22} />
                 <span className="text-xs">Share</span>
               </Button>
-              <Button className="flex flex-col h-auto py-2 px-4 gap-1" variant="outline">
-                <Users size={20} />
-                <span className="text-xs">Contacts</span>
-              </Button>
+              
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button 
+                    className="flex flex-col items-center gap-1.5 h-auto py-3 px-0 bg-gradient-to-b from-blue-900/60 to-blue-900/80 hover:brightness-125 shadow-md shadow-blue-900/20 border border-blue-500/20"
+                  >
+                    <Mail size={22} />
+                    <span className="text-xs">Email</span>
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-64 p-2 bg-[#0d0f17]/95 border border-blue-500/30 backdrop-blur-xl">
+                  <div className="p-2">
+                    <h3 className="font-medium text-sm mb-2 text-blue-300">Send invitation via email</h3>
+                    <p className="text-xs text-blue-400/80">Coming soon</p>
+                  </div>
+                </PopoverContent>
+              </Popover>
+              
+              <Sheet>
+                <SheetTrigger asChild>
+                  <Button 
+                    className="flex flex-col items-center gap-1.5 h-auto py-3 px-0 bg-gradient-to-b from-blue-900/60 to-blue-900/80 hover:brightness-125 shadow-md shadow-blue-900/20 border border-blue-500/20"
+                  >
+                    <Users size={22} />
+                    <span className="text-xs">Contacts</span>
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="bottom" className="h-80 bg-[#0d0f17]/95 border-t border-blue-500/30 rounded-t-xl p-0">
+                  <div className="p-4 h-full">
+                    <h3 className="text-lg font-medium mb-2 text-blue-300">Select Contacts</h3>
+                    <p className="text-sm text-blue-400/80">Contact integration coming soon</p>
+                  </div>
+                </SheetContent>
+              </Sheet>
+            </div>
+            
+            {/* Animated success indicator */}
+            <div className="mt-6 bg-blue-900/20 rounded-lg p-3 border border-blue-500/20">
+              <div className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-blue-500 animate-pulse"></div>
+                <p className="text-xs text-blue-400">
+                  <span className="font-medium">55</span> members invited successfully
+                </p>
+              </div>
             </div>
           </div>
         </DialogContent>
