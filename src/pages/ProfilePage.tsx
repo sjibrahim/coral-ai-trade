@@ -6,7 +6,7 @@ import ProfileOption from "@/components/ProfileOption";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { 
   ArrowUpCircle, ArrowDownCircle, FileText, LogOut, 
-  Wallet, Star, User, FileCheck, ListTree, CreditCard, Settings
+  Wallet, Star, User, FileCheck, ListTree, CreditCard, Settings, Eye, EyeOff
 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Card, CardContent } from "@/components/ui/card";
@@ -22,6 +22,7 @@ const getRandomAvatarUrl = () => {
 const ProfilePage = () => {
   const [avatarUrl, setAvatarUrl] = useState(mockUser.avatar);
   const [isLoading, setIsLoading] = useState(true);
+  const [hideRevenue, setHideRevenue] = useState(false);
 
   // Simulate loading the avatar
   useEffect(() => {
@@ -41,6 +42,10 @@ const ProfilePage = () => {
       setIsLoading(false);
     };
   }, []);
+
+  const toggleRevenueVisibility = () => {
+    setHideRevenue(!hideRevenue);
+  };
   
   return (
     <MobileLayout>
@@ -87,16 +92,17 @@ const ProfilePage = () => {
           </div>
         </div>
         
-        {/* Balance Summary Card */}
+        {/* Simple Balance Display instead of detailed breakdown */}
         <div className="px-4">
           <Card className="bg-gradient-to-br from-sky-50/5 to-blue-100/10 border border-blue-200/20 overflow-hidden">
-            <CardContent className="p-0">
-              <BalanceSummary 
-                totalBalance={mockBalances.totalBalance}
-                totalDeposit={mockBalances.totalDeposit}
-                totalWithdrawal={mockBalances.totalWithdrawal}
-                availableBalance={mockBalances.availableBalance}
-              />
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-sm font-medium text-muted-foreground">Available Balance</h3>
+              </div>
+              <div className="flex items-center">
+                <span className="text-xl font-normal">₹</span>
+                <span className="text-3xl font-semibold ml-1 text-gradient">{mockBalances.availableBalance.toLocaleString()}</span>
+              </div>
             </CardContent>
           </Card>
         </div>
@@ -114,61 +120,42 @@ const ProfilePage = () => {
           </button>
         </div>
         
-        {/* Revenue Stats */}
+        {/* Revenue Stats with Eye Icon */}
         <div className="mx-4 mt-4 rounded-xl overflow-hidden bg-gradient-to-b from-blue-50/10 to-blue-100/20 border border-blue-200/30">
-          {/* Total Revenue */}
+          {/* Total Revenue with Eye Icon */}
           <div className="p-4 pb-2">
-            <h3 className="text-sm text-muted-foreground mb-1">Total Revenue</h3>
-            <h2 className="text-2xl font-bold">10221.26₹</h2>
+            <div className="flex items-center justify-between mb-1">
+              <h3 className="text-sm text-muted-foreground">Total Revenue</h3>
+              <button 
+                onClick={toggleRevenueVisibility}
+                className="p-1 rounded-full hover:bg-white/10 transition-colors"
+              >
+                {hideRevenue ? <EyeOff size={16} /> : <Eye size={16} />}
+              </button>
+            </div>
+            <h2 className="text-2xl font-bold">
+              {hideRevenue ? "****.**₹" : "10221.26₹"}
+            </h2>
             
             {/* Income Breakdown */}
             <div className="grid grid-cols-3 gap-2 mt-3 border-t border-blue-200/20 pt-2">
               <div className="text-center">
                 <p className="text-xs text-muted-foreground">Yesterday's income</p>
-                <p className="font-semibold">344.12₹</p>
+                <p className="font-semibold">
+                  {hideRevenue ? "**.**₹" : "344.12₹"}
+                </p>
               </div>
               <div className="text-center">
                 <p className="text-xs text-muted-foreground">Today's income</p>
-                <p className="font-semibold">0.00₹</p>
+                <p className="font-semibold">
+                  {hideRevenue ? "0.00₹" : "0.00₹"}
+                </p>
               </div>
               <div className="text-center">
                 <p className="text-xs text-muted-foreground">Salary income</p>
-                <p className="font-semibold">2300.00₹</p>
-              </div>
-            </div>
-          </div>
-          
-          {/* Profit Margins Section - Highlighted */}
-          <div className="bg-gradient-to-br from-blue-400/20 to-blue-300/30 p-4">
-            <div className="grid grid-cols-3 gap-2">
-              <div className="text-center">
-                <p className="text-xs text-blue-100">Current Profit Margin</p>
-                <p className="font-semibold text-lg">5.5%</p>
-                <div className="h-1 bg-blue-200/30 rounded-full mt-2 w-3/4 mx-auto">
-                  <div className="h-1 bg-blue-500 rounded-full w-[55%]"></div>
-                </div>
-              </div>
-              <div className="text-center">
-                <p className="text-xs text-blue-100">Next Profit Margin</p>
-                <p className="font-semibold text-lg">6.0%</p>
-                <div className="h-1 bg-blue-200/30 rounded-full mt-2 w-3/4 mx-auto">
-                  <div className="h-1 bg-blue-500 rounded-full w-[60%]"></div>
-                </div>
-              </div>
-              <div className="text-center">
-                <p className="text-xs text-blue-100">Upgrade by valid invitation</p>
-                <p className="font-semibold text-lg">13/20</p>
-                <div className="h-1 bg-blue-200/30 rounded-full mt-2 w-3/4 mx-auto">
-                  <div className="h-1 bg-blue-500 rounded-full w-[65%]"></div>
-                </div>
-              </div>
-            </div>
-            <div className="mt-2 h-0.5 bg-blue-300/30 w-full">
-              <div className="bg-primary h-0.5 w-[65%] relative">
-                <div className="absolute right-0 -bottom-1 h-2 w-2 rounded-full bg-primary"></div>
-                <div className="absolute right-0 -top-6 text-xs font-medium bg-primary text-white px-1 rounded">
-                  13/20
-                </div>
+                <p className="font-semibold">
+                  {hideRevenue ? "****.**₹" : "2300.00₹"}
+                </p>
               </div>
             </div>
           </div>
