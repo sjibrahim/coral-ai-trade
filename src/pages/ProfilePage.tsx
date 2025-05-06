@@ -1,12 +1,12 @@
 
 import { useState, useEffect } from 'react';
 import MobileLayout from "@/components/layout/MobileLayout";
-import { mockUser } from "@/data/mockData";
+import { mockUser, mockBalances } from "@/data/mockData";
 import ProfileOption from "@/components/ProfileOption";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { 
   ArrowUpCircle, ArrowDownCircle, FileText, LogOut, 
-  Wallet, Star, User, FileCheck, ListTree, CreditCard
+  Wallet, Star, User, FileCheck, ListTree, CreditCard, Settings
 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Card, CardContent } from "@/components/ui/card";
@@ -45,7 +45,7 @@ const ProfilePage = () => {
   return (
     <MobileLayout>
       <div className="animate-fade-in space-y-4 pb-24">
-        {/* Profile Header with Logo and VIP Level */}
+        {/* User Profile Header */}
         <div className="relative px-5 pt-4 pb-2 flex items-center">
           <div className="flex items-center gap-3">
             <div className="relative">
@@ -69,64 +69,34 @@ const ProfilePage = () => {
             
             <div className="flex flex-col">
               <div className="flex items-center gap-2">
-                <span className="text-sm font-medium">UID: {mockUser.id}</span>
+                <span className="text-sm font-medium">UID: 5839521</span>
                 <div className="bg-gradient-to-r from-amber-500 to-yellow-300 text-black rounded-full px-2 py-0.5 text-xs font-semibold shadow-sm flex items-center gap-1">
                   <Star className="h-3 w-3" />
-                  VIP {mockUser.vipLevel}
+                  {mockUser.vipLevel}
                 </div>
               </div>
               <h2 className="text-base font-bold">{mockUser.name}</h2>
             </div>
           </div>
           
-          {/* Chat icon */}
+          {/* Settings icon */}
           <div className="absolute right-5 top-1/2 -translate-y-1/2">
             <div className="w-9 h-9 rounded-full flex items-center justify-center text-primary bg-primary/10 border border-primary/20">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M14 9a2 2 0 0 1-2 2H6l-4 4V4c0-1.1.9-2 2-2h8a2 2 0 0 1 2 2v5Z" />
-                <path d="M18 9h2a2 2 0 0 1 2 2v11l-4-4h-6a2 2 0 0 1-2-2v-1" />
-              </svg>
+              <Settings size={18} />
             </div>
           </div>
         </div>
         
-        {/* Financial Summaries */}
+        {/* Balance Summary Card */}
         <div className="px-4">
           <Card className="bg-gradient-to-br from-sky-50/5 to-blue-100/10 border border-blue-200/20 overflow-hidden">
-            <CardContent className="p-4 space-y-3">
-              <div className="flex justify-between items-center">
-                <div className="space-y-1">
-                  <p className="text-sm text-muted-foreground">Total Assets</p>
-                  <div className="flex items-baseline">
-                    <span className="text-xl font-bold">6851.06₹</span>
-                    <span className="text-xs text-muted-foreground ml-2">(USDT:81.56)</span>
-                  </div>
-                </div>
-              </div>
-              
-              <Separator className="bg-blue-200/20" />
-              
-              <div className="flex justify-between items-center">
-                <div className="space-y-1">
-                  <p className="text-sm text-muted-foreground">Contract Amount</p>
-                  <div className="flex items-baseline">
-                    <span className="text-xl font-bold">4046.00₹</span>
-                    <span className="text-xs text-muted-foreground ml-2">(USDT:48.16)</span>
-                  </div>
-                </div>
-              </div>
-              
-              <Separator className="bg-blue-200/20" />
-              
-              <div className="flex justify-between items-center">
-                <div className="space-y-1">
-                  <p className="text-sm text-muted-foreground">Total withdrawal</p>
-                  <div className="flex items-baseline">
-                    <span className="text-xl font-bold">11396.00₹</span>
-                    <span className="text-xs text-muted-foreground ml-2">(USDT:135.66)</span>
-                  </div>
-                </div>
-              </div>
+            <CardContent className="p-0">
+              <BalanceSummary 
+                totalBalance={mockBalances.totalBalance}
+                totalDeposit={mockBalances.totalDeposit}
+                totalWithdrawal={mockBalances.totalWithdrawal}
+                availableBalance={mockBalances.availableBalance}
+              />
             </CardContent>
           </Card>
         </div>
@@ -144,7 +114,7 @@ const ProfilePage = () => {
           </button>
         </div>
         
-        {/* Revenue Stats with Highlighted Area (Marked in Green) */}
+        {/* Revenue Stats */}
         <div className="mx-4 mt-4 rounded-xl overflow-hidden bg-gradient-to-b from-blue-50/10 to-blue-100/20 border border-blue-200/30">
           {/* Total Revenue */}
           <div className="p-4 pb-2">
@@ -168,7 +138,7 @@ const ProfilePage = () => {
             </div>
           </div>
           
-          {/* Profit Margins Section - Highlighted in Green in the reference */}
+          {/* Profit Margins Section - Highlighted */}
           <div className="bg-gradient-to-br from-blue-400/20 to-blue-300/30 p-4">
             <div className="grid grid-cols-3 gap-2">
               <div className="text-center">
@@ -204,12 +174,35 @@ const ProfilePage = () => {
           </div>
         </div>
         
-        {/* Records Links */}
+        {/* Profile Options */}
         <div className="px-4 space-y-2.5 mt-2">
+          <h3 className="text-sm font-semibold text-muted-foreground ml-1 mb-1">Account</h3>
+          
+          <ProfileOption
+            icon={<Wallet className="h-5 w-5 text-blue-400" />}
+            label="Assets"
+            to="/assets"
+          />
+          
+          <ProfileOption
+            icon={<ArrowUpCircle className="h-5 w-5 text-teal-400" />}
+            label="Recharge"
+            to="/deposit"
+          />
+          
+          <ProfileOption
+            icon={<ArrowDownCircle className="h-5 w-5 text-pink-400" />}
+            label="Withdraw"
+            to="/withdraw"
+          />
+          
+          <h3 className="text-sm font-semibold text-muted-foreground ml-1 mt-4 mb-1">Records</h3>
+          
           <ProfileOption
             icon={<FileCheck className="h-5 w-5 text-teal-400" />}
             label="Account change records"
             to="/account-records"
+            badge="3"
           />
           
           <ProfileOption
@@ -222,6 +215,27 @@ const ProfilePage = () => {
             icon={<CreditCard className="h-5 w-5 text-emerald-400" />}
             label="Bank info"
             to="/bank"
+          />
+          
+          <h3 className="text-sm font-semibold text-muted-foreground ml-1 mt-4 mb-1">Other</h3>
+          
+          <ProfileOption
+            icon={<Star className="h-5 w-5 text-amber-400" />}
+            label="VIP benefits"
+            to="/vip"
+          />
+          
+          <ProfileOption
+            icon={<FileText className="h-5 w-5 text-blue-400" />}
+            label="Support & Help"
+            to="/support"
+          />
+          
+          <ProfileOption
+            icon={<LogOut className="h-5 w-5 text-red-400" />}
+            label="Log out"
+            to="/logout"
+            className="mt-4"
           />
         </div>
       </div>
