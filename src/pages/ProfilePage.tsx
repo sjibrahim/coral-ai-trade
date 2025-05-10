@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MobileLayout from "@/components/layout/MobileLayout";
@@ -24,16 +23,20 @@ const ProfilePage = () => {
   const [hideRevenue, setHideRevenue] = useState(false);
   const navigate = useNavigate();
 
-  // Fetch user profile data
+  // Fetch user profile data only once when component mounts
   useEffect(() => {
     const loadProfile = async () => {
-      setIsLoading(true);
-      await updateProfile();
-      setIsLoading(false);
+      if (!user?.name) {
+        setIsLoading(true);
+        await updateProfile();
+        setIsLoading(false);
+      } else {
+        setIsLoading(false);
+      }
     };
     
     loadProfile();
-  }, [updateProfile]);
+  }, []);  // Remove updateProfile from dependencies to prevent infinite loop
 
   // Generate avatar once user data is available
   useEffect(() => {

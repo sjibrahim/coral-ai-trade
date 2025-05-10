@@ -1,6 +1,7 @@
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
 import { toast } from "@/components/ui/use-toast";
+import { apiRequest, endpoints } from "@/services/api";
 
 type User = {
   name?: string;
@@ -16,6 +17,7 @@ type User = {
   account_number?: string;
   account_ifsc?: string;
   token: string;
+  yesterday_income?: string;
 };
 
 interface AuthContextType {
@@ -33,6 +35,39 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [profileUpdateInProgress, setProfileUpdateInProgress] = useState(false);
+  
+  // Memoize the updateProfile function to prevent unnecessary re-renders
+  const updateProfile = useCallback(async (): Promise<boolean> => {
+    // If an update is already in progress, don't start another one
+    if (profileUpdateInProgress) return false;
+    
+    const token = localStorage.getItem('auth_token');
+    if (!token) return false;
+    
+    try {
+      setProfileUpdateInProgress(true);
+      
+      // Use the apiRequest utility for consistency
+      const data = await apiRequest(endpoints.getProfile, 'POST', { token });
+      
+      if (data.status) {
+        setUser(data.data);
+        return true;
+      } else {
+        if (data.http_code === 401) {
+          // Token expired or invalid
+          logout();
+        }
+        return false;
+      }
+    } catch (error) {
+      console.error('Profile update error:', error);
+      return false;
+    } finally {
+      setProfileUpdateInProgress(false);
+    }
+  }, [profileUpdateInProgress]);
   
   // Check for stored token on initial load
   useEffect(() => {
@@ -40,16 +75,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const token = localStorage.getItem('auth_token');
       if (token) {
         try {
-          // Validate token by fetching profile
-          const response = await fetch('/backend/restapi/get__profile', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ token }),
-          });
-          
-          const data = await response.json();
+          const data = await apiRequest(endpoints.getProfile, 'POST', { token });
           
           if (data.status) {
             setUser(data.data);
@@ -73,15 +99,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const login = async (phone: string, password: string): Promise<boolean> => {
     setIsLoading(true);
     try {
-      const response = await fetch('/backend/restapi/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ phone, password }),
-      });
-      
-      const data = await response.json();
+      const data = await apiRequest(endpoints.login, 'POST', { phone, password });
       
       if (data.status) {
         localStorage.setItem('auth_token', data.data.token);
@@ -118,20 +136,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const register = async (phone: string, email: string, password: string, confirm_password: string): Promise<boolean> => {
     setIsLoading(true);
     try {
-      const response = await fetch('/backend/restapi/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ 
-          phone, 
-          email, 
-          password, 
-          confirm_password 
-        }),
+      const data = await apiRequest(endpoints.register, 'POST', { 
+        phone, 
+        email, 
+        password, 
+        confirm_password 
       });
-      
-      const data = await response.json();
       
       if (data.status) {
         localStorage.setItem('auth_token', data.data.token);
@@ -163,37 +173,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       return false;
     } finally {
       setIsLoading(false);
-    }
-  };
-  
-  const updateProfile = async (): Promise<boolean> => {
-    const token = localStorage.getItem('auth_token');
-    if (!token) return false;
-    
-    try {
-      const response = await fetch('/backend/restapi/get__profile', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ token }),
-      });
-      
-      const data = await response.json();
-      
-      if (data.status) {
-        setUser(data.data);
-        return true;
-      } else {
-        if (data.http_code === 401) {
-          // Token expired or invalid
-          logout();
-        }
-        return false;
-      }
-    } catch (error) {
-      console.error('Profile update error:', error);
-      return false;
     }
   };
   
