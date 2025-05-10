@@ -35,20 +35,11 @@ const MarketPage = () => {
         
         if (response.status && Array.isArray(response.data)) {
           // Add a dummy change value since we don't have it in the API
-          const dataWithChange = response.data
-            .filter((crypto: CryptoData) => crypto.status === "1")
-            .map((crypto: CryptoData) => ({
-              ...crypto,
-              change: Math.random() > 0.5 ? +(Math.random() * 5).toFixed(2) : -(Math.random() * 5).toFixed(2), // Random change value
-              price: parseFloat(typeof crypto.price === 'string' ? crypto.price : crypto.price.toString())
-            }))
-            // Sort by rank if available
-            .sort((a: CryptoData, b: CryptoData) => {
-              if (a.rank && b.rank) {
-                return parseInt(a.rank) - parseInt(b.rank);
-              }
-              return 0;
-            });
+          const dataWithChange = response.data.map((crypto: CryptoData) => ({
+            ...crypto,
+            change: Math.random() > 0.5 ? +(Math.random() * 5).toFixed(2) : -(Math.random() * 5).toFixed(2), // Random change value
+            price: parseFloat(typeof crypto.price === 'string' ? crypto.price : crypto.price.toString())
+          }));
           
           setMarketData(dataWithChange);
         }

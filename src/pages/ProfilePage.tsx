@@ -145,22 +145,13 @@ const ProfilePage = () => {
         
         {/* Quick Action Buttons */}
         <div className="px-4 grid grid-cols-3 gap-2">
-          <button 
-            className="bg-primary text-white rounded-md py-3 font-medium text-sm shadow-lg shadow-primary/30"
-            onClick={() => navigate('/deposit')}
-          >
+          <button className="bg-primary text-white rounded-md py-3 font-medium text-sm shadow-lg shadow-primary/30">
             Recharge
           </button>
-          <button 
-            className="bg-secondary border border-blue-300/20 rounded-md py-3 font-medium text-sm"
-            onClick={() => navigate('/withdraw')}
-          >
+          <button className="bg-secondary border border-blue-300/20 rounded-md py-3 font-medium text-sm">
             Withdraw
           </button>
-          <button 
-            className="bg-secondary border border-blue-300/20 rounded-md py-3 font-medium text-sm"
-            onClick={() => navigate('/transactions')}
-          >
+          <button className="bg-secondary border border-blue-300/20 rounded-md py-3 font-medium text-sm">
             Details
           </button>
         </div>
@@ -202,11 +193,17 @@ const ProfilePage = () => {
               </h2>
               
               {/* Income Breakdown */}
-              <div className="grid grid-cols-2 gap-2 mt-3 border-t border-blue-200/20 pt-2">
+              <div className="grid grid-cols-3 gap-2 mt-3 border-t border-blue-200/20 pt-2">
                 <div className="text-center">
                   <p className="text-xs text-muted-foreground">Yesterday's income</p>
                   <p className="font-semibold">
                     {hideRevenue ? "**.**₹" : `${user?.yesterday_income || '0.00'}₹`}
+                  </p>
+                </div>
+                <div className="text-center">
+                  <p className="text-xs text-muted-foreground">Today's income</p>
+                  <p className="font-semibold">
+                    {hideRevenue ? "0.00₹" : "0.00₹"}
                   </p>
                 </div>
                 <div className="text-center">
@@ -246,14 +243,9 @@ const ProfilePage = () => {
           
           <ProfileOption
             icon={<FileCheck className="h-5 w-5 text-teal-400" />}
-            label="Deposit Records"
-            to="/deposit-records"
-          />
-          
-          <ProfileOption
-            icon={<FileCheck className="h-5 w-5 text-pink-400" />}
-            label="Withdrawal Records"
-            to="/withdrawal-records"
+            label="Account change records"
+            to="/account-records"
+            badge="3"
           />
           
           <ProfileOption

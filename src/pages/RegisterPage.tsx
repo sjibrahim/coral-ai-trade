@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,8 +20,6 @@ const RegisterPage = () => {
   
   const { register, isAuthenticated } = useAuth();
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const referralCode = searchParams.get('referral_code');
   
   // Redirect if user is already authenticated
   if (isAuthenticated) {
@@ -49,12 +47,11 @@ const RegisterPage = () => {
     setIsSubmitting(true);
     
     try {
-      // Pass the referral code as part of the register function arguments
       const success = await register(
         formData.phone,
         formData.email,
         formData.password,
-        referralCode || null
+        formData.confirmPassword
       );
       
       if (success) {
@@ -70,25 +67,16 @@ const RegisterPage = () => {
       {/* Logo */}
       <div className="pt-12 pb-8">
         <div className="w-16 h-16 rounded-xl bg-gradient-to-r from-blue-600 to-blue-400 mx-auto flex items-center justify-center shadow-lg shadow-blue-500/20">
-          <img 
-            src="https://ik.imagekit.io/spmcumfu9/nexbit_logo.jpeg" 
-            alt="Nexbit Logo" 
-            className="w-10 h-10 object-contain rounded-lg"
-          />
+          <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
         </div>
         <h1 className="text-2xl font-bold text-center mt-4 text-gradient-primary">
-          Nexbit
+          TradeCrypto
         </h1>
         <p className="text-muted-foreground text-center text-sm mt-1">
           Create a new account
         </p>
-        {referralCode && (
-          <div className="mt-2 text-center">
-            <span className="text-xs bg-blue-500/20 text-blue-400 px-3 py-1 rounded-full">
-              Referred by: {referralCode}
-            </span>
-          </div>
-        )}
       </div>
       
       {/* Registration Form */}
@@ -210,12 +198,8 @@ const RegisterPage = () => {
       
       {/* Footer */}
       <div className="mt-auto pt-8 pb-4 text-center">
-        <div className="flex justify-center gap-4 mb-4">
-          <Link to="/terms" className="text-xs text-muted-foreground hover:text-primary">Terms of Service</Link>
-          <Link to="/privacy" className="text-xs text-muted-foreground hover:text-primary">Privacy Policy</Link>
-        </div>
         <p className="text-xs text-muted-foreground">
-          &copy; 2025 Nexbit. All rights reserved.
+          &copy; 2025 TradeCrypto. All rights reserved.
         </p>
       </div>
     </div>
