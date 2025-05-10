@@ -1,0 +1,61 @@
+
+// API endpoints for our application
+const API_BASE = '/backend/restapi';
+
+export const endpoints = {
+  test: `${API_BASE}/index`,
+  login: `${API_BASE}/login`,
+  register: `${API_BASE}/register`,
+  getProfile: `${API_BASE}/get__profile`,
+  getMarket: `${API_BASE}/get__market`,
+  updateBank: `${API_BASE}/update_bank`,
+  updatePassword: `${API_BASE}/update_password`,
+};
+
+// Function to handle API requests
+export const apiRequest = async (url: string, method: string, data?: any) => {
+  try {
+    const options: RequestInit = {
+      method,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    };
+    
+    if (data) {
+      options.body = JSON.stringify(data);
+    }
+    
+    const response = await fetch(url, options);
+    const result = await response.json();
+    
+    if (!result.status && result.http_code === 401) {
+      // Handle unauthorized access
+      localStorage.removeItem('auth_token');
+      window.location.href = '/login';
+    }
+    
+    return result;
+  } catch (error) {
+    console.error('API request failed:', error);
+    throw error;
+  }
+};
+
+// Market API functions
+export const getMarketData = async (token: string) => {
+  return apiRequest(endpoints.getMarket, 'POST', { token });
+};
+
+// Profile API functions
+export const updateBankDetails = async (token: string, bankDetails: { 
+  account_holder_name: string;
+  account_number: string;
+  account_ifsc: string;
+}) => {
+  return apiRequest(endpoints.updateBank, 'POST', { token, ...bankDetails });
+};
+
+export const updatePassword = async (token: string, password: string, new_password: string) => {
+  return apiRequest(endpoints.updatePassword, 'POST', { token, password, new_password });
+};

@@ -1,19 +1,47 @@
 
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Eye, EyeOff, LogIn } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useAuth } from "@/contexts/AuthContext";
 
 const LoginPage = () => {
-  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   
-  const handleLogin = (e: React.FormEvent) => {
+  const { login, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+  
+  // Redirect if user is already authenticated
+  if (isAuthenticated) {
+    const from = (location.state as any)?.from || "/home";
+    navigate(from, { replace: true });
+  }
+  
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement actual login logic
-    console.log("Logging in with:", { email, password });
+    
+    if (!phone || !password) {
+      // Show validation error
+      return;
+    }
+    
+    setIsSubmitting(true);
+    
+    try {
+      const success = await login(phone, password);
+      if (success) {
+        // Redirect to home page or previous page
+        const from = (location.state as any)?.from || "/home";
+        navigate(from, { replace: true });
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
   };
   
   return (
@@ -36,15 +64,15 @@ const LoginPage = () => {
       {/* Login Form */}
       <form onSubmit={handleLogin} className="space-y-5 max-w-sm mx-auto w-full">
         <div className="space-y-2 text-left">
-          <label className="text-sm font-medium" htmlFor="email">
-            Email Address
+          <label className="text-sm font-medium" htmlFor="phone">
+            Phone Number
           </label>
           <Input
-            id="email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Enter your email"
+            id="phone"
+            type="text"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            placeholder="Enter your phone number"
             className="bg-card/50 backdrop-blur-sm border-border/40 h-12"
             required
           />
@@ -79,9 +107,22 @@ const LoginPage = () => {
           </div>
         </div>
         
-        <Button type="submit" className="w-full h-12 text-base shadow-lg shadow-blue-500/20">
-          <LogIn className="w-4 h-4 mr-2" />
-          Sign In
+        <Button 
+          type="submit" 
+          className="w-full h-12 text-base shadow-lg shadow-blue-500/20"
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? (
+            <span className="flex items-center">
+              <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></span>
+              Signing In...
+            </span>
+          ) : (
+            <>
+              <LogIn className="w-4 h-4 mr-2" />
+              Sign In
+            </>
+          )}
         </Button>
       </form>
       

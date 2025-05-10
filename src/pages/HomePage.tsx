@@ -1,21 +1,76 @@
 
+import { useState, useEffect } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
 import BalanceSummary from "@/components/BalanceSummary";
 import ActionButtons from "@/components/ActionButtons";
 import CryptoCard from "@/components/CryptoCard";
 import { Link } from "react-router-dom";
-import { mockCryptoCurrencies, mockBalances } from "@/data/mockData";
 import { ChevronRight, Sparkles, TrendingUp, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { getMarketData } from "@/services/api";
+import { useAuth } from "@/contexts/AuthContext";
+
+interface CryptoData {
+  id: string | number;
+  symbol: string;
+  name: string;
+  logo: string;
+  price: number;
+  market_cap?: string;
+  volume_24h?: string;
+  rank?: string;
+  status?: string;
+  picks?: number;
+  home?: number;
+  change?: number; // We're missing this in the API, so we'll need to add it
+}
 
 const HomePage = () => {
-  // Only show first 4 cryptocurrencies on home page
-  const displayedCryptos = mockCryptoCurrencies.slice(0, 4);
+  const [marketData, setMarketData] = useState<CryptoData[]>([]);
+  const [picksData, setPicksData] = useState<CryptoData[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const { user } = useAuth();
+  
+  useEffect(() => {
+    const fetchMarketData = async () => {
+      try {
+        // Make sure we have a token before fetching
+        const token = localStorage.getItem('auth_token');
+        if (!token) return;
+        
+        const response = await getMarketData(token);
+        
+        if (response.status && Array.isArray(response.data)) {
+          // Add a dummy change value since we don't have it in the API
+          const dataWithChange = response.data.map((crypto: CryptoData) => ({
+            ...crypto,
+            change: Math.random() > 0.5 ? +(Math.random() * 5).toFixed(2) : -(Math.random() * 5).toFixed(2), // Random change value
+            price: parseFloat(crypto.price as any)
+          }));
+          
+          // Filter home screen cryptos
+          const homeScreenCryptos = dataWithChange.filter((crypto: CryptoData) => crypto.home === 1);
+          
+          // Filter today's picks
+          const todaysPicks = dataWithChange.filter((crypto: CryptoData) => crypto.picks === 1);
+          
+          setMarketData(homeScreenCryptos.length > 0 ? homeScreenCryptos.slice(0, 4) : dataWithChange.slice(0, 4));
+          setPicksData(todaysPicks.length > 0 ? todaysPicks.slice(0, 2) : dataWithChange.slice(0, 2));
+        }
+      } catch (error) {
+        console.error("Error fetching market data:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    fetchMarketData();
+  }, []);
   
   return (
     <MobileLayout>
       <div className="animate-fade-in space-y-4 pb-20">
-        {/* Balance Section - With upgraded design similar to profile page */}
+        {/* Balance Section */}
         <section className="bg-gradient-to-br from-primary/30 via-accent/40 to-blue-900/30 backdrop-blur-sm rounded-b-3xl shadow-lg relative overflow-hidden">
           {/* Background pattern */}
           <div className="absolute inset-0 opacity-10">
@@ -33,10 +88,10 @@ const HomePage = () => {
           
           <div className="relative">
             <BalanceSummary 
-              totalBalance={mockBalances.totalBalance}
-              totalDeposit={mockBalances.totalDeposit}
-              totalWithdrawal={mockBalances.totalWithdrawal}
-              availableBalance={mockBalances.availableBalance}
+              totalBalance={user?.wallet ? parseFloat(user.wallet) : 0}
+              totalDeposit={0} // We don't have this from the API
+              totalWithdrawal={0} // We don't have this from the API
+              availableBalance={user?.wallet ? parseFloat(user.wallet) : 0}
             />
             <ActionButtons />
           </div>
@@ -61,18 +116,42 @@ const HomePage = () => {
           </div>
           
           <div className="card-glass rounded-xl overflow-hidden">
-            {displayedCryptos.map((crypto, idx) => (
-              <CryptoCard
-                key={crypto.id}
-                id={crypto.id}
-                name={crypto.name}
-                symbol={crypto.symbol}
-                price={crypto.price}
-                change={crypto.change}
-                logo={crypto.logo}
-                animationDelay={idx * 75}
-              />
-            ))}
+            {isLoading ? (
+              Array(4).fill(0).map((_, idx) => (
+                <div key={`skeleton-${idx}`} className="p-3.5 border-b border-border/30 animate-pulse">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-9 h-9 rounded-full bg-secondary/40"></div>
+                      <div>
+                        <div className="h-4 w-24 bg-secondary/40 rounded"></div>
+                        <div className="h-3 w-12 bg-secondary/40 rounded mt-1.5"></div>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="h-4 w-16 bg-secondary/40 rounded"></div>
+                      <div className="h-3 w-10 bg-secondary/40 rounded mt-1.5 ml-auto"></div>
+                    </div>
+                  </div>
+                </div>
+              ))
+            ) : marketData.length > 0 ? (
+              marketData.map((crypto, idx) => (
+                <CryptoCard
+                  key={crypto.id}
+                  id={crypto.id}
+                  name={crypto.name}
+                  symbol={crypto.symbol}
+                  price={crypto.price}
+                  change={crypto.change || 0}
+                  logo={crypto.logo}
+                  animationDelay={idx * 75}
+                />
+              ))
+            ) : (
+              <div className="p-4 text-center text-muted-foreground">
+                No market data available
+              </div>
+            )}
           </div>
           
           {/* Today's Picks Section */}
@@ -87,37 +166,55 @@ const HomePage = () => {
             </div>
             
             <div className="grid grid-cols-2 gap-3">
-              {mockCryptoCurrencies.slice(0, 2).map((crypto, idx) => (
-                <Link 
-                  key={`pick-${crypto.id}`} 
-                  to={`/coin/${crypto.id}`}
-                  className="card-glass p-3 rounded-xl border border-border/40 hover:border-primary/40 transition-colors hover:bg-blue-500/5 hover:-translate-y-1 transition-all duration-300"
-                  style={{ animationDelay: `${idx * 100}ms` }}
-                >
-                  <div className="flex items-center space-x-2 mb-2">
-                    <div className="w-7 h-7 rounded-full bg-secondary/50 flex items-center justify-center crypto-icon">
-                      <img 
-                        src={crypto.logo} 
-                        alt={crypto.name} 
-                        className="w-5 h-5"
-                        onError={(e) => {
-                          const target = e.target as HTMLImageElement;
-                          target.src = `https://raw.githubusercontent.com/Pymmdrza/CryptoIconsCDN/mainx/PNG/${crypto.symbol.toUpperCase()}.png`;
-                        }}
-                      />
+              {isLoading ? (
+                Array(2).fill(0).map((_, idx) => (
+                  <div key={`pick-skeleton-${idx}`} className="card-glass p-3 rounded-xl border border-border/40 animate-pulse">
+                    <div className="flex items-center space-x-2 mb-2">
+                      <div className="w-7 h-7 rounded-full bg-secondary/50"></div>
+                      <div className="h-4 w-12 bg-secondary/40 rounded"></div>
                     </div>
-                    <span className="text-sm font-medium">{crypto.symbol.toUpperCase()}</span>
+                    <div className="h-5 w-20 bg-secondary/40 rounded"></div>
+                    <div className="h-3 w-10 bg-secondary/40 rounded mt-2"></div>
+                    <div className="h-2 w-16 bg-secondary/40 rounded mt-2"></div>
                   </div>
-                  <div className="text-base font-semibold">${crypto.price.toLocaleString()}</div>
-                  <div className={cn(
-                    "text-xs mt-1",
-                    crypto.change >= 0 ? "text-market-increase" : "text-market-decrease"
-                  )}>
-                    {crypto.change >= 0 ? '+' : ''}{crypto.change}%
-                  </div>
-                  <div className="mt-1 text-[10px] text-muted-foreground">Trending today</div>
-                </Link>
-              ))}
+                ))
+              ) : picksData.length > 0 ? (
+                picksData.map((crypto, idx) => (
+                  <Link 
+                    key={`pick-${crypto.id}`} 
+                    to={`/coin/${crypto.id}`}
+                    className="card-glass p-3 rounded-xl border border-border/40 hover:border-primary/40 transition-colors hover:bg-blue-500/5 hover:-translate-y-1 transition-all duration-300"
+                    style={{ animationDelay: `${idx * 100}ms` }}
+                  >
+                    <div className="flex items-center space-x-2 mb-2">
+                      <div className="w-7 h-7 rounded-full bg-secondary/50 flex items-center justify-center crypto-icon">
+                        <img 
+                          src={crypto.logo} 
+                          alt={crypto.name} 
+                          className="w-5 h-5"
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            target.src = `https://raw.githubusercontent.com/Pymmdrza/CryptoIconsCDN/mainx/PNG/${crypto.symbol.toUpperCase()}.png`;
+                          }}
+                        />
+                      </div>
+                      <span className="text-sm font-medium">{crypto.symbol.toUpperCase()}</span>
+                    </div>
+                    <div className="text-base font-semibold">${crypto.price.toLocaleString()}</div>
+                    <div className={cn(
+                      "text-xs mt-1",
+                      (crypto.change || 0) >= 0 ? "text-market-increase" : "text-market-decrease"
+                    )}>
+                      {(crypto.change || 0) >= 0 ? '+' : ''}{crypto.change}%
+                    </div>
+                    <div className="mt-1 text-[10px] text-muted-foreground">Trending today</div>
+                  </Link>
+                ))
+              ) : (
+                <div className="col-span-2 p-4 text-center text-muted-foreground">
+                  No picks available
+                </div>
+              )}
             </div>
           </div>
         </section>

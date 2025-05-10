@@ -1,30 +1,65 @@
 
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { Eye, EyeOff, UserPlus, Check } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { Eye, EyeOff, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useAuth } from "@/contexts/AuthContext";
 
 const RegisterPage = () => {
   const [formData, setFormData] = useState({
-    name: "",
+    phone: "",
     email: "",
     password: "",
     confirmPassword: "",
   });
   const [showPassword, setShowPassword] = useState(false);
   const [agreeTerms, setAgreeTerms] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  const { register, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+  
+  // Redirect if user is already authenticated
+  if (isAuthenticated) {
+    navigate("/home", { replace: true });
+  }
   
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
   
-  const handleRegister = (e: React.FormEvent) => {
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement actual registration logic
-    console.log("Registering with:", formData);
+    
+    if (!formData.phone || !formData.email || !formData.password || !formData.confirmPassword) {
+      // Show validation error
+      return;
+    }
+    
+    if (formData.password !== formData.confirmPassword) {
+      // Show error that passwords don't match
+      return;
+    }
+    
+    setIsSubmitting(true);
+    
+    try {
+      const success = await register(
+        formData.phone,
+        formData.email,
+        formData.password,
+        formData.confirmPassword
+      );
+      
+      if (success) {
+        navigate("/home", { replace: true });
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
   };
   
   return (
@@ -47,16 +82,16 @@ const RegisterPage = () => {
       {/* Registration Form */}
       <form onSubmit={handleRegister} className="space-y-4 max-w-sm mx-auto w-full">
         <div className="space-y-2 text-left">
-          <label className="text-sm font-medium" htmlFor="name">
-            Full Name
+          <label className="text-sm font-medium" htmlFor="phone">
+            Phone Number
           </label>
           <Input
-            id="name"
-            name="name"
+            id="phone"
+            name="phone"
             type="text"
-            value={formData.name}
+            value={formData.phone}
             onChange={handleChange}
-            placeholder="Enter your name"
+            placeholder="Enter your phone number"
             className="bg-card/50 backdrop-blur-sm border-border/40 h-12"
             required
           />
@@ -136,10 +171,19 @@ const RegisterPage = () => {
         <Button 
           type="submit" 
           className="w-full h-12 mt-4 text-base shadow-lg shadow-blue-500/20"
-          disabled={!agreeTerms}
+          disabled={!agreeTerms || isSubmitting}
         >
-          <UserPlus className="w-4 h-4 mr-2" />
-          Create Account
+          {isSubmitting ? (
+            <span className="flex items-center">
+              <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></span>
+              Creating Account...
+            </span>
+          ) : (
+            <>
+              <UserPlus className="w-4 h-4 mr-2" />
+              Create Account
+            </>
+          )}
         </Button>
       </form>
       

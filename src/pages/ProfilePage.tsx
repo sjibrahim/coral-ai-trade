@@ -1,17 +1,15 @@
 
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import MobileLayout from "@/components/layout/MobileLayout";
-import { mockUser, mockBalances } from "@/data/mockData";
 import ProfileOption from "@/components/ProfileOption";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { 
   ArrowUpCircle, ArrowDownCircle, FileText, LogOut, 
   Wallet, Star, User, FileCheck, ListTree, CreditCard, Settings, Eye, EyeOff
 } from "lucide-react";
-import { Separator } from "@/components/ui/separator";
 import { Card, CardContent } from "@/components/ui/card";
-import BalanceSummary from "@/components/BalanceSummary";
-import { cn } from "@/lib/utils";
+import { useAuth } from '@/contexts/AuthContext';
 
 const getRandomAvatarUrl = () => {
   // Generate a random seed for the avatar
@@ -20,31 +18,48 @@ const getRandomAvatarUrl = () => {
 };
 
 const ProfilePage = () => {
-  const [avatarUrl, setAvatarUrl] = useState(mockUser.avatar);
+  const { user, logout, updateProfile } = useAuth();
+  const [avatarUrl, setAvatarUrl] = useState<string>(user?.name || '');
   const [isLoading, setIsLoading] = useState(true);
   const [hideRevenue, setHideRevenue] = useState(false);
+  const navigate = useNavigate();
 
-  // Simulate loading the avatar
+  // Fetch user profile data
   useEffect(() => {
-    setIsLoading(true);
-    // Get random avatar
-    const newAvatarUrl = getRandomAvatarUrl();
+    const loadProfile = async () => {
+      setIsLoading(true);
+      await updateProfile();
+      setIsLoading(false);
+    };
     
-    const img = new Image();
-    img.src = newAvatarUrl;
-    img.onload = () => {
-      setAvatarUrl(newAvatarUrl);
-      setIsLoading(false);
-    };
-    img.onerror = () => {
-      // Fallback to the original avatar
-      setAvatarUrl(mockUser.avatar);
-      setIsLoading(false);
-    };
-  }, []);
+    loadProfile();
+  }, [updateProfile]);
+
+  // Generate avatar once user data is available
+  useEffect(() => {
+    if (user?.name) {
+      // Get random avatar
+      const newAvatarUrl = getRandomAvatarUrl();
+      
+      const img = new Image();
+      img.src = newAvatarUrl;
+      img.onload = () => {
+        setAvatarUrl(newAvatarUrl);
+      };
+      img.onerror = () => {
+        // Fallback to a default avatar
+        setAvatarUrl('https://api.dicebear.com/6.x/avataaars/svg?seed=default');
+      };
+    }
+  }, [user?.name]);
 
   const toggleRevenueVisibility = () => {
     setHideRevenue(!hideRevenue);
+  };
+  
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
   };
   
   return (
@@ -52,37 +67,43 @@ const ProfilePage = () => {
       <div className="animate-fade-in space-y-4 pb-24">
         {/* User Profile Header */}
         <div className="relative px-5 pt-4 pb-2 flex items-center">
-          <div className="flex items-center gap-3">
-            <div className="relative">
-              <Avatar className="w-14 h-14 border-2 border-primary/30">
-                {isLoading ? (
-                  <div className="w-full h-full animate-pulse bg-secondary rounded-full flex items-center justify-center">
-                    <User className="w-6 h-6 text-muted-foreground/50" />
-                  </div>
-                ) : (
+          {isLoading ? (
+            <div className="flex items-center gap-3 animate-pulse">
+              <div className="w-14 h-14 rounded-full bg-secondary/40"></div>
+              <div>
+                <div className="h-4 w-24 bg-secondary/40 rounded mb-2"></div>
+                <div className="h-5 w-32 bg-secondary/40 rounded"></div>
+              </div>
+            </div>
+          ) : (
+            <div className="flex items-center gap-3">
+              <div className="relative">
+                <Avatar className="w-14 h-14 border-2 border-primary/30">
                   <AvatarImage 
                     src={avatarUrl} 
-                    alt={mockUser.name} 
+                    alt={user?.name || ''} 
                     className="object-cover"
                   />
-                )}
-                <AvatarFallback className="bg-primary/20">
-                  {mockUser.name.charAt(0)}
-                </AvatarFallback>
-              </Avatar>
-            </div>
-            
-            <div className="flex flex-col">
-              <div className="flex items-center gap-2">
-                <span className="text-sm font-medium">UID: 5839521</span>
-                <div className="bg-gradient-to-r from-amber-500 to-yellow-300 text-black rounded-full px-2 py-0.5 text-xs font-semibold shadow-sm flex items-center gap-1">
-                  <Star className="h-3 w-3" />
-                  {mockUser.vipLevel}
-                </div>
+                  <AvatarFallback className="bg-primary/20">
+                    {user?.name?.charAt(0) || 'U'}
+                  </AvatarFallback>
+                </Avatar>
               </div>
-              <h2 className="text-base font-bold">{mockUser.name}</h2>
+              
+              <div className="flex flex-col">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-medium">Phone: {user?.phone}</span>
+                  {user?.rank && (
+                    <div className="bg-gradient-to-r from-amber-500 to-yellow-300 text-black rounded-full px-2 py-0.5 text-xs font-semibold shadow-sm flex items-center gap-1">
+                      <Star className="h-3 w-3" />
+                      {user.rank}
+                    </div>
+                  )}
+                </div>
+                <h2 className="text-base font-bold">{user?.name || 'User'}</h2>
+              </div>
             </div>
-          </div>
+          )}
           
           {/* Settings icon */}
           <div className="absolute right-5 top-1/2 -translate-y-1/2">
@@ -92,17 +113,28 @@ const ProfilePage = () => {
           </div>
         </div>
         
-        {/* Simple Balance Display instead of detailed breakdown */}
+        {/* Simple Balance Display */}
         <div className="px-4">
           <Card className="bg-gradient-to-br from-sky-50/5 to-blue-100/10 border border-blue-200/20 overflow-hidden">
             <CardContent className="p-4">
-              <div className="flex items-center justify-between mb-2">
-                <h3 className="text-sm font-medium text-muted-foreground">Available Balance</h3>
-              </div>
-              <div className="flex items-center">
-                <span className="text-xl font-normal">₹</span>
-                <span className="text-3xl font-semibold ml-1 text-gradient">{mockBalances.availableBalance.toLocaleString()}</span>
-              </div>
+              {isLoading ? (
+                <div className="animate-pulse">
+                  <div className="h-4 w-32 bg-secondary/40 rounded mb-2"></div>
+                  <div className="h-8 w-40 bg-secondary/40 rounded"></div>
+                </div>
+              ) : (
+                <>
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="text-sm font-medium text-muted-foreground">Available Balance</h3>
+                  </div>
+                  <div className="flex items-center">
+                    <span className="text-xl font-normal">₹</span>
+                    <span className="text-3xl font-semibold ml-1 text-gradient">
+                      {user?.wallet ? parseFloat(user?.wallet).toLocaleString() : '0.00'}
+                    </span>
+                  </div>
+                </>
+              )}
             </CardContent>
           </Card>
         </div>
@@ -122,43 +154,63 @@ const ProfilePage = () => {
         
         {/* Revenue Stats with Eye Icon */}
         <div className="mx-4 mt-4 rounded-xl overflow-hidden bg-gradient-to-b from-blue-50/10 to-blue-100/20 border border-blue-200/30">
-          {/* Total Revenue with Eye Icon */}
-          <div className="p-4 pb-2">
-            <div className="flex items-center justify-between mb-1">
-              <h3 className="text-sm text-muted-foreground">Total Revenue</h3>
-              <button 
-                onClick={toggleRevenueVisibility}
-                className="p-1 rounded-full hover:bg-white/10 transition-colors"
-              >
-                {hideRevenue ? <EyeOff size={16} /> : <Eye size={16} />}
-              </button>
-            </div>
-            <h2 className="text-2xl font-bold">
-              {hideRevenue ? "****.**₹" : "10221.26₹"}
-            </h2>
-            
-            {/* Income Breakdown */}
-            <div className="grid grid-cols-3 gap-2 mt-3 border-t border-blue-200/20 pt-2">
-              <div className="text-center">
-                <p className="text-xs text-muted-foreground">Yesterday's income</p>
-                <p className="font-semibold">
-                  {hideRevenue ? "**.**₹" : "344.12₹"}
-                </p>
-              </div>
-              <div className="text-center">
-                <p className="text-xs text-muted-foreground">Today's income</p>
-                <p className="font-semibold">
-                  {hideRevenue ? "0.00₹" : "0.00₹"}
-                </p>
-              </div>
-              <div className="text-center">
-                <p className="text-xs text-muted-foreground">Salary income</p>
-                <p className="font-semibold">
-                  {hideRevenue ? "****.**₹" : "2300.00₹"}
-                </p>
+          {isLoading ? (
+            <div className="p-4 pb-2 animate-pulse">
+              <div className="h-4 w-32 bg-secondary/40 rounded mb-3"></div>
+              <div className="h-8 w-40 bg-secondary/40 rounded mb-4"></div>
+              <div className="grid grid-cols-3 gap-2 mt-3 border-t border-blue-200/20 pt-2">
+                <div className="text-center">
+                  <div className="h-3 w-20 bg-secondary/40 rounded mx-auto mb-2"></div>
+                  <div className="h-4 w-16 bg-secondary/40 rounded mx-auto"></div>
+                </div>
+                <div className="text-center">
+                  <div className="h-3 w-20 bg-secondary/40 rounded mx-auto mb-2"></div>
+                  <div className="h-4 w-16 bg-secondary/40 rounded mx-auto"></div>
+                </div>
+                <div className="text-center">
+                  <div className="h-3 w-20 bg-secondary/40 rounded mx-auto mb-2"></div>
+                  <div className="h-4 w-16 bg-secondary/40 rounded mx-auto"></div>
+                </div>
               </div>
             </div>
-          </div>
+          ) : (
+            <div className="p-4 pb-2">
+              <div className="flex items-center justify-between mb-1">
+                <h3 className="text-sm text-muted-foreground">Total Revenue</h3>
+                <button 
+                  onClick={toggleRevenueVisibility}
+                  className="p-1 rounded-full hover:bg-white/10 transition-colors"
+                >
+                  {hideRevenue ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
+              </div>
+              <h2 className="text-2xl font-bold">
+                {hideRevenue ? "****.**₹" : `${user?.income || '0.00'}₹`}
+              </h2>
+              
+              {/* Income Breakdown */}
+              <div className="grid grid-cols-3 gap-2 mt-3 border-t border-blue-200/20 pt-2">
+                <div className="text-center">
+                  <p className="text-xs text-muted-foreground">Yesterday's income</p>
+                  <p className="font-semibold">
+                    {hideRevenue ? "**.**₹" : "0.00₹"}
+                  </p>
+                </div>
+                <div className="text-center">
+                  <p className="text-xs text-muted-foreground">Today's income</p>
+                  <p className="font-semibold">
+                    {hideRevenue ? "0.00₹" : "0.00₹"}
+                  </p>
+                </div>
+                <div className="text-center">
+                  <p className="text-xs text-muted-foreground">Commission</p>
+                  <p className="font-semibold">
+                    {hideRevenue ? "****.**₹" : `${user?.commission || '0.00'}₹`}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
         
         {/* Profile Options */}
@@ -218,12 +270,15 @@ const ProfilePage = () => {
             to="/support"
           />
           
-          <ProfileOption
-            icon={<LogOut className="h-5 w-5 text-red-400" />}
-            label="Log out"
-            to="/logout"
-            className="mt-4"
-          />
+          <div
+            onClick={handleLogout}
+            className="flex items-center p-3 rounded-xl bg-red-50/10 hover:bg-red-500/10 cursor-pointer transition-colors mt-4"
+          >
+            <div className="w-8 h-8 rounded-full bg-red-500/10 flex items-center justify-center mr-3">
+              <LogOut className="h-5 w-5 text-red-400" />
+            </div>
+            <span>Log out</span>
+          </div>
         </div>
       </div>
     </MobileLayout>

@@ -1,10 +1,58 @@
 
+import { useState, useEffect } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
 import CryptoCard from "@/components/CryptoCard";
-import { mockCryptoCurrencies } from "@/data/mockData";
 import { Sparkles } from "lucide-react";
+import { getMarketData } from "@/services/api";
+
+interface CryptoData {
+  id: string | number;
+  symbol: string;
+  name: string;
+  logo: string;
+  price: number;
+  market_cap?: string;
+  volume_24h?: string;
+  rank?: string;
+  status?: string;
+  picks?: number;
+  home?: number;
+  change?: number; // We're missing this in the API, so we'll need to add it
+}
 
 const MarketPage = () => {
+  const [marketData, setMarketData] = useState<CryptoData[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  
+  useEffect(() => {
+    const fetchMarketData = async () => {
+      try {
+        // Make sure we have a token before fetching
+        const token = localStorage.getItem('auth_token');
+        if (!token) return;
+        
+        const response = await getMarketData(token);
+        
+        if (response.status && Array.isArray(response.data)) {
+          // Add a dummy change value since we don't have it in the API
+          const dataWithChange = response.data.map((crypto: CryptoData) => ({
+            ...crypto,
+            change: Math.random() > 0.5 ? +(Math.random() * 5).toFixed(2) : -(Math.random() * 5).toFixed(2), // Random change value
+            price: parseFloat(crypto.price as any)
+          }));
+          
+          setMarketData(dataWithChange);
+        }
+      } catch (error) {
+        console.error("Error fetching market data:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    fetchMarketData();
+  }, []);
+  
   return (
     <MobileLayout title="Market">
       <div className="p-4 space-y-4 pb-20 market-page-content">
@@ -17,18 +65,42 @@ const MarketPage = () => {
         </div>
         
         <div className="bg-card/50 rounded-xl overflow-hidden backdrop-blur-sm border border-white/5 shadow-lg">
-          {mockCryptoCurrencies.map((crypto, index) => (
-            <CryptoCard
-              key={crypto.id}
-              id={crypto.id}
-              name={crypto.name}
-              symbol={crypto.symbol}
-              price={crypto.price}
-              change={crypto.change}
-              logo={crypto.logo}
-              animationDelay={index * 100}
-            />
-          ))}
+          {isLoading ? (
+            Array(8).fill(0).map((_, idx) => (
+              <div key={`skeleton-${idx}`} className="p-3.5 border-b border-border/30 animate-pulse">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-full bg-secondary/40"></div>
+                    <div>
+                      <div className="h-4 w-24 bg-secondary/40 rounded"></div>
+                      <div className="h-3 w-12 bg-secondary/40 rounded mt-1.5"></div>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className="h-4 w-16 bg-secondary/40 rounded"></div>
+                    <div className="h-3 w-10 bg-secondary/40 rounded mt-1.5 ml-auto"></div>
+                  </div>
+                </div>
+              </div>
+            ))
+          ) : marketData.length > 0 ? (
+            marketData.map((crypto, index) => (
+              <CryptoCard
+                key={crypto.id}
+                id={crypto.id}
+                name={crypto.name}
+                symbol={crypto.symbol}
+                price={crypto.price}
+                change={crypto.change || 0}
+                logo={crypto.logo}
+                animationDelay={index * 100}
+              />
+            ))
+          ) : (
+            <div className="p-6 text-center text-muted-foreground">
+              No market data available
+            </div>
+          )}
         </div>
         
         {/* Animated decoration */}
