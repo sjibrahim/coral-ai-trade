@@ -41,10 +41,11 @@ const MarketPage = () => {
             price: parseFloat(typeof crypto.price === 'string' ? crypto.price : crypto.price.toString())
           }));
           
-          // Filter for active cryptocurrencies (status = 1)
-          const filteredData = dataWithChange.filter((crypto: CryptoData) => 
-            String(crypto.status) === "1" || crypto.status === 1
-          );
+          // Filter for active cryptocurrencies (status = 1) - convert to same type for comparison
+          const filteredData = dataWithChange.filter((crypto: CryptoData) => {
+            const statusValue = crypto.status?.toString();
+            return statusValue === "1";
+          });
           
           // Sort by rank (ascending)
           const sortedData = filteredData.sort((a: CryptoData, b: CryptoData) => {

@@ -19,7 +19,7 @@ interface CryptoData {
   market_cap?: string;
   volume_24h?: string;
   rank?: string;
-  status?: string;
+  status?: string | number;
   picks?: number | string;
   home?: number | string;
   change?: number;
@@ -48,20 +48,23 @@ const HomePage = () => {
             price: parseFloat(typeof crypto.price === 'string' ? crypto.price : crypto.price.toString())
           }));
           
-          // Filter for active cryptocurrencies (status = 1)
-          const activeCoins = dataWithChange.filter((crypto: CryptoData) => 
-            crypto.status === "1" || crypto.status === 1
-          );
+          // Filter for active cryptocurrencies - convert both sides to the same type for comparison
+          const activeCoins = dataWithChange.filter((crypto: CryptoData) => {
+            const statusValue = crypto.status?.toString();
+            return statusValue === "1";
+          });
           
-          // Filter home screen cryptos - convert to string for comparison
-          const homeScreenCryptos = activeCoins.filter((crypto: CryptoData) => 
-            String(crypto.home) === "1" || crypto.home === 1
-          );
+          // Filter home screen cryptos - convert both sides to the same type for comparison
+          const homeScreenCryptos = activeCoins.filter((crypto: CryptoData) => {
+            const homeValue = crypto.home?.toString();
+            return homeValue === "1";
+          });
           
-          // Filter today's picks - convert to string for comparison
-          const todaysPicks = activeCoins.filter((crypto: CryptoData) => 
-            String(crypto.picks) === "1" || crypto.picks === 1
-          );
+          // Filter today's picks - convert both sides to the same type for comparison
+          const todaysPicks = activeCoins.filter((crypto: CryptoData) => {
+            const picksValue = crypto.picks?.toString();
+            return picksValue === "1";
+          });
           
           // Sort by rank
           const sortedHomeData = homeScreenCryptos.sort((a: CryptoData, b: CryptoData) => {
