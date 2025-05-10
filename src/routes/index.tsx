@@ -1,5 +1,5 @@
 
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Outlet } from "react-router-dom";
 import ProtectedRoute from "@/components/ProtectedRoute";
 
 // Public Pages
@@ -40,7 +40,7 @@ const AppRoutes = () => {
       <Route path="/privacy" element={<PrivacyPage />} />
       
       {/* Protected Routes */}
-      <Route element={<ProtectedRoute>{/* This is needed to match the required 'children' prop */}</ProtectedRoute>}>
+      <Route element={<ProtectedRoute><Outlet /></ProtectedRoute>}>
         <Route path="/home" element={<HomePage />} />
         <Route path="/market" element={<MarketPage />} />
         <Route path="/coin/:id" element={<CoinDetailPage />} />
