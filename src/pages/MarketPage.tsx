@@ -38,7 +38,7 @@ const MarketPage = () => {
           const dataWithChange = response.data.map((crypto: CryptoData) => ({
             ...crypto,
             change: Math.random() > 0.5 ? +(Math.random() * 5).toFixed(2) : -(Math.random() * 5).toFixed(2), // Random change value
-            price: parseFloat(crypto.price as any)
+            price: parseFloat(typeof crypto.price === 'string' ? crypto.price : crypto.price.toString())
           }));
           
           setMarketData(dataWithChange);
