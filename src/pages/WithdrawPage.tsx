@@ -2,34 +2,57 @@
 import { useState } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
 import NumericKeypad from "@/components/NumericKeypad";
-import { mockBalances } from "@/data/mockData";
 import { Bell, ChevronLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Check } from "lucide-react";
+import { Check, AlertTriangle } from "lucide-react";
+import { createWithdrawOrder } from "@/services/api";
+import { useAuth } from "@/contexts/AuthContext";
+import { toast } from "@/components/ui/use-toast";
 
 const WithdrawPage = () => {
+  const { user } = useAuth();
   const [amount, setAmount] = useState("");
-  const { availableBalance } = mockBalances;
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   
-  const bankAccount = "8054426413";
-  const ifscCode = "AIRP0000001";
+  const availableBalance = user?.wallet ? parseFloat(user.wallet) : 0;
+  const bankAccount = user?.account_number || "Not provided";
+  const ifscCode = user?.account_ifsc || "Not provided";
 
   const isValidAmount = Number(amount) >= 300 && Number(amount) <= availableBalance;
   
-  const handleConfirm = () => {
-    if (!isValidAmount) return;
+  const handleConfirm = async () => {
+    if (!isValidAmount || !user?.token) return;
     
-    // Show success modal
-    setShowSuccessModal(true);
+    setIsLoading(true);
     
-    // Reset after 3 seconds
-    setTimeout(() => {
-      setShowSuccessModal(false);
-      setAmount("");
-    }, 3000);
+    try {
+      const response = await createWithdrawOrder(user.token, Number(amount));
+      
+      if (response.status) {
+        // Show success modal
+        setShowSuccessModal(true);
+        
+        // Reset after 3 seconds
+        setTimeout(() => {
+          setShowSuccessModal(false);
+          setAmount("");
+        }, 3000);
+      } else {
+        setErrorMessage(response.msg || "No active withdrawal gateway");
+        setShowErrorModal(true);
+      }
+    } catch (error) {
+      console.error("Withdrawal error:", error);
+      setErrorMessage("Something went wrong. Please try again later.");
+      setShowErrorModal(true);
+    } finally {
+      setIsLoading(false);
+    }
   };
   
   return (
@@ -91,9 +114,9 @@ const WithdrawPage = () => {
             deleteIcon="backspace"
             clearText="clr"
             className="mb-2"
-            onConfirm={handleConfirm}
-            confirmButtonText="SUBMIT"
-            confirmDisabled={!isValidAmount}
+            onConfirm={isLoading ? undefined : handleConfirm}
+            confirmButtonText={isLoading ? "PROCESSING..." : "SUBMIT"}
+            confirmDisabled={!isValidAmount || isLoading}
           />
         </div>
       </div>
@@ -112,6 +135,27 @@ const WithdrawPage = () => {
             <Button 
               className="w-full bg-blue-600 hover:bg-blue-700" 
               onClick={() => setShowSuccessModal(false)}
+            >
+              Close
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+      
+      {/* Error Modal */}
+      <Dialog open={showErrorModal} onOpenChange={setShowErrorModal}>
+        <DialogContent className="sm:max-w-md bg-[#1a1e29] border-border/50 p-0 overflow-hidden">
+          <div className="flex flex-col items-center justify-center p-6 space-y-4">
+            <div className="w-20 h-20 rounded-full bg-red-500/20 flex items-center justify-center animate-pulse-glow">
+              <AlertTriangle className="h-10 w-10 text-red-500" />
+            </div>
+            <h2 className="text-xl font-semibold text-white">Withdrawal Failed</h2>
+            <p className="text-gray-400 text-center">
+              {errorMessage}
+            </p>
+            <Button 
+              className="w-full bg-blue-600 hover:bg-blue-700" 
+              onClick={() => setShowErrorModal(false)}
             >
               Close
             </Button>

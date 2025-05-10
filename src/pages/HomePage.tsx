@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
 import BalanceSummary from "@/components/BalanceSummary";
@@ -48,14 +47,16 @@ const HomePage = () => {
             price: parseFloat(typeof crypto.price === 'string' ? crypto.price : crypto.price.toString())
           }));
           
-          // Filter home screen cryptos
-          const homeScreenCryptos = dataWithChange.filter((crypto: CryptoData) => crypto.home === 1);
+          // Filter home screen cryptos where home=1
+          const homeScreenCryptos = dataWithChange.filter((crypto: CryptoData) => crypto.home === 1 && crypto.status === "1");
           
-          // Filter today's picks
-          const todaysPicks = dataWithChange.filter((crypto: CryptoData) => crypto.picks === 1);
+          // Filter today's picks where picks=1
+          const todaysPicks = dataWithChange.filter((crypto: CryptoData) => 
+            (crypto.picks === 1 || crypto.pcks === 1) && crypto.status === "1"
+          );
           
-          setMarketData(homeScreenCryptos.length > 0 ? homeScreenCryptos.slice(0, 4) : dataWithChange.slice(0, 4));
-          setPicksData(todaysPicks.length > 0 ? todaysPicks.slice(0, 2) : dataWithChange.slice(0, 2));
+          setMarketData(homeScreenCryptos.length > 0 ? homeScreenCryptos.slice(0, 4) : []);
+          setPicksData(todaysPicks.length > 0 ? todaysPicks.slice(0, 2) : []);
         }
       } catch (error) {
         console.error("Error fetching market data:", error);
