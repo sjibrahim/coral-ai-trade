@@ -18,7 +18,12 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 
-const SideMenu = () => {
+interface SideMenuProps {
+  isOpen?: boolean;
+  onClose?: () => void;
+}
+
+const SideMenu = ({ isOpen = false, onClose }: SideMenuProps) => {
   const location = useLocation();
   const { logout } = useAuth();
 
@@ -50,8 +55,13 @@ const SideMenu = () => {
     { icon: LifeBuoy, label: "Support", path: "/support" },
   ];
 
+  // Add animation and visibility classes based on isOpen prop
+  const sideMenuClasses = `fixed inset-y-0 left-0 z-50 w-64 bg-background border-r transform transition-transform duration-200 ease-in-out ${
+    isOpen ? "translate-x-0" : "-translate-x-full"
+  }`;
+
   return (
-    <div className="fixed inset-y-0 left-0 z-50 w-64 bg-background border-r transform transition-transform duration-200 ease-in-out">
+    <div className={sideMenuClasses}>
       <div className="flex flex-col h-full">
         {/* Logo section */}
         <div className="p-4 border-b">
@@ -84,6 +94,9 @@ const SideMenu = () => {
                         : "text-muted-foreground hover:bg-muted hover:text-foreground"
                     }`
                   }
+                  onClick={() => {
+                    if (onClose && item.path !== "#") onClose();
+                  }}
                 >
                   <item.icon className="w-4 h-4" />
                   <span>{item.label}</span>
@@ -103,6 +116,9 @@ const SideMenu = () => {
                               : "text-muted-foreground hover:bg-muted hover:text-foreground"
                           }`
                         }
+                        onClick={() => {
+                          if (onClose) onClose();
+                        }}
                       >
                         <span>{subItem.label}</span>
                       </NavLink>
@@ -119,7 +135,10 @@ const SideMenu = () => {
           <Button
             variant="outline"
             className="w-full justify-start text-muted-foreground hover:text-foreground"
-            onClick={logout}
+            onClick={() => {
+              logout();
+              if (onClose) onClose();
+            }}
           >
             <LogOut className="w-4 h-4 mr-2" />
             Logout

@@ -1,3 +1,4 @@
+
 import { Routes, Route } from "react-router-dom";
 import ProtectedRoute from "@/components/ProtectedRoute";
 
@@ -39,7 +40,7 @@ const AppRoutes = () => {
       <Route path="/privacy" element={<PrivacyPage />} />
       
       {/* Protected Routes */}
-      <Route element={<ProtectedRoute />}>
+      <Route element={<ProtectedRoute>{/* This is needed to match the required 'children' prop */}</ProtectedRoute>}>
         <Route path="/home" element={<HomePage />} />
         <Route path="/market" element={<MarketPage />} />
         <Route path="/coin/:id" element={<CoinDetailPage />} />

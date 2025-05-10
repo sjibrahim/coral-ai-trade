@@ -107,7 +107,7 @@ const MobileLayout = ({
         </header>
       )}
 
-      {/* Side Menu */}
+      {/* Side Menu - Now passing the required props */}
       <SideMenu isOpen={menuOpen} onClose={() => setMenuOpen(false)} />
 
       {/* Main Content with ScrollArea for reliable scrolling */}
