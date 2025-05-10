@@ -20,8 +20,8 @@ const WithdrawPage = () => {
   const { toast } = useToast();
   
   const availableBalance = user?.wallet ? parseFloat(user.wallet) : 0;
-  const bankAccount = user?.bank_number || "Not set";
-  const ifscCode = user?.bank_ifsc || "Not set";
+  const bankAccount = user?.bank_number || user?.account_number || "Not set";
+  const ifscCode = user?.bank_ifsc || user?.account_ifsc || "Not set";
 
   const isValidAmount = Number(amount) >= 300 && Number(amount) <= availableBalance;
   

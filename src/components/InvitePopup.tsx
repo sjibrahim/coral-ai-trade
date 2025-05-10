@@ -57,6 +57,8 @@ const InvitePopup = ({ isOpen, onClose }: InvitePopupProps) => {
     }
   };
   
+  const referralCode = user?.invite_code || "NEXBIT";
+  
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md bg-gradient-to-b from-background to-blue-900/10 backdrop-blur-sm border-blue-200/20 p-6">
@@ -98,7 +100,7 @@ const InvitePopup = ({ isOpen, onClose }: InvitePopupProps) => {
               <span className="font-medium">Your Code:</span>
             </div>
             <span className="font-bold text-primary">
-              {user?.invite_code || "NEXBIT"}
+              {referralCode}
             </span>
           </div>
           

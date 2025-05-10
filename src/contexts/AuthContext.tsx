@@ -11,11 +11,15 @@ type User = {
   fixed?: string;
   parent?: string;
   referral_code?: string;
+  invite_code?: string;  // Added missing property
+  id?: string;           // Added missing property
   salary?: string;
   rank?: string;
   account_holder_name?: string;
   account_number?: string;
   account_ifsc?: string;
+  bank_number?: string;  // Added missing property
+  bank_ifsc?: string;    // Added missing property
   token: string;
   yesterday_income?: string;
 };

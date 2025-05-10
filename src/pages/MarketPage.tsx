@@ -14,9 +14,9 @@ interface CryptoData {
   market_cap?: string;
   volume_24h?: string;
   rank?: string;
-  status?: string;
-  picks?: number;
-  home?: number;
+  status?: string | number;
+  picks?: number | string;
+  home?: number | string;
   change?: number;
 }
 
@@ -43,7 +43,7 @@ const MarketPage = () => {
           
           // Filter for active cryptocurrencies (status = 1)
           const filteredData = dataWithChange.filter((crypto: CryptoData) => 
-            crypto.status === "1" || crypto.status === 1
+            String(crypto.status) === "1" || crypto.status === 1
           );
           
           // Sort by rank (ascending)

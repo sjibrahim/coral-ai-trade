@@ -20,8 +20,8 @@ interface CryptoData {
   volume_24h?: string;
   rank?: string;
   status?: string;
-  picks?: number;
-  home?: number;
+  picks?: number | string;
+  home?: number | string;
   change?: number;
 }
 
@@ -53,14 +53,14 @@ const HomePage = () => {
             crypto.status === "1" || crypto.status === 1
           );
           
-          // Filter home screen cryptos
+          // Filter home screen cryptos - convert to string for comparison
           const homeScreenCryptos = activeCoins.filter((crypto: CryptoData) => 
-            crypto.home === 1 || crypto.home === "1"
+            String(crypto.home) === "1" || crypto.home === 1
           );
           
-          // Filter today's picks
+          // Filter today's picks - convert to string for comparison
           const todaysPicks = activeCoins.filter((crypto: CryptoData) => 
-            crypto.picks === 1 || crypto.picks === "1"
+            String(crypto.picks) === "1" || crypto.picks === 1
           );
           
           // Sort by rank
