@@ -49,12 +49,12 @@ const RegisterPage = () => {
     setIsSubmitting(true);
     
     try {
+      // Pass the referral code as part of the register function arguments
       const success = await register(
         formData.phone,
         formData.email,
         formData.password,
-        formData.confirmPassword,
-        referralCode
+        referralCode || null
       );
       
       if (success) {

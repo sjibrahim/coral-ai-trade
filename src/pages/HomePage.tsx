@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
 import BalanceSummary from "@/components/BalanceSummary";
@@ -52,7 +53,7 @@ const HomePage = () => {
           
           // Filter today's picks where picks=1
           const todaysPicks = dataWithChange.filter((crypto: CryptoData) => 
-            (crypto.picks === 1 || crypto.pcks === 1) && crypto.status === "1"
+            crypto.picks === 1 && crypto.status === "1"
           );
           
           setMarketData(homeScreenCryptos.length > 0 ? homeScreenCryptos.slice(0, 4) : []);
