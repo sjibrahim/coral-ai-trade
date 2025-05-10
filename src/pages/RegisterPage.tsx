@@ -71,9 +71,9 @@ const RegisterPage = () => {
       <div className="pt-12 pb-8">
         <div className="w-16 h-16 rounded-xl bg-gradient-to-r from-blue-600 to-blue-400 mx-auto flex items-center justify-center shadow-lg shadow-blue-500/20">
           <img 
-            src="/lovable-uploads/878f13b5-368b-418f-aa30-037ca279396f.png" 
+            src="https://ik.imagekit.io/spmcumfu9/nexbit_logo.jpeg" 
             alt="Nexbit Logo" 
-            className="w-10 h-10 object-contain"
+            className="w-10 h-10 object-contain rounded-lg"
           />
         </div>
         <h1 className="text-2xl font-bold text-center mt-4 text-gradient-primary">
@@ -210,6 +210,10 @@ const RegisterPage = () => {
       
       {/* Footer */}
       <div className="mt-auto pt-8 pb-4 text-center">
+        <div className="flex justify-center gap-4 mb-4">
+          <Link to="/terms" className="text-xs text-muted-foreground hover:text-primary">Terms of Service</Link>
+          <Link to="/privacy" className="text-xs text-muted-foreground hover:text-primary">Privacy Policy</Link>
+        </div>
         <p className="text-xs text-muted-foreground">
           &copy; 2025 Nexbit. All rights reserved.
         </p>

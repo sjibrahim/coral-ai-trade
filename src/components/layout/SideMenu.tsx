@@ -1,123 +1,132 @@
 
-import { ReactNode } from 'react';
-import { Link } from 'react-router-dom';
-import { 
-  Home, 
-  LayoutDashboard, 
-  Users, 
-  UserCircle, 
-  ArrowDownCircle, 
-  ArrowUpCircle, 
-  Share2, 
+import { NavLink, useLocation } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  Home,
+  LineChart,
+  PlusCircle,
+  ArrowDownCircle,
+  Clock,
   FileText,
-  Building, 
-  KeySquare, 
-  HelpCircle, 
-  Coins
-} from 'lucide-react';
-import { cn } from '@/lib/utils';
+  Users,
+  Award,
+  User,
+  Settings,
+  LifeBuoy,
+  LogOut,
+} from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 
-interface SideMenuProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
+const SideMenu = () => {
+  const location = useLocation();
+  const { logout } = useAuth();
 
-const SideMenu = ({ isOpen, onClose }: SideMenuProps) => {
+  const isActive = (path: string) => {
+    return location.pathname === path;
+  };
+
+  const menuItems = [
+    { icon: Home, label: "Home", path: "/home" },
+    { icon: LineChart, label: "Market", path: "/market" },
+    { icon: PlusCircle, label: "Deposit", path: "/deposit" },
+    { icon: ArrowDownCircle, label: "Withdraw", path: "/withdraw" },
+    { 
+      icon: Clock, 
+      label: "Records", 
+      path: "#",
+      subItems: [
+        { label: "Deposit Records", path: "/deposit-records" },
+        { label: "Withdrawal Records", path: "/withdrawal-records" },
+        { label: "Transaction Records", path: "/transaction-records" },
+        { label: "Contract Records", path: "/contract-record" },
+        { label: "Salary Records", path: "/commission-record" },
+      ]
+    },
+    { icon: Users, label: "My Team", path: "/team" },
+    { icon: Award, label: "Rewards", path: "/rewards" },
+    { icon: User, label: "Profile", path: "/profile" },
+    { icon: Settings, label: "Settings", path: "/settings" },
+    { icon: LifeBuoy, label: "Support", path: "/support" },
+  ];
+
   return (
-    <>
-      {/* Backdrop */}
-      {isOpen && (
-        <div 
-          className="fixed inset-0 bg-black/50 z-30 backdrop-blur-sm"
-          onClick={onClose}
-        />
-      )}
-      
-      {/* Side menu */}
-      <div className={cn(
-        "fixed top-0 left-0 h-full w-72 bg-sidebar z-40 transform transition-transform duration-300 ease-in-out",
-        isOpen ? "translate-x-0" : "-translate-x-full"
-      )}>
-        <div className="p-6">
-          <div className="mb-8 flex items-center justify-center">
-            <div className="bg-gradient-to-r from-primary to-blue-400 p-0.5 rounded-xl">
-              <div className="bg-sidebar px-6 py-3 rounded-xl">
-                <h1 className="text-2xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
-                  Nexbit
-                </h1>
-              </div>
+    <div className="fixed inset-y-0 left-0 z-50 w-64 bg-background border-r transform transition-transform duration-200 ease-in-out">
+      <div className="flex flex-col h-full">
+        {/* Logo section */}
+        <div className="p-4 border-b">
+          <div className="flex items-center space-x-3">
+            <div className="w-8 h-8 rounded-md bg-gradient-to-r from-blue-600 to-blue-400 flex items-center justify-center">
+              <img 
+                src="https://ik.imagekit.io/spmcumfu9/nexbit_logo.jpeg" 
+                alt="Nexbit Logo" 
+                className="w-6 h-6 object-contain rounded-sm" 
+              />
             </div>
-          </div>
-          
-          <div className="space-y-6">
-            <div className="space-y-1.5">
-              <p className="text-xs uppercase text-muted-foreground ml-4">Main</p>
-              <MenuItem to="/home" icon={<Home />} onClick={onClose}>Home</MenuItem>
-              <MenuItem to="/market" icon={<LayoutDashboard />} onClick={onClose}>Market</MenuItem>
-              <MenuItem to="/team" icon={<Users />} onClick={onClose}>Team</MenuItem>
-              <MenuItem to="/profile" icon={<UserCircle />} onClick={onClose}>Profile</MenuItem>
-              <MenuItem to="/coin" icon={<Coins />} onClick={onClose}>Coin</MenuItem>
-            </div>
-            
-            <div className="space-y-1.5">
-              <p className="text-xs uppercase text-muted-foreground ml-4">Transactions</p>
-              <MenuItem to="/invite" icon={<Share2 />} onClick={onClose}>Invite</MenuItem>
-              <MenuItem to="/deposit" icon={<ArrowDownCircle />} onClick={onClose}>Deposit</MenuItem>
-              <MenuItem to="/withdraw" icon={<ArrowUpCircle />} onClick={onClose}>Withdraw</MenuItem>
-            </div>
-            
-            <div className="space-y-1.5">
-              <p className="text-xs uppercase text-muted-foreground ml-4">Records</p>
-              <MenuItem to="/deposit-records" icon={<FileText />} onClick={onClose}>Deposit Records</MenuItem>
-              <MenuItem to="/withdrawal-records" icon={<FileText />} onClick={onClose}>Withdrawal Records</MenuItem>
-              <MenuItem to="/contract-record" icon={<FileText />} onClick={onClose}>Contract Record</MenuItem>
-              <MenuItem to="/salary-record" icon={<FileText />} onClick={onClose}>Salary Record</MenuItem>
-              <MenuItem to="/transactions" icon={<FileText />} onClick={onClose}>Transaction Records</MenuItem>
-            </div>
-            
-            <div className="space-y-1.5">
-              <p className="text-xs uppercase text-muted-foreground ml-4">Account</p>
-              <MenuItem to="/bank" icon={<Building />} onClick={onClose}>Bank Details</MenuItem>
-              <MenuItem to="/change-password" icon={<KeySquare />} onClick={onClose}>Change Password</MenuItem>
-              <MenuItem to="/support" icon={<HelpCircle />} onClick={onClose}>Support</MenuItem>
-            </div>
-          </div>
-          
-          <div className="absolute bottom-8 left-0 w-full px-6">
-            <div className="glass-card p-4 rounded-lg text-center space-y-2">
-              <p className="text-sm text-muted-foreground">Need help with trading?</p>
-              <Link 
-                to="/support" 
-                onClick={onClose}
-                className="block w-full py-2 bg-primary/80 hover:bg-primary rounded-md transition-colors"
-              >
-                Contact Support
-              </Link>
+            <div>
+              <h2 className="font-bold">Nexbit</h2>
+              <p className="text-xs text-muted-foreground">Trading Platform</p>
             </div>
           </div>
         </div>
+
+        {/* Navigation links - Scrollable */}
+        <ScrollArea className="flex-1">
+          <nav className="space-y-1 p-3">
+            {menuItems.map((item) => (
+              <div key={item.label}>
+                <NavLink
+                  to={item.path !== "#" ? item.path : "#"}
+                  className={({ isActive }) =>
+                    `flex items-center space-x-3 px-3 py-2 rounded-md text-sm transition-colors ${
+                      item.path !== "#" && isActive
+                        ? "bg-primary/10 text-primary font-medium"
+                        : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                    }`
+                  }
+                >
+                  <item.icon className="w-4 h-4" />
+                  <span>{item.label}</span>
+                </NavLink>
+                
+                {/* Sub-items if any */}
+                {item.subItems && (
+                  <div className="ml-7 mt-1 space-y-1">
+                    {item.subItems.map((subItem) => (
+                      <NavLink
+                        key={subItem.path}
+                        to={subItem.path}
+                        className={({ isActive }) =>
+                          `flex items-center px-3 py-1.5 rounded-md text-xs transition-colors ${
+                            isActive
+                              ? "bg-primary/10 text-primary font-medium"
+                              : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                          }`
+                        }
+                      >
+                        <span>{subItem.label}</span>
+                      </NavLink>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+          </nav>
+        </ScrollArea>
+
+        {/* Logout button */}
+        <div className="p-4 border-t">
+          <Button
+            variant="outline"
+            className="w-full justify-start text-muted-foreground hover:text-foreground"
+            onClick={logout}
+          >
+            <LogOut className="w-4 h-4 mr-2" />
+            Logout
+          </Button>
+        </div>
       </div>
-    </>
-  );
-};
-
-interface MenuItemProps {
-  to: string;
-  icon: ReactNode;
-  children: ReactNode;
-  onClick: () => void;
-}
-
-const MenuItem = ({ to, icon, children, onClick }: MenuItemProps) => {
-  return (
-    <Link
-      to={to}
-      className="flex items-center gap-3 px-4 py-2.5 text-foreground rounded-lg hover:bg-white/5 transition-colors group"
-      onClick={onClick}
-    >
-      <span className="text-muted-foreground group-hover:text-primary transition-colors">{icon}</span>
-      <span className="group-hover:translate-x-0.5 transition-transform">{children}</span>
-    </Link>
+    </div>
   );
 };
 

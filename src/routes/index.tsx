@@ -1,59 +1,66 @@
+import { Routes, Route } from "react-router-dom";
+import ProtectedRoute from "@/components/ProtectedRoute";
 
-import { Route, Routes, Navigate } from 'react-router-dom';
-import ProtectedRoute from '@/components/ProtectedRoute';
+// Public Pages
+import Index from "@/pages/Index";
+import LoginPage from "@/pages/LoginPage";
+import RegisterPage from "@/pages/RegisterPage";
+import TermsPage from "@/pages/TermsPage";
+import PrivacyPage from "@/pages/PrivacyPage";
 
-// Import pages
-import HomePage from '@/pages/HomePage';
-import MarketPage from '@/pages/MarketPage';
-import TeamPage from '@/pages/TeamPage';
-import ProfilePage from '@/pages/ProfilePage';
-import CoinDetailPage from '@/pages/CoinDetailPage';
-import DepositPage from '@/pages/DepositPage';
-import WithdrawPage from '@/pages/WithdrawPage';
-import InvitePage from '@/pages/InvitePage';
-import BankDetailsPage from '@/pages/BankDetailsPage';
-import ChangePasswordPage from '@/pages/ChangePasswordPage';
-import SupportPage from '@/pages/SupportPage';
-import DepositRecordsPage from '@/pages/DepositRecordsPage';
-import WithdrawalRecordsPage from '@/pages/WithdrawalRecordsPage';
-import ContractRecordPage from '@/pages/ContractRecordPage';
-import CommissionRecordPage from '@/pages/CommissionRecordPage';
-import SalaryRecordPage from '@/pages/SalaryRecordPage';
-import RewardsPage from '@/pages/RewardsPage';
-import SettingsPage from '@/pages/SettingsPage';
-import LoginPage from '@/pages/LoginPage';
-import RegisterPage from '@/pages/RegisterPage';
-import NotFound from '@/pages/NotFound';
-import TransactionRecordsPage from '@/pages/TransactionRecordsPage';
+// Protected Pages
+import HomePage from "@/pages/HomePage";
+import MarketPage from "@/pages/MarketPage";
+import CoinDetailPage from "@/pages/CoinDetailPage";
+import DepositPage from "@/pages/DepositPage";
+import WithdrawPage from "@/pages/WithdrawPage";
+import DepositRecordsPage from "@/pages/DepositRecordsPage";
+import WithdrawalRecordsPage from "@/pages/WithdrawalRecordsPage";
+import TransactionRecordsPage from "@/pages/TransactionRecordsPage";
+import ContractRecordPage from "@/pages/ContractRecordPage";
+import SalaryRecordPage from "@/pages/SalaryRecordPage";
+import TeamPage from "@/pages/TeamPage";
+import InvitePage from "@/pages/InvitePage";
+import RewardsPage from "@/pages/RewardsPage";
+import ProfilePage from "@/pages/ProfilePage";
+import SettingsPage from "@/pages/SettingsPage";
+import BankDetailsPage from "@/pages/BankDetailsPage";
+import ChangePasswordPage from "@/pages/ChangePasswordPage";
+import SupportPage from "@/pages/SupportPage";
+import NotFound from "@/pages/NotFound";
 
 const AppRoutes = () => {
   return (
     <Routes>
-      {/* Public Routes */}
+      <Route path="/" element={<Index />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
+      <Route path="/terms" element={<TermsPage />} />
+      <Route path="/privacy" element={<PrivacyPage />} />
       
       {/* Protected Routes */}
-      <Route path="/" element={<Navigate to="/home" replace />} />
-      <Route path="/home" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
-      <Route path="/market" element={<ProtectedRoute><MarketPage /></ProtectedRoute>} />
-      <Route path="/team" element={<ProtectedRoute><TeamPage /></ProtectedRoute>} />
-      <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
-      <Route path="/coin/:id" element={<ProtectedRoute><CoinDetailPage /></ProtectedRoute>} />
-      <Route path="/deposit" element={<ProtectedRoute><DepositPage /></ProtectedRoute>} />
-      <Route path="/withdraw" element={<ProtectedRoute><WithdrawPage /></ProtectedRoute>} />
-      <Route path="/invite" element={<ProtectedRoute><InvitePage /></ProtectedRoute>} />
-      <Route path="/bank" element={<ProtectedRoute><BankDetailsPage /></ProtectedRoute>} />
-      <Route path="/change-password" element={<ProtectedRoute><ChangePasswordPage /></ProtectedRoute>} />
-      <Route path="/support" element={<ProtectedRoute><SupportPage /></ProtectedRoute>} />
-      <Route path="/deposit-records" element={<ProtectedRoute><DepositRecordsPage /></ProtectedRoute>} />
-      <Route path="/withdrawal-records" element={<ProtectedRoute><WithdrawalRecordsPage /></ProtectedRoute>} />
-      <Route path="/contract-record" element={<ProtectedRoute><ContractRecordPage /></ProtectedRoute>} />
-      <Route path="/commission-record" element={<ProtectedRoute><CommissionRecordPage /></ProtectedRoute>} />
-      <Route path="/salary-record" element={<ProtectedRoute><SalaryRecordPage /></ProtectedRoute>} />
-      <Route path="/rewards" element={<ProtectedRoute><RewardsPage /></ProtectedRoute>} />
-      <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
-      <Route path="/transactions" element={<ProtectedRoute><TransactionRecordsPage /></ProtectedRoute>} />
+      <Route element={<ProtectedRoute />}>
+        <Route path="/home" element={<HomePage />} />
+        <Route path="/market" element={<MarketPage />} />
+        <Route path="/coin/:id" element={<CoinDetailPage />} />
+        <Route path="/deposit" element={<DepositPage />} />
+        <Route path="/withdraw" element={<WithdrawPage />} />
+        <Route path="/deposit-records" element={<DepositRecordsPage />} />
+        <Route path="/withdrawal-records" element={<WithdrawalRecordsPage />} />
+        <Route path="/transaction-records" element={<TransactionRecordsPage />} />
+        <Route path="/contract-record" element={<ContractRecordPage />} />
+        <Route path="/commission-record" element={<SalaryRecordPage />} />
+        <Route path="/team" element={<TeamPage />} />
+        <Route path="/invite" element={<InvitePage />} />
+        <Route path="/rewards" element={<RewardsPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/settings" element={<SettingsPage />} />
+        <Route path="/bank-details" element={<BankDetailsPage />} />
+        <Route path="/change-password" element={<ChangePasswordPage />} />
+        <Route path="/support" element={<SupportPage />} />
+      </Route>
+      
+      {/* 404 */}
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
