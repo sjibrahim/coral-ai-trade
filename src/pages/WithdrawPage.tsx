@@ -2,34 +2,72 @@
 import { useState } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
 import NumericKeypad from "@/components/NumericKeypad";
-import { mockBalances } from "@/data/mockData";
-import { Bell, ChevronLeft } from "lucide-react";
+import { Bell, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Check } from "lucide-react";
+import { createWithdrawOrder } from "@/services/api";
+import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/hooks/use-toast";
 
 const WithdrawPage = () => {
   const [amount, setAmount] = useState("");
-  const { availableBalance } = mockBalances;
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [error, setError] = useState("");
   
-  const bankAccount = "8054426413";
-  const ifscCode = "AIRP0000001";
+  const { user, updateProfile } = useAuth();
+  const { toast } = useToast();
+  
+  const availableBalance = user?.wallet ? parseFloat(user.wallet) : 0;
+  const bankAccount = user?.bank_number || "Not set";
+  const ifscCode = user?.bank_ifsc || "Not set";
 
   const isValidAmount = Number(amount) >= 300 && Number(amount) <= availableBalance;
   
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     if (!isValidAmount) return;
     
-    // Show success modal
-    setShowSuccessModal(true);
+    setIsProcessing(true);
+    setError("");
     
-    // Reset after 3 seconds
-    setTimeout(() => {
-      setShowSuccessModal(false);
-      setAmount("");
-    }, 3000);
+    try {
+      const token = localStorage.getItem('auth_token');
+      if (!token) {
+        throw new Error("Authentication token not found");
+      }
+      
+      const response = await createWithdrawOrder(token, Number(amount));
+      
+      if (response.status) {
+        setShowSuccessModal(true);
+        // Update user profile to get updated wallet balance
+        await updateProfile();
+        
+        // Reset after 3 seconds
+        setTimeout(() => {
+          setShowSuccessModal(false);
+          setAmount("");
+        }, 3000);
+      } else {
+        setError(response.msg || "Failed to process withdrawal");
+        toast({
+          title: "Withdrawal Failed",
+          description: response.msg || "Failed to process withdrawal",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error("Withdrawal error:", error);
+      setError("Something went wrong. Please try again later.");
+      toast({
+        title: "Error",
+        description: "Something went wrong. Please try again later.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsProcessing(false);
+    }
   };
   
   return (
@@ -61,6 +99,12 @@ const WithdrawPage = () => {
               Minimum Withdrawal <span className="text-blue-400">₹300</span>
             </p>
           </div>
+          
+          {error && (
+            <div className="mt-2 text-center">
+              <p className="text-red-500 text-sm">{error}</p>
+            </div>
+          )}
         </div>
         
         {/* Middle Section - Balance & Bank info */}
@@ -92,8 +136,8 @@ const WithdrawPage = () => {
             clearText="clr"
             className="mb-2"
             onConfirm={handleConfirm}
-            confirmButtonText="SUBMIT"
-            confirmDisabled={!isValidAmount}
+            confirmButtonText={isProcessing ? "PROCESSING..." : "SUBMIT"}
+            confirmDisabled={!isValidAmount || isProcessing}
           />
         </div>
       </div>

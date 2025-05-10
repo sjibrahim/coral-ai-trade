@@ -41,7 +41,19 @@ const MarketPage = () => {
             price: parseFloat(typeof crypto.price === 'string' ? crypto.price : crypto.price.toString())
           }));
           
-          setMarketData(dataWithChange);
+          // Filter for active cryptocurrencies (status = 1)
+          const filteredData = dataWithChange.filter((crypto: CryptoData) => 
+            crypto.status === "1" || crypto.status === 1
+          );
+          
+          // Sort by rank (ascending)
+          const sortedData = filteredData.sort((a: CryptoData, b: CryptoData) => {
+            const rankA = parseInt(a.rank?.toString() || "9999");
+            const rankB = parseInt(b.rank?.toString() || "9999");
+            return rankA - rankB;
+          });
+          
+          setMarketData(sortedData);
         }
       } catch (error) {
         console.error("Error fetching market data:", error);

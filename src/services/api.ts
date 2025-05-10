@@ -13,6 +13,8 @@ export const endpoints = {
   createTopupOrder: `${API_BASE}/create_topup_order`,
   createWithdrawOrder: `${API_BASE}/create_withdraw_order`,
   getTransactions: `${API_BASE}/transactions`,
+  getDepositRecords: `${API_BASE}/get_deposit_records`,
+  getWithdrawRecords: `${API_BASE}/get_withdraw_records`,
 };
 
 // Function to handle API requests
@@ -74,4 +76,13 @@ export const createWithdrawOrder = async (token: string, amount: number) => {
 
 export const getTransactions = async (token: string) => {
   return apiRequest(endpoints.getTransactions, 'POST', { token });
+};
+
+// New endpoints for deposit and withdrawal records
+export const getDepositRecords = async (token: string) => {
+  return apiRequest(endpoints.getDepositRecords, 'POST', { token });
+};
+
+export const getWithdrawRecords = async (token: string) => {
+  return apiRequest(endpoints.getWithdrawRecords, 'POST', { token });
 };

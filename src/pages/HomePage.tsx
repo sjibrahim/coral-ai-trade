@@ -5,7 +5,7 @@ import BalanceSummary from "@/components/BalanceSummary";
 import ActionButtons from "@/components/ActionButtons";
 import CryptoCard from "@/components/CryptoCard";
 import { Link } from "react-router-dom";
-import { ChevronRight, Sparkles, TrendingUp, Zap } from "lucide-react";
+import { ChevronRight, Sparkles, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getMarketData } from "@/services/api";
 import { useAuth } from "@/contexts/AuthContext";
@@ -48,14 +48,37 @@ const HomePage = () => {
             price: parseFloat(typeof crypto.price === 'string' ? crypto.price : crypto.price.toString())
           }));
           
+          // Filter for active cryptocurrencies (status = 1)
+          const activeCoins = dataWithChange.filter((crypto: CryptoData) => 
+            crypto.status === "1" || crypto.status === 1
+          );
+          
           // Filter home screen cryptos
-          const homeScreenCryptos = dataWithChange.filter((crypto: CryptoData) => crypto.home === 1);
+          const homeScreenCryptos = activeCoins.filter((crypto: CryptoData) => 
+            crypto.home === 1 || crypto.home === "1"
+          );
           
           // Filter today's picks
-          const todaysPicks = dataWithChange.filter((crypto: CryptoData) => crypto.picks === 1);
+          const todaysPicks = activeCoins.filter((crypto: CryptoData) => 
+            crypto.picks === 1 || crypto.picks === "1"
+          );
           
-          setMarketData(homeScreenCryptos.length > 0 ? homeScreenCryptos.slice(0, 4) : dataWithChange.slice(0, 4));
-          setPicksData(todaysPicks.length > 0 ? todaysPicks.slice(0, 2) : dataWithChange.slice(0, 2));
+          // Sort by rank
+          const sortedHomeData = homeScreenCryptos.sort((a: CryptoData, b: CryptoData) => {
+            const rankA = parseInt(a.rank?.toString() || "9999");
+            const rankB = parseInt(b.rank?.toString() || "9999");
+            return rankA - rankB;
+          });
+          
+          const sortedPicksData = todaysPicks.sort((a: CryptoData, b: CryptoData) => {
+            const rankA = parseInt(a.rank?.toString() || "9999");
+            const rankB = parseInt(b.rank?.toString() || "9999");
+            return rankA - rankB;
+          });
+          
+          // Use filtered data or fallback to first 4 items if filtered is empty
+          setMarketData(sortedHomeData.length > 0 ? sortedHomeData.slice(0, 4) : activeCoins.slice(0, 4));
+          setPicksData(sortedPicksData.length > 0 ? sortedPicksData.slice(0, 2) : activeCoins.slice(0, 2));
         }
       } catch (error) {
         console.error("Error fetching market data:", error);

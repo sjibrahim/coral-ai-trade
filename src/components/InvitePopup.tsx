@@ -1,11 +1,10 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
-import { toast } from "@/components/ui/use-toast";
-import { Copy, Share2, Send, Mail } from "lucide-react";
+import { Share2, Copy, Check, User, Users } from "lucide-react";
+import QRCode from "qrcode.react";
+import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 
 interface InvitePopupProps {
@@ -14,115 +13,151 @@ interface InvitePopupProps {
 }
 
 const InvitePopup = ({ isOpen, onClose }: InvitePopupProps) => {
+  const [copied, setCopied] = useState(false);
+  const [inviteLink, setInviteLink] = useState("");
   const { user } = useAuth();
-  const [email, setEmail] = useState('');
-
-  // Generate referral link based on current domain and user's referral code
-  const getReferralLink = () => {
-    const baseUrl = window.location.origin;
-    return `${baseUrl}/register?referral_code=${user?.referral_code || ""}`;
+  const { toast } = useToast();
+  
+  useEffect(() => {
+    if (isOpen && user) {
+      // Create invite link based on user details
+      const baseUrl = window.location.origin;
+      const referralCode = user.invite_code || user.id || "NEXBIT";
+      setInviteLink(`${baseUrl}/register?ref=${referralCode}`);
+    }
+  }, [isOpen, user]);
+  
+  const handleCopy = () => {
+    navigator.clipboard.writeText(inviteLink);
+    setCopied(true);
+    toast({
+      title: "Copied to clipboard",
+      description: "Invite link has been copied to your clipboard",
+    });
+    setTimeout(() => setCopied(false), 2000);
   };
-
-  const referralLink = getReferralLink();
-
-  const copyToClipboard = (text: string, message: string) => {
-    navigator.clipboard.writeText(text)
-      .then(() => {
-        toast({
-          title: "Copied to clipboard",
-          description: message,
-          duration: 3000,
+  
+  const shareInvite = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: "Join Nexbit Trading Platform",
+          text: "Join Nexbit using my referral link and get exciting rewards!",
+          url: inviteLink,
         });
-      })
-      .catch(err => {
-        console.error('Failed to copy text: ', err);
+      } catch (error) {
+        console.log("Error sharing", error);
+      }
+    } else {
+      toast({
+        title: "Sharing not supported",
+        description: "Web Share API is not supported in your browser.",
+        variant: "destructive",
       });
+    }
   };
-
+  
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-md">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <Share2 className="h-5 w-5" />
-            Invite & Earn
+      <DialogContent className="sm:max-w-md bg-gradient-to-b from-background to-blue-900/10 backdrop-blur-sm border-blue-200/20 p-6">
+        <DialogHeader className="text-center">
+          <DialogTitle className="text-2xl font-bold text-gradient-primary flex items-center justify-center gap-2 mb-1">
+            <Users className="h-5 w-5" />
+            Invite Friends
           </DialogTitle>
+          <p className="text-sm text-muted-foreground mb-4">
+            Share this link with your friends and earn rewards
+          </p>
         </DialogHeader>
         
-        <div className="space-y-4">
-          {/* Referral Code */}
-          <div className="text-center">
-            <p className="text-muted-foreground text-xs mb-1">Your Referral Code</p>
-            <div className="flex items-center justify-center gap-2">
-              <span className="text-xl font-semibold tracking-wider">{user?.referral_code || "LOADING"}</span>
-              <Button 
-                size="sm" 
-                variant="outline"
-                onClick={() => copyToClipboard(user?.referral_code || "", "Referral code copied to clipboard!")}
-                className="h-7 w-7 p-0"
-              >
-                <Copy size={14} />
-              </Button>
-            </div>
-          </div>
-          
-          <Separator />
-          
-          {/* Share Link */}
-          <div className="bg-muted/40 rounded-lg p-3 flex justify-between items-center">
-            <div className="overflow-hidden">
-              <p className="text-xs text-muted-foreground mb-1">Share Link</p>
-              <p className="text-xs truncate max-w-[200px]">{referralLink}</p>
-            </div>
-            <Button 
-              variant="outline" 
-              size="sm"
-              className="h-8 shrink-0"
-              onClick={() => copyToClipboard(referralLink, "Referral link copied to clipboard!")}
-            >
-              <Copy size={14} className="mr-1" /> Copy
-            </Button>
-          </div>
-          
-          {/* Email Invite */}
-          <div>
-            <h3 className="text-sm font-medium mb-2 flex items-center">
-              <Mail className="w-4 h-4 mr-2" /> Invite by Email
-            </h3>
-            
-            <div className="flex gap-2">
-              <Input 
-                type="email" 
-                placeholder="Enter email address" 
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="flex-1 text-sm"
-              />
-              <Button 
-                disabled={!email} 
-                onClick={() => {
-                  toast({
-                    title: "Invitation sent",
-                    description: `Invitation sent to ${email}`,
-                  });
-                  setEmail('');
-                }}
-              >
-                <Send size={14} className="mr-2" /> Send
-              </Button>
-            </div>
-          </div>
-          
-          <div className="mt-4">
-            <Button 
-              className="w-full" 
-              onClick={() => {
-                copyToClipboard(referralLink, "Invite link copied to clipboard!");
-                onClose();
+        {/* QR Code */}
+        <div className="flex justify-center mb-6">
+          <div className="p-3 bg-white rounded-xl">
+            <QRCode 
+              value={inviteLink} 
+              size={180} 
+              level="H"
+              includeMargin
+              renderAs="svg"
+              imageSettings={{
+                src: "https://ik.imagekit.io/spmcumfu9/nexbit_logo.jpeg",
+                height: 40,
+                width: 40,
+                excavate: true,
               }}
+            />
+          </div>
+        </div>
+        
+        {/* Referral Info */}
+        <div className="space-y-4">
+          {/* User's Referral Code */}
+          <div className="flex items-center justify-between border border-blue-200/30 rounded-lg p-3 bg-blue-50/5">
+            <div className="flex items-center">
+              <User className="h-5 w-5 mr-2 text-primary" />
+              <span className="font-medium">Your Code:</span>
+            </div>
+            <span className="font-bold text-primary">
+              {user?.invite_code || "NEXBIT"}
+            </span>
+          </div>
+          
+          {/* Referral Link */}
+          <div className="relative">
+            <input
+              type="text"
+              value={inviteLink}
+              readOnly
+              className="w-full bg-blue-50/5 border border-blue-200/30 rounded-lg py-3 pl-4 pr-12 text-sm"
+            />
+            <Button
+              variant="ghost"
+              size="icon"
+              className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 text-primary hover:text-primary/90"
+              onClick={handleCopy}
             >
-              <Share2 size={16} className="mr-2" /> Share Invite Link
+              {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
             </Button>
+          </div>
+          
+          {/* Action Buttons */}
+          <div className="grid grid-cols-2 gap-4 mt-4">
+            <Button
+              className="w-full"
+              variant="outline"
+              onClick={handleCopy}
+            >
+              <Copy className="mr-2 h-4 w-4" />
+              Copy Link
+            </Button>
+            <Button
+              className="w-full"
+              onClick={shareInvite}
+            >
+              <Share2 className="mr-2 h-4 w-4" />
+              Share
+            </Button>
+          </div>
+          
+          {/* Reward Info */}
+          <div className="mt-4 text-center">
+            <h3 className="font-medium text-sm bg-gradient-to-r from-primary to-blue-200 bg-clip-text text-transparent">
+              Earn commission from every friend's trade
+            </h3>
+            <div className="grid grid-cols-3 gap-2 mt-2">
+              <div className="bg-blue-50/5 rounded-lg p-2 border border-blue-200/20">
+                <p className="text-xs text-muted-foreground">Level 1</p>
+                <p className="text-lg font-bold text-primary">10%</p>
+              </div>
+              <div className="bg-blue-50/5 rounded-lg p-2 border border-blue-200/20">
+                <p className="text-xs text-muted-foreground">Level 2</p>
+                <p className="text-lg font-bold text-primary">5%</p>
+              </div>
+              <div className="bg-blue-50/5 rounded-lg p-2 border border-blue-200/20">
+                <p className="text-xs text-muted-foreground">Level 3</p>
+                <p className="text-lg font-bold text-primary">2%</p>
+              </div>
+            </div>
           </div>
         </div>
       </DialogContent>

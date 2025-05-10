@@ -6,7 +6,7 @@ import ProfileOption from "@/components/ProfileOption";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { 
   ArrowUpCircle, ArrowDownCircle, FileText, LogOut, 
-  Wallet, Star, User, FileCheck, ListTree, CreditCard, Settings, Eye, EyeOff
+  Wallet, Star, FileCheck, ListTree, CreditCard, Settings, Eye, EyeOff
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useAuth } from '@/contexts/AuthContext';
@@ -66,6 +66,9 @@ const ProfilePage = () => {
     navigate('/login');
   };
   
+  // Calculate today's income
+  const todayIncome = 0; // API doesn't provide this info yet
+  
   return (
     <MobileLayout>
       <div className="animate-fade-in space-y-4 pb-24">
@@ -104,7 +107,7 @@ const ProfilePage = () => {
                     </div>
                   )}
                 </div>
-                <h2 className="text-base font-bold">{user?.name || 'User'}</h2>
+                <h2 className="text-base font-bold">{user?.name || 'Nexbit User'}</h2>
               </div>
             </div>
           )}
@@ -145,13 +148,22 @@ const ProfilePage = () => {
         
         {/* Quick Action Buttons */}
         <div className="px-4 grid grid-cols-3 gap-2">
-          <button className="bg-primary text-white rounded-md py-3 font-medium text-sm shadow-lg shadow-primary/30">
+          <button 
+            className="bg-primary text-white rounded-md py-3 font-medium text-sm shadow-lg shadow-primary/30"
+            onClick={() => navigate('/deposit')}
+          >
             Recharge
           </button>
-          <button className="bg-secondary border border-blue-300/20 rounded-md py-3 font-medium text-sm">
+          <button 
+            className="bg-secondary border border-blue-300/20 rounded-md py-3 font-medium text-sm"
+            onClick={() => navigate('/withdraw')}
+          >
             Withdraw
           </button>
-          <button className="bg-secondary border border-blue-300/20 rounded-md py-3 font-medium text-sm">
+          <button 
+            className="bg-secondary border border-blue-300/20 rounded-md py-3 font-medium text-sm"
+            onClick={() => navigate('/transactions')}
+          >
             Details
           </button>
         </div>
@@ -203,7 +215,7 @@ const ProfilePage = () => {
                 <div className="text-center">
                   <p className="text-xs text-muted-foreground">Today's income</p>
                   <p className="font-semibold">
-                    {hideRevenue ? "0.00₹" : "0.00₹"}
+                    {hideRevenue ? "**.**₹" : `${todayIncome || '0.00'}₹`}
                   </p>
                 </div>
                 <div className="text-center">

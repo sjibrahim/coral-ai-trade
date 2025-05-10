@@ -66,13 +66,11 @@ const RegisterPage = () => {
     <div className="flex flex-col min-h-[100svh] bg-background p-6">
       {/* Logo */}
       <div className="pt-12 pb-8">
-        <div className="w-16 h-16 rounded-xl bg-gradient-to-r from-blue-600 to-blue-400 mx-auto flex items-center justify-center shadow-lg shadow-blue-500/20">
-          <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-          </svg>
+        <div className="w-20 h-20 rounded-xl mx-auto flex items-center justify-center shadow-lg shadow-primary/20 overflow-hidden">
+          <img src="https://ik.imagekit.io/spmcumfu9/nexbit_logo.jpeg" alt="Nexbit Logo" className="w-full h-full object-cover" />
         </div>
         <h1 className="text-2xl font-bold text-center mt-4 text-gradient-primary">
-          TradeCrypto
+          Nexbit
         </h1>
         <p className="text-muted-foreground text-center text-sm mt-1">
           Create a new account
@@ -199,7 +197,7 @@ const RegisterPage = () => {
       {/* Footer */}
       <div className="mt-auto pt-8 pb-4 text-center">
         <p className="text-xs text-muted-foreground">
-          &copy; 2025 TradeCrypto. All rights reserved.
+          &copy; 2025 Nexbit. All rights reserved.
         </p>
       </div>
     </div>
