@@ -6,26 +6,59 @@ import { Bell, IndianRupee, Upload, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/contexts/AuthContext";
+import { createTopupOrder } from "@/services/api";
+import { toast } from "@/components/ui/use-toast";
 
 const DepositPage = () => {
+  const { user } = useAuth();
   const [amount, setAmount] = useState("");
   const [selectedChannel, setSelectedChannel] = useState("PAY1");
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [redirectUrl, setRedirectUrl] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   
   const paymentChannels = ["PAY1", "PAY2", "PAY3", "PAY4"];
   const isValidAmount = Number(amount) >= 600;
   
-  const handleConfirm = () => {
-    if (!isValidAmount) return;
+  const handleConfirm = async () => {
+    if (!isValidAmount || !user?.token) return;
     
-    // Show success modal
-    setShowSuccessModal(true);
+    setIsLoading(true);
     
-    // Reset after 3 seconds
-    setTimeout(() => {
-      setShowSuccessModal(false);
-      setAmount("");
-    }, 3000);
+    try {
+      const response = await createTopupOrder(user.token, Number(amount));
+      
+      if (response.status) {
+        if (response.data?.redirect_url) {
+          setRedirectUrl(response.data.redirect_url);
+        }
+        
+        // Show success modal
+        setShowSuccessModal(true);
+        
+        // Reset after 3 seconds
+        setTimeout(() => {
+          setShowSuccessModal(false);
+          setAmount("");
+        }, 3000);
+      } else {
+        toast({
+          title: "Payment Failed",
+          description: response.msg || "No active gateway available",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error("Deposit error:", error);
+      toast({
+        title: "Something went wrong",
+        description: "Please try again later",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
   
   return (
@@ -97,15 +130,15 @@ const DepositPage = () => {
           <div className="px-4">
             <button 
               onClick={isValidAmount ? handleConfirm : undefined}
-              disabled={!isValidAmount}
+              disabled={!isValidAmount || isLoading}
               className={cn(
                 "w-full py-4 rounded-lg text-white text-lg font-medium transition-all",
-                isValidAmount 
+                isValidAmount && !isLoading
                   ? "bg-blue-600 hover:bg-blue-700 active:scale-[0.98]" 
                   : "bg-blue-600/50 cursor-not-allowed"
               )}
             >
-              CONFIRM
+              {isLoading ? "Processing..." : "CONFIRM"}
             </button>
           </div>
         </div>
@@ -120,14 +153,27 @@ const DepositPage = () => {
             </div>
             <h2 className="text-xl font-semibold">Deposit Successful!</h2>
             <p className="text-muted-foreground text-center">
-              Your deposit of ₹{amount} has been initiated successfully. It will be credited to your account shortly.
+              Your deposit of ₹{amount} has been initiated successfully.
+              {redirectUrl ? " You will be redirected to the payment gateway." : " It will be credited to your account shortly."}
             </p>
-            <Button 
-              className="w-full" 
-              onClick={() => setShowSuccessModal(false)}
-            >
-              Close
-            </Button>
+            {redirectUrl ? (
+              <Button 
+                className="w-full" 
+                onClick={() => {
+                  window.location.href = redirectUrl;
+                  setShowSuccessModal(false);
+                }}
+              >
+                Go to Payment Gateway
+              </Button>
+            ) : (
+              <Button 
+                className="w-full" 
+                onClick={() => setShowSuccessModal(false)}
+              >
+                Close
+              </Button>
+            )}
           </div>
         </DialogContent>
       </Dialog>

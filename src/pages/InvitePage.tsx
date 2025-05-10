@@ -1,7 +1,7 @@
 
+import { useState, useEffect } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
-import { mockReferralData } from "@/data/mockData";
-import { useState } from "react";
+import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "@/components/ui/use-toast";
 import { Copy, Share2, Users, Mail, Send, Info, Check, ChevronDown, ChevronUp } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -11,6 +11,7 @@ import { Separator } from "@/components/ui/separator";
 import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { mockReferralData } from "@/data/mockData";
 
 // VIP level data based on the reference image
 const vipLevels = [
@@ -25,10 +26,19 @@ const vipLevels = [
 ];
 
 const InvitePage = () => {
-  const { totalInvitations, validInvitations, referralCode, referralLink } = mockReferralData;
+  const { user } = useAuth();
+  const { totalInvitations, validInvitations } = mockReferralData;
   const [copied, setCopied] = useState(false);
   const [email, setEmail] = useState('');
   const isMobile = useIsMobile();
+  
+  // Generate referral link based on current domain and user's referral code
+  const getReferralLink = () => {
+    const baseUrl = window.location.origin;
+    return `${baseUrl}/register?referral_code=${user?.referral_code || ""}`;
+  };
+
+  const referralLink = getReferralLink();
   
   const copyToClipboard = (text: string, message: string) => {
     navigator.clipboard.writeText(text)
@@ -75,14 +85,133 @@ const InvitePage = () => {
 
         {/* Main Content Area */}
         <div className="px-4 py-3 flex-1">
-          {/* Tabs with VIP Schedule as the default/primary tab */}
-          <Tabs defaultValue="vip" className="w-full">
+          {/* Tabs with Referral Info as the default/primary tab */}
+          <Tabs defaultValue="referral" className="w-full">
             <TabsList className="grid w-full grid-cols-2 mb-4">
-              <TabsTrigger value="vip" className="text-sm">VIP Schedule</TabsTrigger>
               <TabsTrigger value="referral" className="text-sm">Referral Info</TabsTrigger>
+              <TabsTrigger value="vip" className="text-sm">VIP Schedule</TabsTrigger>
             </TabsList>
             
-            {/* VIP Schedule Tab (Primary) */}
+            {/* Referral Info Tab (Primary) */}
+            <TabsContent value="referral" className="mt-0 space-y-4">
+              {/* Share Invite Card */}
+              <Card className="invite-info-card overflow-hidden">
+                <CardContent className="p-4">
+                  {/* Hero Banner */}
+                  <div className="bg-gradient-to-br from-primary/20 to-primary/5 rounded-xl p-4 mb-4 text-center">
+                    <div className="w-16 h-16 mx-auto mb-3">
+                      <img 
+                        src="/lovable-uploads/878f13b5-368b-418f-aa30-037ca279396f.png" 
+                        alt="Nexbit Logo" 
+                        className="w-full h-full object-contain"
+                      />
+                    </div>
+                    <h2 className="text-lg font-medium mb-2">Invite Friends & Earn</h2>
+                    <p className="text-xs text-muted-foreground mb-4">Get rewards when your friends join and trade</p>
+                    <Button 
+                      className="w-full text-sm py-2 h-auto" 
+                      onClick={() => copyToClipboard(referralLink, "Invite link copied to clipboard!")}
+                    >
+                      <Share2 size={16} className="mr-2" /> Share Invite Link
+                    </Button>
+                  </div>
+                  
+                  {/* Referral Code */}
+                  <div className="text-center mb-4">
+                    <p className="text-muted-foreground text-xs mb-1">Your Referral Code</p>
+                    <div className="flex items-center justify-center gap-2">
+                      <span className="text-xl font-semibold tracking-wider">{user?.referral_code || "LOADING"}</span>
+                      <Button 
+                        size="sm" 
+                        variant="outline"
+                        onClick={() => copyToClipboard(user?.referral_code || "", "Referral code copied to clipboard!")}
+                        className="h-7 w-7 p-0"
+                      >
+                        <Copy size={14} />
+                      </Button>
+                    </div>
+                  </div>
+                  
+                  {/* Share Link */}
+                  <div className="bg-muted/40 rounded-lg p-3 flex justify-between items-center mb-4">
+                    <div className="overflow-hidden">
+                      <p className="text-xs text-muted-foreground mb-1">Share Link</p>
+                      <p className="text-xs truncate max-w-[200px]">{referralLink}</p>
+                    </div>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      className="h-8 shrink-0"
+                      onClick={() => copyToClipboard(referralLink, "Referral link copied to clipboard!")}
+                    >
+                      <Copy size={14} className="mr-1" /> Copy
+                    </Button>
+                  </div>
+                  
+                  {/* Email Invite */}
+                  <div>
+                    <h3 className="text-sm font-medium mb-3 flex items-center">
+                      <Mail className="w-4 h-4 mr-2" /> Invite by Email
+                    </h3>
+                    
+                    <div className="flex gap-2">
+                      <Input 
+                        type="email" 
+                        placeholder="Enter email address" 
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className="flex-1 text-sm h-9"
+                      />
+                      <Button 
+                        disabled={!email} 
+                        className="shrink-0 h-9"
+                        onClick={() => {
+                          toast({
+                            title: "Invitation sent",
+                            description: `Invitation sent to ${email}`,
+                          });
+                          setEmail('');
+                        }}
+                      >
+                        <Send size={14} className="mr-2" /> Send
+                      </Button>
+                    </div>
+                  </div>
+                  
+                  {/* Reward Information Card */}
+                  <div className="mt-6">
+                    <h3 className="text-base font-medium mb-3 flex items-center">
+                      <Users className="w-4 h-4 mr-2 text-primary" /> Referral Benefits
+                    </h3>
+                    
+                    <Separator className="my-3" />
+                    
+                    <div className="space-y-3 text-sm">
+                      <div className="flex items-start">
+                        <div className="w-7 h-7 rounded-full bg-green-500/10 flex items-center justify-center mr-3 shrink-0">
+                          <Check size={14} className="text-green-500" />
+                        </div>
+                        <p className="text-sm">Earn 10% salary when your friends make trades</p>
+                      </div>
+                      <div className="flex items-start">
+                        <div className="w-7 h-7 rounded-full bg-green-500/10 flex items-center justify-center mr-3 shrink-0">
+                          <Check size={14} className="text-green-500" />
+                        </div>
+                        <p className="text-sm">Get bonus rewards when they reach trading milestones</p>
+                      </div>
+                      <div className="flex items-start">
+                        <div className="w-7 h-7 rounded-full bg-green-500/10 flex items-center justify-center mr-3 shrink-0">
+                          <Check size={14} className="text-green-500" />
+                        </div>
+                        <p className="text-sm">Unlock VIP benefits with more successful referrals</p>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+            
+            {/* VIP Schedule Tab (Secondary) */}
             <TabsContent value="vip" className="mt-0 space-y-4">
               {/* VIP Schedule Section */}
               <Card>
@@ -137,147 +266,30 @@ const InvitePage = () => {
                       </li>
                     </ul>
                   </div>
+                </CardContent>
+              </Card>
+              
+              {/* Agent Rules Card */}
+              <Card>
+                <CardContent className="p-4">
+                  <h3 className="font-medium flex items-center mb-3">
+                    <Info size={16} className="mr-2 text-primary shrink-0" /> Agent Rules & Requirements
+                  </h3>
                   
-                  <div className="mt-3 text-sm border border-border/40 rounded-lg p-3 bg-muted/20">
-                    <h4 className="font-medium flex items-center mb-2">
-                      <Info size={16} className="mr-2 text-primary shrink-0" /> Agent Rules & Requirements
-                    </h4>
-                    <ul className="space-y-2 text-xs text-muted-foreground">
-                      <li className="flex items-start">
-                        <Check size={14} className="mr-2 text-green-500 mt-0.5 shrink-0" />
-                        <span>Agents should guide new users to use the APP correctly and clarify transaction rules, recharge methods and withdrawal requirements.</span>
-                      </li>
-                      <li className="flex items-start">
-                        <Check size={14} className="mr-2 text-green-500 mt-0.5 shrink-0" />
-                        <span>Actively promote the platform through various online and offline promotion activities.</span>
-                      </li>
-                    </ul>
-                  </div>
+                  <ul className="space-y-2 text-xs text-muted-foreground">
+                    <li className="flex items-start">
+                      <Check size={14} className="mr-2 text-green-500 mt-0.5 shrink-0" />
+                      <span>Agents should guide new users to use the APP correctly and clarify transaction rules, recharge methods and withdrawal requirements.</span>
+                    </li>
+                    <li className="flex items-start">
+                      <Check size={14} className="mr-2 text-green-500 mt-0.5 shrink-0" />
+                      <span>Actively promote the platform through various online and offline promotion activities.</span>
+                    </li>
+                  </ul>
                   
                   <div className="mt-3 text-xs p-3 bg-red-500/10 text-red-500 rounded-lg">
                     <p className="font-medium mb-1">Disclaimer:</p>
                     <p>Each person, each mobile phone, each IP address, and each bank account can only have one account. If the system audit finds malicious use of multiple accounts to defraud rewards, all accounts will be frozen.</p>
-                  </div>
-                </CardContent>
-              </Card>
-              
-              {/* Reward Information Card */}
-              <Card>
-                <CardContent className="p-4">
-                  <h3 className="text-base font-medium mb-3 flex items-center">
-                    <Users className="w-4 h-4 mr-2 text-primary" /> Referral Benefits
-                  </h3>
-                  
-                  <Separator className="my-3" />
-                  
-                  <div className="space-y-3 text-sm">
-                    <div className="flex items-start">
-                      <div className="w-7 h-7 rounded-full bg-green-500/10 flex items-center justify-center mr-3 shrink-0">
-                        <Check size={14} className="text-green-500" />
-                      </div>
-                      <p className="text-sm">Earn 10% commission when your friends make trades</p>
-                    </div>
-                    <div className="flex items-start">
-                      <div className="w-7 h-7 rounded-full bg-green-500/10 flex items-center justify-center mr-3 shrink-0">
-                        <Check size={14} className="text-green-500" />
-                      </div>
-                      <p className="text-sm">Get bonus rewards when they reach trading milestones</p>
-                    </div>
-                    <div className="flex items-start">
-                      <div className="w-7 h-7 rounded-full bg-green-500/10 flex items-center justify-center mr-3 shrink-0">
-                        <Check size={14} className="text-green-500" />
-                      </div>
-                      <p className="text-sm">Unlock VIP benefits with more successful referrals</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-            
-            {/* Referral Info Tab (Secondary) */}
-            <TabsContent value="referral" className="mt-0 space-y-4">
-              {/* Share Invite Card */}
-              <Card className="invite-info-card overflow-hidden">
-                <CardContent className="p-4">
-                  {/* Hero Banner */}
-                  <div className="bg-gradient-to-br from-primary/20 to-primary/5 rounded-xl p-4 mb-4 text-center">
-                    <div className="w-16 h-16 mx-auto mb-3">
-                      <img 
-                        src="https://images.unsplash.com/photo-1605810230434-7631ac76ec81?auto=format&fit=crop&w=300&h=300" 
-                        alt="Invite Friends" 
-                        className="w-full h-full object-cover rounded-full border-2 border-primary/30"
-                      />
-                    </div>
-                    <h2 className="text-lg font-medium mb-2">Invite Friends & Earn</h2>
-                    <p className="text-xs text-muted-foreground mb-4">Get rewards when your friends join and trade</p>
-                    <Button 
-                      className="w-full text-sm py-2 h-auto" 
-                      onClick={() => copyToClipboard(referralLink, "Invite link copied to clipboard!")}
-                    >
-                      <Share2 size={16} className="mr-2" /> Share Invite Link
-                    </Button>
-                  </div>
-                  
-                  {/* Referral Code */}
-                  <div className="text-center mb-4">
-                    <p className="text-muted-foreground text-xs mb-1">Your Referral Code</p>
-                    <div className="flex items-center justify-center gap-2">
-                      <span className="text-xl font-semibold tracking-wider">{referralCode}</span>
-                      <Button 
-                        size="sm" 
-                        variant="outline"
-                        onClick={() => copyToClipboard(referralCode, "Referral code copied to clipboard!")}
-                        className="h-7 w-7 p-0"
-                      >
-                        <Copy size={14} />
-                      </Button>
-                    </div>
-                  </div>
-                  
-                  {/* Share Link */}
-                  <div className="bg-muted/40 rounded-lg p-3 flex justify-between items-center mb-4">
-                    <div className="overflow-hidden">
-                      <p className="text-xs text-muted-foreground mb-1">Share Link</p>
-                      <p className="text-xs truncate max-w-[200px]">{referralLink}</p>
-                    </div>
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      className="h-8 shrink-0"
-                      onClick={() => copyToClipboard(referralLink, "Referral link copied to clipboard!")}
-                    >
-                      <Copy size={14} className="mr-1" /> Copy
-                    </Button>
-                  </div>
-                  
-                  {/* Email Invite */}
-                  <div>
-                    <h3 className="text-sm font-medium mb-3 flex items-center">
-                      <Mail className="w-4 h-4 mr-2" /> Invite by Email
-                    </h3>
-                    
-                    <div className="flex gap-2">
-                      <Input 
-                        type="email" 
-                        placeholder="Enter email address" 
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        className="flex-1 text-sm h-9"
-                      />
-                      <Button 
-                        disabled={!email} 
-                        className="shrink-0 h-9"
-                        onClick={() => {
-                          toast({
-                            title: "Invitation sent",
-                            description: `Invitation sent to ${email}`,
-                          });
-                          setEmail('');
-                        }}
-                      >
-                        <Send size={14} className="mr-2" /> Send
-                      </Button>
-                    </div>
                   </div>
                 </CardContent>
               </Card>

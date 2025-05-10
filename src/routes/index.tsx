@@ -24,6 +24,7 @@ import SettingsPage from '@/pages/SettingsPage';
 import LoginPage from '@/pages/LoginPage';
 import RegisterPage from '@/pages/RegisterPage';
 import NotFound from '@/pages/NotFound';
+import TransactionRecordsPage from '@/pages/TransactionRecordsPage';
 
 const AppRoutes = () => {
   return (
@@ -52,6 +53,7 @@ const AppRoutes = () => {
       <Route path="/salary-record" element={<ProtectedRoute><SalaryRecordPage /></ProtectedRoute>} />
       <Route path="/rewards" element={<ProtectedRoute><RewardsPage /></ProtectedRoute>} />
       <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
+      <Route path="/transactions" element={<ProtectedRoute><TransactionRecordsPage /></ProtectedRoute>} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

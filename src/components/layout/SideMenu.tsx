@@ -43,7 +43,7 @@ const SideMenu = ({ isOpen, onClose }: SideMenuProps) => {
             <div className="bg-gradient-to-r from-primary to-blue-400 p-0.5 rounded-xl">
               <div className="bg-sidebar px-6 py-3 rounded-xl">
                 <h1 className="text-2xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
-                  CryptoTrader
+                  Nexbit
                 </h1>
               </div>
             </div>
@@ -71,8 +71,8 @@ const SideMenu = ({ isOpen, onClose }: SideMenuProps) => {
               <MenuItem to="/deposit-records" icon={<FileText />} onClick={onClose}>Deposit Records</MenuItem>
               <MenuItem to="/withdrawal-records" icon={<FileText />} onClick={onClose}>Withdrawal Records</MenuItem>
               <MenuItem to="/contract-record" icon={<FileText />} onClick={onClose}>Contract Record</MenuItem>
-              <MenuItem to="/commission-record" icon={<FileText />} onClick={onClose}>Commission Record</MenuItem>
               <MenuItem to="/salary-record" icon={<FileText />} onClick={onClose}>Salary Record</MenuItem>
+              <MenuItem to="/transactions" icon={<FileText />} onClick={onClose}>Transaction Records</MenuItem>
             </div>
             
             <div className="space-y-1.5">

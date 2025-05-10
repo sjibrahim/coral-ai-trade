@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MobileLayout from "@/components/layout/MobileLayout";
@@ -196,7 +197,7 @@ const ProfilePage = () => {
                 <div className="text-center">
                   <p className="text-xs text-muted-foreground">Yesterday's income</p>
                   <p className="font-semibold">
-                    {hideRevenue ? "**.**₹" : "0.00₹"}
+                    {hideRevenue ? "**.**₹" : `${user?.yesterday_income || '0.00'}₹`}
                   </p>
                 </div>
                 <div className="text-center">
@@ -206,9 +207,9 @@ const ProfilePage = () => {
                   </p>
                 </div>
                 <div className="text-center">
-                  <p className="text-xs text-muted-foreground">Commission</p>
+                  <p className="text-xs text-muted-foreground">Salary</p>
                   <p className="font-semibold">
-                    {hideRevenue ? "****.**₹" : `${user?.commission || '0.00'}₹`}
+                    {hideRevenue ? "****.**₹" : `${user?.salary || '0.00'}₹`}
                   </p>
                 </div>
               </div>
@@ -250,7 +251,7 @@ const ProfilePage = () => {
           <ProfileOption
             icon={<ListTree className="h-5 w-5 text-violet-400" />}
             label="Transaction Record"
-            to="/transaction-record"
+            to="/transactions"
           />
           
           <ProfileOption

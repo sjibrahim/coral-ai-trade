@@ -11,7 +11,7 @@ type User = {
   fixed?: string;
   parent?: string;
   referral_code?: string;
-  commission?: string;
+  salary?: string;
   rank?: string;
   account_holder_name?: string;
   account_number?: string;

@@ -10,6 +10,9 @@ export const endpoints = {
   getMarket: `${API_BASE}/get__market`,
   updateBank: `${API_BASE}/update_bank`,
   updatePassword: `${API_BASE}/update_password`,
+  createTopupOrder: `${API_BASE}/create_topup_order`,
+  createWithdrawOrder: `${API_BASE}/create_withdraw_order`,
+  getTransactions: `${API_BASE}/transactions`,
 };
 
 // Function to handle API requests
@@ -58,4 +61,17 @@ export const updateBankDetails = async (token: string, bankDetails: {
 
 export const updatePassword = async (token: string, password: string, new_password: string) => {
   return apiRequest(endpoints.updatePassword, 'POST', { token, password, new_password });
+};
+
+// Transaction API functions
+export const createTopupOrder = async (token: string, amount: number) => {
+  return apiRequest(endpoints.createTopupOrder, 'POST', { token, amount });
+};
+
+export const createWithdrawOrder = async (token: string, amount: number) => {
+  return apiRequest(endpoints.createWithdrawOrder, 'POST', { token, amount });
+};
+
+export const getTransactions = async (token: string) => {
+  return apiRequest(endpoints.getTransactions, 'POST', { token });
 };
