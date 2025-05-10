@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import { TrendingUp, TrendingDown } from "lucide-react";
 
 interface CryptoCardProps {
-  id: string;
+  id: string | number;
   name: string;
   symbol: string;
   price: number;
@@ -43,7 +43,7 @@ const CryptoCard = ({ id, name, symbol, price, change, logo, animationDelay = 0 
 
   return (
     <Link 
-      to={`/coin/${id}`} 
+      to={`/coin/${id.toString()}`} 
       style={{ animationDelay: `${animationDelay}ms` }} 
       className="animate-fade-in hover:bg-blue-500/5 transition-colors"
     >

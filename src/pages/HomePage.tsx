@@ -22,7 +22,7 @@ interface CryptoData {
   status?: string;
   picks?: number;
   home?: number;
-  change?: number; // We're missing this in the API, so we'll need to add it
+  change?: number;
 }
 
 const HomePage = () => {
