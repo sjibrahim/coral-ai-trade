@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useParams, useLocation, Link } from 'react-router-dom';
 import MobileLayout from '@/components/layout/MobileLayout';
 import PriceChart from '@/components/PriceChart';
+import { useAuth } from "@/contexts/AuthContext";
 import MobileOptimizedChart from '@/components/MobileOptimizedChart';
 import TradeTimer from '@/components/TradeTimer';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -16,6 +17,7 @@ import { useToast } from '@/components/ui/use-toast';
 
 const CoinDetailPage = () => {
   const { toast } = useToast();
+  const { user } = useAuth();
   const { id: coinId } = useParams();
   const location = useLocation();
   const cachedCrypto = location.state?.crypto; // Use cached data if available
@@ -574,7 +576,7 @@ const CoinDetailPage = () => {
             <div className="space-y-4">
               <div className="flex justify-between items-center">
                 <p className="text-gray-400 text-sm">Available Balance</p>
-                <p className="text-gray-200 text-sm font-medium">$ 20,023</p>
+                <p className="text-gray-200 text-sm font-medium">₹ ${user?.wallet}</p>
               </div>
               
               {/* Trade Amount Input */}
