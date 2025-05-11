@@ -1,7 +1,7 @@
 
-import { Link } from "react-router-dom";
-import { cn } from "@/lib/utils";
-import { TrendingUp, TrendingDown } from "lucide-react";
+import { ArrowUp, ArrowDown } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { cn } from '@/lib/utils';
 
 interface CryptoCardProps {
   id: string | number;
@@ -14,57 +14,67 @@ interface CryptoCardProps {
 }
 
 const CryptoCard = ({ id, name, symbol, price, change, logo, animationDelay = 0 }: CryptoCardProps) => {
-  const isPositiveChange = change >= 0;
-  const changeText = `${isPositiveChange ? '+' : ''}${change.toFixed(3)}%`;
-
-  // Handle image error by using fallback
-  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
-    const target = e.target as HTMLImageElement;
-    
-    // Use symbol as fallback
-    target.style.display = 'none';
-    target.nextElementSibling?.classList.remove('hidden');
+  const navigate = useNavigate();
+  
+  const handleCardClick = () => {
+    // Navigate to coin detail page and pass the full crypto object as state
+    navigate(`/coin/${id}`, { 
+      state: { 
+        crypto: {
+          id,
+          name,
+          symbol,
+          binance_symbol: `${symbol.toUpperCase()}USDT`,
+          price,
+          change,
+          logo
+        }
+      }
+    });
   };
-
+  
   return (
-    <Link 
-      to={`/coin/${id.toString()}`} 
-      style={{ animationDelay: `${animationDelay}ms` }} 
-      className="animate-fade-in hover:bg-blue-500/5 transition-colors"
+    <div 
+      className="p-3.5 border-b border-border/30 hover:bg-card/80 cursor-pointer transition-all"
+      onClick={handleCardClick}
+      style={{ 
+        animation: `fade-in 0.5s ease-out forwards`,
+        animationDelay: `${animationDelay}ms`,
+        opacity: 0
+      }}
     >
-      <div className="flex items-center justify-between p-3.5 rounded-lg hover:bg-accent/30 border-b border-border/30 group transition-all">
+      <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-full bg-secondary/40 backdrop-blur-sm flex items-center justify-center shadow-md overflow-hidden crypto-icon group-hover:scale-105 transition-transform">
+          <div className="w-9 h-9 rounded-full bg-secondary/30 flex items-center justify-center crypto-icon overflow-hidden">
             <img 
               src={logo} 
               alt={name} 
-              className="w-6 h-6"
-              onError={handleImageError}
+              className="w-7 h-7 object-contain"
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                target.src = `https://raw.githubusercontent.com/Pymmdrza/CryptoIconsCDN/mainx/PNG/${symbol.toUpperCase()}.png`;
+              }}
             />
-            <div className="hidden absolute inset-0 flex items-center justify-center font-bold text-xs">
-              {symbol.slice(0, 2)}
-            </div>
           </div>
           <div>
-            <h3 className="font-medium text-sm">{name}</h3>
-            <p className="text-xs text-muted-foreground">{symbol}</p>
+            <h3 className="font-medium text-sm text-gray-100">{name}</h3>
+            <p className="text-xs text-gray-400">{symbol.toUpperCase()}</p>
           </div>
         </div>
         <div className="text-right">
-          <p className="font-medium text-sm">${price.toLocaleString()}</p>
-          <p className={cn(
-            "text-xs flex items-center justify-end gap-0.5",
-            isPositiveChange ? "text-market-increase" : "text-market-decrease"
-          )}>
-            {isPositiveChange ? 
-              <TrendingUp className="w-3 h-3" /> : 
-              <TrendingDown className="w-3 h-3" />
-            }
-            {changeText}
-          </p>
+          <p className="font-medium text-sm text-gray-100">${price.toLocaleString(undefined, {maximumFractionDigits: 2})}</p>
+          <div className={cn("text-xs flex items-center justify-end", 
+            change >= 0 ? "text-market-increase" : "text-market-decrease")}>
+            {change >= 0 ? (
+              <ArrowUp className="w-3 h-3 mr-0.5" />
+            ) : (
+              <ArrowDown className="w-3 h-3 mr-0.5" />
+            )}
+            {Math.abs(change).toFixed(2)}%
+          </div>
         </div>
       </div>
-    </Link>
+    </div>
   );
 };
 

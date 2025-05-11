@@ -1,5 +1,6 @@
+
 import { useState, useEffect, useCallback } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation, Link } from 'react-router-dom';
 import MobileLayout from '@/components/layout/MobileLayout';
 import PriceChart from '@/components/PriceChart';
 import MobileOptimizedChart from '@/components/MobileOptimizedChart';
@@ -17,6 +18,9 @@ import { useToast } from '@/components/ui/use-toast';
 const CoinDetailPage = () => {
   const { toast } = useToast();
   const { id: coinId } = useParams();
+  const location = useLocation();
+  const cachedCrypto = location.state?.crypto; // Use cached data if available
+  
   const [activeTab, setActiveTab] = useState('chart');
   const [selectedTimeframe, setSelectedTimeframe] = useState('24h');
   const [isBuyModalOpen, setIsBuyModalOpen] = useState(false);
@@ -34,8 +38,8 @@ const CoinDetailPage = () => {
   }>({ value: null, type: null });
   const [marketData, setMarketData] = useState<Cryptocurrency[]>([]);
   
-  // Use a default crypto while loading
-  const [crypto, setCrypto] = useState<Cryptocurrency>({
+  // Use cached data for initial state if available
+  const [crypto, setCrypto] = useState<Cryptocurrency>(cachedCrypto || {
     id: '',
     name: 'Loading...',
     symbol: '',
@@ -44,18 +48,20 @@ const CoinDetailPage = () => {
     change: 0,
     logo: '',
   });
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(!cachedCrypto);
 
   // Live price state
-  const [livePrice, setLivePrice] = useState(0);
-  const [priceChange, setPriceChange] = useState(0);
+  const [livePrice, setLivePrice] = useState(cachedCrypto ? parseFloat(cachedCrypto.price) : 0);
+  const [priceChange, setPriceChange] = useState(cachedCrypto ? parseFloat(cachedCrypto.change || 0) : 0);
   const [startingTradePrice, setStartingTradePrice] = useState(0);
 
-  // Fetch coin data by ID on load
+  // Fetch coin data by ID on load - but only if we don't have cached data or after initial load with cached data
   useEffect(() => {
+    if (!coinId) return;
+    
     const fetchCoinData = async () => {
       try {
-        setIsLoading(true);
+        if (!cachedCrypto) setIsLoading(true);
         const token = localStorage.getItem('auth_token');
         
         if (token && coinId) {
@@ -137,8 +143,17 @@ const CoinDetailPage = () => {
       }
     };
     
-    fetchCoinData();
-  }, [coinId, toast]);
+    // If we have cached data, use it first, then fetch fresh data
+    if (cachedCrypto) {
+      setCrypto(cachedCrypto);
+      setLivePrice(parseFloat(cachedCrypto.price));
+      setPriceChange(parseFloat(cachedCrypto.change || 0));
+      // Wait a bit before fetching fresh data to avoid unnecessary API calls during navigation
+      setTimeout(fetchCoinData, 1000);
+    } else {
+      fetchCoinData();
+    }
+  }, [coinId, toast, cachedCrypto]);
 
   // Get the binance symbol for the current crypto
   const getBinanceSymbol = useCallback(() => {
@@ -250,9 +265,8 @@ const CoinDetailPage = () => {
     // Set trade parameters
     const timeInSeconds = parseInt(selectedTimePeriod.replace('min', '')) * 60;
     setTradeTimer(timeInSeconds);
-    setIsTradeTimerOpen(true);
     setStartingTradePrice(livePrice);
-    setTradeResult({ value: null, type: null });
+    setIsTradeTimerOpen(true);
     
     // Show toast notification
     toast({

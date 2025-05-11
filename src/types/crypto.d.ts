@@ -1,5 +1,4 @@
 
-
 declare interface Cryptocurrency {
   id: string;
   name: string;
@@ -29,4 +28,3 @@ declare interface CoinResponse {
   msg: string;
   data: Cryptocurrency;
 }
-
