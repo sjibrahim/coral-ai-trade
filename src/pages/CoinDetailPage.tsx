@@ -579,7 +579,7 @@ const CoinDetailPage = () => {
               
               {/* Trade Amount Input */}
               <div className="relative">
-                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-medium">$</div>
+                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-medium">₹</div>
                 <Input
                   className="bg-[#252739] border-none text-white text-xl py-6 pl-8 pr-4 rounded-xl font-medium focus:ring-1 focus:ring-blue-600/50"
                   placeholder="Enter amount"
@@ -628,7 +628,7 @@ const CoinDetailPage = () => {
                 <div className="text-center">
                   <p className="text-gray-400 text-xs mb-1.5">Investment</p>
                   <p className="font-medium text-sm text-gray-200">
-                    ${parseInt(tradeAmount).toLocaleString()}
+                    ₹{parseInt(tradeAmount).toLocaleString()}
                   </p>
                 </div>
               </div>
