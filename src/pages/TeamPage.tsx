@@ -3,11 +3,12 @@ import { useState, useEffect } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Users, UserPlus, Share2, Phone, User } from "lucide-react";
+import { Users, UserPlus, Share2, ChevronDown, ChevronUp } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import InvitePopup from "@/components/InvitePopup";
 import { useTeam } from "@/hooks/use-team";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 const TeamPage = () => {
   const [invitePopupOpen, setInvitePopupOpen] = useState(false);
@@ -16,11 +17,18 @@ const TeamPage = () => {
     level1Members, 
     level2Members, 
     level3Members, 
+    activeLevel1,
+    activeLevel2,
+    activeLevel3,
     totalTeamSize, 
     totalActiveMembers, 
     isLoading, 
     fetchTeamDetails 
   } = useTeam();
+  
+  const [openLevel1, setOpenLevel1] = useState(false);
+  const [openLevel2, setOpenLevel2] = useState(false);
+  const [openLevel3, setOpenLevel3] = useState(false);
   
   useEffect(() => {
     fetchTeamDetails();
@@ -30,7 +38,7 @@ const TeamPage = () => {
   const renderMembersTable = (members: any[]) => {
     if (members.length === 0) {
       return (
-        <div className="text-center py-10 text-muted-foreground">
+        <div className="text-center py-4 text-muted-foreground">
           <p>No members yet</p>
           <p className="text-sm mt-1">Invite friends to grow your team</p>
         </div>
@@ -42,19 +50,19 @@ const TeamPage = () => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Name</TableHead>
               <TableHead>Phone</TableHead>
               <TableHead>Active</TableHead>
               <TableHead>Deposit</TableHead>
+              <TableHead>Withdraw</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {members.map((member) => (
               <TableRow key={member.id}>
-                <TableCell className="py-2">{member.name || 'User'}</TableCell>
                 <TableCell className="py-2">{member.phone}</TableCell>
                 <TableCell className="py-2">{member.active_member === "1" ? "Yes" : "No"}</TableCell>
                 <TableCell className="py-2">₹{parseFloat(member.total_deposit).toLocaleString()}</TableCell>
+                <TableCell className="py-2">₹{parseFloat(member.total_withdraw).toLocaleString()}</TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -102,46 +110,55 @@ const TeamPage = () => {
               </CardContent>
             </Card>
             
-            {/* Team Levels */}
+            {/* Team Levels - Now with collapsible sections */}
             <div className="space-y-4">
-              <Card>
-                <CardContent className="p-4">
-                  <h3 className="font-medium mb-3 flex items-center">
-                    <Users className="h-5 w-5 mr-2 text-primary" /> Level 1 Members
-                    <span className="ml-auto text-xs text-primary font-normal">
-                      Commission: {generalSettings?.level_1_commission || '10'}%
+              <Collapsible open={openLevel1} onOpenChange={setOpenLevel1} className="rounded-md border bg-card">
+                <CollapsibleTrigger className="flex w-full items-center justify-between p-4">
+                  <div className="flex items-center">
+                    <Users className="h-5 w-5 mr-2 text-primary" /> 
+                    <span className="font-medium">Level 1 Members ({level1Members.length})</span>
+                    <span className="ml-2 text-xs text-primary font-normal">
+                      {activeLevel1} active • {generalSettings?.level_1_commission || '10'}% Commission
                     </span>
-                  </h3>
-                  
+                  </div>
+                  {openLevel1 ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                </CollapsibleTrigger>
+                <CollapsibleContent className="px-4 pb-4">
                   {renderMembersTable(level1Members)}
-                </CardContent>
-              </Card>
+                </CollapsibleContent>
+              </Collapsible>
               
-              <Card>
-                <CardContent className="p-4">
-                  <h3 className="font-medium mb-3 flex items-center">
-                    <Users className="h-5 w-5 mr-2 text-primary" /> Level 2 Members
-                    <span className="ml-auto text-xs text-primary font-normal">
-                      Commission: {generalSettings?.level_2_commission || '5'}%
+              <Collapsible open={openLevel2} onOpenChange={setOpenLevel2} className="rounded-md border bg-card">
+                <CollapsibleTrigger className="flex w-full items-center justify-between p-4">
+                  <div className="flex items-center">
+                    <Users className="h-5 w-5 mr-2 text-primary" /> 
+                    <span className="font-medium">Level 2 Members ({level2Members.length})</span>
+                    <span className="ml-2 text-xs text-primary font-normal">
+                      {activeLevel2} active • {generalSettings?.level_2_commission || '5'}% Commission
                     </span>
-                  </h3>
-                  
+                  </div>
+                  {openLevel2 ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                </CollapsibleTrigger>
+                <CollapsibleContent className="px-4 pb-4">
                   {renderMembersTable(level2Members)}
-                </CardContent>
-              </Card>
+                </CollapsibleContent>
+              </Collapsible>
               
-              <Card>
-                <CardContent className="p-4">
-                  <h3 className="font-medium mb-3 flex items-center">
-                    <Users className="h-5 w-5 mr-2 text-primary" /> Level 3 Members
-                    <span className="ml-auto text-xs text-primary font-normal">
-                      Commission: {generalSettings?.level_3_commission || '2'}%
+              <Collapsible open={openLevel3} onOpenChange={setOpenLevel3} className="rounded-md border bg-card">
+                <CollapsibleTrigger className="flex w-full items-center justify-between p-4">
+                  <div className="flex items-center">
+                    <Users className="h-5 w-5 mr-2 text-primary" /> 
+                    <span className="font-medium">Level 3 Members ({level3Members.length})</span>
+                    <span className="ml-2 text-xs text-primary font-normal">
+                      {activeLevel3} active • {generalSettings?.level_3_commission || '2'}% Commission
                     </span>
-                  </h3>
-                  
+                  </div>
+                  {openLevel3 ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                </CollapsibleTrigger>
+                <CollapsibleContent className="px-4 pb-4">
                   {renderMembersTable(level3Members)}
-                </CardContent>
-              </Card>
+                </CollapsibleContent>
+              </Collapsible>
             </div>
           </>
         )}
