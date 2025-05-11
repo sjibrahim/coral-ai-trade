@@ -59,7 +59,7 @@ const TeamPage = () => {
   
   return (
     <MobileLayout title="Team">
-      <div className="p-4 animate-fade-in">
+      <div className="p-4 animate-fade-in pb-safe">
         {isLoading ? (
           <div className="flex justify-center items-center py-20">
             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
@@ -210,9 +210,9 @@ const TeamPage = () => {
             </Tabs>
             
             {/* Referral Info */}
-            <Card className="bg-[#1A1F2C] border-none shadow-lg">
+            <Card className="bg-[#1A1F2C] border-none shadow-lg mb-6">
               <CardContent className="p-4">
-                <h3 className="font-semibold mb-2">Referral Code</h3>
+                <h3 className="font-semibold mb-3">Referral Code</h3>
                 <div className="flex items-center justify-between p-3 bg-black/20 rounded-md mb-4">
                   <p className="font-medium">{user?.referral_code || 'INVITE123'}</p>
                   <Button variant="ghost" size="sm" onClick={() => setInvitePopupOpen(true)}>
@@ -220,13 +220,23 @@ const TeamPage = () => {
                   </Button>
                 </div>
                 
-                <div className="text-xs text-muted-foreground">
-                  <p className="mb-2">• {generalSettings?.level_1_commission || '10'}% commission on level 1 referrals</p>
-                  <p className="mb-2">• {generalSettings?.level_2_commission || '5'}% commission on level 2 referrals</p>
-                  <p className="mb-2">• {generalSettings?.level_3_commission || '2'}% commission on level 3 referrals</p>
+                <div className="text-xs text-muted-foreground space-y-2 mt-4">
+                  <p>• {generalSettings?.level_1_commission || '10'}% commission on level 1 referrals</p>
+                  <p>• {generalSettings?.level_2_commission || '5'}% commission on level 2 referrals</p>
+                  <p>• {generalSettings?.level_3_commission || '2'}% commission on level 3 referrals</p>
                 </div>
               </CardContent>
             </Card>
+            
+            {/* Invite Button */}
+            <Button 
+              variant="default" 
+              size="lg" 
+              className="w-full mb-6"
+              onClick={() => setInvitePopupOpen(true)}
+            >
+              <Share2 className="mr-2 h-4 w-4" /> Invite Friends
+            </Button>
           </>
         )}
       </div>

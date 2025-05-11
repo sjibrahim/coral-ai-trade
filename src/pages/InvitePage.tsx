@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
 import { useAuth } from "@/contexts/AuthContext";
-import { toast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { Copy, Share2, Users, Mail, Send, Info, Check, ChevronDown, ChevronUp } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -11,7 +11,7 @@ import { Separator } from "@/components/ui/separator";
 import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { mockReferralData } from "@/data/mockData";
+import { useTeam } from "@/hooks/use-team";
 
 // VIP level data based on the reference image
 const vipLevels = [
@@ -26,11 +26,27 @@ const vipLevels = [
 ];
 
 const InvitePage = () => {
-  const { user } = useAuth();
-  const { totalInvitations, validInvitations } = mockReferralData;
+  const { user, generalSettings } = useAuth();
+  const { 
+    level1Members, 
+    level2Members, 
+    level3Members, 
+    activeLevel1,
+    activeLevel2,
+    activeLevel3,
+    totalTeamSize, 
+    totalActiveMembers, 
+    isLoading, 
+    fetchTeamDetails 
+  } = useTeam();
+  
   const [copied, setCopied] = useState(false);
   const [email, setEmail] = useState('');
   const isMobile = useIsMobile();
+  
+  useEffect(() => {
+    fetchTeamDetails();
+  }, [fetchTeamDetails]);
   
   // Generate referral link based on current domain and user's referral code
   const getReferralLink = () => {
@@ -44,7 +60,7 @@ const InvitePage = () => {
     navigator.clipboard.writeText(text)
       .then(() => {
         setCopied(true);
-        toast({
+        useToast.toast({
           title: "Copied to clipboard",
           description: message,
           duration: 3000,
@@ -69,14 +85,14 @@ const InvitePage = () => {
                     <Users size={18} className="text-primary" />
                   </div>
                   <p className="text-muted-foreground text-xs mb-1">Total Invitations</p>
-                  <p className="text-2xl font-semibold">{totalInvitations}</p>
+                  <p className="text-2xl font-semibold">{totalTeamSize || 0}</p>
                 </div>
                 <div className="text-center p-4">
                   <div className="w-10 h-10 rounded-full bg-green-500/10 flex items-center justify-center mx-auto mb-2">
                     <Users size={18} className="text-green-500" />
                   </div>
                   <p className="text-muted-foreground text-xs mb-1">Valid Invitations</p>
-                  <p className="text-2xl font-semibold">{validInvitations}</p>
+                  <p className="text-2xl font-semibold">{totalActiveMembers || 0}</p>
                 </div>
               </div>
             </CardContent>
@@ -148,6 +164,33 @@ const InvitePage = () => {
                     </Button>
                   </div>
                   
+                  {/* Team Stats Section */}
+                  <div className="bg-muted/40 rounded-lg p-3 mb-4">
+                    <h3 className="text-sm font-medium mb-3 flex items-center">
+                      <Users className="w-4 h-4 mr-2" /> Your Team
+                    </h3>
+                    <div className="grid grid-cols-3 gap-2">
+                      <div className="bg-blue-500/10 p-2 rounded-md text-center">
+                        <p className="text-xs text-muted-foreground">Level 1</p>
+                        <p className="font-medium">
+                          <span className="text-blue-400">{activeLevel1}</span>/{level1Members.length}
+                        </p>
+                      </div>
+                      <div className="bg-blue-500/10 p-2 rounded-md text-center">
+                        <p className="text-xs text-muted-foreground">Level 2</p>
+                        <p className="font-medium">
+                          <span className="text-blue-400">{activeLevel2}</span>/{level2Members.length}
+                        </p>
+                      </div>
+                      <div className="bg-blue-500/10 p-2 rounded-md text-center">
+                        <p className="text-xs text-muted-foreground">Level 3</p>
+                        <p className="font-medium">
+                          <span className="text-blue-400">{activeLevel3}</span>/{level3Members.length}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  
                   {/* Email Invite */}
                   <div>
                     <h3 className="text-sm font-medium mb-3 flex items-center">
@@ -166,7 +209,7 @@ const InvitePage = () => {
                         disabled={!email} 
                         className="shrink-0 h-9"
                         onClick={() => {
-                          toast({
+                          useToast.toast({
                             title: "Invitation sent",
                             description: `Invitation sent to ${email}`,
                           });
@@ -191,19 +234,19 @@ const InvitePage = () => {
                         <div className="w-7 h-7 rounded-full bg-green-500/10 flex items-center justify-center mr-3 shrink-0">
                           <Check size={14} className="text-green-500" />
                         </div>
-                        <p className="text-sm">Earn 10% salary when your friends make trades</p>
+                        <p className="text-sm">Earn {generalSettings?.level_1_commission || '10'}% when your friends make trades</p>
                       </div>
                       <div className="flex items-start">
                         <div className="w-7 h-7 rounded-full bg-green-500/10 flex items-center justify-center mr-3 shrink-0">
                           <Check size={14} className="text-green-500" />
                         </div>
-                        <p className="text-sm">Get bonus rewards when they reach trading milestones</p>
+                        <p className="text-sm">Get {generalSettings?.level_2_commission || '5'}% from your Level 2 referrals</p>
                       </div>
                       <div className="flex items-start">
                         <div className="w-7 h-7 rounded-full bg-green-500/10 flex items-center justify-center mr-3 shrink-0">
                           <Check size={14} className="text-green-500" />
                         </div>
-                        <p className="text-sm">Unlock VIP benefits with more successful referrals</p>
+                        <p className="text-sm">Earn {generalSettings?.level_3_commission || '2'}% from your Level 3 referrals</p>
                       </div>
                     </div>
                   </div>

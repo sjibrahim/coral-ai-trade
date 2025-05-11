@@ -38,7 +38,8 @@ const MarketPage = () => {
           const dataWithChange = response.data.map((crypto: CryptoData) => ({
             ...crypto,
             change: Math.random() > 0.5 ? +(Math.random() * 5).toFixed(2) : -(Math.random() * 5).toFixed(2), // Random change value
-            price: parseFloat(typeof crypto.price === 'string' ? crypto.price : crypto.price.toString())
+            price: parseFloat(typeof crypto.price === 'string' ? crypto.price : crypto.price.toString()),
+            logo: crypto.logo || `https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/128/color/${crypto.symbol.toLowerCase()}.png`
           }));
           
           // Filter for active cryptocurrencies (status = 1) - convert to same type for comparison

@@ -66,7 +66,7 @@ const InvitePopup = ({ isOpen, onClose }: InvitePopupProps) => {
   
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md bg-gradient-to-b from-background to-blue-900/10 backdrop-blur-sm border-blue-200/20 p-6">
+      <DialogContent className="sm:max-w-md mx-auto my-auto w-[90%] bg-gradient-to-b from-background to-blue-900/10 backdrop-blur-sm border-blue-200/20 p-5 max-h-[90vh] rounded-xl overflow-auto">
         <DialogHeader className="text-center">
           <DialogTitle className="text-2xl font-bold text-gradient-primary flex items-center justify-center gap-2 mb-1">
             <Users className="h-5 w-5" />
@@ -82,14 +82,14 @@ const InvitePopup = ({ isOpen, onClose }: InvitePopupProps) => {
           <div className="p-3 bg-white rounded-xl">
             <QRCode 
               value={inviteLink} 
-              size={180} 
+              size={160} 
               level="H"
               includeMargin
               renderAs="svg"
               imageSettings={{
                 src: "https://ik.imagekit.io/spmcumfu9/nexbit_logo.jpeg",
-                height: 40,
-                width: 40,
+                height: 36,
+                width: 36,
                 excavate: true,
               }}
             />
