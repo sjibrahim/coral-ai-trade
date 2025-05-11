@@ -130,11 +130,8 @@ const TradeTimer: React.FC<TradeTimerProps> = ({
             }`}>
               <div className="relative mr-1">
                 <CircleDollarSign className="h-8 w-8" />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  {result.type === 'Profit' 
-                    ? <Plus className="h-3 w-3 stroke-[3]" /> 
-                    : <Minus className="h-3 w-3 stroke-[3]" />
-                  }
+                <div className="absolute inset-0 flex items-center justify-center text-xl font-bold">
+                  {result.type === 'Profit' ? '+' : '−'}
                 </div>
               </div>
               <span>{Math.floor(result.value || 0)}</span>
