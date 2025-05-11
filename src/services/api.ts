@@ -16,6 +16,7 @@ export const endpoints = {
   getWithdrawRecords: `${API_BASE}/get_withdraw_records`,
   getTeamDetails: `${API_BASE}/get_team_details`,
   getGeneralSettings: `${API_BASE}/get_general_settings`,
+  getTradeRecords: `${API_BASE}/get_trade`,
 };
 
 // Function to handle API requests
@@ -86,6 +87,11 @@ export const getDepositRecords = async (token: string) => {
 
 export const getWithdrawRecords = async (token: string) => {
   return apiRequest(endpoints.getWithdrawRecords, 'POST', { token });
+};
+
+// New endpoint for trade/contract records
+export const getTradeRecords = async (token: string) => {
+  return apiRequest(endpoints.getTradeRecords, 'POST', { token });
 };
 
 // Team API functions

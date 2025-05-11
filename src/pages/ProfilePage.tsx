@@ -267,6 +267,12 @@ const ProfilePage = () => {
           />
           
           <ProfileOption
+            icon={<FileText className="h-5 w-5 text-amber-400" />}
+            label="Contract Record"
+            to="/contract-record"
+          />
+          
+          <ProfileOption
             icon={<CreditCard className="h-5 w-5 text-emerald-400" />}
             label="Bank info"
             to="/bank"
