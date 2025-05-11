@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useCallback } from 'react';
 import { useParams, useLocation, Link } from 'react-router-dom';
 import MobileLayout from '@/components/layout/MobileLayout';
@@ -286,7 +285,7 @@ const CoinDetailPage = () => {
     const result = isProfit 
       ? Math.abs(amount * 0.95) // 95% profit
       : -Math.abs(amount); // 100% loss
-      
+    
     setTradeResult({
       value: Math.abs(result),
       type: isProfit ? 'Profit' : 'Loss'
@@ -547,7 +546,7 @@ const CoinDetailPage = () => {
             </div>
           </div>
           
-          <div className="p-5 space-y-5 max-h-[calc(100vh-120px)] overflow-y-auto styled-scrollbar">
+          <div className="p-5 space-y-5 max-h-[70vh] overflow-y-auto styled-scrollbar">
             {/* Time Period Selection */}
             <div className="space-y-3">
               <p className="text-gray-300 font-medium flex items-center gap-1.5">
