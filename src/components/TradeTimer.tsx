@@ -74,8 +74,8 @@ const TradeTimer: React.FC<TradeTimerProps> = ({
     <Dialog open={open} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="bg-[#1E2032] border-none max-w-[300px] rounded-2xl text-white">
         {isCompleted ? (
-          // Result display similar to reference image
-          <div className="flex flex-col items-center justify-center py-6">
+          // Result display styled like reference image
+          <div className="flex flex-col items-center justify-center py-10 relative">
             <div className="absolute top-2 right-2">
               <Button 
                 variant="ghost" 
@@ -87,7 +87,7 @@ const TradeTimer: React.FC<TradeTimerProps> = ({
               </Button>
             </div>
             
-            <div className={`text-7xl font-bold mb-6 ${
+            <div className={`text-7xl font-bold mb-10 ${
               result.type === 'Profit' ? 'text-market-increase' : 'text-market-decrease'
             }`}>
               {result.type === 'Loss' ? '-' : '+'}

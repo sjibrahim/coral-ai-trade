@@ -10,10 +10,26 @@ interface CryptoCardProps {
   price: number;
   change: number;
   logo: string;
+  binance_symbol?: string;
   animationDelay?: number;
+  market_cap?: string;
+  volume_24h?: string;
+  rank?: string;
 }
 
-const CryptoCard = ({ id, name, symbol, price, change, logo, animationDelay = 0 }: CryptoCardProps) => {
+const CryptoCard = ({ 
+  id, 
+  name, 
+  symbol, 
+  price, 
+  change, 
+  logo, 
+  binance_symbol,
+  market_cap,
+  volume_24h,
+  rank,
+  animationDelay = 0 
+}: CryptoCardProps) => {
   const navigate = useNavigate();
   
   const handleCardClick = () => {
@@ -24,10 +40,13 @@ const CryptoCard = ({ id, name, symbol, price, change, logo, animationDelay = 0 
           id,
           name,
           symbol,
-          binance_symbol: `${symbol.toUpperCase()}USDT`,
+          binance_symbol: binance_symbol || `${symbol.toUpperCase()}USDT`,
           price,
           change,
-          logo
+          logo,
+          market_cap,
+          volume_24h,
+          rank
         }
       }
     });
