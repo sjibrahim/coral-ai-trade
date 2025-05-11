@@ -1,8 +1,10 @@
+
 export const mockCryptoCurrencies = [
   {
     id: 'bitcoin',
     name: 'Bitcoin',
     symbol: 'btc',
+    binance_symbol: 'BTCUSDT',
     price: 94278.61,
     change: -1.645,
     logo: 'https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/128/color/btc.png'
@@ -11,6 +13,7 @@ export const mockCryptoCurrencies = [
     id: 'ethereum',
     name: 'Ethereum',
     symbol: 'eth',
+    binance_symbol: 'ETHUSDT',
     price: 1809.13,
     change: -1.29,
     logo: 'https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/128/color/eth.png'
@@ -19,6 +22,7 @@ export const mockCryptoCurrencies = [
     id: 'binance-coin',
     name: 'Binance',
     symbol: 'bnb',
+    binance_symbol: 'BNBUSDT',
     price: 586.26,
     change: -2.217,
     logo: 'https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/128/color/bnb.png'
@@ -27,6 +31,7 @@ export const mockCryptoCurrencies = [
     id: 'toncoin',
     name: 'Toncoin',
     symbol: 'ton',
+    binance_symbol: 'TONUSDT',
     price: 3.02,
     change: -2.11,
     logo: 'https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/128/color/ton.png'
@@ -35,6 +40,7 @@ export const mockCryptoCurrencies = [
     id: 'band-protocol',
     name: 'Band',
     symbol: 'band',
+    binance_symbol: 'BANDUSDT',
     price: 0.76,
     change: -4.056,
     logo: 'https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/128/color/band.png'
@@ -43,6 +49,7 @@ export const mockCryptoCurrencies = [
     id: 'dogecoin',
     name: 'DogeCoin',
     symbol: 'doge',
+    binance_symbol: 'DOGEUSDT',
     price: 0.17,
     change: -3.065,
     logo: 'https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/128/color/doge.png'
@@ -51,6 +58,7 @@ export const mockCryptoCurrencies = [
     id: 'dai',
     name: 'Dai',
     symbol: 'dai',
+    binance_symbol: 'DAIUSDT',
     price: 0.99,
     change: 0,
     logo: 'https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/128/color/dai.png'
