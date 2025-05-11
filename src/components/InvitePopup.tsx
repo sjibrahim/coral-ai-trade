@@ -4,7 +4,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Button } from "@/components/ui/button";
 import { Share2, Copy, Check, User, Users } from "lucide-react";
 import QRCode from "qrcode.react";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 
 interface InvitePopupProps {
@@ -173,3 +173,4 @@ const InvitePopup = ({ isOpen, onClose }: InvitePopupProps) => {
 };
 
 export default InvitePopup;
+

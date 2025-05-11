@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
 import { useAuth } from "@/contexts/AuthContext";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/components/ui/use-toast";
 import { Copy, Share2, Users, Mail, Send, Info, Check, ChevronDown, ChevronUp } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -43,6 +43,7 @@ const InvitePage = () => {
   const [copied, setCopied] = useState(false);
   const [email, setEmail] = useState('');
   const isMobile = useIsMobile();
+  const { toast } = useToast();
   
   useEffect(() => {
     fetchTeamDetails();
@@ -60,7 +61,7 @@ const InvitePage = () => {
     navigator.clipboard.writeText(text)
       .then(() => {
         setCopied(true);
-        useToast.toast({
+        toast({
           title: "Copied to clipboard",
           description: message,
           duration: 3000,
@@ -209,7 +210,7 @@ const InvitePage = () => {
                         disabled={!email} 
                         className="shrink-0 h-9"
                         onClick={() => {
-                          useToast.toast({
+                          toast({
                             title: "Invitation sent",
                             description: `Invitation sent to ${email}`,
                           });
@@ -345,3 +346,4 @@ const InvitePage = () => {
 };
 
 export default InvitePage;
+
