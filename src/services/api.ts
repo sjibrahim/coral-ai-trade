@@ -9,6 +9,7 @@ export const endpoints = {
   register: `${API_BASE}/register`,
   getProfile: `${API_BASE}/get__profile`,
   getMarket: `${API_BASE}/get__market`,
+  getCoin: `${API_BASE}/get_coin`, // New endpoint for getting coin details
   updateBank: `${API_BASE}/update_bank`,
   updatePassword: `${API_BASE}/update_password`,
   createTopupOrder: `${API_BASE}/create_topup_order`,
@@ -78,6 +79,11 @@ export const getMarketData = async (token: string) => {
 
 export const getCoinDetails = async (token: string, coinId: string) => {
   return apiRequest(endpoints.getCoinDetails, 'POST', { token, coinId });
+};
+
+// New function to get coin info by ID
+export const getCoin = async (token: string, coin_id: string) => {
+  return apiRequest(endpoints.getCoin, 'POST', { token, coin_id });
 };
 
 // Binance API functions

@@ -1,4 +1,5 @@
 
+
 declare interface Cryptocurrency {
   id: string;
   name: string;
@@ -22,3 +23,10 @@ declare interface CryptoMarketData {
   msg: string;
   data: Cryptocurrency[];
 }
+
+declare interface CoinResponse {
+  status: boolean;
+  msg: string;
+  data: Cryptocurrency;
+}
+

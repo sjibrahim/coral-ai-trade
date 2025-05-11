@@ -11,12 +11,12 @@ import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { mockCryptoCurrencies } from '@/data/mockData';
 import { ArrowUp, ArrowDown, X, Info } from 'lucide-react';
-import { getBinancePrice, getBinanceKlines, getMarketData } from '@/services/api';
+import { getBinancePrice, getBinanceKlines, getMarketData, getCoin } from '@/services/api';
 import { useToast } from '@/components/ui/use-toast';
 
 const CoinDetailPage = () => {
   const { toast } = useToast();
-  const { coinId } = useParams();
+  const { id: coinId } = useParams();
   const [activeTab, setActiveTab] = useState('chart');
   const [selectedTimeframe, setSelectedTimeframe] = useState('24h');
   const [isBuyModalOpen, setIsBuyModalOpen] = useState(false);
@@ -34,65 +34,132 @@ const CoinDetailPage = () => {
   }>({ value: null, type: null });
   const [marketData, setMarketData] = useState<Cryptocurrency[]>([]);
   
-  // Use the first crypto from the list for demo or find by ID
-  const [crypto, setCrypto] = useState<Cryptocurrency>(mockCryptoCurrencies[0]);
+  // Use a default crypto while loading
+  const [crypto, setCrypto] = useState<Cryptocurrency>({
+    id: '',
+    name: 'Loading...',
+    symbol: '',
+    binance_symbol: '',
+    price: 0,
+    change: 0,
+    logo: '',
+  });
+  const [isLoading, setIsLoading] = useState(true);
 
   // Live price state
-  const [livePrice, setLivePrice] = useState(crypto.price);
-  const [priceChange, setPriceChange] = useState(crypto.change);
+  const [livePrice, setLivePrice] = useState(0);
+  const [priceChange, setPriceChange] = useState(0);
   const [startingTradePrice, setStartingTradePrice] = useState(0);
 
-  // Fetch market data on load
+  // Fetch coin data by ID on load
   useEffect(() => {
-    const fetchMarketData = async () => {
+    const fetchCoinData = async () => {
       try {
+        setIsLoading(true);
         const token = localStorage.getItem('auth_token');
-        if (token) {
-          const response = await getMarketData(token);
+        
+        if (token && coinId) {
+          // Fetch coin details from the API
+          const response = await getCoin(token, coinId);
+          
           if (response.status && response.data) {
-            setMarketData(response.data);
+            const coinData = response.data;
             
-            // Find the current crypto in the market data
-            if (coinId) {
-              const currentCrypto = response.data.find((c: Cryptocurrency) => c.id.toString() === coinId);
-              if (currentCrypto) {
-                setCrypto(currentCrypto);
-                setLivePrice(parseFloat(currentCrypto.price.toString()));
-              }
-            }
+            // Set crypto data from API response
+            setCrypto({
+              id: coinData.id,
+              name: coinData.name,
+              symbol: coinData.symbol,
+              binance_symbol: coinData.binance_symbol,
+              price: parseFloat(coinData.price),
+              change: 0, // Will be updated with live data
+              logo: coinData.logo,
+              market_cap: coinData.market_cap,
+              volume_24h: coinData.volume_24h,
+              rank: coinData.rank,
+              picks: coinData.picks,
+              home: coinData.home,
+              status: coinData.status,
+              created_at: coinData.created_at,
+              updated_at: coinData.updated_at,
+            });
+            
+            setLivePrice(parseFloat(coinData.price));
+          } else {
+            toast({
+              title: "Error",
+              description: "Failed to fetch coin details",
+              variant: "destructive",
+            });
+            
+            // Fallback to mock data if API call fails
+            fallbackToMockData();
           }
+        } else {
+          // Fallback to mock data if no token or coinId
+          fallbackToMockData();
         }
+        
+        setIsLoading(false);
       } catch (error) {
-        console.error('Error fetching market data:', error);
+        console.error('Error fetching coin data:', error);
+        toast({
+          title: "Error",
+          description: "Failed to load coin data. Please try again.",
+          variant: "destructive",
+        });
+        
         // Fallback to mock data
-        if (coinId) {
-          const mockCrypto = mockCryptoCurrencies.find(c => c.id.toString() === coinId);
-          if (mockCrypto) {
-            setCrypto(mockCrypto);
-            setLivePrice(mockCrypto.price);
-          }
-        }
+        fallbackToMockData();
+        setIsLoading(false);
       }
     };
     
-    fetchMarketData();
-  }, [coinId]);
+    // Fallback function to use mock data
+    const fallbackToMockData = () => {
+      if (coinId) {
+        const mockCrypto = mockCryptoCurrencies.find(c => c.id === coinId);
+        if (mockCrypto) {
+          setCrypto(mockCrypto);
+          setLivePrice(mockCrypto.price);
+          setPriceChange(mockCrypto.change);
+        } else {
+          // If specific coin not found, use the first one
+          setCrypto(mockCryptoCurrencies[0]);
+          setLivePrice(mockCryptoCurrencies[0].price);
+          setPriceChange(mockCryptoCurrencies[0].change);
+        }
+      } else {
+        // If no coinId provided, use the first one
+        setCrypto(mockCryptoCurrencies[0]);
+        setLivePrice(mockCryptoCurrencies[0].price);
+        setPriceChange(mockCryptoCurrencies[0].change);
+      }
+    };
+    
+    fetchCoinData();
+  }, [coinId, toast]);
 
   // Get the binance symbol for the current crypto
   const getBinanceSymbol = useCallback(() => {
-    return crypto.binance_symbol || `${crypto.symbol}USDT`;
+    return crypto.binance_symbol || `${crypto.symbol.toUpperCase()}USDT`;
   }, [crypto]);
 
   // Fetch Binance data
   const fetchBinanceData = useCallback(async () => {
     try {
+      if (!crypto.binance_symbol) {
+        return; // Skip if no binance_symbol available yet
+      }
+      
       const symbol = getBinanceSymbol();
       const priceData = await getBinancePrice(symbol);
+      
       if (priceData && priceData.price) {
         const newPrice = parseFloat(priceData.price);
         setLivePrice(newPrice);
         
-        // Calculate change percentage (mock for now)
+        // Calculate change percentage (comparing to previous price)
         const previousPrice = livePrice;
         const changePercent = previousPrice > 0 ? ((newPrice - previousPrice) / previousPrice) * 100 : 0;
         setPriceChange(changePercent);
@@ -113,10 +180,10 @@ const CoinDetailPage = () => {
       }
     } catch (error) {
       console.error('Error fetching Binance data:', error);
-      // Fallback to mock data
+      // Fallback to simulated price updates
       simulatePriceUpdates();
     }
-  }, [getBinanceSymbol, livePrice]);
+  }, [getBinanceSymbol, livePrice, crypto.binance_symbol]);
   
   // Simulate price updates if Binance API fails
   const simulatePriceUpdates = useCallback(() => {
@@ -143,16 +210,18 @@ const CoinDetailPage = () => {
 
   // Initialize data and set up interval for updates
   useEffect(() => {
-    fetchBinanceData();
-    
-    const interval = setInterval(() => {
-      fetchBinanceData().catch(() => {
-        simulatePriceUpdates();
-      });
-    }, 5000);
-    
-    return () => clearInterval(interval);
-  }, [fetchBinanceData, simulatePriceUpdates]);
+    if (!isLoading && crypto.binance_symbol) {
+      fetchBinanceData();
+      
+      const interval = setInterval(() => {
+        fetchBinanceData().catch(() => {
+          simulatePriceUpdates();
+        });
+      }, 5000);
+      
+      return () => clearInterval(interval);
+    }
+  }, [fetchBinanceData, simulatePriceUpdates, isLoading, crypto.binance_symbol]);
 
   // Transform data for chart component
   const transformedChartData = chartData.map(item => ({
