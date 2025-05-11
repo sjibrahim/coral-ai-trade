@@ -525,7 +525,7 @@ const CoinDetailPage = () => {
                 </div>
                 <div>
                   <h2 className="text-lg font-semibold text-white flex items-center gap-2">
-                    {crypto.symbol}/INR
+                    {crypto.symbol}/USD
                     <span className={`px-2 py-0.5 text-xs rounded-full ${
                       direction === 'Call' 
                         ? 'bg-market-increase/20 text-market-increase' 
@@ -574,12 +574,12 @@ const CoinDetailPage = () => {
             <div className="space-y-4">
               <div className="flex justify-between items-center">
                 <p className="text-gray-400 text-sm">Available Balance</p>
-                <p className="text-gray-200 text-sm font-medium">₹ 20,023</p>
+                <p className="text-gray-200 text-sm font-medium">$ 20,023</p>
               </div>
               
               {/* Trade Amount Input */}
               <div className="relative">
-                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-medium">₹</div>
+                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-medium">$</div>
                 <Input
                   className="bg-[#252739] border-none text-white text-xl py-6 pl-8 pr-4 rounded-xl font-medium focus:ring-1 focus:ring-blue-600/50"
                   placeholder="Enter amount"
@@ -602,7 +602,7 @@ const CoinDetailPage = () => {
                     }`}
                     onClick={() => setTradeAmount(amount)}
                   >
-                    ₹{parseInt(amount).toLocaleString()}
+                    ${parseInt(amount).toLocaleString()}
                   </button>
                 ))}
               </div>
@@ -622,13 +622,13 @@ const CoinDetailPage = () => {
                 <div className="text-center border-x border-gray-700/30">
                   <p className="text-gray-400 text-xs mb-1.5">Current Price</p>
                   <p className="font-medium text-sm text-gray-200">
-                    ₹{livePrice.toLocaleString(undefined, { maximumFractionDigits: 2 })}
+                    ${livePrice.toLocaleString(undefined, { maximumFractionDigits: 2 })}
                   </p>
                 </div>
                 <div className="text-center">
                   <p className="text-gray-400 text-xs mb-1.5">Investment</p>
                   <p className="font-medium text-sm text-gray-200">
-                    ₹{parseInt(tradeAmount).toLocaleString()}
+                    ${parseInt(tradeAmount).toLocaleString()}
                   </p>
                 </div>
               </div>

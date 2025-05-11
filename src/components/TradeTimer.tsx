@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { X, CircleArrowRight, Check, CircleDollarSign } from 'lucide-react';
+import { X, CircleArrowRight, Check, CircleDollarSign, Plus, Minus } from 'lucide-react';
 
 interface TradeTimerProps {
   open: boolean;
@@ -124,11 +124,19 @@ const TradeTimer: React.FC<TradeTimerProps> = ({
               Trade {result.type}
             </div>
             
-            {/* Result amount */}
+            {/* Result amount with plus/minus icon inside CircleDollarSign */}
             <div className={`text-5xl font-bold mb-6 flex items-center animate-fade-in ${
               result.type === 'Profit' ? 'text-market-increase' : 'text-market-decrease'
             }`}>
-              <CircleDollarSign className="mr-1 h-8 w-8" />
+              <div className="relative mr-1">
+                <CircleDollarSign className="h-8 w-8" />
+                <div className="absolute inset-0 flex items-center justify-center">
+                  {result.type === 'Profit' 
+                    ? <Plus className="h-3 w-3 stroke-[3]" /> 
+                    : <Minus className="h-3 w-3 stroke-[3]" />
+                  }
+                </div>
+              </div>
               <span>{Math.floor(result.value || 0)}</span>
             </div>
             
