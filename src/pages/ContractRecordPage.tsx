@@ -57,7 +57,7 @@ const ContractRecordPage = () => {
     };
 
     fetchTradeRecords();
-  }, [user?.token]);
+  }, [user?.token, toast]);
 
   return (
     <MobileLayout showBackButton title="Contract Record">
@@ -109,7 +109,23 @@ const ContractRecordPage = () => {
             >
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center">
-                  <img src={record.logo} alt={record.asset_name} className="w-8 h-8" />
+                  {record.logo ? (
+                    <img 
+                      src={record.logo} 
+                      alt={record.asset_name} 
+                      className="w-8 h-8" 
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.style.display = 'none';
+                        target.nextElementSibling?.classList.remove('hidden');
+                      }}
+                    />
+                  ) : (
+                    <span className="font-bold text-xs">{record.asset_symbol.slice(0, 2)}</span>
+                  )}
+                  <div className="hidden absolute inset-0 flex items-center justify-center font-bold text-xs">
+                    {record.asset_symbol.slice(0, 2)}
+                  </div>
                 </div>
                 <div>
                   <h3 className="font-semibold text-lg">{record.asset_name} / {record.asset_symbol}</h3>

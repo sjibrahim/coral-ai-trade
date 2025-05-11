@@ -1,5 +1,7 @@
+
 // API endpoints for our application
 const API_BASE = '/backend/restapi';
+const BINANCE_API = 'https://api.binance.com/api/v3';
 
 export const endpoints = {
   test: `${API_BASE}/index`,
@@ -17,6 +19,9 @@ export const endpoints = {
   getTeamDetails: `${API_BASE}/get_team_details`,
   getGeneralSettings: `${API_BASE}/get_general_settings`,
   getTradeRecords: `${API_BASE}/get_trade`,
+  // Binance API endpoints
+  getBinancePrice: `${BINANCE_API}/ticker/price`,
+  getBinanceKlines: `${BINANCE_API}/klines`,
 };
 
 // Function to handle API requests
@@ -49,9 +54,38 @@ export const apiRequest = async (url: string, method: string, data?: any) => {
   }
 };
 
+// Function to handle external API requests (like Binance)
+export const externalApiRequest = async (url: string, params?: Record<string, string>) => {
+  try {
+    const urlWithParams = params 
+      ? `${url}?${new URLSearchParams(params).toString()}`
+      : url;
+    
+    const response = await fetch(urlWithParams);
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.error('External API request failed:', error);
+    throw error;
+  }
+};
+
 // Market API functions
 export const getMarketData = async (token: string) => {
   return apiRequest(endpoints.getMarket, 'POST', { token });
+};
+
+// Binance API functions
+export const getBinancePrice = async (symbol: string) => {
+  return externalApiRequest(endpoints.getBinancePrice, { symbol });
+};
+
+export const getBinanceKlines = async (symbol: string, interval: string, limit: string) => {
+  return externalApiRequest(endpoints.getBinanceKlines, { 
+    symbol, 
+    interval, 
+    limit 
+  });
 };
 
 // Profile API functions
