@@ -37,41 +37,53 @@ const TradeTimer: React.FC<TradeTimerProps> = ({
   useEffect(() => {
     if (!open) return;
     
-    // Reset state when opening
-    if (timeRemaining === 0) {
+    // Don't reset state if we're showing the completed result
+    if (!isCompleted && timeRemaining === 0) {
       setTimeRemaining(duration);
-      setIsCompleted(false);
-      setResult({ value: null, type: null });
     }
     
-    const interval = setInterval(() => {
-      setTimeRemaining((prev) => {
-        if (prev <= 1) {
-          clearInterval(interval);
-          setIsCompleted(true);
-          
-          // Determine profit/loss
-          const priceDifference = currentPrice - startPrice;
-          const isProfit = (direction === 'Call' && priceDifference > 0) || 
-                          (direction === 'Put' && priceDifference < 0);
-          
-          setResult({
-            value: Math.abs(priceDifference * 100), // Sample calculation
-            type: isProfit ? 'Profit' : 'Loss'
-          });
-          
-          onComplete(currentPrice);
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
+    // Only start the timer if not completed
+    if (!isCompleted) {
+      const interval = setInterval(() => {
+        setTimeRemaining((prev) => {
+          if (prev <= 1) {
+            clearInterval(interval);
+            setIsCompleted(true);
+            
+            // Determine profit/loss
+            const priceDifference = currentPrice - startPrice;
+            const isProfit = (direction === 'Call' && priceDifference > 0) || 
+                            (direction === 'Put' && priceDifference < 0);
+            
+            setResult({
+              value: Math.abs(priceDifference * 100), // Sample calculation
+              type: isProfit ? 'Profit' : 'Loss'
+            });
+            
+            onComplete(currentPrice);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
 
-    return () => clearInterval(interval);
-  }, [open, duration, direction, currentPrice, startPrice, onComplete]);
+      return () => clearInterval(interval);
+    }
+  }, [open, duration, direction, currentPrice, startPrice, onComplete, isCompleted, timeRemaining]);
+
+  // Reset state when modal is closed
+  const handleClose = () => {
+    onClose();
+    // Delay the reset to prevent flickering during close animation
+    setTimeout(() => {
+      setIsCompleted(false);
+      setTimeRemaining(duration);
+      setResult({ value: null, type: null });
+    }, 300);
+  };
 
   return (
-    <Dialog open={open} onOpenChange={(open) => !open && onClose()}>
+    <Dialog open={open} onOpenChange={(open) => !open && handleClose()}>
       <DialogContent className="bg-[#1E2032] border-none max-w-[300px] rounded-2xl text-white">
         {isCompleted ? (
           // Result display styled like reference image
@@ -81,7 +93,7 @@ const TradeTimer: React.FC<TradeTimerProps> = ({
                 variant="ghost" 
                 size="icon" 
                 className="rounded-full h-8 w-8 bg-gray-700/50 hover:bg-gray-600/50"
-                onClick={onClose}
+                onClick={handleClose}
               >
                 <X className="h-4 w-4" />
               </Button>
@@ -96,7 +108,7 @@ const TradeTimer: React.FC<TradeTimerProps> = ({
             
             <Button 
               className="w-full py-6 px-4 text-lg rounded-lg bg-slate-700 hover:bg-slate-600"
-              onClick={onClose}
+              onClick={handleClose}
             >
               Go to Home
             </Button>
@@ -136,7 +148,7 @@ const TradeTimer: React.FC<TradeTimerProps> = ({
             <Button 
               variant="outline" 
               className="mt-4 px-8 py-2 rounded-full text-gray-400 border-gray-700"
-              onClick={onClose}
+              onClick={handleClose}
             >
               Cancel
             </Button>
