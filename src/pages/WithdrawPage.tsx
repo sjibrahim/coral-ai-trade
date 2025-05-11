@@ -3,7 +3,6 @@ import { useState } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
 import NumericKeypad from "@/components/NumericKeypad";
 import { Bell, Check } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { createWithdrawOrder } from "@/services/api";
@@ -19,14 +18,18 @@ const WithdrawPage = () => {
   const { user, updateProfile } = useAuth();
   const { toast } = useToast();
   
+  // Safely access user properties with fallbacks for TypeScript
   const availableBalance = user?.wallet ? parseFloat(user.wallet) : 0;
-  const bankAccount = user?.bank_number || user?.account_number || "Not set";
-  const ifscCode = user?.bank_ifsc || user?.account_ifsc || "Not set";
+  const bankAccount = user?.account_number || "Not set";
+  const ifscCode = user?.account_ifsc || "Not set";
 
   const isValidAmount = Number(amount) >= 300 && Number(amount) <= availableBalance;
   
   const handleConfirm = async () => {
-    if (!isValidAmount) return;
+    if (!isValidAmount) {
+      setError("Please enter a valid amount (minimum ₹300 and not exceeding your balance)");
+      return;
+    }
     
     setIsProcessing(true);
     setError("");
