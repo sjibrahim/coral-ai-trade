@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { X } from 'lucide-react';
+import { X, Home } from 'lucide-react';
 
 interface TradeTimerProps {
   open: boolean;
@@ -37,38 +37,43 @@ const TradeTimer: React.FC<TradeTimerProps> = ({
   useEffect(() => {
     if (!open) return;
     
-    // Reset state when opening
-    if (timeRemaining === 0) {
-      setTimeRemaining(duration);
-      setIsCompleted(false);
-      setResult({ value: null, type: null });
-    }
+    let interval: ReturnType<typeof setInterval>;
     
-    const interval = setInterval(() => {
-      setTimeRemaining((prev) => {
-        if (prev <= 1) {
-          clearInterval(interval);
-          setIsCompleted(true);
-          
-          // Determine profit/loss
-          const priceDifference = currentPrice - startPrice;
-          const isProfit = (direction === 'Call' && priceDifference > 0) || 
-                          (direction === 'Put' && priceDifference < 0);
-          
-          setResult({
-            value: Math.abs(priceDifference * 100), // Sample calculation
-            type: isProfit ? 'Profit' : 'Loss'
-          });
-          
-          onComplete(currentPrice);
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
+    // Only start the timer if we haven't completed yet
+    if (!isCompleted && timeRemaining > 0) {
+      interval = setInterval(() => {
+        setTimeRemaining((prev) => {
+          if (prev <= 1) {
+            clearInterval(interval);
+            setIsCompleted(true);
+            
+            // Determine profit/loss
+            const priceDifference = currentPrice - startPrice;
+            const isProfit = (direction === 'Call' && priceDifference > 0) || 
+                            (direction === 'Put' && priceDifference < 0);
+            
+            setResult({
+              value: Math.abs(priceDifference * 100), // Sample calculation
+              type: isProfit ? 'Profit' : 'Loss'
+            });
+            
+            onComplete(currentPrice);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }
 
-    return () => clearInterval(interval);
-  }, [open, duration, direction, currentPrice, startPrice, onComplete]);
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [open, duration, direction, currentPrice, startPrice, onComplete, isCompleted, timeRemaining]);
+
+  // Function to handle reset of timer
+  const handleClose = () => {
+    onClose();
+  };
 
   return (
     <Dialog open={open} onOpenChange={(open) => !open && onClose()}>
@@ -81,7 +86,7 @@ const TradeTimer: React.FC<TradeTimerProps> = ({
                 variant="ghost" 
                 size="icon" 
                 className="rounded-full h-8 w-8 bg-gray-700/50 hover:bg-gray-600/50"
-                onClick={onClose}
+                onClick={handleClose}
               >
                 <X className="h-4 w-4" />
               </Button>
@@ -95,9 +100,10 @@ const TradeTimer: React.FC<TradeTimerProps> = ({
             </div>
             
             <Button 
-              className="w-full py-6 px-4 text-lg rounded-lg bg-slate-700 hover:bg-slate-600"
-              onClick={onClose}
+              className="w-full py-6 px-4 text-lg rounded-lg bg-slate-700 hover:bg-slate-600 flex items-center justify-center gap-2"
+              onClick={handleClose}
             >
+              <Home className="h-5 w-5" />
               Go to Home
             </Button>
           </div>
@@ -136,7 +142,7 @@ const TradeTimer: React.FC<TradeTimerProps> = ({
             <Button 
               variant="outline" 
               className="mt-4 px-8 py-2 rounded-full text-gray-400 border-gray-700"
-              onClick={onClose}
+              onClick={handleClose}
             >
               Cancel
             </Button>
