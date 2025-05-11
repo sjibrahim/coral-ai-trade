@@ -4,13 +4,14 @@ import { useParams } from 'react-router-dom';
 import MobileLayout from '@/components/layout/MobileLayout';
 import PriceChart from '@/components/PriceChart';
 import MobileOptimizedChart from '@/components/MobileOptimizedChart';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import TradeTimer from '@/components/TradeTimer';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogTitle, DialogClose } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { mockCryptoCurrencies } from '@/data/mockData';
-import { ArrowUp, ArrowDown, ChevronRight, X, Info } from 'lucide-react';
+import { ArrowUp, ArrowDown, X, Info } from 'lucide-react';
 import { getBinancePrice, getBinanceKlines } from '@/services/api';
 import { useToast } from '@/components/ui/use-toast';
 
@@ -23,16 +24,15 @@ const CoinDetailPage = () => {
   const [isSellModalOpen, setIsSellModalOpen] = useState(false);
   const [selectedTimePeriod, setSelectedTimePeriod] = useState('1min');
   const [tradeAmount, setTradeAmount] = useState('1000');
-  const [direction, setDirection] = useState('Call'); // 'Call' or 'Put'
+  const [direction, setDirection] = useState<'Call' | 'Put'>('Call');
   const [chartData, setChartData] = useState<any[]>([]);
   const [isChartFullscreen, setIsChartFullscreen] = useState(false);
-  const [isTrading, setIsTrading] = useState(false);
+  const [isTradeTimerOpen, setIsTradeTimerOpen] = useState(false);
   const [tradeTimer, setTradeTimer] = useState(0);
   const [tradeResult, setTradeResult] = useState<{
     value: number | null;
     type: 'Profit' | 'Loss' | null;
   }>({ value: null, type: null });
-  const [isTradeCompleted, setIsTradeCompleted] = useState(false);
   
   // Use the first crypto from the list for demo or find by ID
   const crypto = coinId 
@@ -44,10 +44,13 @@ const CoinDetailPage = () => {
   const [priceChange, setPriceChange] = useState(crypto.change);
   const [startingTradePrice, setStartingTradePrice] = useState(0);
 
+  // Get the binance symbol for the current crypto
+  const binanceSymbol = crypto.binance_symbol || `${crypto.symbol}USDT`;
+
   // Fetch Binance data
   const fetchBinanceData = useCallback(async () => {
     try {
-      const symbol = `${crypto.symbol}USDT`;
+      const symbol = binanceSymbol;
       const priceData = await getBinancePrice(symbol);
       if (priceData && priceData.price) {
         const newPrice = parseFloat(priceData.price);
@@ -55,7 +58,7 @@ const CoinDetailPage = () => {
         
         // Calculate change percentage (mock for now)
         const previousPrice = livePrice;
-        const changePercent = ((newPrice - previousPrice) / previousPrice) * 100;
+        const changePercent = previousPrice > 0 ? ((newPrice - previousPrice) / previousPrice) * 100 : 0;
         setPriceChange(changePercent);
       }
       
@@ -77,7 +80,7 @@ const CoinDetailPage = () => {
       // Fallback to mock data
       simulatePriceUpdates();
     }
-  }, [crypto.symbol, livePrice]);
+  }, [binanceSymbol, livePrice]);
   
   // Simulate price updates if Binance API fails
   const simulatePriceUpdates = useCallback(() => {
@@ -142,9 +145,8 @@ const CoinDetailPage = () => {
     // Set trade parameters
     const timeInSeconds = parseInt(selectedTimePeriod.replace('min', '')) * 60;
     setTradeTimer(timeInSeconds);
-    setIsTrading(true);
+    setIsTradeTimerOpen(true);
     setStartingTradePrice(livePrice);
-    setIsTradeCompleted(false);
     setTradeResult({ value: null, type: null });
     
     // Show toast notification
@@ -154,48 +156,37 @@ const CoinDetailPage = () => {
     });
   };
   
-  // Timer effect for counting down trade time
-  useEffect(() => {
-    if (!isTrading || tradeTimer <= 0) return;
+  const handleTradeComplete = (finalPrice: number) => {
+    // Calculate profit/loss based on direction and price difference
+    const priceDifference = finalPrice - startingTradePrice;
+    const isProfit = (direction === 'Call' && priceDifference > 0) || 
+                     (direction === 'Put' && priceDifference < 0);
     
-    const interval = setInterval(() => {
-      setTradeTimer(prev => {
-        if (prev <= 1) {
-          clearInterval(interval);
-          // Trade completed
-          const priceDifference = livePrice - startingTradePrice;
-          const isProfit = (direction === 'Call' && priceDifference > 0) || 
-                           (direction === 'Put' && priceDifference < 0);
-          
-          // Calculate profit/loss amount (simplified)
-          const amount = parseFloat(tradeAmount);
-          const result = isProfit 
-            ? Math.abs(amount * 0.95) // 95% profit
-            : -Math.abs(amount); // 100% loss
-            
-          setTradeResult({
-            value: Math.abs(result),
-            type: isProfit ? 'Profit' : 'Loss'
-          });
-          
-          setIsTrading(false);
-          setIsTradeCompleted(true);
-          
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
+    // Calculate profit/loss amount (simplified)
+    const amount = parseFloat(tradeAmount);
+    const result = isProfit 
+      ? Math.abs(amount * 0.95) // 95% profit
+      : -Math.abs(amount); // 100% loss
+      
+    setTradeResult({
+      value: Math.abs(result),
+      type: isProfit ? 'Profit' : 'Loss'
+    });
     
-    return () => clearInterval(interval);
-  }, [isTrading, tradeTimer, direction, livePrice, startingTradePrice, tradeAmount]);
+    // Show result toast
+    toast({
+      title: isProfit ? "Trade Profit" : "Trade Loss",
+      description: `Your ${direction} trade resulted in a ${isProfit ? "profit" : "loss"} of ₹${Math.abs(result)}`,
+      variant: isProfit ? "default" : "destructive",
+    });
+  };
 
   const predefinedAmounts = ['600', '1000', '2000', '3000', '5000', '10000'];
   
   const closeModal = () => {
     setIsBuyModalOpen(false);
     setIsSellModalOpen(false);
-    setIsTradeCompleted(false);
+    setIsTradeTimerOpen(false);
   };
   
   // Toggle fullscreen chart view
@@ -214,68 +205,6 @@ const CoinDetailPage = () => {
     window.addEventListener('keydown', handleEscKey);
     return () => window.removeEventListener('keydown', handleEscKey);
   }, [isChartFullscreen]);
-  
-  // Trade Timer Dialog
-  const TradeTimerDialog = () => (
-    <Dialog open={isTrading || isTradeCompleted} onOpenChange={(open) => !open && setIsTradeCompleted(false)}>
-      <DialogContent className="bg-[#1E2032] border-none max-w-[300px] rounded-2xl text-white">
-        <div className="flex flex-col items-center justify-center py-8">
-          {isTrading ? (
-            <>
-              <div className="relative w-36 h-36 mb-4">
-                <svg className="w-full h-full" viewBox="0 0 100 100">
-                  <circle 
-                    cx="50" 
-                    cy="50" 
-                    r="45" 
-                    fill="transparent" 
-                    stroke="#2C2F3E" 
-                    strokeWidth="8"
-                  />
-                  <circle 
-                    cx="50" 
-                    cy="50" 
-                    r="45" 
-                    fill="transparent" 
-                    stroke="#0E6FFF" 
-                    strokeWidth="8" 
-                    strokeDasharray="283" 
-                    strokeDashoffset={283 - (283 * (tradeTimer / (parseInt(selectedTimePeriod.replace('min', '')) * 60)))}
-                    transform="rotate(-90 50 50)"
-                  />
-                </svg>
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="text-5xl font-bold">{tradeTimer}</span>
-                </div>
-              </div>
-              <Button 
-                variant="outline" 
-                className="mt-4 px-8 py-2 rounded-full text-gray-400 border-gray-700"
-                onClick={() => setIsTrading(false)}
-              >
-                Cancel
-              </Button>
-            </>
-          ) : (
-            // Result display
-            <>
-              <div className={`text-5xl font-bold mb-3 ${
-                tradeResult.type === 'Profit' ? 'text-market-increase' : 'text-market-decrease'
-              }`}>
-                {tradeResult.type === 'Profit' ? '+' : '-'}{tradeResult.value}
-              </div>
-              <Button 
-                className="mt-4 px-8 py-2 w-full bg-gray-700 hover:bg-gray-600 text-white rounded-full"
-                onClick={() => setIsTradeCompleted(false)}
-              >
-                Go to Home
-              </Button>
-            </>
-          )}
-        </div>
-      </DialogContent>
-    </Dialog>
-  );
   
   return (
     <MobileLayout showBackButton title={crypto.name} noScroll={isChartFullscreen}>
@@ -602,8 +531,16 @@ const CoinDetailPage = () => {
         </DialogContent>
       </Dialog>
       
-      {/* Trade Timer Dialog */}
-      <TradeTimerDialog />
+      {/* Trade Timer Component */}
+      <TradeTimer
+        open={isTradeTimerOpen}
+        onClose={closeModal}
+        duration={tradeTimer}
+        direction={direction}
+        startPrice={startingTradePrice}
+        currentPrice={livePrice}
+        onComplete={handleTradeComplete}
+      />
     </MobileLayout>
   );
 };
