@@ -86,7 +86,7 @@ const TradeTimer: React.FC<TradeTimerProps> = ({
     <Dialog open={open} onOpenChange={(open) => !open && handleClose()}>
       <DialogContent className="bg-[#1E2032] border-none max-w-[300px] rounded-2xl text-white">
         {isCompleted ? (
-          // Result display styled like reference image
+          // Result display styled like timer modal
           <div className="flex flex-col items-center justify-center py-10 relative">
             <div className="absolute top-2 right-2">
               <Button 
@@ -107,7 +107,7 @@ const TradeTimer: React.FC<TradeTimerProps> = ({
             </div>
             
             <Button 
-              className="w-full py-6 px-4 text-lg rounded-lg bg-slate-700 hover:bg-slate-600"
+              className="w-full py-6 px-4 text-lg rounded-lg bg-[#2C2F3E] hover:bg-[#3A3E52] border-none"
               onClick={handleClose}
             >
               Go to Home
