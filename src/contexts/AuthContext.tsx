@@ -1,7 +1,7 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
 import { toast } from "@/components/ui/use-toast";
-import { apiRequest, endpoints } from "@/services/api";
+import { apiRequest, endpoints, getGeneralSettings } from "@/services/api";
 
 type User = {
   name?: string;
@@ -11,18 +11,27 @@ type User = {
   fixed?: string;
   parent?: string;
   referral_code?: string;
-  invite_code?: string;  // Added missing property
-  id?: string;           // Added missing property
+  invite_code?: string;
+  id?: string;
   salary?: string;
   rank?: string;
   account_holder_name?: string;
   account_number?: string;
   account_ifsc?: string;
-  bank_number?: string;  // Added missing property
-  bank_ifsc?: string;    // Added missing property
   token: string;
   yesterday_income?: string;
 };
+
+interface GeneralSettings {
+  min_withdrawal: string;
+  min_deposit: string;
+  level_1_commission: string;
+  level_2_commission: string;
+  level_3_commission: string;
+  signup_bonus: string;
+  min_trade: string;
+  daily_profit: string;
+}
 
 interface AuthContextType {
   user: User | null;
@@ -32,6 +41,8 @@ interface AuthContextType {
   register: (phone: string, email: string, password: string, confirm_password: string) => Promise<boolean>;
   logout: () => void;
   updateProfile: () => Promise<boolean>;
+  generalSettings: GeneralSettings | null;
+  loadGeneralSettings: () => Promise<GeneralSettings | null>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -40,6 +51,26 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [profileUpdateInProgress, setProfileUpdateInProgress] = useState(false);
+  const [generalSettings, setGeneralSettings] = useState<GeneralSettings | null>(null);
+  
+  // Load general settings
+  const loadGeneralSettings = useCallback(async (): Promise<GeneralSettings | null> => {
+    try {
+      const token = localStorage.getItem('auth_token');
+      if (!token) return null;
+      
+      const response = await getGeneralSettings(token);
+      
+      if (response.status && response.data) {
+        setGeneralSettings(response.data);
+        return response.data;
+      }
+      return null;
+    } catch (error) {
+      console.error('Failed to load general settings:', error);
+      return null;
+    }
+  }, []);
   
   // Memoize the updateProfile function to prevent unnecessary re-renders
   const updateProfile = useCallback(async (): Promise<boolean> => {
@@ -57,6 +88,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       
       if (data.status) {
         setUser(data.data);
+        
+        // Also load general settings
+        await loadGeneralSettings();
         return true;
       } else {
         if (data.http_code === 401) {
@@ -71,7 +105,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     } finally {
       setProfileUpdateInProgress(false);
     }
-  }, [profileUpdateInProgress]);
+  }, [profileUpdateInProgress, loadGeneralSettings]);
   
   // Check for stored token on initial load
   useEffect(() => {
@@ -83,6 +117,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           
           if (data.status) {
             setUser(data.data);
+            // Load general settings during initial auth check
+            await loadGeneralSettings();
           } else {
             // Token invalid, clear it
             localStorage.removeItem('auth_token');
@@ -98,7 +134,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     };
     
     checkAuth();
-  }, []);
+  }, [loadGeneralSettings]);
   
   const login = async (phone: string, password: string): Promise<boolean> => {
     setIsLoading(true);
@@ -108,6 +144,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (data.status) {
         localStorage.setItem('auth_token', data.data.token);
         setUser(data.data);
+        
+        // Explicitly call updateProfile after login
+        await updateProfile();
+        
         toast({
           title: "Login successful",
           description: "Welcome back!",
@@ -183,6 +223,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const logout = () => {
     localStorage.removeItem('auth_token');
     setUser(null);
+    setGeneralSettings(null);
     toast({
       title: "Logged out",
       description: "You have been logged out successfully",
@@ -199,7 +240,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         login, 
         register, 
         logout,
-        updateProfile
+        updateProfile,
+        generalSettings,
+        loadGeneralSettings
       }}
     >
       {children}

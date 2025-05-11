@@ -1,4 +1,3 @@
-
 // API endpoints for our application
 const API_BASE = '/backend/restapi';
 
@@ -15,6 +14,8 @@ export const endpoints = {
   getTransactions: `${API_BASE}/transactions`,
   getDepositRecords: `${API_BASE}/get_deposit_records`,
   getWithdrawRecords: `${API_BASE}/get_withdraw_records`,
+  getTeamDetails: `${API_BASE}/get_team_details`,
+  getGeneralSettings: `${API_BASE}/get_general_settings`,
 };
 
 // Function to handle API requests
@@ -85,4 +86,14 @@ export const getDepositRecords = async (token: string) => {
 
 export const getWithdrawRecords = async (token: string) => {
   return apiRequest(endpoints.getWithdrawRecords, 'POST', { token });
+};
+
+// Team API functions
+export const getTeamDetails = async (token: string) => {
+  return apiRequest(endpoints.getTeamDetails, 'POST', { token });
+};
+
+// General settings API functions
+export const getGeneralSettings = async (token: string) => {
+  return apiRequest(endpoints.getGeneralSettings, 'POST', { token });
 };

@@ -15,14 +15,14 @@ interface InvitePopupProps {
 const InvitePopup = ({ isOpen, onClose }: InvitePopupProps) => {
   const [copied, setCopied] = useState(false);
   const [inviteLink, setInviteLink] = useState("");
-  const { user } = useAuth();
+  const { user, generalSettings } = useAuth();
   const { toast } = useToast();
   
   useEffect(() => {
     if (isOpen && user) {
       // Create invite link based on user details
       const baseUrl = window.location.origin;
-      const referralCode = user.invite_code || user.id || "NEXBIT";
+      const referralCode = user.invite_code || user.referral_code || user.id || "NEXBIT";
       setInviteLink(`${baseUrl}/register?ref=${referralCode}`);
     }
   }, [isOpen, user]);
@@ -57,7 +57,12 @@ const InvitePopup = ({ isOpen, onClose }: InvitePopupProps) => {
     }
   };
   
-  const referralCode = user?.invite_code || "NEXBIT";
+  const referralCode = user?.invite_code || user?.referral_code || "NEXBIT";
+  
+  // Get commission rates from general settings or use default values
+  const level1Commission = generalSettings?.level_1_commission || "10";
+  const level2Commission = generalSettings?.level_2_commission || "5";
+  const level3Commission = generalSettings?.level_3_commission || "2";
   
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -149,15 +154,15 @@ const InvitePopup = ({ isOpen, onClose }: InvitePopupProps) => {
             <div className="grid grid-cols-3 gap-2 mt-2">
               <div className="bg-blue-50/5 rounded-lg p-2 border border-blue-200/20">
                 <p className="text-xs text-muted-foreground">Level 1</p>
-                <p className="text-lg font-bold text-primary">10%</p>
+                <p className="text-lg font-bold text-primary">{level1Commission}%</p>
               </div>
               <div className="bg-blue-50/5 rounded-lg p-2 border border-blue-200/20">
                 <p className="text-xs text-muted-foreground">Level 2</p>
-                <p className="text-lg font-bold text-primary">5%</p>
+                <p className="text-lg font-bold text-primary">{level2Commission}%</p>
               </div>
               <div className="bg-blue-50/5 rounded-lg p-2 border border-blue-200/20">
                 <p className="text-xs text-muted-foreground">Level 3</p>
-                <p className="text-lg font-bold text-primary">2%</p>
+                <p className="text-lg font-bold text-primary">{level3Commission}%</p>
               </div>
             </div>
           </div>
