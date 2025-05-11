@@ -3,7 +3,7 @@ declare interface Cryptocurrency {
   id: string;
   name: string;
   symbol: string;
-  binance_symbol?: string;
+  binance_symbol: string;
   price: number;
   change: number;
   logo: string;
@@ -13,6 +13,8 @@ declare interface Cryptocurrency {
   picks?: string;
   home?: string;
   status?: string;
+  created_at?: string;
+  updated_at?: string;
 }
 
 declare interface CryptoMarketData {

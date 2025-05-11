@@ -19,6 +19,7 @@ export const endpoints = {
   getTeamDetails: `${API_BASE}/get_team_details`,
   getGeneralSettings: `${API_BASE}/get_general_settings`,
   getTradeRecords: `${API_BASE}/get_trade`,
+  getCoinDetails: `${API_BASE}/get_coin_details`,
   // Binance API endpoints
   getBinancePrice: `${BINANCE_API}/ticker/price`,
   getBinanceKlines: `${BINANCE_API}/klines`,
@@ -75,14 +76,24 @@ export const getMarketData = async (token: string) => {
   return apiRequest(endpoints.getMarket, 'POST', { token });
 };
 
-// Binance API functions
-export const getBinancePrice = async (symbol: string) => {
-  return externalApiRequest(endpoints.getBinancePrice, { symbol });
+export const getCoinDetails = async (token: string, coinId: string) => {
+  return apiRequest(endpoints.getCoinDetails, 'POST', { token, coinId });
 };
 
-export const getBinanceKlines = async (symbol: string, interval: string, limit: string) => {
+// Binance API functions
+export const getBinancePrice = async (binanceSymbol: string) => {
+  if (!binanceSymbol) {
+    throw new Error('No Binance symbol provided');
+  }
+  return externalApiRequest(endpoints.getBinancePrice, { symbol: binanceSymbol });
+};
+
+export const getBinanceKlines = async (binanceSymbol: string, interval: string, limit: string) => {
+  if (!binanceSymbol) {
+    throw new Error('No Binance symbol provided');
+  }
   return externalApiRequest(endpoints.getBinanceKlines, { 
-    symbol, 
+    symbol: binanceSymbol, 
     interval, 
     limit 
   });
