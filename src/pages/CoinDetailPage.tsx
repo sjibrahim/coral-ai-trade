@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import MobileLayout from '@/components/layout/MobileLayout';
@@ -12,7 +11,7 @@ import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { mockCryptoCurrencies } from '@/data/mockData';
 import { ArrowUp, ArrowDown, X, Info } from 'lucide-react';
-import { getBinancePrice, getBinanceKlines } from '@/services/api';
+import { getBinancePrice, getBinanceKlines, getMarketData } from '@/services/api';
 import { useToast } from '@/components/ui/use-toast';
 
 const CoinDetailPage = () => {
@@ -33,24 +32,61 @@ const CoinDetailPage = () => {
     value: number | null;
     type: 'Profit' | 'Loss' | null;
   }>({ value: null, type: null });
+  const [marketData, setMarketData] = useState<Cryptocurrency[]>([]);
   
   // Use the first crypto from the list for demo or find by ID
-  const crypto = coinId 
-    ? mockCryptoCurrencies.find(c => c.id.toString() === coinId) || mockCryptoCurrencies[0]
-    : mockCryptoCurrencies[0];
-  
+  const [crypto, setCrypto] = useState<Cryptocurrency>(mockCryptoCurrencies[0]);
+
   // Live price state
   const [livePrice, setLivePrice] = useState(crypto.price);
   const [priceChange, setPriceChange] = useState(crypto.change);
   const [startingTradePrice, setStartingTradePrice] = useState(0);
 
+  // Fetch market data on load
+  useEffect(() => {
+    const fetchMarketData = async () => {
+      try {
+        const token = localStorage.getItem('auth_token');
+        if (token) {
+          const response = await getMarketData(token);
+          if (response.status && response.data) {
+            setMarketData(response.data);
+            
+            // Find the current crypto in the market data
+            if (coinId) {
+              const currentCrypto = response.data.find((c: Cryptocurrency) => c.id.toString() === coinId);
+              if (currentCrypto) {
+                setCrypto(currentCrypto);
+                setLivePrice(parseFloat(currentCrypto.price.toString()));
+              }
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching market data:', error);
+        // Fallback to mock data
+        if (coinId) {
+          const mockCrypto = mockCryptoCurrencies.find(c => c.id.toString() === coinId);
+          if (mockCrypto) {
+            setCrypto(mockCrypto);
+            setLivePrice(mockCrypto.price);
+          }
+        }
+      }
+    };
+    
+    fetchMarketData();
+  }, [coinId]);
+
   // Get the binance symbol for the current crypto
-  const binanceSymbol = crypto.binance_symbol || `${crypto.symbol}USDT`;
+  const getBinanceSymbol = useCallback(() => {
+    return crypto.binance_symbol || `${crypto.symbol}USDT`;
+  }, [crypto]);
 
   // Fetch Binance data
   const fetchBinanceData = useCallback(async () => {
     try {
-      const symbol = binanceSymbol;
+      const symbol = getBinanceSymbol();
       const priceData = await getBinancePrice(symbol);
       if (priceData && priceData.price) {
         const newPrice = parseFloat(priceData.price);
@@ -80,7 +116,7 @@ const CoinDetailPage = () => {
       // Fallback to mock data
       simulatePriceUpdates();
     }
-  }, [binanceSymbol, livePrice]);
+  }, [getBinanceSymbol, livePrice]);
   
   // Simulate price updates if Binance API fails
   const simulatePriceUpdates = useCallback(() => {
@@ -290,11 +326,11 @@ const CoinDetailPage = () => {
                       <div className="grid grid-cols-2 gap-4">
                         <div>
                           <p className="text-sm text-gray-400">Market Cap</p>
-                          <p className="font-medium">${(livePrice * 19000000).toLocaleString(undefined, { maximumFractionDigits: 0 })}</p>
+                          <p className="font-medium">${crypto.market_cap ? parseFloat(crypto.market_cap).toLocaleString(undefined, { maximumFractionDigits: 0 }) : (livePrice * 19000000).toLocaleString(undefined, { maximumFractionDigits: 0 })}</p>
                         </div>
                         <div>
                           <p className="text-sm text-gray-400">24h Volume</p>
-                          <p className="font-medium">${(livePrice * 800000).toLocaleString(undefined, { maximumFractionDigits: 0 })}</p>
+                          <p className="font-medium">${crypto.volume_24h ? parseFloat(crypto.volume_24h).toLocaleString(undefined, { maximumFractionDigits: 0 }) : (livePrice * 800000).toLocaleString(undefined, { maximumFractionDigits: 0 })}</p>
                         </div>
                         <div>
                           <p className="text-sm text-gray-400">Circulating Supply</p>

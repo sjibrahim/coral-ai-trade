@@ -34,8 +34,15 @@ const TradeTimer: React.FC<TradeTimerProps> = ({
   const circumference = 2 * Math.PI * 45; // 45 is the radius of the circle
 
   useEffect(() => {
-    if (!open || timeRemaining <= 0) return;
-
+    if (!open) return;
+    
+    // Reset state when opening
+    if (timeRemaining === 0) {
+      setTimeRemaining(duration);
+      setIsCompleted(false);
+      setResult({ value: null, type: null });
+    }
+    
     const interval = setInterval(() => {
       setTimeRemaining((prev) => {
         if (prev <= 1) {
@@ -60,7 +67,7 @@ const TradeTimer: React.FC<TradeTimerProps> = ({
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [open, timeRemaining, direction, currentPrice, startPrice, duration, onComplete]);
+  }, [open, duration, direction, currentPrice, startPrice, onComplete]);
 
   return (
     <Dialog open={open} onOpenChange={(open) => !open && onClose()}>
