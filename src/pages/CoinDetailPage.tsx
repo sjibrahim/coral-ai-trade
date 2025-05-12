@@ -491,7 +491,7 @@ const CoinDetailPage = () => {
         )}
         
         {/* Fixed Buy/Sell buttons at bottom - always visible, even in fullscreen */}
-        <div className={`fixed bottom-0 left-0 right-0 p-4 pb-safe bg-[#0A0B14] border-t border-[#222] grid grid-cols-2 gap-3 z-10 ${isChartFullscreen ? 'fullscreen-actions' : ''}`}>
+        <div className={`fixed bottom-0 left-0 right-0 p-4 pb-safe bg-[#0A0B14] border-t border-[#222] grid grid-cols-2 gap-3 z-10 ml-0 ${isChartFullscreen ? 'fullscreen-actions' : ''}`}>
           <Button 
             className="py-5 bg-market-increase hover:bg-market-increase/90 text-white font-semibold rounded-xl"
             onClick={handleBuyClick}
