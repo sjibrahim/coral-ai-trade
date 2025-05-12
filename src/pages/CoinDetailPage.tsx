@@ -17,7 +17,7 @@ import { useToast } from '@/hooks/use-toast';
 
 const CoinDetailPage = () => {
   const { toast } = useToast();
-  const { user } = useAuth();
+  const { user, updateProfile } = useAuth();
   const { id: coinId } = useParams();
   const location = useLocation();
   const cachedCrypto = location.state?.crypto; // Use cached data if available
@@ -341,9 +341,12 @@ const CoinDetailPage = () => {
     if (tradeApiResponse) {
       // Update user's wallet with the new balance from the API
       if (user && typeof tradeApiResponse.new_balance === 'number') {
-        // We would normally update the user's wallet in the AuthContext
-        // This is just a placeholder for demonstration
-        console.log('New wallet balance:', tradeApiResponse.new_balance);
+        // Update the user's profile to get the latest wallet balance
+        updateProfile().then(() => {
+          console.log('Profile updated after trade completion, new balance:', tradeApiResponse.new_balance);
+        }).catch(error => {
+          console.error('Failed to update profile after trade:', error);
+        });
       }
       
       // Show result toast based on API response
@@ -358,7 +361,7 @@ const CoinDetailPage = () => {
       // Show result toast
       toast({
         title: isProfit ? "Trade Profit" : "Trade Loss",
-        description: `Your ${direction} trade resulted in a ${isProfit ? "profit" : "loss"} of $${resultAmount}`,
+        description: `Your ${direction} trade resulted in a ${isProfit ? "profit" : "loss"} of ₹${resultAmount}`,
         variant: isProfit ? "default" : "destructive",
       });
     } else {
@@ -382,7 +385,7 @@ const CoinDetailPage = () => {
       // Show result toast
       toast({
         title: isProfit ? "Trade Profit" : "Trade Loss",
-        description: `Your ${direction} trade resulted in a ${isProfit ? "profit" : "loss"} of $${Math.abs(result)}`,
+        description: `Your ${direction} trade resulted in a ${isProfit ? "profit" : "loss"} of ₹${Math.abs(result)}`,
         variant: isProfit ? "default" : "destructive",
       });
     }

@@ -2,7 +2,8 @@
 import React, { useEffect, useState } from 'react';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { X, CircleArrowRight, Check } from 'lucide-react';
+import { X, Check, IndianRupee } from 'lucide-react';
+import { useAuth } from "@/contexts/AuthContext";
 
 interface TradeTimerProps {
   open: boolean;
@@ -36,6 +37,8 @@ const TradeTimer: React.FC<TradeTimerProps> = ({
     value: number | null;
     type: 'Profit' | 'Loss' | null;
   }>({ value: null, type: null });
+  const [endPrice, setEndPrice] = useState(currentPrice);
+  const { updateProfile } = useAuth();
   
   // Calculate the progress for the circular timer
   const progress = (duration - timeRemaining) / duration;
@@ -56,6 +59,7 @@ const TradeTimer: React.FC<TradeTimerProps> = ({
           if (prev <= 1) {
             clearInterval(interval);
             setIsCompleted(true);
+            setEndPrice(currentPrice);
             
             // When timer completes, check if we have an API response
             if (tradeApiResponse) {
@@ -68,6 +72,13 @@ const TradeTimer: React.FC<TradeTimerProps> = ({
               setResult({
                 value: resultValue,
                 type: isProfit ? 'Profit' : 'Loss'
+              });
+              
+              // Update the user's profile to get the latest wallet balance
+              updateProfile().then(() => {
+                console.log('Profile updated after trade completion');
+              }).catch(error => {
+                console.error('Failed to update profile after trade:', error);
               });
               
               console.log('Trade completed with result:', {
@@ -96,7 +107,7 @@ const TradeTimer: React.FC<TradeTimerProps> = ({
 
       return () => clearInterval(interval);
     }
-  }, [open, duration, direction, currentPrice, startPrice, onComplete, isCompleted, timeRemaining, tradeApiResponse]);
+  }, [open, duration, direction, currentPrice, startPrice, onComplete, isCompleted, timeRemaining, tradeApiResponse, updateProfile]);
 
   // Reset state when modal is closed
   const handleClose = () => {
@@ -109,11 +120,15 @@ const TradeTimer: React.FC<TradeTimerProps> = ({
     }, 300);
   };
 
+  // Calculate price difference and percentage
+  const priceDifference = endPrice - startPrice;
+  const percentageChange = startPrice > 0 ? (priceDifference / startPrice) * 100 : 0;
+
   return (
     <Dialog open={open} onOpenChange={(open) => !open && handleClose()}>
       <DialogContent className="bg-[#1E2032] border-none max-w-[300px] mx-auto rounded-2xl text-white">
         {isCompleted ? (
-          // Minimal trade result display - similar to reference image
+          // Trade result display redesigned to match reference image
           <div className="flex flex-col items-center justify-center py-6 relative">
             {/* Close button */}
             <div className="absolute top-2 right-2">
@@ -127,18 +142,56 @@ const TradeTimer: React.FC<TradeTimerProps> = ({
               </Button>
             </div>
             
-            {/* Simple result display - just the number with + or - */}
-            <div className="py-8">
-              <h2 className={`text-6xl font-bold ${
-                result.type === 'Profit' ? 'text-green-500' : 'text-red-500'
-              }`}>
-                {result.type === 'Profit' ? '+' : '-'}{Math.floor(result.value || 0)}
-              </h2>
+            {/* Result display with more details */}
+            <div className="w-full px-6 py-6">
+              {/* Profit/Loss indicator */}
+              <div className="flex justify-center mb-4">
+                <div className={`rounded-full p-2 ${
+                  result.type === 'Profit' ? 'bg-green-500/20' : 'bg-red-500/20'
+                }`}>
+                  {result.type === 'Profit' ? (
+                    <Check className="h-5 w-5 text-green-500" />
+                  ) : (
+                    <X className="h-5 w-5 text-red-500" />
+                  )}
+                </div>
+              </div>
+              
+              {/* Amount with INR symbol */}
+              <div className="text-center">
+                <h2 className={`text-5xl font-bold flex items-center justify-center gap-1 ${
+                  result.type === 'Profit' ? 'text-green-500' : 'text-red-500'
+                }`}>
+                  <IndianRupee className="h-7 w-7" />
+                  <span>{Math.floor(result.value || 0)}</span>
+                </h2>
+                <p className="text-sm text-gray-400 mt-1">
+                  {result.type === 'Profit' ? 'Profit' : 'Loss'}
+                </p>
+              </div>
+              
+              {/* Price details */}
+              <div className="mt-4 pt-4 border-t border-gray-800/50">
+                <div className="flex justify-between text-sm mb-2">
+                  <span className="text-gray-400">Start Price:</span>
+                  <span className="text-gray-200">₹{startPrice.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between text-sm mb-2">
+                  <span className="text-gray-400">End Price:</span>
+                  <span className="text-gray-200">₹{endPrice.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-400">Change:</span>
+                  <span className={`${priceDifference >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                    {priceDifference >= 0 ? '+' : ''}{priceDifference.toFixed(2)} ({percentageChange.toFixed(2)}%)
+                  </span>
+                </div>
+              </div>
             </div>
             
-            {/* Simplified action button */}
+            {/* Home button - made smaller and more elegant */}
             <Button 
-              className="w-[calc(100%-2rem)] mx-auto h-12 rounded-lg bg-white/10 hover:bg-white/20 border-white/20 text-white"
+              className="w-[calc(100%-3rem)] mx-auto h-10 rounded-lg bg-white/10 hover:bg-white/20 border-white/20 text-white"
               onClick={handleClose}
             >
               Go to Home
@@ -175,6 +228,11 @@ const TradeTimer: React.FC<TradeTimerProps> = ({
             <div className="text-center mt-2">
               <p className="text-gray-400">Starting price: ₹{startPrice.toFixed(2)}</p>
               <p className="text-gray-400">Current price: ₹{currentPrice.toFixed(2)}</p>
+              <p className="text-gray-400 mt-1">
+                <span className={`${currentPrice - startPrice >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                  {currentPrice - startPrice >= 0 ? '+' : ''}{(currentPrice - startPrice).toFixed(2)}
+                </span>
+              </p>
             </div>
             <Button 
               variant="outline" 
