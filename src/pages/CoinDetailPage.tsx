@@ -663,7 +663,7 @@ const CoinDetailPage = () => {
             <div className="space-y-4">
               <div className="flex justify-between items-center">
                 <p className="text-gray-400 text-sm">Available Balance</p>
-                <p className="text-gray-200 text-sm font-medium">${user?.wallet}</p>
+                <p className="text-gray-200 text-sm font-medium">₹{user?.wallet}</p>
               </div>
               
               {/* Trade Amount Input */}

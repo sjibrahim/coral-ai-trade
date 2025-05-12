@@ -155,7 +155,6 @@ const TradeTimer: React.FC<TradeTimerProps> = ({
               result.type === 'Profit' ? 'text-market-increase' : 'text-market-decrease'
             }`}>
               <div className="relative mr-1">
-                <CircleDollarSign className="h-8 w-8" />
                 <div className="absolute inset-0 flex items-center justify-center text-xs font-bold">
                   {result.type === 'Profit' ? '+' : '-'}
                 </div>
