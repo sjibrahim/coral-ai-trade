@@ -491,7 +491,7 @@ const CoinDetailPage = () => {
         )}
         
         {/* Fixed Buy/Sell buttons at bottom - always visible, even in fullscreen */}
-        <div className={`fixed bottom-0 left-0 right-0 p-4 pb-safe bg-[#0A0B14] border-t border-[#222] grid grid-cols-2 gap-3 z-10 ml-0 ${isChartFullscreen ? 'fullscreen-actions' : ''}`}>
+        <div className={`fixed bottom-0 left-0 right-0 p-4 pb-safe bg-[#0A0B14] border-t border-[#222] grid grid-cols-2 gap-3 z-10 ${isChartFullscreen ? 'fullscreen-actions' : ''}`}>
           <Button 
             className="py-5 bg-market-increase hover:bg-market-increase/90 text-white font-semibold rounded-xl"
             onClick={handleBuyClick}
@@ -509,7 +509,7 @@ const CoinDetailPage = () => {
       
       {/* Redesigned Buy/Sell Modal */}
       <Dialog open={isBuyModalOpen || isSellModalOpen} onOpenChange={closeModal}>
-        <DialogContent className="bg-gradient-to-b from-[#1E2032] to-[#141525] border-none shadow-xl p-0 max-w-sm mx-auto rounded-2xl overflow-hidden m-5">
+        <DialogContent className="bg-gradient-to-b from-[#1E2032] to-[#141525] border-none shadow-xl p-0 max-w-sm mx-auto rounded-2xl overflow-hidden m-0">
           {/* Modal Header with Title for accessibility */}
           <DialogTitle className="sr-only">
             {direction === 'Call' ? 'Buy' : 'Sell'} {crypto.symbol}
@@ -576,7 +576,7 @@ const CoinDetailPage = () => {
             <div className="space-y-4">
               <div className="flex justify-between items-center">
                 <p className="text-gray-400 text-sm">Available Balance</p>
-                <p className="text-gray-200 text-sm font-medium">₹ ${user?.wallet}</p>
+                <p className="text-gray-200 text-sm font-medium">₹{user?.wallet}</p>
               </div>
               
               {/* Trade Amount Input */}
@@ -604,7 +604,7 @@ const CoinDetailPage = () => {
                     }`}
                     onClick={() => setTradeAmount(amount)}
                   >
-                    ${parseInt(amount).toLocaleString()}
+                    ₹{parseInt(amount).toLocaleString()}
                   </button>
                 ))}
               </div>
