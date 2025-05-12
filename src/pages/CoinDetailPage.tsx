@@ -358,7 +358,7 @@ const CoinDetailPage = () => {
       // Show result toast
       toast({
         title: isProfit ? "Trade Profit" : "Trade Loss",
-        description: `Your ${direction} trade resulted in a ${isProfit ? "profit" : "loss"} of $${resultAmount}`,
+        description: `Your ${direction} trade resulted in a ${isProfit ? "profit" : "loss"} of ₹${resultAmount}`,
         variant: isProfit ? "default" : "destructive",
       });
     } else {
@@ -382,7 +382,7 @@ const CoinDetailPage = () => {
       // Show result toast
       toast({
         title: isProfit ? "Trade Profit" : "Trade Loss",
-        description: `Your ${direction} trade resulted in a ${isProfit ? "profit" : "loss"} of $${Math.abs(result)}`,
+        description: `Your ${direction} trade resulted in a ${isProfit ? "profit" : "loss"} of ₹${Math.abs(result)}`,
         variant: isProfit ? "default" : "destructive",
       });
     }
