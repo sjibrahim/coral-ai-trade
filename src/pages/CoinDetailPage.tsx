@@ -283,6 +283,14 @@ const CoinDetailPage = () => {
         });
         return;
       }
+
+      console.log('Attempting to place trade with params:', {
+        amount: trade_amount,
+        symbol,
+        direction: apiDirection === 'call' ? 'buy' : 'put',
+        price: livePrice,
+        time: timeInSeconds
+      });
       
       // Call the trade API
       const response = await placeTrade(
@@ -294,28 +302,29 @@ const CoinDetailPage = () => {
         timeInSeconds
       );
       
-      // Store the API response for later use
+      // Check if the API call was successful
       if (response.success) {
+        // Store the API response for later use
         setTradeApiResponse(response.data);
+        
+        // Set trade parameters for the timer
+        setTradeTimer(timeInSeconds);
+        setStartingTradePrice(livePrice);
+        setIsTradeTimerOpen(true);
+        
+        // Show toast notification
+        toast({
+          title: "Trade Placed",
+          description: `Your ${direction} trade for ${crypto.symbol} has been placed for ${selectedTimePeriod}`,
+        });
       } else {
+        // Show error toast
         toast({
           title: "Error",
           description: response.message || "Failed to place trade",
           variant: "destructive",
         });
-        return;
       }
-      
-      // Set trade parameters for the timer
-      setTradeTimer(timeInSeconds);
-      setStartingTradePrice(livePrice);
-      setIsTradeTimerOpen(true);
-      
-      // Show toast notification
-      toast({
-        title: "Trade Placed",
-        description: `Your ${direction} trade for ${crypto.symbol} has been placed for ${selectedTimePeriod}`,
-      });
     } catch (error) {
       console.error('Error placing trade:', error);
       toast({
@@ -586,7 +595,7 @@ const CoinDetailPage = () => {
       
       {/* Redesigned Buy/Sell Modal */}
       <Dialog open={isBuyModalOpen || isSellModalOpen} onOpenChange={closeModal}>
-        <DialogContent className="bg-gradient-to-b from-[#1E2032] to-[#141525] border-none shadow-xl p-0 max-w-sm mx-auto rounded-2xl overflow-hidden m-0">
+        <DialogContent className="bg-gradient-to-b from-[#1E2032] to-[#141525] border-none shadow-xl p-0 max-w-sm mx-auto rounded-2xl overflow-hidden m-0 ml-0">
           {/* Modal Header with Title for accessibility */}
           <DialogTitle className="sr-only">
             {direction === 'Call' ? 'Buy' : 'Sell'} {crypto.symbol}
@@ -653,12 +662,12 @@ const CoinDetailPage = () => {
             <div className="space-y-4">
               <div className="flex justify-between items-center">
                 <p className="text-gray-400 text-sm">Available Balance</p>
-                <p className="text-gray-200 text-sm font-medium">₹{user?.wallet}</p>
+                <p className="text-gray-200 text-sm font-medium">${user?.wallet}</p>
               </div>
               
               {/* Trade Amount Input */}
               <div className="relative">
-                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-medium">₹</div>
+                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-medium">$</div>
                 <Input
                   className="bg-[#252739] border-none text-white text-xl py-6 pl-8 pr-4 rounded-xl font-medium focus:ring-1 focus:ring-blue-600/50"
                   placeholder="Enter amount"
@@ -681,7 +690,7 @@ const CoinDetailPage = () => {
                     }`}
                     onClick={() => setTradeAmount(amount)}
                   >
-                    ₹{parseInt(amount).toLocaleString()}
+                    ${parseInt(amount).toLocaleString()}
                   </button>
                 ))}
               </div>
@@ -707,7 +716,7 @@ const CoinDetailPage = () => {
                 <div className="text-center">
                   <p className="text-gray-400 text-xs mb-1.5">Investment</p>
                   <p className="font-medium text-sm text-gray-200">
-                    ₹{parseInt(tradeAmount).toLocaleString()}
+                    ${parseInt(tradeAmount).toLocaleString()}
                   </p>
                 </div>
               </div>

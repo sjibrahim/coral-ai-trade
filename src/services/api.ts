@@ -155,7 +155,7 @@ export const getGeneralSettings = async (token: string) => {
   return apiRequest(endpoints.getGeneralSettings, 'POST', { token });
 };
 
-// New function for placing trades
+// Updated function for placing trades with better error handling
 export const placeTrade = async (
   token: string, 
   trade_amount: number, 
@@ -164,12 +164,42 @@ export const placeTrade = async (
   opening_price: number, 
   sell_time: number
 ) => {
-  return apiRequest(endpoints.placeTrade, 'POST', {
-    token,
-    custom_amount: trade_amount,
-    symbol,
-    direction,
-    opening_price,
-    sell_time
-  });
+  try {
+    console.log('Placing trade with params:', { token, trade_amount, symbol, direction, opening_price, sell_time });
+    
+    const result = await apiRequest(endpoints.placeTrade, 'POST', {
+      token,
+      custom_amount: trade_amount,
+      symbol,
+      direction,
+      opening_price,
+      sell_time
+    });
+    
+    console.log('Trade API response:', result);
+    
+    // Check if the response indicates success
+    if (result.success) {
+      return {
+        success: true,
+        message: result.message || "Trade placed successfully",
+        data: result.data
+      };
+    } else {
+      // If API returns failure, format the error
+      return {
+        success: false,
+        message: result.message || "Failed to place trade",
+        data: null
+      };
+    }
+  } catch (error) {
+    console.error('Trade API error:', error);
+    // Handle network or other errors
+    return {
+      success: false,
+      message: "Network error when placing trade. Please try again.",
+      data: null
+    };
+  }
 };
