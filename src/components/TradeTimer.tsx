@@ -1,7 +1,8 @@
+
 import React, { useEffect, useState } from 'react';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { X, CircleArrowRight, Check, CircleDollarSign, Plus, Minus } from 'lucide-react';
+import { X, CircleArrowRight, Check } from 'lucide-react';
 
 interface TradeTimerProps {
   open: boolean;
@@ -112,7 +113,7 @@ const TradeTimer: React.FC<TradeTimerProps> = ({
     <Dialog open={open} onOpenChange={(open) => !open && handleClose()}>
       <DialogContent className="bg-[#1E2032] border-none max-w-[300px] mx-auto rounded-2xl text-white">
         {isCompleted ? (
-          // Completely redesigned result display
+          // Minimal trade result display - similar to reference image
           <div className="flex flex-col items-center justify-center py-6 relative">
             {/* Close button */}
             <div className="absolute top-2 right-2">
@@ -126,67 +127,21 @@ const TradeTimer: React.FC<TradeTimerProps> = ({
               </Button>
             </div>
             
-            {/* Result badge with animated icon */}
-            <div className={`relative mb-4 ${
-              result.type === 'Profit' ? 'text-market-increase' : 'text-market-decrease'
-            }`}>
-              {/* Icon with pulse animation */}
-              <div className="animate-pulse-glow">
-                <div className={`w-20 h-20 rounded-full flex items-center justify-center ${
-                  result.type === 'Profit' 
-                    ? 'bg-market-increase/20' 
-                    : 'bg-market-decrease/20'
-                }`}>
-                  {result.type === 'Profit' 
-                    ? <Check className="h-10 w-10 animate-fade-in" /> 
-                    : <X className="h-10 w-10 animate-fade-in" />
-                  }
-                </div>
-              </div>
+            {/* Simple result display - just the number with + or - */}
+            <div className="py-8">
+              <h2 className={`text-6xl font-bold ${
+                result.type === 'Profit' ? 'text-green-500' : 'text-red-500'
+              }`}>
+                {result.type === 'Profit' ? '+' : '-'}{Math.floor(result.value || 0)}
+              </h2>
             </div>
             
-            {/* Result label */}
-            <div className="text-gray-400 uppercase text-sm tracking-wider mb-2 animate-fade-in">
-              Trade {result.type}
-            </div>
-            
-            {/* Result amount with plus/minus icon inside CircleDollarSign */}
-            <div className={`text-5xl font-bold mb-6 flex items-center animate-fade-in ${
-              result.type === 'Profit' ? 'text-market-increase' : 'text-market-decrease'
-            }`}>
-              <div className="relative mr-1">
-                <div className="absolute inset-0 flex items-center justify-center text-xs font-bold">
-                  {result.type === 'Profit' ? '+' : '-'}
-                </div>
-              </div>
-              <span>{Math.floor(result.value || 0)}</span>
-            </div>
-            
-            {/* Price comparison */}
-            <div className="w-full bg-[#2C2F3E] rounded-lg p-4 mb-6 animate-fade-in">
-              <div className="grid grid-cols-2 gap-4 text-center">
-                <div>
-                  <p className="text-gray-400 text-xs mb-1">Start Price</p>
-                  <p className="font-medium">${startPrice.toFixed(2)}</p>
-                </div>
-                <div>
-                  <p className="text-gray-400 text-xs mb-1">End Price</p>
-                  <p className="font-medium">${currentPrice.toFixed(2)}</p>
-                </div>
-              </div>
-            </div>
-            
-            {/* Action button with icon */}
+            {/* Simplified action button */}
             <Button 
-              className="w-full py-6 px-4 text-lg rounded-lg bg-[#2C2F3E] hover:bg-[#3A3E52] border-none relative overflow-hidden group"
+              className="w-[calc(100%-2rem)] mx-auto h-12 rounded-lg bg-white/10 hover:bg-white/20 border-white/20 text-white"
               onClick={handleClose}
             >
-              <span className="inline-flex items-center">
-                Go to Home 
-                <CircleArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
-              </span>
-              {/* Subtle background pulse animation */}
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]" />
+              Go to Home
             </Button>
           </div>
         ) : (
@@ -218,8 +173,8 @@ const TradeTimer: React.FC<TradeTimerProps> = ({
               </div>
             </div>
             <div className="text-center mt-2">
-              <p className="text-gray-400">Starting price: ${startPrice.toFixed(2)}</p>
-              <p className="text-gray-400">Current price: ${currentPrice.toFixed(2)}</p>
+              <p className="text-gray-400">Starting price: ₹{startPrice.toFixed(2)}</p>
+              <p className="text-gray-400">Current price: ₹{currentPrice.toFixed(2)}</p>
             </div>
             <Button 
               variant="outline" 
