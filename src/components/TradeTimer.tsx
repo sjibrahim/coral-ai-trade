@@ -174,11 +174,11 @@ const TradeTimer: React.FC<TradeTimerProps> = ({
               <div className="mt-4 pt-4 border-t border-gray-800/50">
                 <div className="flex justify-between text-sm mb-2">
                   <span className="text-gray-400">Start Price:</span>
-                  <span className="text-gray-200">₹{startPrice.toFixed(2)}</span>
+                  <span className="text-gray-200">${startPrice.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-sm mb-2">
                   <span className="text-gray-400">End Price:</span>
-                  <span className="text-gray-200">₹{endPrice.toFixed(2)}</span>
+                  <span className="text-gray-200">${endPrice.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-400">Change:</span>
@@ -234,7 +234,7 @@ const TradeTimer: React.FC<TradeTimerProps> = ({
               className="mt-4 px-8 py-2 rounded-full text-gray-400 border-gray-700"
               onClick={handleClose}
             >
-              Cancel
+              Go to home
             </Button>
           </div>
         )}
