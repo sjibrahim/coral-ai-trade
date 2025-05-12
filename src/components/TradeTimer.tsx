@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -68,6 +67,12 @@ const TradeTimer: React.FC<TradeTimerProps> = ({
               setResult({
                 value: resultValue,
                 type: isProfit ? 'Profit' : 'Loss'
+              });
+              
+              console.log('Trade completed with result:', {
+                isProfit,
+                resultValue,
+                tradeApiResponse
               });
             } else {
               // Fallback to calculating from price difference

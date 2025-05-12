@@ -178,18 +178,18 @@ export const placeTrade = async (
     
     console.log('Trade API response:', result);
     
-    // Check if the response indicates success
-    if (result.success) {
+    // Check if the response indicates success - also check for status: true format
+    if (result.success || result.status === true) {
       return {
         success: true,
-        message: result.message || "Trade placed successfully",
+        message: result.message || result.msg || "Trade placed successfully",
         data: result.data
       };
     } else {
       // If API returns failure, format the error
       return {
         success: false,
-        message: result.message || "Failed to place trade",
+        message: result.message || result.msg || "Failed to place trade",
         data: null
       };
     }

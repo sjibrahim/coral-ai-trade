@@ -319,6 +319,7 @@ const CoinDetailPage = () => {
         });
       } else {
         // Show error toast
+        console.error('Trade API error response:', response);
         toast({
           title: "Error",
           description: response.message || "Failed to place trade",
