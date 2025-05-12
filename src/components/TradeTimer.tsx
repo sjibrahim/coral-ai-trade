@@ -12,6 +12,12 @@ interface TradeTimerProps {
   startPrice: number;
   onComplete: (currentPrice: number) => void;
   currentPrice: number;
+  tradeApiResponse?: {
+    status?: 'win' | 'loss';
+    profit?: number;
+    lost_amount?: number;
+    new_balance?: number;
+  } | null;
 }
 
 const TradeTimer: React.FC<TradeTimerProps> = ({
@@ -22,6 +28,7 @@ const TradeTimer: React.FC<TradeTimerProps> = ({
   startPrice,
   onComplete,
   currentPrice,
+  tradeApiResponse = null,
 }) => {
   const [timeRemaining, setTimeRemaining] = useState(duration);
   const [isCompleted, setIsCompleted] = useState(false);
@@ -50,15 +57,29 @@ const TradeTimer: React.FC<TradeTimerProps> = ({
             clearInterval(interval);
             setIsCompleted(true);
             
-            // Determine profit/loss
-            const priceDifference = currentPrice - startPrice;
-            const isProfit = (direction === 'Call' && priceDifference > 0) || 
-                            (direction === 'Put' && priceDifference < 0);
-            
-            setResult({
-              value: Math.abs(priceDifference * 100), // Sample calculation
-              type: isProfit ? 'Profit' : 'Loss'
-            });
+            // When timer completes, check if we have an API response
+            if (tradeApiResponse) {
+              // Use API response to determine profit/loss
+              const isProfit = tradeApiResponse.status === 'win';
+              const resultValue = isProfit 
+                ? (tradeApiResponse.profit || 0)
+                : (tradeApiResponse.lost_amount || 0);
+                
+              setResult({
+                value: resultValue,
+                type: isProfit ? 'Profit' : 'Loss'
+              });
+            } else {
+              // Fallback to calculating from price difference
+              const priceDifference = currentPrice - startPrice;
+              const isProfit = (direction === 'Call' && priceDifference > 0) || 
+                             (direction === 'Put' && priceDifference < 0);
+              
+              setResult({
+                value: Math.abs(priceDifference * 100), // Sample calculation
+                type: isProfit ? 'Profit' : 'Loss'
+              });
+            }
             
             onComplete(currentPrice);
             return 0;
@@ -69,7 +90,7 @@ const TradeTimer: React.FC<TradeTimerProps> = ({
 
       return () => clearInterval(interval);
     }
-  }, [open, duration, direction, currentPrice, startPrice, onComplete, isCompleted, timeRemaining]);
+  }, [open, duration, direction, currentPrice, startPrice, onComplete, isCompleted, timeRemaining, tradeApiResponse]);
 
   // Reset state when modal is closed
   const handleClose = () => {
@@ -84,7 +105,7 @@ const TradeTimer: React.FC<TradeTimerProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={(open) => !open && handleClose()}>
-      <DialogContent className="bg-[#1E2032] border-none max-w-[300px] rounded-2xl text-white">
+      <DialogContent className="bg-[#1E2032] border-none max-w-[300px] mx-auto rounded-2xl text-white">
         {isCompleted ? (
           // Completely redesigned result display
           <div className="flex flex-col items-center justify-center py-6 relative">

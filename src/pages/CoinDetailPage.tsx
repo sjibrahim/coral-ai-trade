@@ -12,8 +12,8 @@ import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { mockCryptoCurrencies } from '@/data/mockData';
 import { ArrowUp, ArrowDown, X, Info } from 'lucide-react';
-import { getBinancePrice, getBinanceKlines, getMarketData, getCoin } from '@/services/api';
-import { useToast } from '@/components/ui/use-toast';
+import { getBinancePrice, getBinanceKlines, getMarketData, getCoin, placeTrade } from '@/services/api';
+import { useToast } from '@/hooks/use-toast';
 
 const CoinDetailPage = () => {
   const { toast } = useToast();
@@ -248,6 +248,8 @@ const CoinDetailPage = () => {
     low: item.low || item.price * 0.995,
   }));
 
+  const [tradeApiResponse, setTradeApiResponse] = useState<any>(null);
+  
   const handleBuyClick = () => {
     setDirection('Call');
     setIsBuyModalOpen(true);
@@ -258,47 +260,122 @@ const CoinDetailPage = () => {
     setIsSellModalOpen(true);
   };
   
-  const handleConfirmTrade = () => {
+  const handleConfirmTrade = async () => {
     // Close modals
     setIsBuyModalOpen(false);
     setIsSellModalOpen(false);
     
-    // Set trade parameters
-    const timeInSeconds = parseInt(selectedTimePeriod.replace('min', '')) * 60;
-    setTradeTimer(timeInSeconds);
-    setStartingTradePrice(livePrice);
-    setIsTradeTimerOpen(true);
-    
-    // Show toast notification
-    toast({
-      title: "Trade Placed",
-      description: `Your ${direction} trade for ${crypto.symbol} has been placed for ${selectedTimePeriod}`,
-    });
+    try {
+      // Get time period in seconds
+      const timeInSeconds = parseInt(selectedTimePeriod.replace('min', '')) * 60;
+      
+      // Prepare parameters for the API call
+      const token = localStorage.getItem('auth_token');
+      const trade_amount = parseFloat(tradeAmount);
+      const symbol = crypto.symbol;
+      const apiDirection = direction.toLowerCase(); // Convert 'Call' to 'buy', 'Put' to 'put'
+      
+      if (!token) {
+        toast({
+          title: "Error",
+          description: "You must be logged in to place trades",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      // Call the trade API
+      const response = await placeTrade(
+        token,
+        trade_amount,
+        symbol,
+        apiDirection === 'call' ? 'buy' : 'put', // Convert to API expected format
+        livePrice,
+        timeInSeconds
+      );
+      
+      // Store the API response for later use
+      if (response.success) {
+        setTradeApiResponse(response.data);
+      } else {
+        toast({
+          title: "Error",
+          description: response.message || "Failed to place trade",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      // Set trade parameters for the timer
+      setTradeTimer(timeInSeconds);
+      setStartingTradePrice(livePrice);
+      setIsTradeTimerOpen(true);
+      
+      // Show toast notification
+      toast({
+        title: "Trade Placed",
+        description: `Your ${direction} trade for ${crypto.symbol} has been placed for ${selectedTimePeriod}`,
+      });
+    } catch (error) {
+      console.error('Error placing trade:', error);
+      toast({
+        title: "Error",
+        description: "Failed to place trade. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
   
   const handleTradeComplete = (finalPrice: number) => {
-    // Calculate profit/loss based on direction and price difference
-    const priceDifference = finalPrice - startingTradePrice;
-    const isProfit = (direction === 'Call' && priceDifference > 0) || 
-                     (direction === 'Put' && priceDifference < 0);
-    
-    // Calculate profit/loss amount (simplified)
-    const amount = parseFloat(tradeAmount);
-    const result = isProfit 
-      ? Math.abs(amount * 0.95) // 95% profit
-      : -Math.abs(amount); // 100% loss
-    
-    setTradeResult({
-      value: Math.abs(result),
-      type: isProfit ? 'Profit' : 'Loss'
-    });
-    
-    // Show result toast
-    toast({
-      title: isProfit ? "Trade Profit" : "Trade Loss",
-      description: `Your ${direction} trade resulted in a ${isProfit ? "profit" : "loss"} of ₹${Math.abs(result)}`,
-      variant: isProfit ? "default" : "destructive",
-    });
+    // Use the API response that was stored when the trade was placed
+    if (tradeApiResponse) {
+      // Update user's wallet with the new balance from the API
+      if (user && typeof tradeApiResponse.new_balance === 'number') {
+        // We would normally update the user's wallet in the AuthContext
+        // This is just a placeholder for demonstration
+        console.log('New wallet balance:', tradeApiResponse.new_balance);
+      }
+      
+      // Show result toast based on API response
+      const isProfit = tradeApiResponse.status === 'win';
+      const resultAmount = isProfit ? tradeApiResponse.profit : tradeApiResponse.lost_amount;
+      
+      setTradeResult({
+        value: resultAmount,
+        type: isProfit ? 'Profit' : 'Loss'
+      });
+      
+      // Show result toast
+      toast({
+        title: isProfit ? "Trade Profit" : "Trade Loss",
+        description: `Your ${direction} trade resulted in a ${isProfit ? "profit" : "loss"} of $${resultAmount}`,
+        variant: isProfit ? "default" : "destructive",
+      });
+    } else {
+      // Fallback to previous calculation if API response is not available
+      // Calculate profit/loss based on direction and price difference
+      const priceDifference = finalPrice - startingTradePrice;
+      const isProfit = (direction === 'Call' && priceDifference > 0) || 
+                       (direction === 'Put' && priceDifference < 0);
+      
+      // Calculate profit/loss amount (simplified)
+      const amount = parseFloat(tradeAmount);
+      const result = isProfit 
+        ? Math.abs(amount * 0.95) // 95% profit
+        : -Math.abs(amount); // 100% loss
+      
+      setTradeResult({
+        value: Math.abs(result),
+        type: isProfit ? 'Profit' : 'Loss'
+      });
+      
+      // Show result toast
+      toast({
+        title: isProfit ? "Trade Profit" : "Trade Loss",
+        description: `Your ${direction} trade resulted in a ${isProfit ? "profit" : "loss"} of $${Math.abs(result)}`,
+        variant: isProfit ? "default" : "destructive",
+      });
+    }
   };
 
   const predefinedAmounts = ['600', '1000', '2000', '3000', '5000', '10000'];
@@ -651,7 +728,7 @@ const CoinDetailPage = () => {
         </DialogContent>
       </Dialog>
       
-      {/* Trade Timer Component */}
+      {/* Trade Timer Component - Pass trade API response to trade timer component */}
       <TradeTimer
         open={isTradeTimerOpen}
         onClose={closeModal}
@@ -660,6 +737,7 @@ const CoinDetailPage = () => {
         startPrice={startingTradePrice}
         currentPrice={livePrice}
         onComplete={handleTradeComplete}
+        tradeApiResponse={tradeApiResponse} // Pass the API response to the TradeTimer component
       />
     </MobileLayout>
   );

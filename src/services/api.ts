@@ -1,4 +1,3 @@
-
 // API endpoints for our application
 const API_BASE = '/backend/restapi';
 const BINANCE_API = 'https://api.binance.com/api/v3';
@@ -21,6 +20,7 @@ export const endpoints = {
   getGeneralSettings: `${API_BASE}/get_general_settings`,
   getTradeRecords: `${API_BASE}/get_trade`,
   getCoinDetails: `${API_BASE}/get_coin_details`,
+  placeTrade: `${API_BASE}/trade`, // New endpoint for placing trades
   // Binance API endpoints
   getBinancePrice: `${BINANCE_API}/ticker/price`,
   getBinanceKlines: `${BINANCE_API}/klines`,
@@ -153,4 +153,23 @@ export const getTeamDetails = async (token: string) => {
 // General settings API functions
 export const getGeneralSettings = async (token: string) => {
   return apiRequest(endpoints.getGeneralSettings, 'POST', { token });
+};
+
+// New function for placing trades
+export const placeTrade = async (
+  token: string, 
+  trade_amount: number, 
+  symbol: string, 
+  direction: string, 
+  opening_price: number, 
+  sell_time: number
+) => {
+  return apiRequest(endpoints.placeTrade, 'POST', {
+    token,
+    custom_amount: trade_amount,
+    symbol,
+    direction,
+    opening_price,
+    sell_time
+  });
 };
