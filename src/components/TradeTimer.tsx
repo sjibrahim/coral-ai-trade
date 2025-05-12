@@ -226,13 +226,8 @@ const TradeTimer: React.FC<TradeTimerProps> = ({
               </div>
             </div>
             <div className="text-center mt-2">
-              <p className="text-gray-400">Starting price: ₹{startPrice.toFixed(2)}</p>
-              <p className="text-gray-400">Current price: ₹{currentPrice.toFixed(2)}</p>
-              <p className="text-gray-400 mt-1">
-                <span className={`${currentPrice - startPrice >= 0 ? 'text-green-500' : 'text-red-500'}`}>
-                  {currentPrice - startPrice >= 0 ? '+' : ''}{(currentPrice - startPrice).toFixed(2)}
-                </span>
-              </p>
+              <p className="text-gray-400">Starting price: ${startPrice.toFixed(2)}</p>
+              <p className="text-gray-400">Current price: ${currentPrice.toFixed(2)}</p>
             </div>
             <Button 
               variant="outline" 
