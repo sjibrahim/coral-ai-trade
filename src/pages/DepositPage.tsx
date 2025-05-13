@@ -1,8 +1,8 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
 import NumericKeypad from "@/components/NumericKeypad";
-import { Bell, IndianRupee, Upload, Check } from "lucide-react";
+import { Bell, IndianRupee, Upload, Check, CreditCard, Copy, Wallet, Clock, Ban } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -10,6 +10,35 @@ import { useAuth } from "@/contexts/AuthContext";
 import { createTopupOrder } from "@/services/api";
 import { toast } from "@/components/ui/use-toast";
 import { useGeneralSettings } from "@/hooks/use-general-settings";
+
+interface PaymentMethod {
+  id: string;
+  name: string;
+  icon: React.ComponentType<any>;
+}
+
+const paymentMethods: PaymentMethod[] = [
+  {
+    id: "PAY1",
+    name: "UPI Pay",
+    icon: Wallet
+  },
+  {
+    id: "PAY2",
+    name: "Card Pay",
+    icon: CreditCard
+  },
+  {
+    id: "PAY3",
+    name: "E-Wallet",
+    icon: Upload
+  },
+  {
+    id: "PAY4",
+    name: "Net Banking",
+    icon: Wallet
+  }
+];
 
 const DepositPage = () => {
   const { user } = useAuth();
@@ -20,7 +49,6 @@ const DepositPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { settings } = useGeneralSettings();
   
-  const paymentChannels = ["PAY1", "PAY2", "PAY3", "PAY4"];
   const minDepositAmount = parseFloat(settings.min_deposit || "600");
   const isValidAmount = Number(amount) >= minDepositAmount;
   
@@ -37,10 +65,8 @@ const DepositPage = () => {
           setRedirectUrl(response.data.redirect_url);
         }
         
-        // Show success modal
         setShowSuccessModal(true);
         
-        // Reset after 3 seconds
         setTimeout(() => {
           setShowSuccessModal(false);
           setAmount("");
@@ -63,6 +89,11 @@ const DepositPage = () => {
       setIsLoading(false);
     }
   };
+
+  const getStatusIcon = () => {
+    if (isValidAmount) return <Check className="h-5 w-5 text-green-500" />;
+    return <Ban className="h-5 w-5 text-red-500" />;
+  };
   
   return (
     <MobileLayout 
@@ -78,48 +109,84 @@ const DepositPage = () => {
       )}
       noScroll
     >
-      <div className="flex flex-col h-full bg-background justify-between">
-        
-        {/* Top Section - Amount Display */}
-        <div className="pt-8 px-4 text-center">
-          <div className="flex items-center justify-center mb-2">
-            <div className="relative flex items-center justify-center">
-              <IndianRupee className="absolute -left-8 top-3 h-8 w-8 text-gray-300" />
-              <span className="text-8xl font-bold text-gray-200">
-                {amount ? amount : "0"}
-              </span>
+      <div className="flex flex-col h-full bg-background">
+        {/* Amount Card Section */}
+        <div className="p-4">
+          <div className="bg-[#1a1c25] rounded-2xl p-6 shadow-lg">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-medium text-white/80">Amount</h3>
+              <div className="flex items-center gap-1 text-sm text-gray-400">
+                <Clock className="h-4 w-4" />
+                <span>Min ₹{minDepositAmount}</span>
+              </div>
             </div>
-          </div>
-          
-          <div className="mt-1 text-right">
-            <p className="text-gray-400 text-base">Minimum Deposit <span className="text-primary">₹{minDepositAmount}</span></p>
+            
+            <div className="relative mb-6">
+              <div className="flex items-center justify-center">
+                <div className="flex items-center">
+                  <IndianRupee className="h-6 w-6 text-white/70 mr-1" />
+                  <span className="text-5xl font-bold text-white">
+                    {amount ? amount : "0"}
+                  </span>
+                </div>
+              </div>
+
+              <div className="absolute right-0 top-0 flex items-center gap-2">
+                {getStatusIcon()}
+                {isValidAmount ? 
+                  <span className="text-xs text-green-500">Valid amount</span> : 
+                  <span className="text-xs text-red-500">Below minimum</span>
+                }
+              </div>
+            </div>
+
+            <div className="grid grid-cols-4 gap-2 mb-2">
+              {["1000", "2000", "3000", "5000"].map((quickAmount) => (
+                <button
+                  key={quickAmount}
+                  onClick={() => setAmount(quickAmount)}
+                  className={cn(
+                    "py-2 rounded-full border text-center",
+                    amount === quickAmount
+                      ? "border-blue-500 bg-blue-500/10 text-blue-400"
+                      : "border-gray-700 text-gray-400 hover:border-gray-600"
+                  )}
+                >
+                  ₹{quickAmount}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
         
-        {/* Middle Section - Payment Channels */}
-        <div className="px-4">
-          <h3 className="text-center text-xl text-gray-300 mb-3">Payment Channels</h3>
-          <div className="bg-[#1a1c25] rounded-full p-1 flex justify-between">
-            {paymentChannels.map((channel) => (
-              <button 
-                key={channel}
+        {/* Payment Methods */}
+        <div className="px-4 mb-4">
+          <h3 className="text-base font-medium text-gray-200 mb-3">Payment Channel</h3>
+          <div className="grid grid-cols-2 gap-3">
+            {paymentMethods.map(method => (
+              <button
+                key={method.id}
+                onClick={() => setSelectedChannel(method.id)}
                 className={cn(
-                  "py-3 px-4 rounded-full transition-all flex-1 text-center font-medium",
-                  selectedChannel === channel 
-                    ? 'bg-[#1e222e] text-white scale-105 shadow-lg' 
-                    : 'text-gray-400'
+                  "flex flex-col items-center justify-center p-4 rounded-xl border transition-all",
+                  selectedChannel === method.id
+                    ? "border-blue-600 bg-blue-600/10 text-white shadow-sm"
+                    : "border-gray-700 text-gray-400 hover:border-gray-600"
                 )}
-                onClick={() => setSelectedChannel(channel)}
               >
-                {channel}
+                <method.icon className={cn(
+                  "h-6 w-6 mb-2",
+                  selectedChannel === method.id ? "text-blue-400" : "text-gray-500"
+                )} />
+                <span className="text-sm">{method.name}</span>
               </button>
             ))}
           </div>
         </div>
 
-        {/* Bottom Section - Keypad */}
-        <div className="pt-4 pb-6 flex flex-col">
-          <div className="flex justify-center">
+        {/* Keypad Section */}
+        <div className="mt-auto pt-2 pb-6">
+          <div className="flex justify-center mb-5">
             <NumericKeypad 
               value={amount}
               onChange={setAmount}
@@ -135,39 +202,45 @@ const DepositPage = () => {
               onClick={isValidAmount ? handleConfirm : undefined}
               disabled={!isValidAmount || isLoading}
               className={cn(
-                "w-full py-4 rounded-lg text-white text-lg font-medium transition-all flex items-center justify-center",
+                "w-full py-4 rounded-xl font-medium transition-all flex items-center justify-center",
                 isValidAmount && !isLoading
-                  ? "bg-blue-600 hover:bg-blue-700 active:scale-[0.98]" 
-                  : "bg-blue-600/50 cursor-not-allowed"
+                  ? "bg-gradient-to-r from-blue-600 to-blue-500 text-white hover:shadow-lg active:scale-[0.98]" 
+                  : "bg-gray-700/50 text-gray-400 cursor-not-allowed"
               )}
             >
-              {isLoading ? "Processing..." : "CONFIRM"}
+              {isLoading ? "Processing..." : "CONFIRM DEPOSIT"}
             </button>
+            
+            <div className="mt-4 text-center">
+              <p className="text-xs text-gray-500">
+                By proceeding, you agree to our terms and conditions for online payments
+              </p>
+            </div>
           </div>
         </div>
       </div>
       
       {/* Success Modal */}
       <Dialog open={showSuccessModal} onOpenChange={setShowSuccessModal}>
-        <DialogContent className="sm:max-w-md bg-card border-border/50 p-0 overflow-hidden">
+        <DialogContent className="sm:max-w-md border-border/30 p-0 overflow-hidden bg-[#1a1c25]">
           <div className="flex flex-col items-center justify-center p-6 space-y-4">
-            <div className="w-20 h-20 rounded-full bg-green-500/20 flex items-center justify-center animate-pulse-glow">
+            <div className="w-20 h-20 rounded-full bg-gradient-to-r from-green-500/20 to-green-600/20 flex items-center justify-center animate-pulse-glow">
               <Check className="h-10 w-10 text-green-500" />
             </div>
-            <h2 className="text-xl font-semibold">Deposit Successful!</h2>
-            <p className="text-muted-foreground text-center">
-              Your deposit of ₹{amount} has been initiated successfully.
-              {redirectUrl ? " You will be redirected to the payment gateway." : " It will be credited to your account shortly."}
+            <h2 className="text-xl font-semibold text-white">Deposit Initiated!</h2>
+            <p className="text-gray-400 text-center">
+              Your deposit of <span className="text-blue-400 font-medium">₹{amount}</span> has been initiated successfully.
+              {redirectUrl ? " You will now be redirected to complete the payment." : " It will be credited to your account shortly."}
             </p>
             {redirectUrl ? (
               <Button 
-                className="w-full" 
+                className="w-full bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-600"
                 onClick={() => {
                   window.location.href = redirectUrl;
                   setShowSuccessModal(false);
                 }}
               >
-                Go to Payment Gateway
+                Proceed to Payment
               </Button>
             ) : (
               <Button 
