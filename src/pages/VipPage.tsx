@@ -23,8 +23,54 @@ const vipLevels = [
   { level: "VIP7", l1: 500, totalRefs: 5000, salary: 100000, newQuantity: 300 },
   { level: "VIP8", l1: 1000, totalRefs: 10000, salary: 200000, newQuantity: "caly" },
 ];
-  
 
+const InvitePage = () => {
+  const { user, generalSettings } = useAuth();
+  const { 
+    level1Members, 
+    level2Members, 
+    level3Members, 
+    activeLevel1,
+    activeLevel2,
+    activeLevel3,
+    totalTeamSize, 
+    totalActiveMembers, 
+    isLoading, 
+    fetchTeamDetails 
+  } = useTeam();
+  
+  const [copied, setCopied] = useState(false);
+  const [email, setEmail] = useState('');
+  const isMobile = useIsMobile();
+  const { toast } = useToast();
+  
+  useEffect(() => {
+    fetchTeamDetails();
+  }, [fetchTeamDetails]);
+  
+  // Generate referral link based on current domain and user's referral code
+  const getReferralLink = () => {
+    const baseUrl = window.location.origin;
+    return `${baseUrl}/register?referral_code=${user?.referral_code || ""}`;
+  };
+
+  const referralLink = getReferralLink();
+  
+  const copyToClipboard = (text: string, message: string) => {
+    navigator.clipboard.writeText(text)
+      .then(() => {
+        setCopied(true);
+        toast({
+          title: "Copied to clipboard",
+          description: message,
+          duration: 3000,
+        });
+        setTimeout(() => setCopied(false), 3000);
+      })
+      .catch(err => {
+        console.error('Failed to copy text: ', err);
+      });
+  };
   
   return (
     <MobileLayout showBackButton title="Invite & Earn">
