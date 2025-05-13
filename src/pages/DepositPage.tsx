@@ -30,7 +30,7 @@ const DepositPage = () => {
     setIsLoading(true);
     
     try {
-      const response = await createTopupOrder(user.token, Number(amount));
+      const response = await createTopupOrder(user.token, Number(amount),selectedChannel);
       
       if (response.status) {
         if (response.data?.redirect_url) {
