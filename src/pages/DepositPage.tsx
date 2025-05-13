@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { createTopupOrder } from "@/services/api";
 import { toast } from "@/components/ui/use-toast";
+import { useGeneralSettings } from "@/hooks/use-general-settings";
 
 const DepositPage = () => {
   const { user } = useAuth();
@@ -17,9 +18,11 @@ const DepositPage = () => {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [redirectUrl, setRedirectUrl] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const { settings } = useGeneralSettings();
   
   const paymentChannels = ["PAY1", "PAY2", "PAY3", "PAY4"];
-  const isValidAmount = Number(amount) >= 600;
+  const minDepositAmount = parseFloat(settings.min_deposit || "600");
+  const isValidAmount = Number(amount) >= minDepositAmount;
   
   const handleConfirm = async () => {
     if (!isValidAmount || !user?.token) return;
@@ -89,7 +92,7 @@ const DepositPage = () => {
           </div>
           
           <div className="mt-1 text-right">
-            <p className="text-gray-400 text-base">Minimum Deposit <span className="text-primary">₹600</span></p>
+            <p className="text-gray-400 text-base">Minimum Deposit <span className="text-primary">₹{minDepositAmount}</span></p>
           </div>
         </div>
         
@@ -132,7 +135,7 @@ const DepositPage = () => {
               onClick={isValidAmount ? handleConfirm : undefined}
               disabled={!isValidAmount || isLoading}
               className={cn(
-                "w-full py-4 rounded-lg text-white text-lg font-medium transition-all",
+                "w-full py-4 rounded-lg text-white text-lg font-medium transition-all flex items-center justify-center",
                 isValidAmount && !isLoading
                   ? "bg-blue-600 hover:bg-blue-700 active:scale-[0.98]" 
                   : "bg-blue-600/50 cursor-not-allowed"

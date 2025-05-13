@@ -1,7 +1,6 @@
 
 import { useState, useEffect } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
-import NumericKeypad from "@/components/NumericKeypad";
 import { CircleDollarSign, ArrowRight, Check, DollarSign } from "lucide-react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -53,8 +52,6 @@ const UsdtWithdrawalPage = () => {
         throw new Error("Authentication token not found");
       }
       
-      // The API endpoint needs to be updated to support USDT withdrawals
-      // For now, we're using the same endpoint but will send additional data
       const response = await createWithdrawOrder(token, Number(amount));
       
       if (response.status) {
@@ -96,7 +93,7 @@ const UsdtWithdrawalPage = () => {
       noScroll
     >
       <div className="flex flex-col h-full bg-[#0d0f17] pb-4">
-        {/* Top Section with Card */}
+        {/* USDT Card with Animation */}
         <motion.div 
           className="mx-4 my-4 rounded-xl bg-gradient-to-br from-blue-900/40 to-blue-600/20 backdrop-blur-sm p-6 shadow-lg border border-blue-500/20"
           initial={{ opacity: 0, y: 20 }}
@@ -131,7 +128,7 @@ const UsdtWithdrawalPage = () => {
           </div>
         </motion.div>
         
-        {/* Middle Section - Available Balance */}
+        {/* Available Balance */}
         <motion.div 
           className="mx-4 mb-4"
           initial={{ opacity: 0 }}
@@ -146,7 +143,7 @@ const UsdtWithdrawalPage = () => {
         
         {/* Address Input */}
         <motion.div 
-          className="mx-4 mb-2"
+          className="mx-4 mb-4"
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.3, duration: 0.5 }}
@@ -170,7 +167,7 @@ const UsdtWithdrawalPage = () => {
         
         {/* Amount Input */}
         <motion.div 
-          className="mx-4 mb-2"
+          className="mx-4 mb-4"
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.4, duration: 0.5 }}
@@ -181,8 +178,15 @@ const UsdtWithdrawalPage = () => {
               placeholder="Enter amount to withdraw"
               className="bg-[#1a1e29] border-[#2a2f3c] text-white pr-10"
               value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              readOnly
+              onChange={(e) => {
+                const value = e.target.value;
+                // Allow only numbers and decimal point
+                if (/^\d*\.?\d*$/.test(value) || value === '') {
+                  setAmount(value);
+                }
+              }}
+              type="text"
+              inputMode="decimal"
             />
             <div className="absolute right-3 top-1/2 -translate-y-1/2">
               <span className="text-blue-400">₹</span>
@@ -195,26 +199,44 @@ const UsdtWithdrawalPage = () => {
         
         {/* Error Message */}
         {error && (
-          <div className="mx-4 mb-4">
-            <p className="text-red-500 text-sm bg-red-500/10 p-2 rounded border border-red-500/20">
+          <motion.div 
+            className="mx-4 mb-4"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+          >
+            <p className="text-red-500 text-sm bg-red-500/10 p-3 rounded-lg border border-red-500/20">
               {error}
             </p>
-          </div>
+          </motion.div>
         )}
         
-        {/* Bottom Section - Keypad */}
-        <div className="flex-1 flex flex-col justify-end px-4 mt-auto">
-          <NumericKeypad 
-            value={amount}
-            onChange={setAmount}
-            size="sm"
-            deleteIcon="backspace"
-            clearText="clr"
-            className="mb-2"
-            onConfirm={handleConfirm}
-            confirmButtonText={isProcessing ? "PROCESSING..." : "WITHDRAW USDT"}
-            confirmDisabled={!isValidAmount || isProcessing}
-          />
+        {/* Withdrawal Button */}
+        <div className="mt-auto mx-4 mb-6">
+          <motion.button
+            whileTap={{ scale: 0.98 }}
+            disabled={!isValidAmount || isProcessing}
+            onClick={handleConfirm}
+            className={`w-full py-4 px-4 rounded-lg text-white text-lg font-semibold flex items-center justify-center space-x-2 ${
+              isValidAmount && !isProcessing
+                ? "bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 shadow-lg"
+                : "bg-blue-600/40 cursor-not-allowed"
+            }`}
+          >
+            {isProcessing ? (
+              <span className="flex items-center">
+                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Processing...
+              </span>
+            ) : (
+              <>
+                <span>WITHDRAW USDT</span>
+                <ArrowRight className="h-5 w-5" />
+              </>
+            )}
+          </motion.button>
         </div>
       </div>
       

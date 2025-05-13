@@ -27,8 +27,35 @@ const defaultSettings: GeneralSettings = {
   telegram_channel: "https://t.me/nexbit_official"
 };
 
+// Cache settings key in localStorage
+const SETTINGS_CACHE_KEY = 'nexbit_general_settings';
+const SETTINGS_CACHE_TIMESTAMP = 'nexbit_general_settings_timestamp';
+const CACHE_MAX_AGE = 1000 * 60 * 5; // 5 minutes
+
 export function useGeneralSettings() {
-  const [settings, setSettings] = useState<GeneralSettings>(defaultSettings);
+  const [settings, setSettings] = useState<GeneralSettings>(() => {
+    // Try to get cached settings on initial render
+    try {
+      const cachedSettings = localStorage.getItem(SETTINGS_CACHE_KEY);
+      const timestamp = localStorage.getItem(SETTINGS_CACHE_TIMESTAMP);
+      
+      if (cachedSettings && timestamp) {
+        const parsedTimestamp = parseInt(timestamp, 10);
+        const now = Date.now();
+        
+        // If cache is still valid, use it
+        if (now - parsedTimestamp < CACHE_MAX_AGE) {
+          return JSON.parse(cachedSettings);
+        }
+      }
+    } catch (err) {
+      console.error('Error reading cached settings:', err);
+    }
+    
+    // Fall back to default settings
+    return defaultSettings;
+  });
+  
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
@@ -46,10 +73,20 @@ export function useGeneralSettings() {
         const response = await getGeneralSettings(token);
         
         if (response.status && response.data) {
-          setSettings({
+          const newSettings = {
             ...defaultSettings,
             ...response.data
-          });
+          };
+          
+          setSettings(newSettings);
+          
+          // Cache the settings
+          try {
+            localStorage.setItem(SETTINGS_CACHE_KEY, JSON.stringify(newSettings));
+            localStorage.setItem(SETTINGS_CACHE_TIMESTAMP, Date.now().toString());
+          } catch (err) {
+            console.error('Error caching settings:', err);
+          }
         } else {
           setError(response.msg || "Failed to fetch settings");
           toast({
@@ -73,6 +110,38 @@ export function useGeneralSettings() {
 
     fetchSettings();
   }, [toast]);
+
+  // Force refresh the settings
+  const refreshSettings = async () => {
+    setLoading(true);
+    
+    try {
+      const token = localStorage.getItem('auth_token');
+      if (!token) {
+        setError("No authentication token found");
+        return;
+      }
+      
+      const response = await getGeneralSettings(token);
+      
+      if (response.status && response.data) {
+        const newSettings = {
+          ...defaultSettings,
+          ...response.data
+        };
+        
+        setSettings(newSettings);
+        
+        // Update cache
+        localStorage.setItem(SETTINGS_CACHE_KEY, JSON.stringify(newSettings));
+        localStorage.setItem(SETTINGS_CACHE_TIMESTAMP, Date.now().toString());
+      }
+    } catch (err) {
+      console.error("Error refreshing settings:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Helper functions for validation
   const isValidDeposit = (amount: number) => {
@@ -106,6 +175,7 @@ export function useGeneralSettings() {
     isValidWithdrawal,
     isValidTrade,
     getUsdtPrice,
-    getTelegramChannel
+    getTelegramChannel,
+    refreshSettings
   };
 }

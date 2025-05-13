@@ -161,7 +161,7 @@ export const getSalaryRecords = async (token: string) => {
   return apiRequest(endpoints.getSalaryRecords, 'POST', { token });
 };
 
-// Updated function for placing trades with better error handling
+// Updated function for placing trades with better error handling and min_trade check
 export const placeTrade = async (
   token: string, 
   trade_amount: number, 
@@ -172,6 +172,21 @@ export const placeTrade = async (
 ) => {
   try {
     console.log('Placing trade with params:', { token, trade_amount, symbol, direction, opening_price, sell_time });
+    
+    // Get general settings to check minimum trade amount
+    const settingsResponse = await getGeneralSettings(token);
+    if (settingsResponse.status && settingsResponse.data) {
+      const minTradeAmount = parseFloat(settingsResponse.data.min_trade || "300");
+      
+      // Check if trade amount meets minimum requirement
+      if (trade_amount < minTradeAmount) {
+        return {
+          success: false,
+          message: `Trade amount must be at least ₹${minTradeAmount}`,
+          data: null
+        };
+      }
+    }
     
     const result = await apiRequest(endpoints.placeTrade, 'POST', {
       token,
