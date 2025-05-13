@@ -60,11 +60,11 @@ const NumericKeypad = ({
     onChange(value + key);
   };
 
-  // Size classes for buttons - darker styling to match the reference design
+  // Size classes for responsive buttons
   const sizeClasses = {
-    sm: "h-12 w-12 text-lg",
-    md: "h-16 w-16 text-2xl",
-    lg: "h-[76px] w-[76px] text-3xl",
+    sm: "h-10 w-10 text-lg",
+    md: "h-14 w-14 text-xl",
+    lg: "h-[60px] w-[60px] text-2xl",
   }[size];
   
   // Get the correct delete icon - using ArrowLeft for backspace
@@ -72,7 +72,7 @@ const NumericKeypad = ({
   
   return (
     <div className={cn("numeric-keypad w-full", className)}>
-      <div className="grid grid-cols-3 gap-2 sm:gap-4 ml-[30px] mb-[10px]">
+      <div className="grid grid-cols-3 gap-2 w-full max-w-xs mx-auto">
         {/* First row */}
         <KeypadButton size={size} onClick={() => handleKeyPress('1')}>1</KeypadButton>
         <KeypadButton size={size} onClick={() => handleKeyPress('2')}>2</KeypadButton>
@@ -95,7 +95,7 @@ const NumericKeypad = ({
         <KeypadButton size={size} onClick={() => handleKeyPress('0')}>0</KeypadButton>
         <KeypadButton size={size} variant="secondary" onClick={() => handleKeyPress('delete')}>
           <DeleteIconComponent className={cn(
-            size === "lg" ? "h-6 w-6" : size === "md" ? "h-5 w-5" : "h-4 w-4"
+            size === "lg" ? "h-5 w-5" : size === "md" ? "h-4 w-4" : "h-3 w-3"
           )} />
         </KeypadButton>
       </div>
@@ -106,7 +106,7 @@ const NumericKeypad = ({
           onClick={onConfirm}
           disabled={confirmDisabled}
           className={cn(
-            "force-full-blue py-4 rounded-lg text-white text-lg font-medium transition-all flex items-center justify-center",
+            "w-full py-4 mt-4 rounded-lg text-white text-lg font-medium transition-all flex items-center justify-center",
             confirmDisabled 
               ? "bg-blue-600/50 cursor-not-allowed" 
               : "bg-blue-600 hover:bg-blue-700 active:scale-[0.98]"
@@ -128,11 +128,11 @@ interface KeypadButtonProps {
 }
 
 const KeypadButton = ({ onClick, children, variant = 'default', size = "md" }: KeypadButtonProps) => {
-  // Size classes
+  // Size classes - more responsive
   const sizeClasses = {
-    sm: "h-12 w-12 text-lg",
-    md: "h-16 w-16 text-2xl",
-    lg: "h-[76px] w-[76px] text-2xl font-medium",
+    sm: "h-10 w-10 text-lg",
+    md: "h-14 w-14 text-xl",
+    lg: "h-[60px] w-[60px] text-2xl font-medium",
   }[size];
 
   return (
@@ -142,7 +142,7 @@ const KeypadButton = ({ onClick, children, variant = 'default', size = "md" }: K
       className={cn(
         "flex items-center justify-center rounded-full",
         "transition-all duration-200 active:scale-95",
-        "bg-[#1a1e2a] hover:bg-[#232736]", // Darker button color to match the design
+        "bg-[#1a1e2a] hover:bg-[#232736]", 
         "border border-white/5",
         sizeClasses,
         variant === 'secondary' 

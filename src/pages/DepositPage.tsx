@@ -1,8 +1,8 @@
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
 import NumericKeypad from "@/components/NumericKeypad";
-import { Bell, IndianRupee, Upload, Check, CreditCard, Copy, Wallet, Clock, Ban } from "lucide-react";
+import { Bell, IndianRupee, Upload, Check, CreditCard, Wallet, Clock, Ban } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -110,10 +110,10 @@ const DepositPage = () => {
       noScroll
     >
       <div className="flex flex-col h-full bg-background">
-        {/* Amount Card Section */}
-        <div className="p-4">
-          <div className="bg-[#1a1c25] rounded-2xl p-6 shadow-lg">
-            <div className="flex items-center justify-between mb-4">
+        {/* Amount Card Section - Fixed at the top */}
+        <div className="p-4 pb-2">
+          <div className="bg-[#1a1c25] rounded-2xl p-5 shadow-lg">
+            <div className="flex items-center justify-between mb-3">
               <h3 className="text-lg font-medium text-white/80">Amount</h3>
               <div className="flex items-center gap-1 text-sm text-gray-400">
                 <Clock className="h-4 w-4" />
@@ -121,11 +121,11 @@ const DepositPage = () => {
               </div>
             </div>
             
-            <div className="relative mb-6">
+            <div className="relative mb-4">
               <div className="flex items-center justify-center">
                 <div className="flex items-center">
                   <IndianRupee className="h-6 w-6 text-white/70 mr-1" />
-                  <span className="text-5xl font-bold text-white">
+                  <span className="text-4xl font-bold text-white">
                     {amount ? amount : "0"}
                   </span>
                 </div>
@@ -140,13 +140,13 @@ const DepositPage = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-4 gap-2 mb-2">
+            <div className="grid grid-cols-4 gap-2 mb-1">
               {["1000", "2000", "3000", "5000"].map((quickAmount) => (
                 <button
                   key={quickAmount}
                   onClick={() => setAmount(quickAmount)}
                   className={cn(
-                    "py-2 rounded-full border text-center",
+                    "py-1.5 rounded-full border text-center text-sm",
                     amount === quickAmount
                       ? "border-blue-500 bg-blue-500/10 text-blue-400"
                       : "border-gray-700 text-gray-400 hover:border-gray-600"
@@ -160,44 +160,44 @@ const DepositPage = () => {
         </div>
         
         {/* Payment Methods */}
-        <div className="px-4 mb-4">
-          <h3 className="text-base font-medium text-gray-200 mb-3">Payment Channel</h3>
-          <div className="grid grid-cols-2 gap-3">
+        <div className="px-4 pb-3">
+          <h3 className="text-sm font-medium text-gray-300 mb-2">Payment Channel</h3>
+          <div className="grid grid-cols-4 gap-2">
             {paymentMethods.map(method => (
               <button
                 key={method.id}
                 onClick={() => setSelectedChannel(method.id)}
                 className={cn(
-                  "flex flex-col items-center justify-center p-4 rounded-xl border transition-all",
+                  "flex flex-col items-center justify-center py-3 px-2 rounded-xl border transition-all",
                   selectedChannel === method.id
-                    ? "border-blue-600 bg-blue-600/10 text-white shadow-sm"
+                    ? "border-blue-600 bg-blue-600/10 text-white"
                     : "border-gray-700 text-gray-400 hover:border-gray-600"
                 )}
               >
                 <method.icon className={cn(
-                  "h-6 w-6 mb-2",
+                  "h-5 w-5 mb-1",
                   selectedChannel === method.id ? "text-blue-400" : "text-gray-500"
                 )} />
-                <span className="text-sm">{method.name}</span>
+                <span className="text-xs whitespace-nowrap">{method.name}</span>
               </button>
             ))}
           </div>
         </div>
 
-        {/* Keypad Section */}
-        <div className="mt-auto pt-2 pb-6">
-          <div className="flex justify-center mb-5">
+        {/* Keypad Section - Takes remaining space */}
+        <div className="flex-1 flex flex-col justify-between pb-5 px-4">
+          <div className="flex-1 flex items-center justify-center">
             <NumericKeypad 
               value={amount}
               onChange={setAmount}
-              size="lg"
+              size="md"
               deleteIcon="backspace"
               clearText="clr"
-              className="mx-auto"
+              className="w-full"
             />
           </div>
 
-          <div className="px-4">
+          <div className="mt-3">
             <button 
               onClick={isValidAmount ? handleConfirm : undefined}
               disabled={!isValidAmount || isLoading}
@@ -211,7 +211,7 @@ const DepositPage = () => {
               {isLoading ? "Processing..." : "CONFIRM DEPOSIT"}
             </button>
             
-            <div className="mt-4 text-center">
+            <div className="mt-3 text-center">
               <p className="text-xs text-gray-500">
                 By proceeding, you agree to our terms and conditions for online payments
               </p>
