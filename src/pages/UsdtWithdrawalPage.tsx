@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
 import NumericKeypad from "@/components/NumericKeypad";
-import { Tether, CircleDollarSign, ArrowRight, Check } from "lucide-react";
+import { CircleDollarSign, ArrowRight, Check, DollarSign } from "lucide-react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { createWithdrawOrder } from "@/services/api";
@@ -106,7 +106,7 @@ const UsdtWithdrawalPage = () => {
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center">
               <div className="bg-blue-500/20 p-2 rounded-full mr-3">
-                <Tether className="h-6 w-6 text-blue-400" />
+                <DollarSign className="h-6 w-6 text-blue-400" />
               </div>
               <div>
                 <h2 className="text-lg font-medium text-white">Tether (USDT)</h2>
@@ -160,7 +160,7 @@ const UsdtWithdrawalPage = () => {
               onChange={(e) => setAddress(e.target.value)}
             />
             <div className="absolute right-3 top-1/2 -translate-y-1/2">
-              <Tether className="h-4 w-4 text-blue-400" />
+              <DollarSign className="h-4 w-4 text-blue-400" />
             </div>
           </div>
           <p className="text-amber-500/80 text-xs mt-1">
@@ -214,7 +214,6 @@ const UsdtWithdrawalPage = () => {
             onConfirm={handleConfirm}
             confirmButtonText={isProcessing ? "PROCESSING..." : "WITHDRAW USDT"}
             confirmDisabled={!isValidAmount || isProcessing}
-            confirmIcon={<ArrowRight className="h-4 w-4" />}
           />
         </div>
       </div>

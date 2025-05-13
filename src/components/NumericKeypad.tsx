@@ -106,7 +106,7 @@ const NumericKeypad = ({
           onClick={onConfirm}
           disabled={confirmDisabled}
           className={cn(
-            "force-full-blue py-4 rounded-lg text-white text-lg font-medium transition-all cursor-not-allowed",
+            "force-full-blue py-4 rounded-lg text-white text-lg font-medium transition-all flex items-center justify-center",
             confirmDisabled 
               ? "bg-blue-600/50 cursor-not-allowed" 
               : "bg-blue-600 hover:bg-blue-700 active:scale-[0.98]"
