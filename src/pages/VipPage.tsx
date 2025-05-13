@@ -47,87 +47,88 @@ const VipPage = () => {
               </div>
             </div>
           </AspectRatio>
-
-          {/* VIP Levels Card with improved styling */}
-          <div className="space-y-2">
-            <h3 className="text-lg font-semibold flex items-center gap-2 px-1 text-blue-500">
-              <Star className="w-5 h-5" /> VIP Levels
-            </h3>
-            <Card className="overflow-hidden border-0 shadow-lg bg-card/95 backdrop-blur-sm">
-              <CardContent className="p-0">
-                <div className="overflow-x-auto">
-                  <Table>
-                    <TableHeader className="bg-blue-500/95">
-                      <TableRow>
-                        <TableHead className="text-center text-white font-medium text-xs">VIP</TableHead>
-                        <TableHead className="text-center text-white font-medium text-xs">L1</TableHead>
-                        <TableHead className="text-center text-white font-medium text-xs whitespace-nowrap">L1+L2+L3</TableHead>
-                        <TableHead className="text-center text-white font-medium text-xs">Salary</TableHead>
-                        <TableHead className="text-center text-white font-medium text-xs whitespace-nowrap">New Qty</TableHead>
+          
+          {/* VIP Schedule Section */}
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center justify-center mb-4">
+                <div className="bg-gradient-to-r from-blue-600 to-blue-500 text-white px-4 py-2 rounded-lg text-center w-full">
+                  <h3 className="text-base font-bold">Broker Salary Schedule</h3>
+                </div>
+              </div>
+              
+              <div className="overflow-x-auto styled-scrollbar -mx-2">
+                <Table className="w-full text-xs">
+                  <TableHeader>
+                    <TableRow className="bg-primary/10">
+                      <TableHead className="text-center font-semibold">VIP</TableHead>
+                      <TableHead className="text-center font-semibold">L1</TableHead>
+                      <TableHead className="text-center font-semibold">L1+L2+L3</TableHead>
+                      <TableHead className="text-center font-semibold">Salary</TableHead>
+                      <TableHead className="text-center font-semibold">New</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {vipLevels.map((level, index) => (
+                      <TableRow key={level.level} className={index % 2 === 0 ? "bg-green-500/10" : "bg-green-500/5"}>
+                        <TableCell className="text-center font-medium p-2">{level.level}</TableCell>
+                        <TableCell className="text-center p-2">{level.l1}</TableCell>
+                        <TableCell className="text-center p-2">{level.totalRefs}</TableCell>
+                        <TableCell className="text-center p-2">{level.salary}</TableCell>
+                        <TableCell className="text-center p-2">{level.newQuantity}</TableCell>
                       </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {vipLevels.map((level, index) => (
-                        <TableRow key={level.level} className={index % 2 === 0 ? "bg-green-500/5" : "bg-green-500/10"}>
-                          <TableCell className="text-center font-medium text-xs py-2.5 text-blue-600">{level.level}</TableCell>
-                          <TableCell className="text-center text-xs py-2.5">{level.l1}</TableCell>
-                          <TableCell className="text-center text-xs py-2.5">{level.totalRefs}</TableCell>
-                          <TableCell className="text-center text-xs py-2.5">{level.salary}</TableCell>
-                          <TableCell className="text-center text-xs py-2.5">{level.newQuantity}</TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
-
-                <div className="mt-4 text-sm border border-border/40 rounded-lg p-3 bg-muted/20">
-                  <h4 className="font-medium flex items-center mb-2">
-                    <Info size={16} className="mr-2 text-primary shrink-0" /> What are L1, L2, and L3?
-                  </h4>
-                  <ul className="space-y-2 text-xs text-muted-foreground">
-                    <li className="flex items-start">
-                      <Check size={14} className="mr-2 text-green-500 mt-0.5 shrink-0" />
-                      <span>L1 is a user who registered directly using your referral code.</span>
-                    </li>
-                    <li className="flex items-start">
-                      <Check size={14} className="mr-2 text-green-500 mt-0.5 shrink-0" />
-                      <span>L2 is a user who registered using the L1 member referral code.</span>
-                    </li>
-                    <li className="flex items-start">
-                      <Check size={14} className="mr-2 text-green-500 mt-0.5 shrink-0" />
-                      <span>L3 is a user who registered using the L2 member referral code.</span>
-                    </li>
-                  </ul>
-                </div>
-
-                
-              </CardContent>
-            </Card>
-            {/* Agent Rules Card */}
-            <Card>
-              <CardContent className="p-4">
-                <h3 className="font-medium flex items-center mb-3">
-                  <Info size={16} className="mr-2 text-primary shrink-0" /> Agent Rules & Requirements
-                </h3>
-                
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+              
+              <div className="mt-4 text-sm border border-border/40 rounded-lg p-3 bg-muted/20">
+                <h4 className="font-medium flex items-center mb-2">
+                  <Info size={16} className="mr-2 text-primary shrink-0" /> What are L1, L2, and L3?
+                </h4>
                 <ul className="space-y-2 text-xs text-muted-foreground">
                   <li className="flex items-start">
                     <Check size={14} className="mr-2 text-green-500 mt-0.5 shrink-0" />
-                    <span>Agents should guide new users to use the APP correctly and clarify transaction rules, recharge methods and withdrawal requirements.</span>
+                    <span>L1 is a user who registered directly using your referral code.</span>
                   </li>
                   <li className="flex items-start">
                     <Check size={14} className="mr-2 text-green-500 mt-0.5 shrink-0" />
-                    <span>Actively promote the platform through various online and offline promotion activities.</span>
+                    <span>L2 is a user who registered using the L1 member referral code.</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Check size={14} className="mr-2 text-green-500 mt-0.5 shrink-0" />
+                    <span>L3 is a user who registered using the L2 member referral code.</span>
                   </li>
                 </ul>
-                
-                <div className="mt-3 text-xs p-3 bg-red-500/10 text-red-500 rounded-lg">
-                  <p className="font-medium mb-1">Disclaimer:</p>
-                  <p>Each person, each mobile phone, each IP address, and each bank account can only have one account. If the system audit finds malicious use of multiple accounts to defraud rewards, all accounts will be frozen.</p>
-                </div>
-              </CardContent>
-            </Card>
-        
+              </div>
+            </CardContent>
+          </Card>
+          
+          {/* Agent Rules Card */}
+          <Card>
+            <CardContent className="p-4">
+              <h3 className="font-medium flex items-center mb-3">
+                <Info size={16} className="mr-2 text-primary shrink-0" /> Agent Rules & Requirements
+              </h3>
+              
+              <ul className="space-y-2 text-xs text-muted-foreground">
+                <li className="flex items-start">
+                  <Check size={14} className="mr-2 text-green-500 mt-0.5 shrink-0" />
+                  <span>Agents should guide new users to use the APP correctly and clarify transaction rules, recharge methods and withdrawal requirements.</span>
+                </li>
+                <li className="flex items-start">
+                  <Check size={14} className="mr-2 text-green-500 mt-0.5 shrink-0" />
+                  <span>Actively promote the platform through various online and offline promotion activities.</span>
+                </li>
+              </ul>
+              
+              <div className="mt-3 text-xs p-3 bg-red-500/10 text-red-500 rounded-lg">
+                <p className="font-medium mb-1">Disclaimer:</p>
+                <p>Each person, each mobile phone, each IP address, and each bank account can only have one account. If the system audit finds malicious use of multiple accounts to defraud rewards, all accounts will be frozen.</p>
+              </div>
+            </CardContent>
+          </Card>
+          
           </div>
 
         </div>
