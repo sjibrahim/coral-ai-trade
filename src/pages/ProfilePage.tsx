@@ -6,7 +6,8 @@ import ProfileOption from "@/components/ProfileOption";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { 
   ArrowUpCircle, ArrowDownCircle, FileText, LogOut, 
-  Wallet, Star, FileCheck, ListTree, CreditCard, Settings, Eye, EyeOff
+  Wallet, Star, FileCheck, ListTree, CreditCard, Settings, Eye, EyeOff,
+  IndianRupee
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useAuth } from '@/contexts/AuthContext';
@@ -251,13 +252,18 @@ const ProfilePage = () => {
             to="/withdraw"
           />
           
+          <ProfileOption
+            icon={<Wallet className="h-5 w-5 text-amber-400" />}
+            label="USDT Withdrawal"
+            to="/usdt-withdraw"
+          />
+          
           <h3 className="text-sm font-semibold text-muted-foreground ml-1 mt-4 mb-1">Records</h3>
           
           <ProfileOption
-            icon={<FileCheck className="h-5 w-5 text-teal-400" />}
-            label="Account change records"
-            to="/account-records"
-            badge="3"
+            icon={<IndianRupee className="h-5 w-5 text-teal-400" />}
+            label="Salary Records"
+            to="/salary-record"
           />
           
           <ProfileOption
@@ -276,6 +282,12 @@ const ProfilePage = () => {
             icon={<CreditCard className="h-5 w-5 text-emerald-400" />}
             label="Bank info"
             to="/bank"
+          />
+          
+          <ProfileOption
+            icon={<ArrowDownCircle className="h-5 w-5 text-blue-400" />}
+            label="Withdrawal History"
+            to="/all-withdrawals"
           />
           
           <h3 className="text-sm font-semibold text-muted-foreground ml-1 mt-4 mb-1">Other</h3>

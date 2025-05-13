@@ -1,11 +1,12 @@
 
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { Eye, EyeOff, UserPlus } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Eye, EyeOff, UserPlus, Link as LinkIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useAuth } from "@/contexts/AuthContext";
+import { toast } from "@/hooks/use-toast";
 
 const RegisterPage = () => {
   const [formData, setFormData] = useState({
@@ -13,6 +14,7 @@ const RegisterPage = () => {
     email: "",
     password: "",
     confirmPassword: "",
+    referral_code: "",
   });
   const [showPassword, setShowPassword] = useState(false);
   const [agreeTerms, setAgreeTerms] = useState(false);
@@ -20,6 +22,17 @@ const RegisterPage = () => {
   
   const { register, isAuthenticated } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  
+  // Check for referral code in URL
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const referralFromUrl = queryParams.get("referral");
+    
+    if (referralFromUrl) {
+      setFormData(prev => ({ ...prev, referral_code: referralFromUrl }));
+    }
+  }, [location]);
   
   // Redirect if user is already authenticated
   if (isAuthenticated) {
@@ -35,23 +48,33 @@ const RegisterPage = () => {
     e.preventDefault();
     
     if (!formData.phone || !formData.email || !formData.password || !formData.confirmPassword) {
-      // Show validation error
+      toast({
+        title: "Missing Fields",
+        description: "Please fill all required fields",
+        variant: "destructive"
+      });
       return;
     }
     
     if (formData.password !== formData.confirmPassword) {
-      // Show error that passwords don't match
+      toast({
+        title: "Password Mismatch",
+        description: "Passwords don't match",
+        variant: "destructive"
+      });
       return;
     }
     
     setIsSubmitting(true);
     
     try {
+      // Pass referral code to register function
       const success = await register(
         formData.phone,
         formData.email,
         formData.password,
-        formData.confirmPassword
+        formData.confirmPassword,
+        formData.referral_code
       );
       
       if (success) {
@@ -150,6 +173,30 @@ const RegisterPage = () => {
             className="bg-card/50 backdrop-blur-sm border-border/40 h-12"
             required
           />
+        </div>
+        
+        {/* Referral Code */}
+        <div className="space-y-2 text-left">
+          <div className="flex items-center">
+            <label className="text-sm font-medium" htmlFor="referral_code">
+              Referral Code
+            </label>
+            <span className="text-xs text-muted-foreground ml-2">(Optional)</span>
+          </div>
+          <div className="relative">
+            <Input
+              id="referral_code"
+              name="referral_code"
+              type="text"
+              value={formData.referral_code}
+              onChange={handleChange}
+              placeholder="Enter referral code"
+              className="bg-card/50 backdrop-blur-sm border-border/40 h-12 pl-10"
+            />
+            <div className="absolute left-3 top-1/2 -translate-y-1/2">
+              <LinkIcon size={18} className="text-primary" />
+            </div>
+          </div>
         </div>
         
         <div className="flex items-center space-x-2 mt-2">

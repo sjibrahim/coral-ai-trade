@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
 import BalanceSummary from "@/components/BalanceSummary";
@@ -9,6 +8,7 @@ import { ChevronRight, Sparkles, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getMarketData } from "@/services/api";
 import { useAuth } from "@/contexts/AuthContext";
+import { WelcomeInfoModal } from "@/components/WelcomeInfoModal";
 
 interface CryptoData {
   id: string | number;
@@ -96,6 +96,9 @@ const HomePage = () => {
   return (
     <MobileLayout>
       <div className="animate-fade-in space-y-4 pb-20">
+        {/* Welcome Modal */}
+        <WelcomeInfoModal />
+        
         {/* Balance Section */}
         <section className="bg-gradient-to-br from-primary/30 via-accent/40 to-blue-900/30 backdrop-blur-sm rounded-b-3xl shadow-lg relative overflow-hidden">
           {/* Background pattern */}

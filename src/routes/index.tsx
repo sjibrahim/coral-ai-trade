@@ -10,12 +10,14 @@ import ProfilePage from '@/pages/ProfilePage';
 import CoinDetailPage from '@/pages/CoinDetailPage';
 import DepositPage from '@/pages/DepositPage';
 import WithdrawPage from '@/pages/WithdrawPage';
+import UsdtWithdrawalPage from '@/pages/UsdtWithdrawalPage';
 import InvitePage from '@/pages/InvitePage';
 import BankDetailsPage from '@/pages/BankDetailsPage';
 import ChangePasswordPage from '@/pages/ChangePasswordPage';
 import SupportPage from '@/pages/SupportPage';
 import DepositRecordsPage from '@/pages/DepositRecordsPage';
 import WithdrawalRecordsPage from '@/pages/WithdrawalRecordsPage';
+import AllWithdrawalsPage from '@/pages/AllWithdrawalsPage';
 import ContractRecordPage from '@/pages/ContractRecordPage';
 import CommissionRecordPage from '@/pages/CommissionRecordPage';
 import SalaryRecordPage from '@/pages/SalaryRecordPage';
@@ -46,16 +48,17 @@ const AppRoutes = () => {
       <Route path="/coin/:id" element={<ProtectedRoute><CoinDetailPage /></ProtectedRoute>} />
       <Route path="/deposit" element={<ProtectedRoute><DepositPage /></ProtectedRoute>} />
       <Route path="/withdraw" element={<ProtectedRoute><WithdrawPage /></ProtectedRoute>} />
+      <Route path="/usdt-withdraw" element={<ProtectedRoute><UsdtWithdrawalPage /></ProtectedRoute>} />
       <Route path="/invite" element={<ProtectedRoute><InvitePage /></ProtectedRoute>} />
       <Route path="/bank" element={<ProtectedRoute><BankDetailsPage /></ProtectedRoute>} />
       <Route path="/change-password" element={<ProtectedRoute><ChangePasswordPage /></ProtectedRoute>} />
       <Route path="/support" element={<ProtectedRoute><SupportPage /></ProtectedRoute>} />
       <Route path="/deposit-records" element={<ProtectedRoute><DepositRecordsPage /></ProtectedRoute>} />
       <Route path="/withdrawal-records" element={<ProtectedRoute><WithdrawalRecordsPage /></ProtectedRoute>} />
+      <Route path="/all-withdrawals" element={<ProtectedRoute><AllWithdrawalsPage /></ProtectedRoute>} />
       <Route path="/contract-record" element={<ProtectedRoute><ContractRecordPage /></ProtectedRoute>} />
       <Route path="/commission-record" element={<ProtectedRoute><CommissionRecordPage /></ProtectedRoute>} />
       <Route path="/salary-record" element={<ProtectedRoute><SalaryRecordPage /></ProtectedRoute>} />
-      <Route path="/rewards" element={<ProtectedRoute><RewardsPage /></ProtectedRoute>} />
       <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
       <Route path="/transactions" element={<ProtectedRoute><TransactionRecordsPage /></ProtectedRoute>} />
       <Route path="*" element={<NotFound />} />

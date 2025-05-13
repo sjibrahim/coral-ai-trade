@@ -2,28 +2,36 @@
 import { useState, useEffect } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
 import NumericKeypad from "@/components/NumericKeypad";
-import { Bell, Check } from "lucide-react";
+import { Bell, Check, Wallet } from "lucide-react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { createWithdrawOrder, getGeneralSettings } from "@/services/api";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
+import { Input } from "@/components/ui/input";
 
 interface GeneralSettings {
+  usdt_price: string;
   min_withdrawal: string;
 }
 
-const WithdrawPage = () => {
+const UsdtWithdrawalPage = () => {
   const [amount, setAmount] = useState("");
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState("");
-  const [settings, setSettings] = useState<GeneralSettings>({ min_withdrawal: "300" });
+  const [address, setAddress] = useState("");
+  const [settings, setSettings] = useState<GeneralSettings>({
+    usdt_price: "85",
+    min_withdrawal: "300"
+  });
   
   const { user, updateProfile } = useAuth();
   const { toast } = useToast();
   
-  // Fetch general settings
+  // Safely access user properties with fallbacks
+  const availableBalance = user?.wallet ? parseFloat(user.wallet) : 0;
+  
   useEffect(() => {
     const fetchSettings = async () => {
       try {
@@ -41,18 +49,16 @@ const WithdrawPage = () => {
     
     fetchSettings();
   }, []);
-  
-  // Safely access user properties with fallbacks for TypeScript
-  const availableBalance = user?.wallet ? parseFloat(user.wallet) : 0;
-  const bankAccount = user?.account_number || "Not set";
-  const ifscCode = user?.account_ifsc || "Not set";
 
-  const minWithdrawal = parseInt(settings.min_withdrawal) || 300;
-  const isValidAmount = Number(amount) >= minWithdrawal && Number(amount) <= availableBalance;
+  // Calculate USDT amount based on INR
+  const usdtAmount = amount ? (parseFloat(amount) / parseFloat(settings.usdt_price)).toFixed(2) : "0";
+  
+  const minWithdrawalInr = parseFloat(settings.min_withdrawal || "300");
+  const isValidAmount = Number(amount) >= minWithdrawalInr && Number(amount) <= availableBalance && address.trim().length > 10;
   
   const handleConfirm = async () => {
     if (!isValidAmount) {
-      setError(`Please enter a valid amount (minimum ₹${minWithdrawal} and not exceeding your balance)`);
+      setError(`Please enter a valid amount (minimum ₹${minWithdrawalInr} and not exceeding your balance) and a valid TRC20 address`);
       return;
     }
     
@@ -65,6 +71,8 @@ const WithdrawPage = () => {
         throw new Error("Authentication token not found");
       }
       
+      // The API endpoint needs to be updated to support USDT withdrawals
+      // For now, we're using the same endpoint but will send additional data
       const response = await createWithdrawOrder(token, Number(amount));
       
       if (response.status) {
@@ -76,6 +84,7 @@ const WithdrawPage = () => {
         setTimeout(() => {
           setShowSuccessModal(false);
           setAmount("");
+          setAddress("");
         }, 3000);
       } else {
         setError(response.msg || "Failed to process withdrawal");
@@ -101,7 +110,7 @@ const WithdrawPage = () => {
   return (
     <MobileLayout 
       showBackButton 
-      title="Withdrawal"
+      title="USDT Withdrawal (TRC20)"
       rightActions={(
         <div className="flex items-center space-x-2">
           <button className="p-1.5 rounded-full hover:bg-accent/50 transition-colors flex items-center justify-center relative">
@@ -115,16 +124,20 @@ const WithdrawPage = () => {
       <div className="flex flex-col h-full bg-[#0d0f17]">
         {/* Top Section - Amount Display */}
         <div className="pt-4 px-6 text-left">
-          <div className="flex items-start">
-            <span className="text-xl font-bold text-white mt-2 mr-1">₹</span>
+          <div className="flex items-center">
+            <Wallet className="h-5 w-5 text-amber-400 mr-2" />
+            <span className="text-xl font-bold text-white mt-1 mr-1">USDT</span>
             <span className="text-6xl font-bold text-white">
-              {amount ? amount : "0"}
+              {usdtAmount}
             </span>
           </div>
           
-          <div className="mt-1 text-right">
+          <div className="mt-2 text-right">
             <p className="text-gray-400 text-sm">
-              Minimum Withdrawal <span className="text-blue-400">₹{minWithdrawal}</span>
+              ₹{amount ? parseFloat(amount).toLocaleString() : "0"} (₹{settings.usdt_price}/USDT)
+            </p>
+            <p className="text-gray-400 text-sm mt-1">
+              Minimum Withdrawal <span className="text-blue-400">₹{settings.min_withdrawal}</span>
             </p>
           </div>
           
@@ -135,22 +148,24 @@ const WithdrawPage = () => {
           )}
         </div>
         
-        {/* Middle Section - Balance & Bank info */}
+        {/* Middle Section - Balance & TRC20 Address */}
         <div className="bg-[#12131a] py-3 px-6 mt-4">
           <div className="text-center mb-3">
             <h3 className="text-gray-400 text-sm mb-1">Withdrawal Balance</h3>
             <p className="text-3xl font-bold text-white">₹{availableBalance.toLocaleString()}</p>
           </div>
           
-          <div className="grid grid-cols-2 gap-3">
-            <div className="bg-[#1a1e29] rounded-xl p-3">
-              <p className="text-blue-400 text-xs mb-1 text-left">Bank Account</p>
-              <p className="text-white text-base font-medium text-left">{bankAccount}</p>
-            </div>
-            <div className="bg-[#1a1e29] rounded-xl p-3">
-              <p className="text-blue-400 text-xs mb-1 text-left">IFSC code</p>
-              <p className="text-white text-base font-medium text-left">{ifscCode}</p>
-            </div>
+          <div className="mt-4">
+            <label className="text-blue-400 text-xs mb-1 block">TRC20 Wallet Address</label>
+            <Input 
+              placeholder="Enter your TRC20 wallet address"
+              className="bg-[#1a1e29] border-[#2a2f3c] text-white"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+            />
+            <p className="text-amber-500/80 text-xs mt-1">
+              Only TRC20 network is supported. Make sure your address is correct.
+            </p>
           </div>
         </div>
 
@@ -179,7 +194,7 @@ const WithdrawPage = () => {
             </div>
             <h2 className="text-xl font-semibold text-white">Withdrawal Request Submitted!</h2>
             <p className="text-gray-400 text-center">
-              Your withdrawal request for ₹{amount} has been submitted successfully. It will be processed within 24 hours.
+              Your USDT withdrawal request for {usdtAmount} USDT (₹{amount}) has been submitted successfully. It will be processed within 24 hours.
             </p>
             <Button 
               className="w-full bg-blue-600 hover:bg-blue-700" 
@@ -194,4 +209,4 @@ const WithdrawPage = () => {
   );
 };
 
-export default WithdrawPage;
+export default UsdtWithdrawalPage;

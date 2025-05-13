@@ -24,6 +24,7 @@ export const endpoints = {
   // Binance API endpoints
   getBinancePrice: `${BINANCE_API}/ticker/price`,
   getBinanceKlines: `${BINANCE_API}/klines`,
+  getSalaryRecords: `${API_BASE}/get_salary_records`, // New endpoint for salary records
 };
 
 // Function to handle API requests
@@ -153,6 +154,11 @@ export const getTeamDetails = async (token: string) => {
 // General settings API functions
 export const getGeneralSettings = async (token: string) => {
   return apiRequest(endpoints.getGeneralSettings, 'POST', { token });
+};
+
+// New function to get salary records
+export const getSalaryRecords = async (token: string) => {
+  return apiRequest(endpoints.getSalaryRecords, 'POST', { token });
 };
 
 // Updated function for placing trades with better error handling
