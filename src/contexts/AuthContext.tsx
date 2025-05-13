@@ -1,6 +1,5 @@
-
 import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
-import { toast } from "@/components/ui/use-toast";
+import { toast } from "@/hooks/use-toast";
 import { apiRequest, endpoints, getGeneralSettings } from "@/services/api";
 
 type User = {
@@ -38,7 +37,7 @@ interface AuthContextType {
   isLoading: boolean;
   isAuthenticated: boolean;
   login: (phone: string, password: string) => Promise<boolean>;
-  register: (phone: string, email: string, password: string, confirm_password: string) => Promise<boolean>;
+  register: (phone: string, email: string, password: string, confirm_password: string, referral_code?: string) => Promise<boolean>;
   logout: () => void;
   updateProfile: () => Promise<boolean>;
   generalSettings: GeneralSettings | null;
@@ -151,7 +150,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         toast({
           title: "Login successful",
           description: "Welcome back!",
-          duration: 3000,
         });
         return true;
       } else {
@@ -159,7 +157,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           title: "Login failed",
           description: data.msg || "Invalid credentials",
           variant: "destructive",
-          duration: 3000,
         });
         return false;
       }
@@ -169,7 +166,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         title: "Login error",
         description: "An error occurred during login",
         variant: "destructive",
-        duration: 3000,
       });
       return false;
     } finally {
@@ -177,15 +173,31 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
   
-  const register = async (phone: string, email: string, password: string, confirm_password: string): Promise<boolean> => {
+  const register = async (
+    phone: string, 
+    email: string, 
+    password: string, 
+    confirm_password: string,
+    referral_code?: string
+  ): Promise<boolean> => {
     setIsLoading(true);
     try {
-      const data = await apiRequest(endpoints.register, 'POST', { 
+      const payload = { 
         phone, 
         email, 
         password, 
-        confirm_password 
+        confirm_password,
+        referral_code
+      };
+      
+      // Remove undefined values
+      Object.keys(payload).forEach(key => {
+        if (payload[key as keyof typeof payload] === undefined) {
+          delete payload[key as keyof typeof payload];
+        }
       });
+      
+      const data = await apiRequest(endpoints.register, 'POST', payload);
       
       if (data.status) {
         localStorage.setItem('auth_token', data.data.token);
@@ -194,7 +206,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         toast({
           title: "Registration successful",
           description: "Your account has been created",
-          duration: 3000,
         });
         return true;
       } else {
@@ -202,7 +213,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           title: "Registration failed",
           description: data.msg || "Registration failed",
           variant: "destructive",
-          duration: 3000,
         });
         return false;
       }
@@ -212,7 +222,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         title: "Registration error",
         description: "An error occurred during registration",
         variant: "destructive",
-        duration: 3000,
       });
       return false;
     } finally {
@@ -227,7 +236,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     toast({
       title: "Logged out",
       description: "You have been logged out successfully",
-      duration: 3000,
     });
   };
   
