@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
 import BalanceSummary from "@/components/BalanceSummary";
@@ -96,7 +97,7 @@ const HomePage = () => {
   return (
     <MobileLayout>
       <div className="animate-fade-in space-y-4 pb-20">
-        {/* Welcome Modal */}
+        {/* Welcome Modal - Always show on homepage */}
         <WelcomeInfoModal />
         
         {/* Balance Section */}

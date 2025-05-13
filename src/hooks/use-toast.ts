@@ -5,7 +5,7 @@ type ToastProps = {
   title?: string;
   description?: string;
   variant?: "default" | "destructive" | "success";
-  duration?: number; // Add duration property
+  duration?: number; 
 };
 
 export function toast({ title, description, variant = "default", duration = 3000 }: ToastProps) {
@@ -20,11 +20,9 @@ export function toast({ title, description, variant = "default", duration = 3000
 }
 
 // Create a mock implementation of the shadcn/ui toast hook
-// This allows components expecting the Radix Toast API to work
 export function useToast() {
   return { 
     toast,
-    // Add an empty toasts array to prevent the "toasts.map is not a function" error
     toasts: []
   };
 }
