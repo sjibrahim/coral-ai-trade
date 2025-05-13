@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Link } from "react-router-dom";
 import { ArrowDownCircle, IndianRupee, Wallet } from "lucide-react";
 import { getTransactions } from "@/services/api";
+import { toast } from "@/hooks/use-toast";
 
 interface WithdrawalRecord {
   id: string;
@@ -14,8 +15,6 @@ interface WithdrawalRecord {
   date: string;
   status: string;
   account: string;
-  transaction_id?: string;
-  created_at?: string;
   type: "inr" | "usdt";
 }
 
@@ -33,25 +32,35 @@ const AllWithdrawalsPage = () => {
         const response = await getTransactions(token);
         
         if (response.status && Array.isArray(response.data)) {
-          // Filter withdrawal transactions
+          // Filter withdrawal transactions using the new format
           const withdrawals = response.data
-            .filter((tx: any) => tx.type === "withdraw")
+            .filter((tx: any) => tx.txn_type === "WITHDRAW")
             .map((tx: any) => ({
-              id: tx.id || `WD${Math.floor(Math.random() * 10000)}`,
+              id: tx.txnid || `WD${Math.floor(Math.random() * 10000)}`,
               amount: parseFloat(tx.amount || 0),
               date: tx.created_at || new Date().toISOString().split('T')[0],
               status: tx.status || "processing",
               account: tx.bank_number || "******6413",
-              transaction_id: tx.transaction_id || "",
-              created_at: tx.created_at || "",
-              // Assuming there's a withdrawal_type field, otherwise default to INR
-              type: tx.withdrawal_type === "usdt" ? "usdt" : "inr"
+              // Determine the type based on the method field
+              type: tx.method === "USDT" ? "usdt" : "inr"
             }));
           
           setRecords(withdrawals);
+        } else {
+          toast({
+            title: "Error",
+            description: response.msg || "Failed to fetch withdrawal records",
+            variant: "destructive",
+          });
         }
       } catch (error) {
         console.error("Error fetching withdrawal records:", error);
+        toast({
+          title: "Error",
+          description: "Failed to fetch withdrawal records. Please try again.",
+          variant: "destructive",
+        });
+        
         // Use sample data as fallback
         setRecords([
           { id: 'WD78901', amount: 800, date: '2023-05-03', status: 'completed', account: '******6413', type: 'inr' },
@@ -70,8 +79,10 @@ const AllWithdrawalsPage = () => {
   const getStatusStyles = (status: string) => {
     switch(status.toLowerCase()) {
       case 'completed':
+      case 'success':
         return "text-market-increase";
       case 'processing':
+      case 'pending':
         return "text-amber-500";
       case 'rejected':
       case 'failed':
