@@ -115,13 +115,6 @@ const InvitePage = () => {
                 <CardContent className="p-4">
                   {/* Hero Banner */}
                   <div className="bg-gradient-to-br from-primary/20 to-primary/5 rounded-xl p-4 mb-4 text-center">
-                    <div className="w-16 h-16 mx-auto mb-3">
-                      <img 
-                        src="/lovable-uploads/878f13b5-368b-418f-aa30-037ca279396f.png" 
-                        alt="Nexbit Logo" 
-                        className="w-full h-full object-contain"
-                      />
-                    </div>
                     <h2 className="text-lg font-medium mb-2">Invite Friends & Earn</h2>
                     <p className="text-xs text-muted-foreground mb-4">Get rewards when your friends join and trade</p>
                     <Button 
