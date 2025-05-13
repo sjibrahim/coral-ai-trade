@@ -14,7 +14,24 @@ const LoginPage = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   
-  const { login, isAuthenticated } = useAuth();
+  // Wrap the useAuth hook in a try-catch to handle the case when AuthProvider is not available
+  let auth;
+  try {
+    auth = useAuth();
+  } catch (error) {
+    console.error("Auth context not available:", error);
+    // Return a loading state or placeholder if auth is not available
+    return (
+      <div className="flex flex-col min-h-[100svh] bg-background p-6 items-center justify-center">
+        <div className="w-20 h-20 rounded-xl flex items-center justify-center">
+          <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+        </div>
+        <p className="mt-4 text-muted-foreground">Loading authentication...</p>
+      </div>
+    );
+  }
+  
+  const { login, isAuthenticated } = auth;
   const navigate = useNavigate();
   
   // Redirect if user is already authenticated
