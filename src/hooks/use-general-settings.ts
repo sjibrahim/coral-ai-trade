@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { getGeneralSettings } from '@/services/api';
+import { useToast } from '@/hooks/use-toast';
 
 interface GeneralSettings {
   min_withdrawal: string;
@@ -11,6 +12,7 @@ interface GeneralSettings {
   daily_profit: string;
   min_trade: string;
   usdt_price: string;
+  telegram_channel: string;
 }
 
 const defaultSettings: GeneralSettings = {
@@ -21,13 +23,15 @@ const defaultSettings: GeneralSettings = {
   level_3_commission: "1",
   daily_profit: "1.5",
   min_trade: "300",
-  usdt_price: "85"
+  usdt_price: "85",
+  telegram_channel: "https://t.me/nexbit_official"
 };
 
 export function useGeneralSettings() {
   const [settings, setSettings] = useState<GeneralSettings>(defaultSettings);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const { toast } = useToast();
 
   useEffect(() => {
     const fetchSettings = async () => {
@@ -48,17 +52,27 @@ export function useGeneralSettings() {
           });
         } else {
           setError(response.msg || "Failed to fetch settings");
+          toast({
+            title: "Settings Error",
+            description: "Could not load application settings",
+            variant: "destructive",
+          });
         }
       } catch (err) {
         console.error("Error fetching general settings:", err);
         setError("Error fetching settings");
+        toast({
+          title: "Connection Error",
+          description: "Could not connect to server",
+          variant: "destructive",
+        });
       } finally {
         setLoading(false);
       }
     };
 
     fetchSettings();
-  }, []);
+  }, [toast]);
 
   // Helper functions for validation
   const isValidDeposit = (amount: number) => {
@@ -79,6 +93,10 @@ export function useGeneralSettings() {
   const getUsdtPrice = () => {
     return parseFloat(settings.usdt_price) || 85;
   };
+  
+  const getTelegramChannel = () => {
+    return settings.telegram_channel || "https://t.me/nexbit_official";
+  };
 
   return {
     settings,
@@ -87,6 +105,7 @@ export function useGeneralSettings() {
     isValidDeposit,
     isValidWithdrawal,
     isValidTrade,
-    getUsdtPrice
+    getUsdtPrice,
+    getTelegramChannel
   };
 }

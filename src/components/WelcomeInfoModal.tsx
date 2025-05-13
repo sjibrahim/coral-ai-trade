@@ -3,23 +3,12 @@ import { useState, useEffect } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
-import { getGeneralSettings } from "@/services/api";
+import { useGeneralSettings } from "@/hooks/use-general-settings";
 import { useToast } from "@/hooks/use-toast";
-
-interface GeneralSettings {
-  min_withdrawal: string;
-  min_deposit: string;
-  level_1_commission: string;
-  level_2_commission: string;
-  level_3_commission: string;
-  daily_profit: string;
-  min_trade: string;
-  usdt_price: string;
-}
 
 export function WelcomeInfoModal() {
   const [open, setOpen] = useState(false);
-  const [settings, setSettings] = useState<GeneralSettings | null>(null);
+  const { settings, loading } = useGeneralSettings();
   const { toast } = useToast();
 
   useEffect(() => {
@@ -27,29 +16,8 @@ export function WelcomeInfoModal() {
     
     if (!hasSeenModal) {
       setOpen(true);
-      
-      const fetchSettings = async () => {
-        try {
-          const token = localStorage.getItem("auth_token");
-          if (!token) return;
-          
-          const response = await getGeneralSettings(token);
-          if (response.status && response.data) {
-            setSettings(response.data);
-          }
-        } catch (error) {
-          console.error("Failed to fetch general settings:", error);
-          toast({
-            title: "Error",
-            description: "Could not load platform information",
-            variant: "destructive",
-          });
-        }
-      };
-      
-      fetchSettings();
     }
-  }, [toast]);
+  }, []);
 
   const handleClose = () => {
     localStorage.setItem("nexbit_welcome_seen", "true");
@@ -57,7 +25,7 @@ export function WelcomeInfoModal() {
   };
 
   const openTelegramChannel = () => {
-    window.open("https://t.me/nexbit_official", "_blank");
+    window.open(settings.telegram_channel || "https://t.me/nexbit_official", "_blank");
     handleClose();
   };
 
@@ -77,21 +45,21 @@ export function WelcomeInfoModal() {
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1">
                   <p className="text-xs text-muted-foreground">Minimum Deposit</p>
-                  <p className="font-semibold">₹{settings?.min_deposit || "300"}</p>
+                  <p className="font-semibold">₹{settings.min_deposit || "300"}</p>
                 </div>
                 <div className="space-y-1">
                   <p className="text-xs text-muted-foreground">Minimum Withdrawal</p>
-                  <p className="font-semibold">₹{settings?.min_withdrawal || "300"}</p>
+                  <p className="font-semibold">₹{settings.min_withdrawal || "300"}</p>
                 </div>
                 <div className="space-y-1">
                   <p className="text-xs text-muted-foreground">Daily Trade Profit</p>
                   <p className="font-semibold text-market-increase">
-                    {settings?.daily_profit || "1.5"}%
+                    {settings.daily_profit || "1.5"}%
                   </p>
                 </div>
                 <div className="space-y-1">
                   <p className="text-xs text-muted-foreground">USDT Price</p>
-                  <p className="font-semibold">₹{settings?.usdt_price || "85"}</p>
+                  <p className="font-semibold">₹{settings.usdt_price || "85"}</p>
                 </div>
               </div>
             </div>
