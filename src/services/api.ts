@@ -121,8 +121,12 @@ export const updatePassword = async (token: string, password: string, new_passwo
 };
 
 // Transaction API functions
-export const createTopupOrder = async (token: string, amount: number) => {
-  return apiRequest(endpoints.createTopupOrder, 'POST', { token, amount, selectedChannel });
+export const createTopupOrder = async (token: string, amount: number, selectedChannel: string) => {
+  return apiRequest(endpoints.createTopupOrder, 'POST', {
+    token,
+    amount,
+    channel: selectedChannel,
+  });
 };
 
 // Updated to include USDT address
