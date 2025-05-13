@@ -5,8 +5,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Card, CardContent } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Info, Users, Check } from "lucide-react";
+import { Info, Users, Check, Award, Star } from "lucide-react";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 // VIP level data from the reference image
 const vipLevels = [
@@ -24,104 +25,119 @@ const VipPage = () => {
   return (
     <MobileLayout showBackButton title="VIP Program">
       <ScrollArea className="h-full">
-        <div className="p-4 pb-safe">
-          {/* Header Section */}
+        <div className="p-4 pb-safe space-y-6">
+          {/* Header Section with improved design */}
           <AspectRatio ratio={16/9} className="mb-6 overflow-hidden rounded-lg">
-            <div className="h-full w-full bg-gradient-to-r from-green-300 to-green-100 flex items-center justify-center">
-              <div className="text-center px-4">
+            <div className="h-full w-full bg-gradient-to-br from-blue-600 to-blue-400 flex items-center justify-center">
+              <div className="text-center p-4 relative z-10">
                 <div className="mb-3 flex justify-center">
-                  <div className="w-20 h-20">
-                    <svg viewBox="0 0 100 100" className="w-full h-full text-blue-800">
-                      <path d="M50,10 L90,30 L90,70 L50,90 L10,70 L10,30 Z" fill="currentColor" stroke="none" />
-                      <path d="M25,40 L40,60 L50,40 L60,60 L75,40" fill="none" stroke="white" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
-                      <path d="M30,60 L70,60" fill="none" stroke="white" strokeWidth="5" strokeLinecap="round" />
-                    </svg>
+                  <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center">
+                    <Award className="w-10 h-10 text-white" />
                   </div>
                 </div>
-                <h1 className="text-3xl font-bold text-blue-800 mb-1">NEXBIT</h1>
-                <h2 className="text-2xl font-bold text-blue-800">Broker Salary Schedule</h2>
+                <h1 className="text-3xl font-bold text-white mb-1 drop-shadow-md">NEXBIT</h1>
+                <h2 className="text-xl font-semibold text-white/90 drop-shadow-md">Broker Salary Program</h2>
+                
+                {/* Animated particles for visual interest */}
+                <div className="absolute top-0 left-0 w-full h-full -z-10">
+                  <div className="absolute top-1/4 left-1/4 w-2 h-2 rounded-full bg-white/30 animate-pulse"></div>
+                  <div className="absolute top-3/4 left-2/3 w-3 h-3 rounded-full bg-white/20 animate-pulse" style={{animationDelay: "0.5s"}}></div>
+                  <div className="absolute top-1/2 left-1/3 w-1.5 h-1.5 rounded-full bg-white/40 animate-pulse" style={{animationDelay: "1s"}}></div>
+                </div>
               </div>
             </div>
           </AspectRatio>
 
-          <Card className="mb-6">
-            <CardContent className="p-0">
-              <Table>
-                <TableHeader className="bg-teal-500">
-                  <TableRow>
-                    <TableHead className="text-center text-white font-bold">VIP</TableHead>
-                    <TableHead className="text-center text-white font-bold">L1</TableHead>
-                    <TableHead className="text-center text-white font-bold">L1+L2+L3</TableHead>
-                    <TableHead className="text-center text-white font-bold">Salary</TableHead>
-                    <TableHead className="text-center text-white font-bold">New quantity</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {vipLevels.map((level, index) => (
-                    <TableRow key={level.level} className={index % 2 === 0 ? "bg-green-200" : "bg-green-300"}>
-                      <TableCell className="text-center font-medium">{level.level}</TableCell>
-                      <TableCell className="text-center">{level.l1}</TableCell>
-                      <TableCell className="text-center">{level.totalRefs}</TableCell>
-                      <TableCell className="text-center">{level.salary}</TableCell>
-                      <TableCell className="text-center">{level.newQuantity}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
-
-          <Tabs defaultValue="explanation" className="w-full mb-6">
-            <TabsList className="grid grid-cols-2 mb-4">
-              <TabsTrigger value="explanation">Explanation</TabsTrigger>
-              <TabsTrigger value="rules">Agent Rules</TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="explanation" className="mt-0 space-y-4">
-              <div className="bg-white rounded-lg p-4 shadow">
-                <h3 className="font-medium text-blue-800 mb-3 flex items-center">
-                  <Info size={18} className="mr-2 text-blue-800" /> What are L1, L2, and L3?
-                </h3>
-                <ul className="space-y-3">
-                  <li className="flex items-start">
-                    <Check size={16} className="mr-2 text-green-500 mt-0.5 shrink-0" />
-                    <span>L1 is a user who registered directly using your referral code.</span>
-                  </li>
-                  <li className="flex items-start">
-                    <Check size={16} className="mr-2 text-green-500 mt-0.5 shrink-0" />
-                    <span>L2 is a user who registered using the L1 member referral code.</span>
-                  </li>
-                  <li className="flex items-start">
-                    <Check size={16} className="mr-2 text-green-500 mt-0.5 shrink-0" />
-                    <span>L3 is a user who registered using the L2 member referral code.</span>
-                  </li>
-                </ul>
-              </div>
-            </TabsContent>
-
-            <TabsContent value="rules" className="mt-0 space-y-4">
-              <div className="bg-white rounded-lg p-4 shadow">
-                <h3 className="font-medium text-blue-800 mb-3 flex items-center">
-                  <Users size={18} className="mr-2 text-blue-800" /> Agent Rules & Requirements
-                </h3>
-                <ul className="space-y-3">
-                  <li className="flex items-start">
-                    <Check size={16} className="mr-2 text-green-500 mt-0.5 shrink-0" />
-                    <span>Agents should guide new users to use the APP correctly and clarify transaction rules, recharge methods and withdrawal requirements.</span>
-                  </li>
-                  <li className="flex items-start">
-                    <Check size={16} className="mr-2 text-green-500 mt-0.5 shrink-0" />
-                    <span>Actively promote the company to carry out various forms of online and offline promotion activities, and encourage users to publish your invitation link through Youtube, WhatsApp, and other channels.</span>
-                  </li>
-                </ul>
-
-                <div className="mt-4 p-3 bg-red-50 border border-red-100 rounded-lg">
-                  <p className="font-medium mb-1">Disclaimer:</p>
-                  <p className="text-sm">Each person, each mobile phone, each IP address, and each bank account can only have one NEXBIT account. If the system audit finds malicious use of multiple accounts to defraud rewards, all accounts will be frozen and the principal will be confiscated once discovered.</p>
+          {/* VIP Levels Card with improved styling */}
+          <div className="space-y-2">
+            <h3 className="text-lg font-semibold flex items-center gap-2 px-1 text-blue-500">
+              <Star className="w-5 h-5" /> VIP Levels
+            </h3>
+            <Card className="overflow-hidden border-0 shadow-lg bg-card/95 backdrop-blur-sm">
+              <CardContent className="p-0">
+                <div className="overflow-x-auto">
+                  <Table>
+                    <TableHeader className="bg-blue-500/95">
+                      <TableRow>
+                        <TableHead className="text-center text-white font-medium text-xs">VIP</TableHead>
+                        <TableHead className="text-center text-white font-medium text-xs">L1</TableHead>
+                        <TableHead className="text-center text-white font-medium text-xs whitespace-nowrap">L1+L2+L3</TableHead>
+                        <TableHead className="text-center text-white font-medium text-xs">Salary</TableHead>
+                        <TableHead className="text-center text-white font-medium text-xs whitespace-nowrap">New Qty</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {vipLevels.map((level, index) => (
+                        <TableRow key={level.level} className={index % 2 === 0 ? "bg-blue-50/60" : "bg-white/80"}>
+                          <TableCell className="text-center font-medium text-xs py-2.5 text-blue-600">{level.level}</TableCell>
+                          <TableCell className="text-center text-xs py-2.5">{level.l1}</TableCell>
+                          <TableCell className="text-center text-xs py-2.5">{level.totalRefs}</TableCell>
+                          <TableCell className="text-center text-xs py-2.5">{level.salary}</TableCell>
+                          <TableCell className="text-center text-xs py-2.5">{level.newQuantity}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
                 </div>
-              </div>
-            </TabsContent>
-          </Tabs>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Info Accordion instead of tabs for better mobile UX */}
+          <Accordion type="single" collapsible className="space-y-2">
+            <h3 className="text-lg font-semibold flex items-center gap-2 px-1 text-blue-500 mb-1">
+              <Info className="w-5 h-5" /> VIP Program Details
+            </h3>
+            
+            <AccordionItem value="explanation" className="border bg-white/90 backdrop-blur-sm rounded-lg overflow-hidden">
+              <AccordionTrigger className="px-4 py-3 hover:no-underline">
+                <span className="flex items-center gap-2">
+                  <Info size={16} className="text-blue-500" /> What are L1, L2, and L3?
+                </span>
+              </AccordionTrigger>
+              <AccordionContent className="px-4 pb-4">
+                <ul className="space-y-3">
+                  <li className="flex items-start">
+                    <Check size={16} className="mr-2 text-green-500 mt-0.5 shrink-0" />
+                    <span className="text-sm text-gray-800">L1 is a user who registered directly using your referral code.</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Check size={16} className="mr-2 text-green-500 mt-0.5 shrink-0" />
+                    <span className="text-sm text-gray-800">L2 is a user who registered using the L1 member referral code.</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Check size={16} className="mr-2 text-green-500 mt-0.5 shrink-0" />
+                    <span className="text-sm text-gray-800">L3 is a user who registered using the L2 member referral code.</span>
+                  </li>
+                </ul>
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem value="rules" className="border bg-white/90 backdrop-blur-sm rounded-lg overflow-hidden">
+              <AccordionTrigger className="px-4 py-3 hover:no-underline">
+                <span className="flex items-center gap-2">
+                  <Users size={16} className="text-blue-500" /> Agent Rules & Requirements
+                </span>
+              </AccordionTrigger>
+              <AccordionContent className="px-4 pb-4">
+                <ul className="space-y-3">
+                  <li className="flex items-start">
+                    <Check size={16} className="mr-2 text-green-500 mt-0.5 shrink-0" />
+                    <span className="text-sm text-gray-800">Agents should guide new users to use the APP correctly and clarify transaction rules, recharge methods and withdrawal requirements.</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Check size={16} className="mr-2 text-green-500 mt-0.5 shrink-0" />
+                    <span className="text-sm text-gray-800">Actively promote the company to carry out various forms of online and offline promotion activities, and encourage users to publish your invitation link through Youtube, WhatsApp, and other channels.</span>
+                  </li>
+                </ul>
+
+                <div className="mt-4 p-3 bg-red-50/80 border border-red-200 rounded-lg">
+                  <p className="font-medium text-sm mb-1 text-red-600">Disclaimer:</p>
+                  <p className="text-xs text-gray-800">Each person, each mobile phone, each IP address, and each bank account can only have one NEXBIT account. If the system audit finds malicious use of multiple accounts to defraud rewards, all accounts will be frozen and the principal will be confiscated once discovered.</p>
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
         </div>
       </ScrollArea>
     </MobileLayout>
