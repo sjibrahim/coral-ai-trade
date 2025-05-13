@@ -29,6 +29,7 @@ import NotFound from '@/pages/NotFound';
 import TransactionRecordsPage from '@/pages/TransactionRecordsPage';
 import TermsPage from '@/pages/TermsPage';
 import PrivacyPage from '@/pages/PrivacyPage';
+import VipPage from '@/pages/VipPage';
 
 const AppRoutes = () => {
   return (
@@ -50,6 +51,7 @@ const AppRoutes = () => {
       <Route path="/withdraw" element={<ProtectedRoute><WithdrawPage /></ProtectedRoute>} />
       <Route path="/usdt-withdraw" element={<ProtectedRoute><UsdtWithdrawalPage /></ProtectedRoute>} />
       <Route path="/invite" element={<ProtectedRoute><InvitePage /></ProtectedRoute>} />
+      <Route path="/vip" element={<ProtectedRoute><VipPage /></ProtectedRoute>} />
       <Route path="/bank" element={<ProtectedRoute><BankDetailsPage /></ProtectedRoute>} />
       <Route path="/change-password" element={<ProtectedRoute><ChangePasswordPage /></ProtectedRoute>} />
       <Route path="/support" element={<ProtectedRoute><SupportPage /></ProtectedRoute>} />
