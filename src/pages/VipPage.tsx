@@ -79,65 +79,57 @@ const VipPage = () => {
                     </TableBody>
                   </Table>
                 </div>
+
+                <div className="mt-4 text-sm border border-border/40 rounded-lg p-3 bg-muted/20">
+                  <h4 className="font-medium flex items-center mb-2">
+                    <Info size={16} className="mr-2 text-primary shrink-0" /> What are L1, L2, and L3?
+                  </h4>
+                  <ul className="space-y-2 text-xs text-muted-foreground">
+                    <li className="flex items-start">
+                      <Check size={14} className="mr-2 text-green-500 mt-0.5 shrink-0" />
+                      <span>L1 is a user who registered directly using your referral code.</span>
+                    </li>
+                    <li className="flex items-start">
+                      <Check size={14} className="mr-2 text-green-500 mt-0.5 shrink-0" />
+                      <span>L2 is a user who registered using the L1 member referral code.</span>
+                    </li>
+                    <li className="flex items-start">
+                      <Check size={14} className="mr-2 text-green-500 mt-0.5 shrink-0" />
+                      <span>L3 is a user who registered using the L2 member referral code.</span>
+                    </li>
+                  </ul>
+                </div>
+
+                
               </CardContent>
             </Card>
+            {/* Agent Rules Card */}
+            <Card>
+              <CardContent className="p-4">
+                <h3 className="font-medium flex items-center mb-3">
+                  <Info size={16} className="mr-2 text-primary shrink-0" /> Agent Rules & Requirements
+                </h3>
+                
+                <ul className="space-y-2 text-xs text-muted-foreground">
+                  <li className="flex items-start">
+                    <Check size={14} className="mr-2 text-green-500 mt-0.5 shrink-0" />
+                    <span>Agents should guide new users to use the APP correctly and clarify transaction rules, recharge methods and withdrawal requirements.</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Check size={14} className="mr-2 text-green-500 mt-0.5 shrink-0" />
+                    <span>Actively promote the platform through various online and offline promotion activities.</span>
+                  </li>
+                </ul>
+                
+                <div className="mt-3 text-xs p-3 bg-red-500/10 text-red-500 rounded-lg">
+                  <p className="font-medium mb-1">Disclaimer:</p>
+                  <p>Each person, each mobile phone, each IP address, and each bank account can only have one account. If the system audit finds malicious use of multiple accounts to defraud rewards, all accounts will be frozen.</p>
+                </div>
+              </CardContent>
+            </Card>
+        
           </div>
 
-          {/* Info Accordion instead of tabs for better mobile UX */}
-          <Accordion type="single" collapsible className="space-y-2">
-            <h3 className="text-lg font-semibold flex items-center gap-2 px-1 text-blue-500 mb-1">
-              <Info className="w-5 h-5" /> VIP Program Details
-            </h3>
-            
-            <AccordionItem value="explanation" className="border bg-white/90 backdrop-blur-sm rounded-lg overflow-hidden">
-              <AccordionTrigger className="px-4 py-3 hover:no-underline">
-                <span className="flex items-center gap-2">
-                  <Info size={16} className="text-blue-500" /> What are L1, L2, and L3?
-                </span>
-              </AccordionTrigger>
-              <AccordionContent className="px-4 pb-4">
-                <ul className="space-y-3">
-                  <li className="flex items-start">
-                    <Check size={16} className="mr-2 text-green-500 mt-0.5 shrink-0" />
-                    <span className="text-sm text-gray-800">L1 is a user who registered directly using your referral code.</span>
-                  </li>
-                  <li className="flex items-start">
-                    <Check size={16} className="mr-2 text-green-500 mt-0.5 shrink-0" />
-                    <span className="text-sm text-gray-800">L2 is a user who registered using the L1 member referral code.</span>
-                  </li>
-                  <li className="flex items-start">
-                    <Check size={16} className="mr-2 text-green-500 mt-0.5 shrink-0" />
-                    <span className="text-sm text-gray-800">L3 is a user who registered using the L2 member referral code.</span>
-                  </li>
-                </ul>
-              </AccordionContent>
-            </AccordionItem>
-
-            <AccordionItem value="rules" className="border bg-white/90 backdrop-blur-sm rounded-lg overflow-hidden">
-              <AccordionTrigger className="px-4 py-3 hover:no-underline">
-                <span className="flex items-center gap-2">
-                  <Users size={16} className="text-blue-500" /> Agent Rules & Requirements
-                </span>
-              </AccordionTrigger>
-              <AccordionContent className="px-4 pb-4">
-                <ul className="space-y-3">
-                  <li className="flex items-start">
-                    <Check size={16} className="mr-2 text-green-500 mt-0.5 shrink-0" />
-                    <span className="text-sm text-gray-800">Agents should guide new users to use the APP correctly and clarify transaction rules, recharge methods and withdrawal requirements.</span>
-                  </li>
-                  <li className="flex items-start">
-                    <Check size={16} className="mr-2 text-green-500 mt-0.5 shrink-0" />
-                    <span className="text-sm text-gray-800">Actively promote the company to carry out various forms of online and offline promotion activities, and encourage users to publish your invitation link through Youtube, WhatsApp, and other channels.</span>
-                  </li>
-                </ul>
-
-                <div className="mt-4 p-3 bg-red-50/80 border border-red-200 rounded-lg">
-                  <p className="font-medium text-sm mb-1 text-red-600">Disclaimer:</p>
-                  <p className="text-xs text-gray-800">Each person, each mobile phone, each IP address, and each bank account can only have one NEXBIT account. If the system audit finds malicious use of multiple accounts to defraud rewards, all accounts will be frozen and the principal will be confiscated once discovered.</p>
-                </div>
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
         </div>
       </ScrollArea>
     </MobileLayout>
