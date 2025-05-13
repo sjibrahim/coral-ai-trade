@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
-import { CircleDollarSign, ArrowRight, Check, DollarSign } from "lucide-react";
+import { CircleDollarSign, ArrowRight, Check, DollarSign, Copy, AlertCircle, Info } from "lucide-react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { createWithdrawOrder } from "@/services/api";
@@ -10,6 +10,9 @@ import { useToast } from "@/hooks/use-toast";
 import { Input } from "@/components/ui/input";
 import { useGeneralSettings } from "@/hooks/use-general-settings";
 import { motion } from "framer-motion";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import NumericKeypad from "@/components/NumericKeypad";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
 
 const UsdtWithdrawalPage = () => {
   const [amount, setAmount] = useState("");
@@ -17,6 +20,8 @@ const UsdtWithdrawalPage = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState("");
   const [address, setAddress] = useState("");
+  const [activeTab, setActiveTab] = useState("amount");
+  const [copied, setCopied] = useState(false);
   
   const { user, updateProfile } = useAuth();
   const { toast } = useToast();
@@ -35,10 +40,12 @@ const UsdtWithdrawalPage = () => {
   const usdtAmount = amount ? (parseFloat(amount) / usdtPrice).toFixed(2) : "0";
   
   const minWithdrawalInr = parseFloat(settings.min_withdrawal || "300");
-  const isValidAmount = Number(amount) >= minWithdrawalInr && Number(amount) <= availableBalance && address.trim().length > 10;
+  const isValidAmount = Number(amount) >= minWithdrawalInr && Number(amount) <= availableBalance;
+  const isValidAddress = address.trim().length > 10;
+  const canProceed = isValidAmount && isValidAddress;
   
   const handleConfirm = async () => {
-    if (!isValidAmount) {
+    if (!canProceed) {
       setError(`Please enter a valid amount (minimum ₹${minWithdrawalInr} and not exceeding your balance) and a valid TRC20 address`);
       return;
     }
@@ -64,6 +71,7 @@ const UsdtWithdrawalPage = () => {
           setShowSuccessModal(false);
           setAmount("");
           setAddress("");
+          setActiveTab("amount");
         }, 3000);
       } else {
         setError(response.msg || "Failed to process withdrawal");
@@ -86,163 +94,252 @@ const UsdtWithdrawalPage = () => {
     }
   };
   
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text)
+      .then(() => {
+        setCopied(true);
+        toast({
+          title: "Copied!",
+          description: "Address copied to clipboard",
+        });
+        setTimeout(() => setCopied(false), 2000);
+      })
+      .catch(err => {
+        console.error("Failed to copy:", err);
+      });
+  };
+  
+  const handleNextStep = () => {
+    if (activeTab === "amount" && isValidAmount) {
+      setActiveTab("address");
+    } else if (activeTab === "address" && isValidAddress) {
+      setActiveTab("confirm");
+    }
+  };
+  
+  const handlePrevStep = () => {
+    if (activeTab === "address") {
+      setActiveTab("amount");
+    } else if (activeTab === "confirm") {
+      setActiveTab("address");
+    }
+  };
+  
   return (
     <MobileLayout 
       showBackButton 
       title="USDT Withdrawal"
       noScroll
     >
-      <div className="flex flex-col h-full bg-[#0d0f17] pb-4">
-        {/* USDT Card with Animation */}
-        <motion.div 
-          className="mx-4 my-4 rounded-xl bg-gradient-to-br from-blue-900/40 to-blue-600/20 backdrop-blur-sm p-6 shadow-lg border border-blue-500/20"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center">
-              <div className="bg-blue-500/20 p-2 rounded-full mr-3">
-                <DollarSign className="h-6 w-6 text-blue-400" />
-              </div>
-              <div>
-                <h2 className="text-lg font-medium text-white">Tether (USDT)</h2>
-                <p className="text-sm text-blue-300">TRC20 Network</p>
-              </div>
-            </div>
-            <div className="bg-blue-500/10 rounded-full px-3 py-1">
-              <span className="text-xs text-blue-300">1 USDT = ₹{usdtPrice}</span>
-            </div>
-          </div>
-          
-          <div className="mt-6 text-center">
-            <div className="flex items-center justify-center">
-              <CircleDollarSign className="h-8 w-8 text-amber-400 mr-2 animate-pulse" />
-              <h3 className="text-5xl font-bold text-gradient-blue-purple">
-                {usdtAmount}
-              </h3>
-            </div>
-            <p className="text-blue-200/80 mt-2">
-              ₹{amount ? parseFloat(amount).toLocaleString() : "0"}
-            </p>
-          </div>
-        </motion.div>
-        
-        {/* Available Balance */}
-        <motion.div 
-          className="mx-4 mb-4"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.2, duration: 0.5 }}
-        >
-          <div className="flex justify-between items-center bg-[#1a1e29] p-4 rounded-lg border border-blue-500/10">
-            <span className="text-gray-400">Available Balance</span>
-            <span className="text-xl font-bold text-white">₹{availableBalance.toLocaleString()}</span>
-          </div>
-        </motion.div>
-        
-        {/* Address Input */}
-        <motion.div 
-          className="mx-4 mb-4"
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.3, duration: 0.5 }}
-        >
-          <label className="text-blue-400 text-xs mb-1 block">TRC20 Wallet Address</label>
-          <div className="relative">
-            <Input 
-              placeholder="Enter your TRC20 wallet address"
-              className="bg-[#1a1e29] border-[#2a2f3c] text-white pr-10"
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-            />
-            <div className="absolute right-3 top-1/2 -translate-y-1/2">
-              <DollarSign className="h-4 w-4 text-blue-400" />
-            </div>
-          </div>
-          <p className="text-amber-500/80 text-xs mt-1">
-            Only TRC20 network is supported. Make sure your address is correct.
-          </p>
-        </motion.div>
-        
-        {/* Amount Input */}
-        <motion.div 
-          className="mx-4 mb-4"
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.4, duration: 0.5 }}
-        >
-          <label className="text-blue-400 text-xs mb-1 block">Amount (in INR)</label>
-          <div className="relative">
-            <Input 
-              placeholder="Enter amount to withdraw"
-              className="bg-[#1a1e29] border-[#2a2f3c] text-white pr-10"
-              value={amount}
-              onChange={(e) => {
-                const value = e.target.value;
-                // Allow only numbers and decimal point
-                if (/^\d*\.?\d*$/.test(value) || value === '') {
-                  setAmount(value);
-                }
-              }}
-              type="text"
-              inputMode="decimal"
-            />
-            <div className="absolute right-3 top-1/2 -translate-y-1/2">
-              <span className="text-blue-400">₹</span>
-            </div>
-          </div>
-          <p className="text-blue-300/80 text-xs mt-1">
-            Minimum withdrawal: <span className="text-amber-400">₹{minWithdrawalInr}</span>
-          </p>
-        </motion.div>
-        
-        {/* Error Message */}
-        {error && (
+      <div className="flex flex-col h-full bg-[#0d0f17]">
+        {/* Header Section with Balance Info */}
+        <div className="px-4 pt-2 pb-4">
           <motion.div 
-            className="mx-4 mb-4"
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="rounded-xl overflow-hidden"
           >
-            <p className="text-red-500 text-sm bg-red-500/10 p-3 rounded-lg border border-red-500/20">
-              {error}
-            </p>
+            <AspectRatio ratio={16/5}>
+              <div className="w-full h-full bg-gradient-to-r from-blue-900 via-blue-800 to-indigo-900 p-4 flex flex-col justify-center">
+                <div className="flex justify-between items-center mb-1">
+                  <span className="text-blue-200 text-xs">Available Balance</span>
+                  <DollarSign className="h-4 w-4 text-blue-300" />
+                </div>
+                <div className="flex items-baseline">
+                  <span className="text-2xl font-bold text-white">₹{availableBalance.toLocaleString()}</span>
+                  <span className="text-blue-300 text-sm ml-2">≈ {(availableBalance / usdtPrice).toFixed(2)} USDT</span>
+                </div>
+              </div>
+            </AspectRatio>
           </motion.div>
-        )}
+        </div>
         
-        {/* Withdrawal Button */}
-        <div className="mt-auto mx-4 mb-6">
-          <motion.button
-            whileTap={{ scale: 0.98 }}
-            disabled={!isValidAmount || isProcessing}
-            onClick={handleConfirm}
-            className={`w-full py-4 px-4 rounded-lg text-white text-lg font-semibold flex items-center justify-center space-x-2 ${
-              isValidAmount && !isProcessing
-                ? "bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 shadow-lg"
-                : "bg-blue-600/40 cursor-not-allowed"
-            }`}
+        {/* Main Withdrawal Flow */}
+        <div className="flex-1 px-4 pb-4">
+          <Tabs 
+            value={activeTab} 
+            onValueChange={setActiveTab}
+            className="w-full"
           >
-            {isProcessing ? (
-              <span className="flex items-center">
-                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                Processing...
-              </span>
-            ) : (
-              <>
-                <span>WITHDRAW USDT</span>
-                <ArrowRight className="h-5 w-5" />
-              </>
-            )}
-          </motion.button>
+            <TabsList className="grid grid-cols-3 mb-6">
+              <TabsTrigger value="amount" disabled={activeTab !== "amount" && !isValidAmount}>
+                Amount
+              </TabsTrigger>
+              <TabsTrigger value="address" disabled={!isValidAmount || (activeTab === "confirm" && !isValidAddress)}>
+                Address
+              </TabsTrigger>
+              <TabsTrigger value="confirm" disabled={!isValidAmount || !isValidAddress}>
+                Confirm
+              </TabsTrigger>
+            </TabsList>
+            
+            {/* Amount Tab */}
+            <TabsContent value="amount" className="mt-0 space-y-4">
+              <div className="flex flex-col items-center mb-6">
+                <div className="text-center mb-2">
+                  <p className="text-gray-400 text-xs mb-1">Withdrawal Amount (INR)</p>
+                  <div className="text-5xl font-bold text-white tracking-tight">₹{amount || "0"}</div>
+                  <p className="text-blue-400 text-sm mt-1">≈ {usdtAmount} USDT</p>
+                </div>
+                
+                <div className="w-full bg-[#1a1e29] rounded-lg p-3 mt-4">
+                  <div className="flex justify-between items-center mb-1">
+                    <span className="text-gray-400 text-xs">Exchange Rate</span>
+                    <span className="text-xs text-gray-300">1 USDT = ₹{usdtPrice}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-400 text-xs">Minimum Withdrawal</span>
+                    <span className="text-xs text-gray-300">₹{minWithdrawalInr}</span>
+                  </div>
+                </div>
+                
+                {!isValidAmount && amount && (
+                  <div className="w-full bg-red-900/20 border border-red-800/30 rounded-lg p-3 mt-4 flex items-start">
+                    <AlertCircle className="h-4 w-4 text-red-400 mr-2 mt-0.5 flex-shrink-0" />
+                    <p className="text-xs text-red-400">
+                      {Number(amount) < minWithdrawalInr 
+                        ? `Amount must be at least ₹${minWithdrawalInr}` 
+                        : Number(amount) > availableBalance 
+                          ? `Insufficient balance. Available: ₹${availableBalance}`
+                          : "Please enter a valid amount"}
+                    </p>
+                  </div>
+                )}
+              </div>
+              
+              <NumericKeypad 
+                value={amount}
+                onChange={setAmount}
+                maxLength={10}
+                size="md"
+                onConfirm={isValidAmount ? handleNextStep : undefined}
+                confirmButtonText="NEXT"
+                confirmButtonIcon={<ArrowRight />}
+                confirmDisabled={!isValidAmount}
+                className="pb-6"
+              />
+            </TabsContent>
+            
+            {/* Address Tab */}
+            <TabsContent value="address" className="space-y-4">
+              <div className="bg-[#1a1e29] rounded-lg p-4">
+                <label className="text-xs text-gray-400 block mb-2">TRC20 Wallet Address</label>
+                <div className="relative">
+                  <Input 
+                    placeholder="Enter your TRC20 wallet address"
+                    className="bg-[#252836] border-[#353950] text-white pr-10 py-6 text-sm"
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
+                  />
+                </div>
+                
+                <div className="flex items-start mt-4">
+                  <Info className="h-4 w-4 text-amber-400 mr-2 mt-0.5 flex-shrink-0" />
+                  <p className="text-amber-400/80 text-xs">
+                    IMPORTANT: Only TRC20 network is supported. Withdrawing to other networks may result in permanent loss of funds.
+                  </p>
+                </div>
+              </div>
+              
+              <div className="flex space-x-3 pb-6">
+                <Button 
+                  variant="outline" 
+                  onClick={handlePrevStep}
+                  className="flex-1"
+                >
+                  Back
+                </Button>
+                <Button 
+                  onClick={handleNextStep}
+                  disabled={!isValidAddress}
+                  className="flex-1"
+                >
+                  Next
+                </Button>
+              </div>
+            </TabsContent>
+            
+            {/* Confirm Tab */}
+            <TabsContent value="confirm" className="space-y-4">
+              <div className="bg-[#1a1e29] rounded-lg p-4">
+                <h2 className="text-white font-medium mb-4">Confirm Withdrawal Details</h2>
+                
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center py-2 border-b border-[#353950]">
+                    <span className="text-gray-400">Amount (INR)</span>
+                    <span className="text-white font-medium">₹{amount}</span>
+                  </div>
+                  
+                  <div className="flex justify-between items-center py-2 border-b border-[#353950]">
+                    <span className="text-gray-400">Amount (USDT)</span>
+                    <span className="text-white font-medium">{usdtAmount} USDT</span>
+                  </div>
+                  
+                  <div className="flex justify-between items-center py-2 border-b border-[#353950]">
+                    <span className="text-gray-400">Network</span>
+                    <span className="text-white font-medium">TRC20</span>
+                  </div>
+                  
+                  <div className="py-2">
+                    <div className="flex justify-between items-center mb-1">
+                      <span className="text-gray-400">Address</span>
+                      <Button 
+                        variant="ghost" 
+                        size="sm"
+                        onClick={() => copyToClipboard(address)} 
+                        className="h-6 text-xs text-blue-400 hover:text-blue-300"
+                      >
+                        <Copy className="h-3 w-3 mr-1" />
+                        {copied ? "Copied" : "Copy"}
+                      </Button>
+                    </div>
+                    <p className="text-xs text-gray-300 break-all">{address}</p>
+                  </div>
+                </div>
+                
+                {error && (
+                  <div className="mt-4 p-3 bg-red-900/20 border border-red-800/30 rounded-lg">
+                    <p className="text-xs text-red-400">{error}</p>
+                  </div>
+                )}
+              </div>
+              
+              <div className="flex space-x-3 pb-6">
+                <Button 
+                  variant="outline" 
+                  onClick={handlePrevStep}
+                  className="flex-1"
+                  disabled={isProcessing}
+                >
+                  Back
+                </Button>
+                <Button 
+                  onClick={handleConfirm}
+                  disabled={isProcessing || !canProceed}
+                  className="flex-1 bg-blue-600 hover:bg-blue-700"
+                >
+                  {isProcessing ? (
+                    <>
+                      <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Processing...
+                    </>
+                  ) : (
+                    "Confirm Withdrawal"
+                  )}
+                </Button>
+              </div>
+            </TabsContent>
+          </Tabs>
         </div>
       </div>
       
       {/* Success Modal */}
       <Dialog open={showSuccessModal} onOpenChange={setShowSuccessModal}>
-        <DialogContent className="sm:max-w-md bg-[#1a1e29] border-border/50 p-0 overflow-hidden">
+        <DialogContent className="sm:max-w-md bg-[#1a1e29] border-blue-500/20 p-0 overflow-hidden">
           <motion.div 
             className="flex flex-col items-center justify-center p-6 space-y-4"
             initial={{ opacity: 0, scale: 0.9 }}
@@ -256,9 +353,9 @@ const UsdtWithdrawalPage = () => {
             >
               <Check className="h-10 w-10 text-green-500" />
             </motion.div>
-            <h2 className="text-xl font-semibold text-white">Withdrawal Request Submitted!</h2>
+            <h2 className="text-xl font-semibold text-white">Withdrawal Submitted!</h2>
             <p className="text-gray-400 text-center">
-              Your USDT withdrawal request for {usdtAmount} USDT (₹{amount}) has been submitted successfully. It will be processed within 24 hours.
+              Your USDT withdrawal request for {usdtAmount} USDT (₹{amount}) has been successfully submitted. It will be processed within 24 hours.
             </p>
             <Button 
               className="w-full bg-blue-600 hover:bg-blue-700" 
