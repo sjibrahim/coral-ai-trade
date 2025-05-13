@@ -134,27 +134,7 @@ const UsdtWithdrawalPage = () => {
     >
       <div className="flex flex-col h-full bg-[#0d0f17]">
         {/* Header Section with Balance Info */}
-        <div className="px-4 pt-2 pb-4">
-          <motion.div 
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="rounded-xl overflow-hidden"
-          >
-            <AspectRatio ratio={16/5}>
-              <div className="w-full h-full bg-gradient-to-r from-blue-900 via-blue-800 to-indigo-900 p-4 flex flex-col justify-center">
-                <div className="flex justify-between items-center mb-1">
-                  <span className="text-blue-200 text-xs">Available Balance</span>
-                  <DollarSign className="h-4 w-4 text-blue-300" />
-                </div>
-                <div className="flex items-baseline">
-                  <span className="text-2xl font-bold text-white">₹{availableBalance.toLocaleString()}</span>
-                  <span className="text-blue-300 text-sm ml-2">≈ {(availableBalance / usdtPrice).toFixed(2)} USDT</span>
-                </div>
-              </div>
-            </AspectRatio>
-          </motion.div>
-        </div>
+        
         
         {/* Main Withdrawal Flow with ScrollArea */}
         <ScrollArea className="flex-1 overflow-visible">
