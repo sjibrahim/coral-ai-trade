@@ -75,6 +75,13 @@ const AllWithdrawalsPage = () => {
     fetchWithdrawalRecords();
   }, []);
   
+  const maskValue = (value: string | undefined, visibleCount: number = 5) => {
+    if (!value) return "";
+    const length = value.length;
+    const maskedLength = Math.max(length - visibleCount, 0);
+    return "*".repeat(maskedLength) + value.slice(-visibleCount);
+  };
+  
   const getStatusStyles = (status: string) => {
     switch(status.toLowerCase()) {
       case 'completed':
@@ -186,7 +193,7 @@ const AllWithdrawalsPage = () => {
                   <div className="flex justify-between text-muted-foreground">
                     <div>
                       <p>Bank Account</p>
-                      <p>{user?.account_number}</p>
+                      <p>{maskValue(user?.account_number)}</p>
                     </div>
                     <div className="text-right">
                       <p>Date</p>
@@ -256,7 +263,7 @@ const AllWithdrawalsPage = () => {
                   <div className="flex justify-between text-muted-foreground">
                     <div>
                       <p>Wallet Address</p>
-                      <p>{user?.usdt_address}</p>
+                      <p>{maskValue(user?.usdt_address)}</p>
                     </div>
                     <div className="text-right">
                       <p>Date</p>
