@@ -1,16 +1,11 @@
-import { useState, useEffect } from "react";
+
+import React from 'react';
 import MobileLayout from "@/components/layout/MobileLayout";
-import { useAuth } from "@/contexts/AuthContext";
-import { useToast } from "@/hooks/use-toast";
-import { Copy, Share2, Users, Mail, Send, Info, Check, ChevronDown, ChevronUp } from "lucide-react";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
-import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "@/components/ui/table";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useIsMobile } from "@/hooks/use-mobile";
-import { useTeam } from "@/hooks/use-team";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Info, Check, Award } from "lucide-react";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
 
 // VIP level data based on the reference image
 const vipLevels = [
@@ -25,60 +20,32 @@ const vipLevels = [
 ];
 
 const VipPage = () => {
-  const { user, generalSettings } = useAuth();
-  const { 
-    level1Members, 
-    level2Members, 
-    level3Members, 
-    activeLevel1,
-    activeLevel2,
-    activeLevel3,
-    totalTeamSize, 
-    totalActiveMembers, 
-    isLoading, 
-    fetchTeamDetails 
-  } = useTeam();
-  
-  const [copied, setCopied] = useState(false);
-  const [email, setEmail] = useState('');
-  const isMobile = useIsMobile();
-  const { toast } = useToast();
-  
-  useEffect(() => {
-    fetchTeamDetails();
-  }, [fetchTeamDetails]);
-  
-  // Generate referral link based on current domain and user's referral code
-  const getReferralLink = () => {
-    const baseUrl = window.location.origin;
-    return `${baseUrl}/register?referral_code=${user?.referral_code || ""}`;
-  };
-
-  const referralLink = getReferralLink();
-  
-  const copyToClipboard = (text: string, message: string) => {
-    navigator.clipboard.writeText(text)
-      .then(() => {
-        setCopied(true);
-        toast({
-          title: "Copied to clipboard",
-          description: message,
-          duration: 3000,
-        });
-        setTimeout(() => setCopied(false), 3000);
-      })
-      .catch(err => {
-        console.error('Failed to copy text: ', err);
-      });
-  };
-  
   return (
-    <MobileLayout showBackButton title="VIP Benfit">
-      <div className="flex flex-col pb-safe animate-fade-in">
-        
-        {/* Main Content Area */}
-        <div className="px-4 py-3 flex-1">
-         
+    <MobileLayout showBackButton title="VIP Benefit">
+      <ScrollArea className="h-full">
+        <div className="p-4 pb-safe space-y-6">
+          {/* Header Section with improved design */}
+          <AspectRatio ratio={16/9} className="mb-6 overflow-hidden rounded-lg">
+            <div className="h-full w-full bg-gradient-to-br from-blue-600 to-blue-400 flex items-center justify-center">
+              <div className="text-center p-4 relative z-10">
+                <div className="mb-3 flex justify-center">
+                  <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center">
+                    <Award className="w-10 h-10 text-white" />
+                  </div>
+                </div>
+                <h1 className="text-3xl font-bold text-white mb-1 drop-shadow-md">NEXBIT</h1>
+                <h2 className="text-xl font-semibold text-white/90 drop-shadow-md">Broker Salary Program</h2>
+                
+                {/* Animated particles for visual interest */}
+                <div className="absolute top-0 left-0 w-full h-full -z-10">
+                  <div className="absolute top-1/4 left-1/4 w-2 h-2 rounded-full bg-white/30 animate-pulse"></div>
+                  <div className="absolute top-3/4 left-2/3 w-3 h-3 rounded-full bg-white/20 animate-pulse" style={{animationDelay: "0.5s"}}></div>
+                  <div className="absolute top-1/2 left-1/3 w-1.5 h-1.5 rounded-full bg-white/40 animate-pulse" style={{animationDelay: "1s"}}></div>
+                </div>
+              </div>
+            </div>
+          </AspectRatio>
+          
           {/* VIP Schedule Section */}
           <Card>
             <CardContent className="p-4">
@@ -160,7 +127,7 @@ const VipPage = () => {
             </CardContent>
           </Card>
         </div>
-      </div>
+      </ScrollArea>
     </MobileLayout>
   );
 };
