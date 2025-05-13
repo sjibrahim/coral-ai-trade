@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Sparkles, Rocket, Check, Zap } from "lucide-react";
+import { ArrowRight, Sparkles, Rocket, Check, Zap, Info } from "lucide-react";
 import { useGeneralSettings } from "@/hooks/use-general-settings";
 import { useToast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
@@ -17,9 +17,14 @@ export function WelcomeInfoModal() {
   useEffect(() => {
     const hasSeenModal = localStorage.getItem("nexbit_welcome_seen");
     
-    if (!hasSeenModal) {
-      setOpen(true);
-    }
+    // Auto-show the modal after 30 seconds delay if user hasn't seen it
+    const timer = setTimeout(() => {
+      if (!hasSeenModal) {
+        setOpen(true);
+      }
+    }, 30000); // 30 seconds
+    
+    return () => clearTimeout(timer);
   }, []);
 
   const handleClose = () => {
@@ -184,13 +189,29 @@ export function WelcomeInfoModal() {
                   </div>
                 </div>
 
-                <div className="flex items-start space-x-3 p-3 bg-amber-500/10 rounded-lg">
-                  <div className="bg-amber-500/20 p-2 rounded-full">
-                    <Sparkles className="h-5 w-5 text-amber-400" />
+                {/* New info card for daily trade profit */}
+                <div className="flex items-start space-x-3 p-3 bg-green-500/10 rounded-lg">
+                  <div className="bg-green-500/20 p-2 rounded-full">
+                    <Check className="h-5 w-5 text-green-400" />
                   </div>
                   <div>
-                    <h3 className="font-medium text-white">USDT Withdrawal</h3>
-                    <p className="text-sm text-gray-400">Convert & withdraw profits to USDT</p>
+                    <h3 className="font-medium text-white">Daily Trade Profit</h3>
+                    <p className="text-sm text-gray-400">{settings.daily_profit || "1.5"}% profit on successful trades</p>
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* Customer support section */}
+              <motion.div variants={itemVariants} className="bg-blue-500/10 p-4 rounded-lg border border-blue-500/20">
+                <div className="flex items-start space-x-3">
+                  <div className="bg-blue-500/20 p-2 rounded-full flex-shrink-0">
+                    <Info className="h-5 w-5 text-blue-400" />
+                  </div>
+                  <div>
+                    <h3 className="font-medium text-white">Customer Support</h3>
+                    <p className="text-sm text-gray-300">
+                      {settings.customer_support || "Available 24/7 to help with any issues"}
+                    </p>
                   </div>
                 </div>
               </motion.div>
@@ -227,8 +248,8 @@ export function WelcomeInfoModal() {
               </motion.div>
 
               <motion.div variants={itemVariants} className="text-center space-y-2">
-                <h2 className="text-xl font-bold text-white">Join Our Community</h2>
-                <p className="text-gray-400">Get daily signals and trading tips</p>
+                <h2 className="text-xl font-bold text-white">Follow Our Telegram</h2>
+                <p className="text-gray-400">Get daily trading signals and updates</p>
               </motion.div>
 
               <motion.div variants={itemVariants} className="bg-[#0088cc]/10 p-4 rounded-lg border border-[#0088cc]/20">

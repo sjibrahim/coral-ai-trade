@@ -13,6 +13,7 @@ interface GeneralSettings {
   min_trade: string;
   usdt_price: string;
   telegram_channel: string;
+  customer_support: string;
 }
 
 const defaultSettings: GeneralSettings = {
@@ -24,7 +25,8 @@ const defaultSettings: GeneralSettings = {
   daily_profit: "1.5",
   min_trade: "300",
   usdt_price: "85",
-  telegram_channel: "https://t.me/nexbit_official"
+  telegram_channel: "https://t.me/nexbit_official",
+  customer_support: "Available 24/7 to help with any issues"
 };
 
 // Cache settings key in localStorage
