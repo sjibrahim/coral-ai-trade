@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
 import { toast } from "@/hooks/use-toast";
 import { apiRequest, endpoints, getGeneralSettings } from "@/services/api";
@@ -17,6 +18,7 @@ type User = {
   account_holder_name?: string;
   account_number?: string;
   account_ifsc?: string;
+  usdt_address?: string;
   token: string;
   yesterday_income?: string;
 };
