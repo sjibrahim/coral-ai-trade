@@ -70,8 +70,8 @@ const NumericKeypad = ({
   const DeleteIconComponent = deleteIcon === "backspace" ? ArrowLeft : Delete;
   
   return (
-    <div className={cn("numeric-keypad w-full", className)}>
-      <div className="grid grid-cols-3 gap-2 w-full max-w-xs mx-auto" style={{ marginLeft: "25px" }}>
+    <div className={cn("numeric-keypad w-full flex flex-col items-center", className)}>
+      <div className="grid grid-cols-3 gap-2 w-full max-w-xs mx-auto">
         {/* First row */}
         <KeypadButton size={size} onClick={() => handleKeyPress('1')}>1</KeypadButton>
         <KeypadButton size={size} onClick={() => handleKeyPress('2')}>2</KeypadButton>
@@ -105,7 +105,7 @@ const NumericKeypad = ({
           onClick={onConfirm}
           disabled={confirmDisabled}
           className={cn(
-            "w-full py-4 mt-4 rounded-lg text-white text-lg font-medium transition-all flex items-center justify-center",
+            "w-full max-w-xs py-4 mt-4 rounded-lg text-white text-lg font-medium transition-all flex items-center justify-center",
             confirmDisabled 
               ? "bg-blue-600/50 cursor-not-allowed" 
               : "bg-blue-600 hover:bg-blue-700 active:scale-[0.98]"
