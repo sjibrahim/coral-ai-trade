@@ -68,7 +68,7 @@ const VipPage = () => {
                     </TableHeader>
                     <TableBody>
                       {vipLevels.map((level, index) => (
-                        <TableRow key={level.level} className={index % 2 === 0 ? "bg-blue-50/60" : "bg-white/80"}>
+                        <TableRow key={level.level} className={index % 2 === 0 ? "bg-green-500/5" : "bg-green-500/10"}>
                           <TableCell className="text-center font-medium text-xs py-2.5 text-blue-600">{level.level}</TableCell>
                           <TableCell className="text-center text-xs py-2.5">{level.l1}</TableCell>
                           <TableCell className="text-center text-xs py-2.5">{level.totalRefs}</TableCell>
