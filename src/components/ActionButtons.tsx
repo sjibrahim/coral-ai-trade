@@ -1,6 +1,10 @@
-
 import { Link } from "react-router-dom";
-import { ArrowDownLeft, ArrowUpRight, BarChart3, Wallet } from "lucide-react";
+import {
+  ArrowDownLeft,
+  ArrowUpRight,
+  Wallet,
+  UserPlus,
+} from "lucide-react";
 
 const ActionButtons = () => {
   const buttons = [
@@ -16,9 +20,9 @@ const ActionButtons = () => {
       link: "/withdraw",
     },
     {
-      text: "Trade",
-      icon: <BarChart3 className="w-5 h-5" />,
-      link: "/market",
+      text: "Invite",
+      icon: <UserPlus className="w-5 h-5" />,
+      link: "/invite",
     },
     {
       text: "USDT",
