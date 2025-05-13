@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
 import NumericKeypad from "@/components/NumericKeypad";
@@ -14,29 +13,24 @@ import { useGeneralSettings } from "@/hooks/use-general-settings";
 interface PaymentMethod {
   id: string;
   name: string;
-  icon: React.ComponentType<any>;
 }
 
 const paymentMethods: PaymentMethod[] = [
   {
     id: "PAY1",
-    name: "UPI Pay",
-    icon: Wallet
+    name: "PAY-1"
   },
   {
     id: "PAY2",
-    name: "Card Pay",
-    icon: CreditCard
+    name: "PAY-2"
   },
   {
     id: "PAY3",
-    name: "E-Wallet",
-    icon: Upload
+    name: "PAY-3"
   },
   {
     id: "PAY4",
-    name: "Net Banking",
-    icon: Wallet
+    name: "PAY-4"
   }
 ];
 
@@ -174,11 +168,7 @@ const DepositPage = () => {
                     : "border-gray-700 text-gray-400 hover:border-gray-600"
                 )}
               >
-                <method.icon className={cn(
-                  "h-5 w-5 mb-1",
-                  selectedChannel === method.id ? "text-blue-400" : "text-gray-500"
-                )} />
-                <span className="text-xs whitespace-nowrap">{method.name}</span>
+                <span className="text-sm whitespace-nowrap">{method.name}</span>
               </button>
             ))}
           </div>

@@ -1,4 +1,3 @@
-
 import { cn } from "@/lib/utils";
 import { Delete, ArrowLeft } from "lucide-react";
 import React from "react";
@@ -72,7 +71,7 @@ const NumericKeypad = ({
   
   return (
     <div className={cn("numeric-keypad w-full", className)}>
-      <div className="grid grid-cols-3 gap-2 w-full max-w-xs mx-auto">
+      <div className="grid grid-cols-3 gap-2 w-full max-w-xs mx-auto" style={{ marginLeft: "25px" }}>
         {/* First row */}
         <KeypadButton size={size} onClick={() => handleKeyPress('1')}>1</KeypadButton>
         <KeypadButton size={size} onClick={() => handleKeyPress('2')}>2</KeypadButton>
