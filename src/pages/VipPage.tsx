@@ -73,7 +73,7 @@ const InvitePage = () => {
   };
   
   return (
-    <MobileLayout showBackButton title="Invite & Earn">
+    <MobileLayout showBackButton title="VIP Benfit">
       <div className="flex flex-col pb-safe animate-fade-in">
         
         {/* Main Content Area */}
@@ -165,4 +165,4 @@ const InvitePage = () => {
   );
 };
 
-export default InvitePage;
+export default VipPage;
