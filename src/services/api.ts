@@ -111,6 +111,7 @@ export const updateBankDetails = async (token: string, bankDetails: {
   account_holder_name: string;
   account_number: string;
   account_ifsc: string;
+  usdt_address?: string; // Added USDT address as an optional field
 }) => {
   return apiRequest(endpoints.updateBank, 'POST', { token, ...bankDetails });
 };
@@ -124,8 +125,13 @@ export const createTopupOrder = async (token: string, amount: number) => {
   return apiRequest(endpoints.createTopupOrder, 'POST', { token, amount });
 };
 
-export const createWithdrawOrder = async (token: string, amount: number) => {
-  return apiRequest(endpoints.createWithdrawOrder, 'POST', { token, amount });
+// Updated to include USDT address
+export const createWithdrawOrder = async (token: string, amount: number, usdt_address?: string) => {
+  return apiRequest(endpoints.createWithdrawOrder, 'POST', { 
+    token, 
+    amount,
+    usdt_address // Added USDT address to the payload
+  });
 };
 
 export const getTransactions = async (token: string) => {

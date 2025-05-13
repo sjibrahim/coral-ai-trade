@@ -60,7 +60,8 @@ const UsdtWithdrawalPage = () => {
         throw new Error("Authentication token not found");
       }
       
-      const response = await createWithdrawOrder(token, Number(amount));
+      // Added USDT address to the API payload
+      const response = await createWithdrawOrder(token, Number(amount), address);
       
       if (response.status) {
         setShowSuccessModal(true);
@@ -156,8 +157,8 @@ const UsdtWithdrawalPage = () => {
         </div>
         
         {/* Main Withdrawal Flow with ScrollArea */}
-        <ScrollArea className="flex-1">
-          <div className="px-4 pb-4">
+        <ScrollArea className="flex-1 overflow-visible">
+          <div className="px-4 pb-32">
             <Tabs 
               value={activeTab} 
               onValueChange={setActiveTab}
@@ -209,7 +210,7 @@ const UsdtWithdrawalPage = () => {
                   )}
                 </div>
                 
-                <div className="pb-20">
+                <div className="fixed bottom-0 left-0 right-0 bg-[#0d0f17] border-t border-[#1a1e29] pb-4 pt-2 px-4">
                   <NumericKeypad 
                     value={amount}
                     onChange={setAmount}
@@ -224,7 +225,7 @@ const UsdtWithdrawalPage = () => {
               </TabsContent>
               
               {/* Address Tab */}
-              <TabsContent value="address" className="space-y-4 min-h-[300px] pb-20">
+              <TabsContent value="address" className="space-y-4 min-h-[300px]">
                 <div className="bg-[#1a1e29] rounded-lg p-4">
                   <label className="text-xs text-gray-400 block mb-2">TRC20 Wallet Address</label>
                   <div className="relative">
@@ -263,7 +264,7 @@ const UsdtWithdrawalPage = () => {
               </TabsContent>
               
               {/* Confirm Tab */}
-              <TabsContent value="confirm" className="space-y-4 min-h-[300px] pb-20">
+              <TabsContent value="confirm" className="space-y-4 min-h-[300px]">
                 <div className="bg-[#1a1e29] rounded-lg p-4">
                   <h2 className="text-white font-medium mb-4">Confirm Withdrawal Details</h2>
                   

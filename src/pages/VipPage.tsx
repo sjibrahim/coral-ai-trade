@@ -1,4 +1,3 @@
-
 import React from 'react';
 import MobileLayout from "@/components/layout/MobileLayout";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -12,16 +11,16 @@ import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell, LabelList } fro
 import { ArrowRight, Crown, TrendingUp, Gift, Clock, ArrowUpRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-// VIP Level data
+// Updated VIP Level data
 const vipLevels = [
-  { level: 'VIP 1', deposit: 10000, commission: 1.0, withdrawal: 50000, color: '#FF7F50' },
-  { level: 'VIP 2', deposit: 30000, commission: 1.2, withdrawal: 100000, color: '#FFA500' },
-  { level: 'VIP 3', deposit: 80000, commission: 1.5, withdrawal: 250000, color: '#FFD700' },
-  { level: 'VIP 4', deposit: 150000, commission: 1.8, withdrawal: 500000, color: '#7FFFD4' },
-  { level: 'VIP 5', deposit: 300000, commission: 2.0, withdrawal: 1000000, color: '#0FE0E0' },
-  { level: 'VIP 6', deposit: 800000, commission: 2.3, withdrawal: 2000000, color: '#1E90FF' },
-  { level: 'VIP 7', deposit: 1500000, commission: 2.5, withdrawal: 5000000, color: '#B768FF' },
-  { level: 'VIP 8', deposit: 3000000, commission: 3.0, withdrawal: 10000000, color: '#9932CC' },
+  { level: 'VIP 1', deposit: 10000, commission: 1.0, withdrawal: 50000, color: '#FF7F50', l1: 2, l1l2l3: 15, salary: 200, new: 2 },
+  { level: 'VIP 2', deposit: 30000, commission: 1.2, withdrawal: 100000, color: '#FFA500', l1: 5, l1l2l3: 25, salary: 800, new: 5 },
+  { level: 'VIP 3', deposit: 80000, commission: 1.5, withdrawal: 250000, color: '#FFD700', l1: 10, l1l2l3: 50, salary: 2000, new: 8 },
+  { level: 'VIP 4', deposit: 150000, commission: 1.8, withdrawal: 500000, color: '#7FFFD4', l1: 30, l1l2l3: 150, salary: 5000, new: 15 },
+  { level: 'VIP 5', deposit: 300000, commission: 2.0, withdrawal: 1000000, color: '#0FE0E0', l1: 80, l1l2l3: 500, salary: 10000, new: 30 },
+  { level: 'VIP 6', deposit: 800000, commission: 2.3, withdrawal: 2000000, color: '#1E90FF', l1: 200, l1l2l3: 2000, salary: 30000, new: 100 },
+  { level: 'VIP 7', deposit: 1500000, commission: 2.5, withdrawal: 5000000, color: '#B768FF', l1: 500, l1l2l3: 5000, salary: 100000, new: 300 },
+  { level: 'VIP 8', deposit: 3000000, commission: 3.0, withdrawal: 10000000, color: '#9932CC', l1: 1000, l1l2l3: 10000, salary: 200000, new: "caly" },
 ];
 
 // Benefits for each tab
@@ -112,6 +111,120 @@ const VipPage = () => {
     );
   };
 
+  // Team Structure Data Chart for VIP levels
+  const renderTeamStructureChart = () => {
+    return (
+      <div className="space-y-4 mb-6">
+        <div className="bg-[#1a1e29] rounded-lg p-4">
+          <h3 className="text-white text-lg font-medium mb-4">VIP Team Structure Requirements</h3>
+          
+          <div className="overflow-hidden rounded-lg">
+            <Table>
+              <TableHeader className="bg-[#131722]">
+                <TableRow>
+                  <TableHead className="text-white">VIP</TableHead>
+                  <TableHead className="text-white text-center">L1</TableHead>
+                  <TableHead className="text-white text-center">L1+L2+L3</TableHead>
+                  <TableHead className="text-white text-center">Salary</TableHead>
+                  <TableHead className="text-white text-center">New</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {vipLevels.map((level) => (
+                  <TableRow key={level.level} className="border-b border-gray-800">
+                    <TableCell className="font-medium text-white">{level.level}</TableCell>
+                    <TableCell className="text-center text-gray-300">{level.l1}</TableCell>
+                    <TableCell className="text-center text-gray-300">{level.l1l2l3}</TableCell>
+                    <TableCell className="text-center text-emerald-400">{level.salary}</TableCell>
+                    <TableCell className="text-center text-blue-400">{level.new}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        </div>
+        
+        <Card className="bg-[#1a1e29] border-white/5">
+          <CardHeader className="pb-0">
+            <CardTitle className="text-lg text-white">Team Structure Requirements</CardTitle>
+            <CardDescription>
+              Direct referrals (L1) and team size needed for each VIP level
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="pt-4">
+            <div className="h-[300px] w-full">
+              <ChartContainer 
+                className="h-full w-full"
+                config={{
+                  l1: { theme: { light: "#FFA500", dark: "#FFA500" } },
+                  team: { theme: { light: "#1E90FF", dark: "#1E90FF" } },
+                }}
+              >
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart 
+                    data={vipLevels.slice(0, 7)} 
+                    margin={{ top: 20, right: 10, bottom: 20, left: 10 }}
+                    barGap={0}
+                    barCategoryGap="20%"
+                  >
+                    <XAxis dataKey="level" axisLine={false} tickLine={false} />
+                    <YAxis hide={true} />
+                    <ChartTooltip 
+                      content={<ChartTooltipContent />} 
+                      cursor={{ fill: 'rgba(255, 255, 255, 0.05)' }} 
+                    />
+                    <Bar name="L1 Referrals" dataKey="l1" fill="#FFA500" radius={[4, 4, 0, 0]}>
+                      <LabelList dataKey="l1" position="top" fill="#fff" fontSize={10} />
+                    </Bar>
+                    <Bar name="Total Team" dataKey="l1l2l3" fill="#1E90FF" radius={[4, 4, 0, 0]}>
+                      <LabelList dataKey="l1l2l3" position="top" fill="#fff" fontSize={10} />
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </ChartContainer>
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card className="bg-[#1a1e29] border-white/5">
+          <CardHeader className="pb-0">
+            <CardTitle className="text-lg text-white">VIP Level Salary</CardTitle>
+            <CardDescription>
+              Monthly salary rewards by VIP level
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="pt-4">
+            <div className="h-[300px] w-full">
+              <ChartContainer 
+                className="h-full w-full"
+                config={{
+                  salary: { theme: { light: "#00CED1", dark: "#00CED1" } },
+                }}
+              >
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart 
+                    data={vipLevels.slice(0, 7)} 
+                    margin={{ top: 20, right: 10, bottom: 20, left: 10 }}
+                  >
+                    <XAxis dataKey="level" axisLine={false} tickLine={false} />
+                    <YAxis hide={true} />
+                    <ChartTooltip 
+                      content={<ChartTooltipContent />} 
+                      cursor={{ fill: 'rgba(255, 255, 255, 0.05)' }} 
+                    />
+                    <Bar dataKey="salary" fill="#00CED1" radius={[4, 4, 0, 0]}>
+                      <LabelList dataKey="salary" position="top" formatter={(value) => `₹${value}`} fill="#fff" />
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </ChartContainer>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  };
+
   return (
     <MobileLayout showBackButton title="VIP Program">
       <ScrollArea className="h-full">
@@ -146,9 +259,10 @@ const VipPage = () => {
             onValueChange={setActiveTab}
             className="w-full"
           >
-            <TabsList className="grid grid-cols-3 mb-4">
+            <TabsList className="grid grid-cols-4 mb-4">
               <TabsTrigger value="levels">Levels</TabsTrigger>
-              <TabsTrigger value="chart">Chart</TabsTrigger>
+              <TabsTrigger value="chart">Charts</TabsTrigger>
+              <TabsTrigger value="team">Team</TabsTrigger>
               <TabsTrigger value="benefits">Benefits</TabsTrigger>
             </TabsList>
             
@@ -263,6 +377,11 @@ const VipPage = () => {
                   </div>
                 </CardContent>
               </Card>
+            </TabsContent>
+            
+            {/* New Team Structure Tab */}
+            <TabsContent value="team" className="mt-0">
+              {renderTeamStructureChart()}
             </TabsContent>
             
             {/* Benefits Tab - using nested tabs */}
