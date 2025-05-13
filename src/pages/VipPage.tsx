@@ -1,15 +1,18 @@
-
-import React from 'react';
+import { useState, useEffect } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/hooks/use-toast";
+import { Copy, Share2, Users, Mail, Send, Info, Check, ChevronDown, ChevronUp } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Info, Users, Check, Award, Star } from "lucide-react";
-import { AspectRatio } from "@/components/ui/aspect-ratio";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
+import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "@/components/ui/table";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { useTeam } from "@/hooks/use-team";
 
-// VIP level data from the reference image
+// VIP level data based on the reference image
 const vipLevels = [
   { level: "VIP1", l1: 2, totalRefs: 15, salary: 200, newQuantity: 2 },
   { level: "VIP2", l1: 5, totalRefs: 25, salary: 800, newQuantity: 5 },
@@ -20,34 +23,16 @@ const vipLevels = [
   { level: "VIP7", l1: 500, totalRefs: 5000, salary: 100000, newQuantity: 300 },
   { level: "VIP8", l1: 1000, totalRefs: 10000, salary: 200000, newQuantity: "caly" },
 ];
+  
 
-const VipPage = () => {
+  
   return (
-    <MobileLayout showBackButton title="VIP Program">
-      <ScrollArea className="h-full">
-        <div className="p-4 pb-safe space-y-6">
-          {/* Header Section with improved design */}
-          <AspectRatio ratio={16/9} className="mb-6 overflow-hidden rounded-lg">
-            <div className="h-full w-full bg-gradient-to-br from-blue-600 to-blue-400 flex items-center justify-center">
-              <div className="text-center p-4 relative z-10">
-                <div className="mb-3 flex justify-center">
-                  <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center">
-                    <Award className="w-10 h-10 text-white" />
-                  </div>
-                </div>
-                <h1 className="text-3xl font-bold text-white mb-1 drop-shadow-md">NEXBIT</h1>
-                <h2 className="text-xl font-semibold text-white/90 drop-shadow-md">Broker Salary Program</h2>
-                
-                {/* Animated particles for visual interest */}
-                <div className="absolute top-0 left-0 w-full h-full -z-10">
-                  <div className="absolute top-1/4 left-1/4 w-2 h-2 rounded-full bg-white/30 animate-pulse"></div>
-                  <div className="absolute top-3/4 left-2/3 w-3 h-3 rounded-full bg-white/20 animate-pulse" style={{animationDelay: "0.5s"}}></div>
-                  <div className="absolute top-1/2 left-1/3 w-1.5 h-1.5 rounded-full bg-white/40 animate-pulse" style={{animationDelay: "1s"}}></div>
-                </div>
-              </div>
-            </div>
-          </AspectRatio>
-          
+    <MobileLayout showBackButton title="Invite & Earn">
+      <div className="flex flex-col pb-safe animate-fade-in">
+        
+        {/* Main Content Area */}
+        <div className="px-4 py-3 flex-1">
+         
           {/* VIP Schedule Section */}
           <Card>
             <CardContent className="p-4">
@@ -128,13 +113,10 @@ const VipPage = () => {
               </div>
             </CardContent>
           </Card>
-          
-          </div>
-
         </div>
-      </ScrollArea>
+      </div>
     </MobileLayout>
   );
 };
 
-export default VipPage;
+export default InvitePage;
