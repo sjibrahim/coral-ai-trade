@@ -8,13 +8,13 @@ import {
   ToastTitle,
   ToastViewport,
 } from "@/components/ui/toast"
+import { useEffect } from "react"
 
 export function Toaster() {
   const { toasts } = useToast()
-
+  
   return (
     <ToastProvider>
-      {/* Only map if toasts is defined and is an array */}
       {toasts && Array.isArray(toasts) && toasts.map(function ({ id, title, description, action, ...props }) {
         return (
           <Toast key={id} {...props}>
