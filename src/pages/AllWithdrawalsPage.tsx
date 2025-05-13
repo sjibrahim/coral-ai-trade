@@ -63,10 +63,7 @@ const AllWithdrawalsPage = () => {
         
         // Use sample data as fallback
         setRecords([
-          { id: 'WD78901', amount: 800, date: '2023-05-03', status: 'completed', account: '******6413', type: 'inr' },
-          { id: 'WD78902', amount: 1200, date: '2023-04-29', status: 'processing', account: '******6413', type: 'inr' },
-          { id: 'WD78903', amount: 500, date: '2023-04-25', status: 'completed', account: '******6413', type: 'inr' },
-          { id: 'WD78904', amount: 75, date: '2023-05-05', status: 'completed', account: 'TRCx****X312', type: 'usdt' },
+          
         ]);
       } finally {
         setIsLoading(false);
@@ -187,7 +184,7 @@ const AllWithdrawalsPage = () => {
                   <div className="flex justify-between text-muted-foreground">
                     <div>
                       <p>Bank Account</p>
-                      <p>{record.account}</p>
+                      <p>{user?.account_number}</p>
                     </div>
                     <div className="text-right">
                       <p>Date</p>
@@ -257,7 +254,7 @@ const AllWithdrawalsPage = () => {
                   <div className="flex justify-between text-muted-foreground">
                     <div>
                       <p>Wallet Address</p>
-                      <p>{record.account}</p>
+                      <p>{user?.usdt_address}</p>
                     </div>
                     <div className="text-right">
                       <p>Date</p>
