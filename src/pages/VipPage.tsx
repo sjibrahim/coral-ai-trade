@@ -24,7 +24,7 @@ const vipLevels = [
   { level: "VIP8", l1: 1000, totalRefs: 10000, salary: 200000, newQuantity: "caly" },
 ];
 
-const InvitePage = () => {
+const VipPage = () => {
   const { user, generalSettings } = useAuth();
   const { 
     level1Members, 
