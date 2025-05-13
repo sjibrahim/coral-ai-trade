@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 import { ArrowDownCircle, IndianRupee, Wallet } from "lucide-react";
 import { getTransactions } from "@/services/api";
 import { toast } from "@/hooks/use-toast";
-import { useAuth } from "@/context/AuthContext"; 
+import { useAuth } from "@/contexts/AuthContext";
 
 interface WithdrawalRecord {
   id: string;
