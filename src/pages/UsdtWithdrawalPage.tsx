@@ -36,6 +36,12 @@ const UsdtWithdrawalPage = () => {
   // Safely access user properties with fallbacks
   const availableBalance = user?.wallet ? parseFloat(user.wallet) : 0;
   
+  useEffect(() => {
+    if (user?.usdt_address && address === "") {
+      setAddress(user.usdt_address);
+    }
+  }, [user]);
+  
   // Calculate USDT amount based on INR
   const usdtPrice = getUsdtPrice();
   const usdtAmount = amount ? (parseFloat(amount) / usdtPrice).toFixed(2) : "0";
