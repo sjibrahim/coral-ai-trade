@@ -1,3 +1,4 @@
+
 import * as React from "react"
 
 import type {
@@ -6,7 +7,7 @@ import type {
 } from "@/components/ui/toast"
 
 const TOAST_LIMIT = 5
-const TOAST_REMOVE_DELAY = 1500 // Changed from 1000000 to 1500 milliseconds (1.5s)
+const TOAST_REMOVE_DELAY = 1500 // 1.5 seconds for auto close
 
 type ToasterToast = ToastProps & {
   id: string
@@ -114,6 +115,12 @@ const reducer = (state: State, action: Action): State => {
 }
 
 function setToastTimeout(id: string) {
+  // Clear existing timeout
+  if (toastTimeouts.has(id)) {
+    clearTimeout(toastTimeouts.get(id))
+  }
+  
+  // Set new timeout
   const timeout = setTimeout(() => {
     toastDispatch({
       type: actionTypes.REMOVE_TOAST,
@@ -147,6 +154,11 @@ function toast(props: Toast) {
     })
   const dismiss = () => toastDispatch({ type: actionTypes.DISMISS_TOAST, toastId: id })
 
+  // Auto-dismiss after delay if not explicitly set to persist
+  if (props.duration === undefined) {
+    props.duration = 5000
+  }
+  
   toastDispatch({
     type: actionTypes.ADD_TOAST,
     toast: {
@@ -154,6 +166,7 @@ function toast(props: Toast) {
       open: true,
       onOpenChange: (open) => {
         if (!open) dismiss()
+        props.onOpenChange?.(open)
       },
     },
   })
