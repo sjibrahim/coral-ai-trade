@@ -77,9 +77,7 @@ const AllWithdrawalsPage = () => {
   
   const maskValue = (value: string | undefined, visibleCount: number = 5) => {
     if (!value) return "";
-    const length = value.length;
-    const maskedLength = Math.max(length - visibleCount, 0);
-    return "*".repeat(maskedLength) + value.slice(-visibleCount);
+    return "***********" + value.slice(-visibleCount);
   };
   
   const getStatusStyles = (status: string) => {
