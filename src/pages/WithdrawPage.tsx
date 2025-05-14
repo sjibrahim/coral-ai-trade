@@ -162,8 +162,13 @@ const WithdrawPage = () => {
             size="sm"
             deleteIcon="backspace"
             clearText="clr"
-            className="w-full"
             onConfirm={handleConfirm}
+            className={cn(
+              "w-full py-4 rounded-xl font-medium transition-all flex items-center justify-center",
+              isValidAmount && !isProcessing
+                ? "bg-gradient-to-r from-blue-600 to-blue-500 text-white hover:shadow-lg active:scale-[0.98]" 
+                : "bg-gray-700/50 text-gray-400 cursor-not-allowed"
+            )}
             confirmButtonText={isProcessing ? "PROCESSING..." : "SUBMIT"}
             confirmDisabled={!isValidAmount || isProcessing}
           />
