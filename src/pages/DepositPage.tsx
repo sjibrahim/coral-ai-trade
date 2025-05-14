@@ -168,9 +168,8 @@ const DepositPage = () => {
           </div>
         </div>
 
-        <div className="min-h-screen flex items-center justify-center bg-black">
         {/* Keypad Section centered */}
-          <div className="flex flex-col items-center justify-center pb-5 px-4 w-full">
+        <div className="flex-1 flex flex-col items-center justify-center pb-5 px-4">
           <NumericKeypad 
             value={amount}
             onChange={setAmount}
@@ -201,7 +200,6 @@ const DepositPage = () => {
             </div>
           </div>
         </div>
-      </div>
       </div>
     </MobileLayout>
   );
