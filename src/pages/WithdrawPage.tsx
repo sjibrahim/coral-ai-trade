@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
 import NumericKeypad from "@/components/NumericKeypad";
 import { Bell, Check } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { createWithdrawOrder, getGeneralSettings } from "@/services/api";
