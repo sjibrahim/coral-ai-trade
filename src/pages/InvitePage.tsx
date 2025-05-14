@@ -51,7 +51,7 @@ const InvitePage = () => {
   // Generate referral link based on current domain and user's referral code
   const getReferralLink = () => {
     const baseUrl = window.location.origin;
-    return `${baseUrl}/register?referral_code=${user?.referral_code || ""}`;
+    return `${baseUrl}/register?referral=${user?.referral_code || ""}`;
   };
 
   const referralLink = getReferralLink();

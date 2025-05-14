@@ -23,7 +23,7 @@ const InvitePopup = ({ isOpen, onClose }: InvitePopupProps) => {
       // Create invite link based on user details
       const baseUrl = window.location.origin;
       const referralCode = user.invite_code || user.referral_code || user.id || "NEXBIT";
-      setInviteLink(`${baseUrl}/register?ref=${referralCode}`);
+      setInviteLink(`${baseUrl}/register?referral=${referralCode}`);
     }
   }, [isOpen, user]);
   
