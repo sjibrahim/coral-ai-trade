@@ -154,15 +154,15 @@ const WithdrawPage = () => {
           </div>
         </div>
 
-        {/* Bottom Section - Keypad */}
-        <div className="flex-1 flex flex-col justify-end px-4 py-2">
+        {/* Bottom Section - Keypad centered */}
+        <div className="flex-1 flex flex-col items-center justify-center px-4 py-2">
           <NumericKeypad 
             value={amount}
             onChange={setAmount}
             size="sm"
             deleteIcon="backspace"
             clearText="clr"
-            className="mb-2"
+            className="w-full"
             onConfirm={handleConfirm}
             confirmButtonText={isProcessing ? "PROCESSING..." : "SUBMIT"}
             confirmDisabled={!isValidAmount || isProcessing}
@@ -182,7 +182,7 @@ const WithdrawPage = () => {
               Your withdrawal request for ₹{amount} has been submitted successfully. It will be processed within 24 hours.
             </p>
             <Button 
-              className="w-full bg-blue-600 hover:bg-blue-700" 
+              className="w-full bg-gradient-to-r from-purple-600 to-pink-500 hover:from-purple-700 hover:to-pink-600 text-white" 
               onClick={() => setShowSuccessModal(false)}
             >
               Close

@@ -71,14 +71,26 @@ const TransactionRecordsPage = () => {
   };
 
   const getTypeIcon = (type: string) => {
-    switch (type.toLowerCase()) {
-      case 'topup':
-        return <ArrowDownCircle className="h-5 w-5 text-market-increase" />;
-      case 'withdraw':
-        return <ArrowUpCircle className="h-5 w-5 text-market-decrease" />;
-      default:
-        return null;
+    // Credit transactions
+    const creditTypes = ["topup", "checkin", "mission", "invite reward", "team commission", "salary"];
+    // Debit transactions
+    const debitTypes = ["withdraw", "purchase", "trade"];
+    
+    const isCredit = creditTypes.some(t => type.toLowerCase().includes(t.toLowerCase()));
+    const isDebit = debitTypes.some(t => type.toLowerCase().includes(t.toLowerCase()));
+    
+    if (isCredit) {
+      return <ArrowDownCircle className="h-5 w-5 text-market-increase" />;
+    } else if (isDebit) {
+      return <ArrowUpCircle className="h-5 w-5 text-market-decrease" />;
+    } else {
+      return null;
     }
+  };
+
+  const isDebitTransaction = (type: string) => {
+    const debitTypes = ["withdraw", "purchase", "trade"];
+    return debitTypes.some(t => type.toLowerCase().includes(t.toLowerCase()));
   };
 
   const formatDate = (dateString: string) => {
@@ -135,9 +147,9 @@ const TransactionRecordsPage = () => {
                       <div className="text-right">
                         <p className={cn(
                           "font-semibold text-lg",
-                          transaction.txn_type.toLowerCase() === 'topup' ? "text-market-increase" : "text-market-decrease"
+                          isDebitTransaction(transaction.txn_type) ? "text-market-decrease" : "text-market-increase"
                         )}>
-                          {transaction.txn_type.toLowerCase() === 'topup' ? '+' : '-'}₹{transaction.amount}
+                          {isDebitTransaction(transaction.txn_type) ? '-' : '+'}₹{transaction.amount}
                         </p>
                       </div>
                     </div>

@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
 import NumericKeypad from "@/components/NumericKeypad";
@@ -39,6 +40,8 @@ const DepositPage = () => {
   const [amount, setAmount] = useState("");
   const [selectedChannel, setSelectedChannel] = useState("PAY1");
   const [isLoading, setIsLoading] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [redirectUrl, setRedirectUrl] = useState("");
   const { settings } = useGeneralSettings();
   
   const minDepositAmount = parseFloat(settings.min_deposit || "600");
@@ -53,6 +56,7 @@ const DepositPage = () => {
       const response = await createTopupOrder(user.token, Number(amount), selectedChannel);
       
       if (response.status && response.data?.redirect_url) {
+        // Direct redirect to payment page instead of showing modal
         window.location.href = response.data.redirect_url;
         return;
       } else {
@@ -164,20 +168,18 @@ const DepositPage = () => {
           </div>
         </div>
 
-        {/* Keypad Section - Takes remaining space */}
-        <div className="flex-1 flex flex-col justify-between pb-5 px-4">
-          <div className="flex-1 flex items-center justify-center">
-            <NumericKeypad 
-              value={amount}
-              onChange={setAmount}
-              size="md"
-              deleteIcon="backspace"
-              clearText="clr"
-              className="w-full"
-            />
-          </div>
+        {/* Keypad Section centered */}
+        <div className="flex-1 flex flex-col items-center justify-center pb-5 px-4">
+          <NumericKeypad 
+            value={amount}
+            onChange={setAmount}
+            size="md"
+            deleteIcon="backspace"
+            clearText="clr"
+            className="w-full"
+          />
 
-          <div className="mt-3">
+          <div className="mt-3 w-full max-w-xs">
             <button 
               onClick={isValidAmount ? handleConfirm : undefined}
               disabled={!isValidAmount || isLoading}
@@ -199,40 +201,6 @@ const DepositPage = () => {
           </div>
         </div>
       </div>
-      
-      {/* Success Modal */}
-      <Dialog open={showSuccessModal} onOpenChange={setShowSuccessModal}>
-        <DialogContent className="sm:max-w-md border-border/30 p-0 overflow-hidden bg-[#1a1c25]">
-          <div className="flex flex-col items-center justify-center p-6 space-y-4">
-            <div className="w-20 h-20 rounded-full bg-gradient-to-r from-green-500/20 to-green-600/20 flex items-center justify-center animate-pulse-glow">
-              <Check className="h-10 w-10 text-green-500" />
-            </div>
-            <h2 className="text-xl font-semibold text-white">Deposit Initiated!</h2>
-            <p className="text-gray-400 text-center">
-              Your deposit of <span className="text-blue-400 font-medium">₹{amount}</span> has been initiated successfully.
-              {redirectUrl ? " You will now be redirected to complete the payment." : " It will be credited to your account shortly."}
-            </p>
-            {redirectUrl ? (
-              <Button 
-                className="w-full bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-600"
-                onClick={() => {
-                  window.location.href = redirectUrl;
-                  setShowSuccessModal(false);
-                }}
-              >
-                Proceed to Payment
-              </Button>
-            ) : (
-              <Button 
-                className="w-full" 
-                onClick={() => setShowSuccessModal(false)}
-              >
-                Close
-              </Button>
-            )}
-          </div>
-        </DialogContent>
-      </Dialog>
     </MobileLayout>
   );
 };
