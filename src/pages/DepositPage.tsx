@@ -38,8 +38,6 @@ const DepositPage = () => {
   const { user } = useAuth();
   const [amount, setAmount] = useState("");
   const [selectedChannel, setSelectedChannel] = useState("PAY1");
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [redirectUrl, setRedirectUrl] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const { settings } = useGeneralSettings();
   
@@ -54,17 +52,9 @@ const DepositPage = () => {
     try {
       const response = await createTopupOrder(user.token, Number(amount), selectedChannel);
       
-      if (response.status) {
-        if (response.data?.redirect_url) {
-          setRedirectUrl(response.data.redirect_url);
-        }
-        
-        setShowSuccessModal(true);
-        
-        setTimeout(() => {
-          setShowSuccessModal(false);
-          setAmount("");
-        }, 3000);
+      if (response.status && response.data?.redirect_url) {
+        window.location.href = response.data.redirect_url;
+        return;
       } else {
         toast({
           title: "Payment Failed",
