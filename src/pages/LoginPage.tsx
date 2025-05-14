@@ -5,6 +5,7 @@ import { Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/AuthContext";
+import { toast } from "@/hooks/use-toast";
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -58,6 +59,13 @@ const LoginPage = () => {
       const success = await login(formData.phone, formData.password);
       
       if (success) {
+        // Show success toast
+        toast({
+          title: "Login Successful",
+          description: "Welcome back!",
+          duration: 500, // 500ms timeout
+        });
+        
         navigate("/home", { replace: true });
       }
     } finally {

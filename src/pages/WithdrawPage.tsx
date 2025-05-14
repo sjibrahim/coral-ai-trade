@@ -155,7 +155,7 @@ const WithdrawPage = () => {
         </div>
 
         {/* Bottom Section - Keypad centered */}
-        <div className="flex-1 flex flex-col items-center justify-center px-4 py-2">
+        <div className="flex-1 flex items-center justify-center px-4 pb-5">
           <NumericKeypad 
             value={amount}
             onChange={setAmount}

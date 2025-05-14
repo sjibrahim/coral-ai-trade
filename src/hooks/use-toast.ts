@@ -8,8 +8,8 @@ import {
   type ToastProps,
 } from "@/components/ui/toast"
 
-const TOAST_LIMIT = 5
-const TOAST_REMOVE_DELAY = 1000000
+const TOAST_LIMIT = 1 // Only show 1 toast at a time
+const TOAST_REMOVE_DELAY = 1000 // Default 1000ms timeout for toasts
 
 type ToasterToast = ToastProps & {
   id: string
@@ -77,6 +77,15 @@ const addToRemoveQueue = (toastId: string) => {
 export const reducer = (state: State, action: Action): State => {
   switch (action.type) {
     case "ADD_TOAST":
+      // If we already have TOAST_LIMIT toasts, remove the oldest one
+      if (state.toasts.length >= TOAST_LIMIT) {
+        // Find the oldest toast and dismiss it
+        const oldestToast = state.toasts[state.toasts.length - 1]
+        if (oldestToast) {
+          dispatch({ type: "DISMISS_TOAST", toastId: oldestToast.id })
+        }
+      }
+      
       return {
         ...state,
         toasts: [action.toast, ...state.toasts].slice(0, TOAST_LIMIT),
@@ -142,16 +151,27 @@ function dispatch(action: Action) {
   })
 }
 
-type Toast = Omit<ToasterToast, "id">
+type Toast = Omit<ToasterToast, "id"> & {
+  duration?: number
+}
 
-function toast({ ...props }: Toast) {
+function toast({ duration = TOAST_REMOVE_DELAY, ...props }: Toast) {
   const id = genId()
+
+  // If we have toast limit and we're at capacity, dismiss the oldest toast
+  if (memoryState.toasts.length >= TOAST_LIMIT) {
+    const oldestToast = memoryState.toasts[memoryState.toasts.length - 1]
+    if (oldestToast) {
+      dispatch({ type: "DISMISS_TOAST", toastId: oldestToast.id })
+    }
+  }
 
   const update = (props: ToasterToast) =>
     dispatch({
       type: "UPDATE_TOAST",
       toast: { ...props, id },
     })
+    
   const dismiss = () => dispatch({ type: "DISMISS_TOAST", toastId: id })
 
   dispatch({
@@ -165,6 +185,11 @@ function toast({ ...props }: Toast) {
       },
     },
   })
+  
+  // Auto dismiss after specified duration
+  setTimeout(() => {
+    dismiss()
+  }, duration)
 
   return {
     id: id,
