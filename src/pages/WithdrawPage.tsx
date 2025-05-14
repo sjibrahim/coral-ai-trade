@@ -5,7 +5,6 @@ import NumericKeypad from "@/components/NumericKeypad";
 import { Bell, Check } from "lucide-react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 import { createWithdrawOrder, getGeneralSettings } from "@/services/api";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
@@ -156,23 +155,28 @@ const WithdrawPage = () => {
         </div>
 
         {/* Bottom Section - Keypad centered */}
-        <div className="flex-1 flex items-center justify-center px-4 pb-5">
-          <NumericKeypad 
+        <div className="flex-1 flex flex-col items-center justify-center px-4 pb-5">
+          <NumericKeypad
             value={amount}
             onChange={setAmount}
             size="sm"
             deleteIcon="backspace"
             clearText="clr"
-            onConfirm={handleConfirm}
-            className={cn(
-              "w-full py-4 rounded-xl font-medium transition-all flex items-center justify-center",
-              isValidAmount && !isProcessing
-                ? "bg-gradient-to-r from-blue-600 to-blue-500 text-white hover:shadow-lg active:scale-[0.98]" 
-                : "bg-gray-700/50 text-gray-400 cursor-not-allowed"
-            )}
-            confirmButtonText={isProcessing ? "PROCESSING..." : "SUBMIT"}
-            confirmDisabled={!isValidAmount || isProcessing}
           />
+        
+          <button
+            type="button"
+            onClick={handleConfirm}
+            disabled={!isValidAmount || isProcessing}
+            className={cn(
+              "w-full mt-4 py-4 rounded-xl font-medium transition-all flex items-center justify-center",
+              !isValidAmount || isProcessing
+                ? "bg-gray-700/50 text-gray-400 cursor-not-allowed"
+                : "bg-gradient-to-r from-blue-600 to-blue-500 text-white hover:shadow-lg active:scale-[0.98]"
+            )}
+          >
+            {isProcessing ? "PROCESSING..." : "SUBMIT"}
+          </button>
         </div>
       </div>
       
