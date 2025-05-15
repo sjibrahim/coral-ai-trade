@@ -1,7 +1,6 @@
 
 import { useState, useEffect } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
-import NumericKeypad from "@/components/NumericKeypad";
 import { Bell, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
@@ -9,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { createWithdrawOrder, getGeneralSettings } from "@/services/api";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
+import { Input } from "@/components/ui/input";
 
 interface GeneralSettings {
   min_withdrawal: string;
@@ -50,6 +50,16 @@ const WithdrawPage = () => {
 
   const minWithdrawal = parseInt(settings.min_withdrawal) || 300;
   const isValidAmount = Number(amount) >= minWithdrawal && Number(amount) <= availableBalance;
+  
+  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Only allow numbers and a single decimal point
+    const newValue = e.target.value.replace(/[^0-9.]/g, '');
+    
+    // Handle decimal point (only one allowed)
+    if (newValue.split('.').length > 2) return;
+    
+    setAmount(newValue);
+  };
   
   const handleConfirm = async () => {
     if (!isValidAmount) {
@@ -114,13 +124,23 @@ const WithdrawPage = () => {
       noScroll
     >
       <div className="flex flex-col h-full bg-[#0d0f17]">
-        {/* Top Section - Amount Display */}
+        {/* Top Section - Amount Input */}
         <div className="pt-4 px-6 text-left">
-          <div className="flex items-start">
-            <span className="text-xl font-bold text-white mt-2 mr-1">₹</span>
-            <span className="text-6xl font-bold text-white">
-              {amount ? amount : "0"}
-            </span>
+          <div className="flex flex-col items-center">
+            <div className="w-full mb-2">
+              <Input
+                type="text"
+                inputMode="decimal"
+                value={amount}
+                onChange={handleAmountChange}
+                className="text-6xl font-bold text-white bg-transparent border-none p-0 h-auto text-center focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+                placeholder="0"
+                maxLength={10}
+              />
+            </div>
+            <div className="flex items-center">
+              <span className="text-xl font-bold text-white mr-1">₹</span>
+            </div>
           </div>
           
           <div className="mt-1 text-right">
@@ -134,6 +154,24 @@ const WithdrawPage = () => {
               <p className="text-red-500 text-sm">{error}</p>
             </div>
           )}
+          
+          {/* Quick Amount Buttons */}
+          <div className="grid grid-cols-4 gap-2 mt-4">
+            {["500", "1000", "2000", "5000"].map((quickAmount) => (
+              <button
+                key={quickAmount}
+                onClick={() => setAmount(quickAmount)}
+                className={cn(
+                  "py-2 rounded-lg border text-center text-sm transition-all",
+                  amount === quickAmount
+                    ? "border-blue-500 bg-blue-500/10 text-blue-400"
+                    : "border-gray-700 text-gray-400 hover:border-gray-600"
+                )}
+              >
+                ₹{quickAmount}
+              </button>
+            ))}
+          </div>
         </div>
         
         {/* Middle Section - Balance & Bank info */}
@@ -155,22 +193,14 @@ const WithdrawPage = () => {
           </div>
         </div>
 
-        {/* Bottom Section - Keypad centered */}
-        <div className="flex-1 flex flex-col items-center justify-center px-4 pb-5">
-          <NumericKeypad
-            value={amount}
-            onChange={setAmount}
-            size="sm"
-            deleteIcon="backspace"
-            clearText="clr"
-          />
-        
+        {/* Bottom Section - Button */}
+        <div className="flex-1 flex flex-col items-center justify-end px-4 pb-5">
           <button
             type="button"
             onClick={handleConfirm}
             disabled={!isValidAmount || isProcessing}
             className={cn(
-              "w-full mt-4 py-4 rounded-xl font-medium transition-all flex items-center justify-center",
+              "w-full py-4 rounded-xl font-medium transition-all flex items-center justify-center",
               !isValidAmount || isProcessing
                 ? "bg-gray-700/50 text-gray-400 cursor-not-allowed"
                 : "bg-gradient-to-r from-blue-600 to-blue-500 text-white hover:shadow-lg active:scale-[0.98]"

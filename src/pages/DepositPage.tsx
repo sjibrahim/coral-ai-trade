@@ -1,7 +1,6 @@
 
 import { useState } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
-import NumericKeypad from "@/components/NumericKeypad";
 import { Bell, IndianRupee, Upload, Check, CreditCard, Wallet, Clock, Ban } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
@@ -10,6 +9,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { createTopupOrder } from "@/services/api";
 import { toast } from "@/components/ui/use-toast";
 import { useGeneralSettings } from "@/hooks/use-general-settings";
+import { Input } from "@/components/ui/input";
 
 interface PaymentMethod {
   id: string;
@@ -46,6 +46,16 @@ const DepositPage = () => {
   
   const minDepositAmount = parseFloat(settings.min_deposit || "600");
   const isValidAmount = Number(amount) >= minDepositAmount;
+  
+  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Only allow numbers and a single decimal point
+    const newValue = e.target.value.replace(/[^0-9.]/g, '');
+    
+    // Handle decimal point (only one allowed)
+    if (newValue.split('.').length > 2) return;
+    
+    setAmount(newValue);
+  };
   
   const handleConfirm = async () => {
     if (!isValidAmount || !user?.token) return;
@@ -113,9 +123,15 @@ const DepositPage = () => {
               <div className="flex items-center justify-center">
                 <div className="flex items-center">
                   <IndianRupee className="h-6 w-6 text-white/70 mr-1" />
-                  <span className="text-4xl font-bold text-white">
-                    {amount ? amount : "0"}
-                  </span>
+                  <Input
+                    type="text"
+                    inputMode="decimal"
+                    value={amount}
+                    onChange={handleAmountChange}
+                    className="text-3xl font-bold text-white bg-transparent border-none p-0 h-auto w-36 text-center focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+                    placeholder="0"
+                    maxLength={10}
+                  />
                 </div>
               </div>
 
@@ -168,18 +184,9 @@ const DepositPage = () => {
           </div>
         </div>
 
-        {/* Keypad Section centered */}
-        <div className="flex-1 flex flex-col items-center justify-center pb-5 px-4">
-          <NumericKeypad 
-            value={amount}
-            onChange={setAmount}
-            size="md"
-            deleteIcon="backspace"
-            clearText="clr"
-            className="w-full"
-          />
-
-          <div className="mt-3 w-full max-w-xs">
+        {/* Button Section */}
+        <div className="flex-1 flex flex-col items-center justify-end pb-5 px-4">
+          <div className="w-full max-w-xs">
             <button 
               onClick={isValidAmount ? handleConfirm : undefined}
               disabled={!isValidAmount || isLoading}

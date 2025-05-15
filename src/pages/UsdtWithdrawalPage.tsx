@@ -11,7 +11,6 @@ import { Input } from "@/components/ui/input";
 import { useGeneralSettings } from "@/hooks/use-general-settings";
 import { motion } from "framer-motion";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import NumericKeypad from "@/components/NumericKeypad";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
@@ -50,6 +49,16 @@ const UsdtWithdrawalPage = () => {
   const isValidAmount = Number(amount) >= minWithdrawalInr && Number(amount) <= availableBalance;
   const isValidAddress = address.trim().length > 10;
   const canProceed = isValidAmount && isValidAddress;
+  
+  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Only allow numbers and a single decimal point
+    const newValue = e.target.value.replace(/[^0-9.]/g, '');
+    
+    // Handle decimal point (only one allowed)
+    if (newValue.split('.').length > 2) return;
+    
+    setAmount(newValue);
+  };
   
   const handleConfirm = async () => {
     if (!canProceed) {
@@ -141,7 +150,6 @@ const UsdtWithdrawalPage = () => {
       <div className="flex flex-col h-full bg-[#0d0f17]">
         {/* Header Section with Balance Info */}
         
-        
         {/* Main Withdrawal Flow with ScrollArea */}
         <ScrollArea className="flex-1 overflow-visible">
           <div className="px-4 pb-32">
@@ -167,7 +175,20 @@ const UsdtWithdrawalPage = () => {
                 <div className="flex flex-col items-center mb-6">
                   <div className="text-center mb-2">
                     <p className="text-gray-400 text-xs mb-1">Withdrawal Amount (INR)</p>
-                    <div className="text-5xl font-bold text-white tracking-tight">₹{amount || "0"}</div>
+                    <div className="relative">
+                      <Input
+                        type="text"
+                        inputMode="decimal"
+                        value={amount}
+                        onChange={handleAmountChange}
+                        className="text-5xl font-bold text-white bg-transparent border-none p-0 h-auto text-center focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+                        placeholder="0"
+                        maxLength={10}
+                      />
+                      <div className="absolute right-0 top-3">
+                        <span className="text-xl font-bold text-white">₹</span>
+                      </div>
+                    </div>
                     <p className="text-blue-400 text-sm mt-1">≈ {usdtAmount} USDT</p>
                   </div>
                   
@@ -196,17 +217,33 @@ const UsdtWithdrawalPage = () => {
                   )}
                 </div>
                 
+                {/* Quick Amount Buttons */}
+                <div className="grid grid-cols-4 gap-2 mb-6">
+                  {["500", "1000", "2000", "5000"].map((quickAmount) => (
+                    <button
+                      key={quickAmount}
+                      onClick={() => setAmount(quickAmount)}
+                      className={cn(
+                        "py-2 rounded-lg border text-center text-sm transition-all",
+                        amount === quickAmount
+                          ? "border-blue-500 bg-blue-500/10 text-blue-400"
+                          : "border-gray-700 text-gray-400 hover:border-gray-600"
+                      )}
+                    >
+                      ₹{quickAmount}
+                    </button>
+                  ))}
+                </div>
+                
                 <div className="fixed bottom-0 left-0 right-0 bg-[#0d0f17] border-t border-[#1a1e29] pb-4 pt-2 px-4">
-                  <NumericKeypad 
-                    value={amount}
-                    onChange={setAmount}
-                    maxLength={10}
-                    size="md"
-                    onConfirm={isValidAmount ? handleNextStep : undefined}
-                    confirmButtonText="NEXT"
-                    confirmButtonIcon={<ArrowRight />}
-                    confirmDisabled={!isValidAmount}
-                  />
+                  <Button 
+                    onClick={isValidAmount ? handleNextStep : undefined}
+                    disabled={!isValidAmount}
+                    className="w-full py-6"
+                  >
+                    NEXT
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
                 </div>
               </TabsContent>
               
