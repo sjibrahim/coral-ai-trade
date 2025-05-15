@@ -121,7 +121,7 @@ const HomePage = () => {
               totalBalance={user?.wallet ? parseFloat(user.wallet) : 0}
               totalDeposit={user?.deposit ? parseFloat(user.deposit) : 0}
               totalWithdrawal={0} // We don't have this from the API
-              availableBalance={user?.wallet ? parseFloat(user.wallet) : 0}
+              availableBalance = (user?.wallet ? parseFloat(user.wallet) : 0) + (user?.income ? parseFloat(user.income) : 0);
             />
             <ActionButtons />
           </div>
