@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
 import { toast } from "@/hooks/use-toast";
 import { apiRequest, endpoints, getGeneralSettings } from "@/services/api";
@@ -21,6 +20,7 @@ type User = {
   usdt_address?: string;
   token: string;
   yesterday_income?: string;
+  deposit?: string;  // Added the deposit property to fix the TypeScript error
 };
 
 interface GeneralSettings {
