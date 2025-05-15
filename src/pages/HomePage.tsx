@@ -119,7 +119,7 @@ const HomePage = () => {
           <div className="relative">
             <BalanceSummary 
               totalBalance={user?.wallet ? parseFloat(user.wallet) : 0}
-              totalDeposit={0} // We don't have this from the API
+              totalDeposit={user?.deposit ? parseFloat(user.deposit) : 0}
               totalWithdrawal={0} // We don't have this from the API
               availableBalance={user?.wallet ? parseFloat(user.wallet) : 0}
             />

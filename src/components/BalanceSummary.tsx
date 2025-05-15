@@ -46,6 +46,17 @@ const BalanceSummary = ({
         <span className="text-xl font-normal">{currencySymbol}</span>
         <span className="text-3xl font-semibold ml-1 text-gradient">{displayAmount(availableBalance)}</span>
       </div>
+      
+      {/* Deposit Balance Display */}
+      <div className="flex justify-between items-center pt-2 border-t border-white/10">
+        <div className="text-sm text-muted-foreground">
+          Deposit Balance
+        </div>
+        <div className="flex items-center">
+          <span className="text-sm font-normal">{currencySymbol}</span>
+          <span className="text-base font-medium ml-0.5">{displayAmount(totalDeposit)}</span>
+        </div>
+      </div>
     </div>
   );
 };
