@@ -1,4 +1,3 @@
-
 import { cn } from "@/lib/utils";
 import { Delete, ArrowLeft } from "lucide-react";
 import React from "react";
@@ -72,8 +71,8 @@ const NumericKeypad = ({
   
   return (
     <div className={cn("numeric-keypad w-full flex flex-col items-center", className)}>
-      {/* Keypad Grid - Centered */}
-      <div className="grid grid-cols-3 gap-2 w-full max-w-xs mx-auto">
+      {/* Keypad Grid - Centered with fixed width to ensure equal margins */}
+      <div className="grid grid-cols-3 gap-2 mx-auto" style={{ width: "240px" }}>
         {/* First row */}
         <KeypadButton size={size} onClick={() => handleKeyPress('1')}>1</KeypadButton>
         <KeypadButton size={size} onClick={() => handleKeyPress('2')}>2</KeypadButton>
