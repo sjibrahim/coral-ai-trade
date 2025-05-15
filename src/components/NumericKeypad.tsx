@@ -1,6 +1,7 @@
 import { cn } from "@/lib/utils";
 import { Delete, ArrowLeft } from "lucide-react";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { Input } from "./ui/input";
 
 interface NumericKeypadProps {
   value: string;
@@ -29,34 +30,60 @@ const NumericKeypad = ({
   clearText = "clr",
   confirmDisabled = false,
 }: NumericKeypadProps) => {
+  const [inputValue, setInputValue] = useState(value);
+  
+  // Keep local state in sync with prop value
+  useEffect(() => {
+    setInputValue(value);
+  }, [value]);
+  
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Only allow numbers and a single decimal point
+    const newValue = e.target.value.replace(/[^0-9.]/g, '');
+    
+    // Don't add more digits if we've reached max length
+    if (newValue.length > maxLength) return;
+    
+    // Handle decimal point (only one allowed)
+    if (newValue.split('.').length > 2) return;
+    
+    setInputValue(newValue);
+    onChange(newValue);
+  };
   
   const handleKeyPress = (key: string) => {
     if (key === 'clear') {
+      setInputValue('');
       onChange('');
       return;
     }
     
     if (key === 'delete') {
-      onChange(value.slice(0, -1));
+      const newValue = inputValue.slice(0, -1);
+      setInputValue(newValue);
+      onChange(newValue);
       return;
     }
     
     // Don't add more digits if we've reached max length
-    if (value.length >= maxLength && key !== '.') return;
+    if (inputValue.length >= maxLength && key !== '.') return;
     
     // Handle decimal point
     if (key === '.') {
       // Don't add another decimal if one already exists
-      if (value.includes('.')) return;
+      if (inputValue.includes('.')) return;
       
       // If value is empty, add a leading zero
-      if (value === '') {
+      if (inputValue === '') {
+        setInputValue('0.');
         onChange('0.');
         return;
       }
     }
     
-    onChange(value + key);
+    const newValue = inputValue + key;
+    setInputValue(newValue);
+    onChange(newValue);
   };
 
   // Size classes for responsive buttons
@@ -71,6 +98,19 @@ const NumericKeypad = ({
   
   return (
     <div className={cn("numeric-keypad w-full flex flex-col items-center", className)}>
+      {/* Input Field */}
+      <div className="w-full mb-4 px-4">
+        <Input
+          type="text"
+          inputMode="decimal"
+          value={inputValue}
+          onChange={handleInputChange}
+          className="text-center text-2xl py-6 font-semibold bg-[#1a1c25] border-[#353950] text-white"
+          placeholder="0"
+          maxLength={maxLength}
+        />
+      </div>
+      
       {/* Keypad Grid - Centered with fixed width to ensure equal margins */}
       <div className="grid grid-cols-3 gap-2 mx-auto" style={{ width: "240px" }}>
         {/* First row */}
