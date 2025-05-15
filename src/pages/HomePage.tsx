@@ -31,6 +31,10 @@ const HomePage = () => {
   const [picksData, setPicksData] = useState<CryptoData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const { user } = useAuth();
+    
+  const availableBalance = 
+    (user?.wallet ? parseFloat(user.wallet) : 0) + 
+    (user?.income ? parseFloat(user.income) : 0);
   
   useEffect(() => {
     const fetchMarketData = async () => {
@@ -121,7 +125,7 @@ const HomePage = () => {
               totalBalance={user?.wallet ? parseFloat(user.wallet) : 0}
               totalDeposit={user?.deposit ? parseFloat(user.deposit) : 0}
               totalWithdrawal={0} // We don't have this from the API
-              availableBalance = (user?.wallet ? parseFloat(user.wallet) : 0) + (user?.income ? parseFloat(user.income) : 0);
+              availableBalance=${availableBalance.toFixed(2)}
             />
             <ActionButtons />
           </div>
