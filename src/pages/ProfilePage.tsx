@@ -104,8 +104,6 @@ const ProfilePage = () => {
                     <span className="text-sm font-medium">Trader {user?.id}</span>
                     <span className="text-sm font-medium">{user?.phone}</span>
                   </div>
-              
-                  {/* Rank badge */}
                   {user?.rank && (
                     <div className="bg-gradient-to-r from-amber-500 to-yellow-300 text-black rounded-full px-2 py-0.5 text-xs font-semibold shadow-sm flex items-center gap-1">
                       <Star className="h-3 w-3" />
@@ -113,9 +111,9 @@ const ProfilePage = () => {
                     </div>
                   )}
                 </div>
-              
                 <h2 className="text-base font-bold">{user?.name || 'Nexbit User'}</h2>
               </div>
+            </div>
           )}
           
           {/* Settings icon */}
