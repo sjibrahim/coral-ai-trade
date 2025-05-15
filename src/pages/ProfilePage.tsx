@@ -238,12 +238,6 @@ const ProfilePage = () => {
           <h3 className="text-sm font-semibold text-muted-foreground ml-1 mb-1">Account</h3>
           
           <ProfileOption
-            icon={<Wallet className="h-5 w-5 text-blue-400" />}
-            label="Assets"
-            to="/assets"
-          />
-          
-          <ProfileOption
             icon={<ArrowUpCircle className="h-5 w-5 text-teal-400" />}
             label="Recharge"
             to="/deposit"
