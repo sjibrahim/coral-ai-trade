@@ -1,14 +1,16 @@
 
 import { useState, useEffect } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
-import { Bell, Check } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Bell, Check, Wallet } from "lucide-react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { createWithdrawOrder, getGeneralSettings } from "@/services/api";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
-import { Input } from "@/components/ui/input";
+import AmountInput from "@/components/payments/AmountInput";
+import BankInfo from "@/components/payments/BankInfo";
+import ConfirmButton from "@/components/payments/ConfirmButton";
+import { motion } from "framer-motion";
 
 interface GeneralSettings {
   min_withdrawal: string;
@@ -50,16 +52,6 @@ const WithdrawPage = () => {
 
   const minWithdrawal = parseInt(settings.min_withdrawal) || 300;
   const isValidAmount = Number(amount) >= minWithdrawal && Number(amount) <= availableBalance;
-  
-  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // Only allow numbers and a single decimal point
-    const newValue = e.target.value.replace(/[^0-9.]/g, '');
-    
-    // Handle decimal point (only one allowed)
-    if (newValue.split('.').length > 2) return;
-    
-    setAmount(newValue);
-  };
   
   const handleConfirm = async () => {
     if (!isValidAmount) {
@@ -121,93 +113,63 @@ const WithdrawPage = () => {
           </button>
         </div>
       )}
-      noScroll
     >
-      <div className="flex flex-col h-full bg-[#0d0f17]">
-        {/* Top Section - Amount Input */}
-        <div className="pt-4 px-6 text-left">
-          <div className="flex flex-col items-center">
-            <div className="w-full mb-2">
-              <Input
-                type="text"
-                inputMode="decimal"
-                value={amount}
-                onChange={handleAmountChange}
-                className="text-6xl font-bold text-white bg-transparent border-none p-0 h-auto text-center focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
-                placeholder="0"
-                maxLength={10}
-              />
-            </div>
-            <div className="flex items-center">
-              <span className="text-xl font-bold text-white mr-1">₹</span>
-            </div>
-          </div>
-          
-          <div className="mt-1 text-right">
-            <p className="text-gray-400 text-sm">
-              Minimum Withdrawal <span className="text-blue-400">₹{minWithdrawal}</span>
-            </p>
-          </div>
-          
-          {error && (
-            <div className="mt-2 text-center">
-              <p className="text-red-500 text-sm">{error}</p>
-            </div>
-          )}
-          
-          {/* Quick Amount Buttons */}
-          <div className="grid grid-cols-4 gap-2 mt-4">
-            {["500", "1000", "2000", "5000"].map((quickAmount) => (
-              <button
-                key={quickAmount}
-                onClick={() => setAmount(quickAmount)}
-                className={cn(
-                  "py-2 rounded-lg border text-center text-sm transition-all",
-                  amount === quickAmount
-                    ? "border-blue-500 bg-blue-500/10 text-blue-400"
-                    : "border-gray-700 text-gray-400 hover:border-gray-600"
-                )}
-              >
-                ₹{quickAmount}
-              </button>
-            ))}
-          </div>
-        </div>
-        
-        {/* Middle Section - Balance & Bank info */}
-        <div className="bg-[#12131a] py-3 px-6 mt-4">
-          <div className="text-center mb-3">
-            <h3 className="text-gray-400 text-sm mb-1">Withdrawal Balance</h3>
+      <div className="flex flex-col h-full bg-[#0d0f17] p-4">
+        {/* Balance card with glowing effect */}
+        <div className="bg-gradient-to-br from-blue-800/30 to-purple-800/30 rounded-2xl p-5 border border-blue-500/20 shadow-lg mb-5">
+          <h3 className="text-gray-400 text-sm mb-1">Withdrawable Balance</h3>
+          <div className="flex items-center">
+            <Wallet className="h-5 w-5 text-blue-400 mr-2" />
             <p className="text-3xl font-bold text-white">₹{availableBalance.toLocaleString()}</p>
-          </div>
-          
-          <div className="grid grid-cols-2 gap-3">
-            <div className="bg-[#1a1e29] rounded-xl p-3">
-              <p className="text-blue-400 text-xs mb-1 text-left">Bank Account</p>
-              <p className="text-white text-base font-medium text-left">{bankAccount}</p>
-            </div>
-            <div className="bg-[#1a1e29] rounded-xl p-3">
-              <p className="text-blue-400 text-xs mb-1 text-left">IFSC code</p>
-              <p className="text-white text-base font-medium text-left">{ifscCode}</p>
-            </div>
           </div>
         </div>
 
-        {/* Bottom Section - Button */}
-        <div className="flex-1 flex flex-col items-center justify-end px-4 pb-5">
-          <button
-            type="button"
+        {/* Error message */}
+        {error && (
+          <div className="bg-red-900/20 border border-red-900/30 rounded-lg p-3 mb-4">
+            <p className="text-red-400 text-sm">{error}</p>
+          </div>
+        )}
+        
+        {/* Amount Input */}
+        <AmountInput
+          amount={amount}
+          onChange={setAmount}
+          minAmount={minWithdrawal}
+          maxAmount={availableBalance}
+          quickAmounts={["500", "1000", "2000", "5000"]}
+          className="mb-5"
+        />
+        
+        {/* Bank Information */}
+        <div className="bg-[#12131a] py-4 px-4 rounded-2xl mb-5">
+          <h3 className="text-gray-300 text-sm mb-3">Your Bank Details</h3>
+          <BankInfo 
+            bankAccount={bankAccount} 
+            ifscCode={ifscCode} 
+          />
+          
+          {(bankAccount === "Not set" || ifscCode === "Not set") && (
+            <div className="mt-3 bg-amber-900/20 border border-amber-900/30 rounded-lg p-3">
+              <p className="text-amber-400 text-xs">
+                Please update your bank details in the profile section before making a withdrawal.
+              </p>
+            </div>
+          )}
+        </div>
+        
+        {/* Submit Button */}
+        <div className="mt-auto">
+          <ConfirmButton
             onClick={handleConfirm}
-            disabled={!isValidAmount || isProcessing}
-            className={cn(
-              "w-full py-4 rounded-xl font-medium transition-all flex items-center justify-center",
-              !isValidAmount || isProcessing
-                ? "bg-gray-700/50 text-gray-400 cursor-not-allowed"
-                : "bg-gradient-to-r from-blue-600 to-blue-500 text-white hover:shadow-lg active:scale-[0.98]"
-            )}
-          >
-            {isProcessing ? "PROCESSING..." : "SUBMIT"}
-          </button>
+            disabled={!isValidAmount || bankAccount === "Not set" || ifscCode === "Not set"}
+            isLoading={isProcessing}
+            text="SUBMIT WITHDRAWAL"
+          />
+          
+          <p className="text-xs text-center text-gray-500 mt-2">
+            Withdrawals are typically processed within 24 hours
+          </p>
         </div>
       </div>
       
@@ -215,15 +177,32 @@ const WithdrawPage = () => {
       <Dialog open={showSuccessModal} onOpenChange={setShowSuccessModal}>
         <DialogContent className="sm:max-w-md bg-[#1a1e29] border-border/50 p-0 overflow-hidden">
           <div className="flex flex-col items-center justify-center p-6 space-y-4">
-            <div className="w-20 h-20 rounded-full bg-green-500/20 flex items-center justify-center animate-pulse-glow">
+            <motion.div 
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.3 }}
+              className="w-20 h-20 rounded-full bg-green-500/20 flex items-center justify-center animate-pulse-glow"
+            >
               <Check className="h-10 w-10 text-green-500" />
-            </div>
-            <h2 className="text-xl font-semibold text-white">Withdrawal Request Submitted!</h2>
-            <p className="text-gray-400 text-center">
+            </motion.div>
+            <motion.h2 
+              initial={{ y: 10, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.1, duration: 0.3 }}
+              className="text-xl font-semibold text-white"
+            >
+              Withdrawal Request Submitted!
+            </motion.h2>
+            <motion.p 
+              initial={{ y: 10, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.2, duration: 0.3 }}
+              className="text-gray-400 text-center"
+            >
               Your withdrawal request for ₹{amount} has been submitted successfully. It will be processed within 24 hours.
-            </p>
+            </motion.p>
             <Button 
-              className="w-full bg-gradient-to-r from-purple-600 to-pink-500 hover:from-purple-700 hover:to-pink-600 text-white" 
+              className="w-full bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white" 
               onClick={() => setShowSuccessModal(false)}
             >
               Close
