@@ -71,7 +71,7 @@ const NumericKeypad = ({
   const DeleteIconComponent = deleteIcon === "backspace" ? ArrowLeft : Delete;
   
   return (
-    <div className={cn("numeric-keypad w-full flex flex-col items-center justify-center", className)}>
+    <div className={cn( "numeric-keypad fixed inset-0 flex flex-col items-center justify-center bg-transparent", className)}>
       <div className="grid grid-cols-3 gap-2 w-full max-w-xs mx-auto">
         {/* First row */}
         <KeypadButton size={size} onClick={() => handleKeyPress('1')}>1</KeypadButton>
