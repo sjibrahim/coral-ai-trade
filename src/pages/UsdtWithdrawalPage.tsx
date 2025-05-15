@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
 import { CircleDollarSign, ArrowRight, Check, DollarSign, Copy, AlertCircle, Info } from "lucide-react";
@@ -13,6 +12,7 @@ import { motion } from "framer-motion";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { cn } from "@/lib/utils"; // Added the import for cn function
 
 const UsdtWithdrawalPage = () => {
   const [amount, setAmount] = useState("");
