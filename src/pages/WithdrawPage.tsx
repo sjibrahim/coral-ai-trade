@@ -46,7 +46,7 @@ const WithdrawPage = () => {
   }, []);
   
   // Safely access user properties with fallbacks for TypeScript
-  const availableBalance = user?.wallet ? parseFloat(user.wallet) : 0;
+  const availableBalance = user?.wallet ? parseFloat(user.income) : 0;
   const bankAccount = user?.account_number || "Not set";
   const ifscCode = user?.account_ifsc || "Not set";
 
