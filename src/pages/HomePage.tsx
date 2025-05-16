@@ -80,8 +80,9 @@ const HomePage = () => {
             return rankA - rankB;
           });
           
-          // Use filtered data or fallback to first 4 items if filtered is empty
-          setMarketData(sortedHomeData.length > 0 ? sortedHomeData.slice(0, 4) : activeCoins.slice(0, 4));
+          // Use filtered data or fallback to first 6 items if filtered is empty
+          // Removed the slice(0, 4) to show all home coins
+          setMarketData(sortedHomeData.length > 0 ? sortedHomeData : activeCoins.slice(0, 6));
           setPicksData(sortedPicksData.length > 0 ? sortedPicksData.slice(0, 2) : activeCoins.slice(0, 2));
         }
       } catch (error) {
