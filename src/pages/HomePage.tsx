@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
 import BalanceSummary from "@/components/BalanceSummary";
@@ -30,12 +29,9 @@ const HomePage = () => {
   const [marketData, setMarketData] = useState<CryptoData[]>([]);
   const [picksData, setPicksData] = useState<CryptoData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const { user, refreshUserData } = useAuth();
+  const { user } = useAuth();
   
-  // Refresh user data when component mounts
-  useEffect(() => {
-    refreshUserData();
-  }, [refreshUserData]);
+  // No longer need separate refreshUserData effect as it's handled by ProtectedRoute
   
   useEffect(() => {
     const fetchMarketData = async () => {

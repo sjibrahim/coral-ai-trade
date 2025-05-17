@@ -1,5 +1,5 @@
 
-import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback, useRef } from 'react';
 import { toast } from "@/hooks/use-toast";
 import { apiRequest, endpoints, getGeneralSettings } from "@/services/api";
 
@@ -58,6 +58,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [profileUpdateInProgress, setProfileUpdateInProgress] = useState(false);
   const [generalSettings, setGeneralSettings] = useState<GeneralSettings | null>(null);
+  const lastRefreshTimeRef = useRef<number>(0); // Track last refresh timestamp
   
   // Load general settings
   const loadGeneralSettings = useCallback(async (): Promise<GeneralSettings | null> => {
@@ -113,9 +114,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [profileUpdateInProgress, loadGeneralSettings]);
 
-  // New function to manually refresh user data (to be called when navigating between pages)
+  // New function to manually refresh user data with rate limiting (once per 30 seconds at most)
   const refreshUserData = useCallback(() => {
-    if (!profileUpdateInProgress && user?.token) {
+    // Only refresh if we haven't refreshed in the last 30 seconds and we have a user
+    const now = Date.now();
+    const REFRESH_COOLDOWN = 30000; // 30 seconds cooldown
+    
+    if (now - lastRefreshTimeRef.current > REFRESH_COOLDOWN && user?.token && !profileUpdateInProgress) {
+      lastRefreshTimeRef.current = now;
       updateProfile().catch(console.error);
     }
   }, [updateProfile, user, profileUpdateInProgress]);
@@ -130,6 +136,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           
           if (data.status) {
             setUser(data.data);
+            lastRefreshTimeRef.current = Date.now(); // Set initial refresh timestamp
             // Load general settings during initial auth check
             await loadGeneralSettings();
           } else {
@@ -265,7 +272,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         updateProfile,
         generalSettings,
         loadGeneralSettings,
-        refreshUserData  // Add the new function to the context
+        refreshUserData
       }}
     >
       {children}

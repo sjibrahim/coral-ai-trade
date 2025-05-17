@@ -22,8 +22,15 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
     );
   }
   
-  const { isAuthenticated, isLoading } = auth;
+  const { isAuthenticated, isLoading, refreshUserData } = auth;
   const location = useLocation();
+  
+  // Refresh user data once when route changes
+  useEffect(() => {
+    if (isAuthenticated && !isLoading) {
+      refreshUserData();
+    }
+  }, [location.pathname, isAuthenticated, isLoading, refreshUserData]);
   
   if (isLoading) {
     // Show loading state while authentication is being checked

@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
 import { Bell, Clock } from "lucide-react";
@@ -23,16 +22,11 @@ const paymentMethods: PaymentMethod[] = [
 ];
 
 const DepositPage = () => {
-  const { user, refreshUserData } = useAuth();
+  const { user } = useAuth();
   const [amount, setAmount] = useState("");
   const [selectedChannel, setSelectedChannel] = useState("PAY1");
   const [isLoading, setIsLoading] = useState(false);
   const { settings } = useGeneralSettings();
-  
-  // Refresh user data when component mounts
-  useEffect(() => {
-    refreshUserData();
-  }, [refreshUserData]);
   
   const minDepositAmount = parseFloat(settings.min_deposit || "600");
   const isValidAmount = Number(amount) >= minDepositAmount;
