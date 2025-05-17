@@ -171,6 +171,22 @@ export const getSalaryRecords = async (token: string) => {
   return apiRequest(endpoints.getSalaryRecords, 'POST', { token });
 };
 
+// Helper function to convert INR to USDT based on settings
+export const convertInrToUsdt = (amountInr: number, generalSettings: any): string => {
+  if (!generalSettings || !generalSettings.usdt_price || parseFloat(generalSettings.usdt_price) <= 0) {
+    return amountInr.toFixed(2); // Fallback if no conversion rate
+  }
+  
+  const usdtPrice = parseFloat(generalSettings.usdt_price);
+  const amountUsdt = amountInr / usdtPrice;
+  return amountUsdt.toFixed(2); // 2 decimal places for USDT
+};
+
+// Helper function to identify if a withdrawal is USDT
+export const isUsdtWithdrawal = (transaction: any): boolean => {
+  return transaction && transaction.method === "USDT";
+};
+
 // Updated function for placing trades with better error handling and min_trade check
 export const placeTrade = async (
   token: string, 

@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useParams, useLocation, Link } from 'react-router-dom';
+import { useParams, useLocation, Link, useNavigate } from 'react-router-dom';
 import MobileLayout from '@/components/layout/MobileLayout';
 import PriceChart from '@/components/PriceChart';
 import { useAuth } from "@/contexts/AuthContext";
@@ -17,9 +17,10 @@ import { useToast } from '@/hooks/use-toast';
 
 const CoinDetailPage = () => {
   const { toast } = useToast();
-  const { user, updateProfile } = useAuth();
+  const { user, updateProfile, refreshUserData } = useAuth();
   const { id: coinId } = useParams();
   const location = useLocation();
+  const navigate = useNavigate();
   const cachedCrypto = location.state?.crypto; // Use cached data if available
   
   const [activeTab, setActiveTab] = useState('chart');

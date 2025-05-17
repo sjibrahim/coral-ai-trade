@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
 import { toast } from "@/hooks/use-toast";
 import { apiRequest, endpoints, getGeneralSettings } from "@/services/api";
@@ -34,6 +35,7 @@ interface GeneralSettings {
   signup_bonus: string;
   min_trade: string;
   daily_profit: string;
+  usdt_price?: string;
 }
 
 interface AuthContextType {
@@ -46,6 +48,7 @@ interface AuthContextType {
   updateProfile: () => Promise<boolean>;
   generalSettings: GeneralSettings | null;
   loadGeneralSettings: () => Promise<GeneralSettings | null>;
+  refreshUserData: () => void;  // New function to refresh user data
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -109,6 +112,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setProfileUpdateInProgress(false);
     }
   }, [profileUpdateInProgress, loadGeneralSettings]);
+
+  // New function to manually refresh user data (to be called when navigating between pages)
+  const refreshUserData = useCallback(() => {
+    if (!profileUpdateInProgress && user?.token) {
+      updateProfile().catch(console.error);
+    }
+  }, [updateProfile, user, profileUpdateInProgress]);
   
   // Check for stored token on initial load
   useEffect(() => {
@@ -254,7 +264,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         logout,
         updateProfile,
         generalSettings,
-        loadGeneralSettings
+        loadGeneralSettings,
+        refreshUserData  // Add the new function to the context
       }}
     >
       {children}

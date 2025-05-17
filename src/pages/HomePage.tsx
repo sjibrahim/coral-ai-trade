@@ -30,7 +30,12 @@ const HomePage = () => {
   const [marketData, setMarketData] = useState<CryptoData[]>([]);
   const [picksData, setPicksData] = useState<CryptoData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const { user } = useAuth();
+  const { user, refreshUserData } = useAuth();
+  
+  // Refresh user data when component mounts
+  useEffect(() => {
+    refreshUserData();
+  }, [refreshUserData]);
   
   useEffect(() => {
     const fetchMarketData = async () => {

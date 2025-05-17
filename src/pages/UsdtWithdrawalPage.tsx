@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
 import { ArrowRight, Check, Copy, AlertCircle, Info, DollarSign } from "lucide-react";
@@ -25,7 +24,7 @@ const UsdtWithdrawalPage = () => {
   const [activeTab, setActiveTab] = useState("amount");
   const [copied, setCopied] = useState(false);
   
-  const { user, updateProfile } = useAuth();
+  const { user, updateProfile, refreshUserData } = useAuth();
   const { toast } = useToast();
   const { 
     settings, 
@@ -41,6 +40,11 @@ const UsdtWithdrawalPage = () => {
       setAddress(user.usdt_address);
     }
   }, [user]);
+  
+  // Add this effect to refresh user data when the component mounts
+  useEffect(() => {
+    refreshUserData();
+  }, [refreshUserData]);
   
   // Calculate USDT amount based on INR
   const usdtPrice = getUsdtPrice();

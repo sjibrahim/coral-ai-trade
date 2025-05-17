@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MobileLayout from "@/components/layout/MobileLayout";
@@ -18,26 +19,35 @@ const getRandomAvatarUrl = () => {
 };
 
 const ProfilePage = () => {
-  const { user, logout, updateProfile } = useAuth();
+  const { user, logout, updateProfile, refreshUserData } = useAuth();
   const [avatarUrl, setAvatarUrl] = useState<string>(user?.name || '');
   const [isLoading, setIsLoading] = useState(true);
   const [hideRevenue, setHideRevenue] = useState(false);
   const navigate = useNavigate();
 
-  // Fetch user profile data only once when component mounts
+  // Always refresh data when component mounts or comes into focus
   useEffect(() => {
+    setIsLoading(true);
+    
+    // Refresh user data on page load
     const loadProfile = async () => {
-      if (!user?.name) {
-        setIsLoading(true);
-        await updateProfile();
-        setIsLoading(false);
-      } else {
-        setIsLoading(false);
-      }
+      await updateProfile();
+      setIsLoading(false);
     };
     
     loadProfile();
-  }, []);  // Remove updateProfile from dependencies to prevent infinite loop
+    
+    // Refresh when window gets focus (e.g., after navigating back to this tab)
+    const handleFocus = () => {
+      refreshUserData();
+    };
+    
+    window.addEventListener('focus', handleFocus);
+    
+    return () => {
+      window.removeEventListener('focus', handleFocus);
+    };
+  }, [updateProfile, refreshUserData]);
 
   // Generate avatar once user data is available
   useEffect(() => {

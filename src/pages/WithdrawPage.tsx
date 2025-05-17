@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import MobileLayout from "@/components/layout/MobileLayout";
@@ -25,8 +24,13 @@ const WithdrawPage = () => {
   const [settings, setSettings] = useState<GeneralSettings>({ min_withdrawal: "300" });
   
   const navigate = useNavigate();
-  const { user, updateProfile } = useAuth();
+  const { user, updateProfile, refreshUserData } = useAuth();
   const { toast } = useToast();
+  
+  // Always refresh user data when component mounts
+  useEffect(() => {
+    refreshUserData();
+  }, [refreshUserData]);
   
   // Fetch general settings
   useEffect(() => {
@@ -47,7 +51,7 @@ const WithdrawPage = () => {
     fetchSettings();
   }, []);
 
-  // Redirect to bank details page if bank not set
+  // Redirect to bank details page if bank not set - immediate check after refresh
   useEffect(() => {
     if (user) {
       const isBankNotSet = !user.account_number || !user.account_ifsc;
