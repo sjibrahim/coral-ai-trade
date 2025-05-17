@@ -26,7 +26,6 @@ const ProfilePage = () => {
 
   // Fetch user profile data only once when component mounts
   useEffect(() => {
-    updateProfile();
     const loadProfile = async () => {
       if (!user?.name) {
         setIsLoading(true);
@@ -38,8 +37,9 @@ const ProfilePage = () => {
     };
     
     loadProfile();
-  }, [updateProfile]);
-  
+  }, []);  // Remove updateProfile from dependencies to prevent infinite loop
+
+  // Generate avatar once user data is available
   useEffect(() => {
     if (user?.name) {
       // Get random avatar
@@ -212,7 +212,7 @@ const ProfilePage = () => {
               {/* Income Breakdown - Updated with today_income from API */}
               <div className="grid grid-cols-3 gap-2 mt-3 border-t border-blue-200/20 pt-2">
                 <div className="text-center">
-                  <p className="text-xs text-muted-foreground">Yesterday</p>
+                  <p className="text-xs text-muted-foreground">Yesterday's</p>
                   <p className="font-semibold">
                     {hideRevenue ? "**.**₹" : `${user?.yesterday_income || '0.00'}₹`}
                   </p>
