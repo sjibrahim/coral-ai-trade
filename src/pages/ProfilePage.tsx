@@ -212,7 +212,7 @@ const ProfilePage = () => {
               {/* Income Breakdown - Updated with today_income from API */}
               <div className="grid grid-cols-3 gap-2 mt-3 border-t border-blue-200/20 pt-2">
                 <div className="text-center">
-                  <p className="text-xs text-muted-foreground">Yesterday's income</p>
+                  <p className="text-xs text-muted-foreground">Yesterday</p>
                   <p className="font-semibold">
                     {hideRevenue ? "**.**₹" : `${user?.yesterday_income || '0.00'}₹`}
                   </p>
