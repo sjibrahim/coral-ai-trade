@@ -68,7 +68,7 @@ const ProfilePage = () => {
   };
   
   // Calculate today's income
-  const todayIncome = 0; // API doesn't provide this info yet
+  const todayIncome = 0;
   
   return (
     <MobileLayout>
@@ -219,7 +219,7 @@ const ProfilePage = () => {
                 <div className="text-center">
                   <p className="text-xs text-muted-foreground">Today's income</p>
                   <p className="font-semibold">
-                    {hideRevenue ? "**.**₹" : `${todayIncome || '0.00'}₹`}
+                    {hideRevenue ? "**.**₹" : `${user?.todayIncome || '0.00'}₹`}
                   </p>
                 </div>
                 <div className="text-center">
