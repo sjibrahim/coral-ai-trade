@@ -339,7 +339,7 @@ const UsdtWithdrawalPage = () => {
                       onClick={handleConfirm}
                       disabled={isProcessing || !canProceed}
                       isLoading={isProcessing}
-                      text="CONFIRM WITHDRAWAL"
+                      text="CONFIRM"
                       className="flex-1"
                     />
                   </div>
