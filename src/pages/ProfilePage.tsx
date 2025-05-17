@@ -26,6 +26,7 @@ const ProfilePage = () => {
 
   // Fetch user profile data only once when component mounts
   useEffect(() => {
+    updateProfile();
     const loadProfile = async () => {
       if (!user?.name) {
         setIsLoading(true);
@@ -37,9 +38,8 @@ const ProfilePage = () => {
     };
     
     loadProfile();
-  }, []);  // Remove updateProfile from dependencies to prevent infinite loop
-
-  // Generate avatar once user data is available
+  }, [updateProfile]);
+  
   useEffect(() => {
     if (user?.name) {
       // Get random avatar
