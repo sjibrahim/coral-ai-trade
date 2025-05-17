@@ -34,7 +34,7 @@ const UsdtWithdrawalPage = () => {
   } = useGeneralSettings();
   
   // Safely access user properties with fallbacks
-  const availableBalance = user?.wallet ? parseFloat(user.wallet) : 0;
+  const availableBalance = user?.income ? parseFloat(user.income) : 0;
   
   useEffect(() => {
     if (user?.usdt_address && address === "") {
