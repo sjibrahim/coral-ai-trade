@@ -5,7 +5,7 @@ import { Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/AuthContext";
-import { toast } from "@/hooks/use-toast";
+import { toast } from "@/components/ui/use-toast";
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -32,12 +32,15 @@ const LoginPage = () => {
     );
   }
   
+  // Only proceed with using auth values if auth is available
   const { login, isAuthenticated } = auth;
   const navigate = useNavigate();
   
   // Redirect if user is already authenticated
   if (isAuthenticated) {
-    navigate("/home", { replace: true });
+    // Use React Router's navigate for redirection instead of conditional hooks
+    setTimeout(() => navigate("/home", { replace: true }), 0);
+    return null;
   }
   
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

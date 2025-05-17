@@ -19,39 +19,23 @@ const getRandomAvatarUrl = () => {
 };
 
 const ProfilePage = () => {
-  const { user, logout, updateProfile, refreshUserData } = useAuth();
+  const { user, logout } = useAuth();
   const [avatarUrl, setAvatarUrl] = useState<string>(user?.name || '');
   const [isLoading, setIsLoading] = useState(true);
   const [hideRevenue, setHideRevenue] = useState(false);
   const navigate = useNavigate();
 
-  // Always refresh data when component mounts or comes into focus
+  // Only generate avatar once user data is available
   useEffect(() => {
-    setIsLoading(true);
+    // Set loading state based on user availability
+    if (!user) {
+      setIsLoading(true);
+      return;
+    }
     
-    // Refresh user data on page load
-    const loadProfile = async () => {
-      await updateProfile();
-      setIsLoading(false);
-    };
+    setIsLoading(false);
     
-    loadProfile();
-    
-    // Refresh when window gets focus (e.g., after navigating back to this tab)
-    const handleFocus = () => {
-      refreshUserData();
-    };
-    
-    window.addEventListener('focus', handleFocus);
-    
-    return () => {
-      window.removeEventListener('focus', handleFocus);
-    };
-  }, [updateProfile, refreshUserData]);
-
-  // Generate avatar once user data is available
-  useEffect(() => {
-    if (user?.name) {
+    if (user.name) {
       // Get random avatar
       const newAvatarUrl = getRandomAvatarUrl();
       
