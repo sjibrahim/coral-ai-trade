@@ -20,7 +20,9 @@ type User = {
   usdt_address?: string;
   token: string;
   yesterday_income?: string;
-  deposit?: string;  // Added the deposit property to fix the TypeScript error
+  deposit?: string;
+  today_income?: string;
+  total_income?: string;
 };
 
 interface GeneralSettings {
