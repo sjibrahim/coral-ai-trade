@@ -3,9 +3,9 @@ import { useState, useEffect } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { ArrowDownCircle } from "lucide-react";
+import { ArrowDownCircle, Wallet } from "lucide-react";
 import { Link } from "react-router-dom";
-import { getTransactions } from "@/services/api";
+import { getTransactions, getGeneralSettings } from "@/services/api";
 import { toast } from "@/hooks/use-toast";
 
 interface WithdrawalRecord {
@@ -17,17 +17,25 @@ interface WithdrawalRecord {
   transaction_id?: string;
   created_at?: string;
   type?: string;
+  method?: string;
 }
 
 const WithdrawalRecordsPage = () => {
   const [records, setRecords] = useState<WithdrawalRecord[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [usdtPrice, setUsdtPrice] = useState(83); // Default USDT price
 
   useEffect(() => {
-    const fetchWithdrawalRecords = async () => {
+    const fetchData = async () => {
       try {
         const token = localStorage.getItem('auth_token');
         if (!token) return;
+
+        // Fetch USDT price from general settings
+        const settingsResponse = await getGeneralSettings(token);
+        if (settingsResponse.status && settingsResponse.data) {
+          setUsdtPrice(parseFloat(settingsResponse.data.usdt_price) || 83);
+        }
 
         const response = await getTransactions(token);
         
@@ -43,7 +51,8 @@ const WithdrawalRecordsPage = () => {
               account: tx.bank_number || "******6413",
               transaction_id: tx.txnid || "",
               created_at: tx.created_at || "",
-              type: tx.method || "BANK"
+              type: tx.method || "BANK",
+              method: tx.method || "BANK"
             }));
           
           setRecords(withdrawals);
@@ -73,8 +82,13 @@ const WithdrawalRecordsPage = () => {
       }
     };
     
-    fetchWithdrawalRecords();
+    fetchData();
   }, []);
+  
+  // Convert INR to USD based on USDT price
+  const convertToUSD = (amountInr: number) => {
+    return (amountInr / usdtPrice).toFixed(2);
+  };
   
   const getStatusStyles = (status: string) => {
     switch(status.toLowerCase()) {
@@ -98,15 +112,25 @@ const WithdrawalRecordsPage = () => {
     return date.toISOString().split('T')[0];
   };
 
+  const isUsdtWithdrawal = (record: WithdrawalRecord) => {
+    return record.type === "USDT" || record.method === "USDT";
+  };
+
   return (
     <MobileLayout showBackButton title="Withdrawal Records">
       <div className="p-4 space-y-4 pb-20 animate-fade-in">
         {/* Create new withdrawal button */}
-        <div className="mb-4">
+        <div className="mb-4 grid grid-cols-2 gap-2">
           <Link to="/withdraw">
-            <Button className="w-full flex items-center gap-2">
+            <Button className="w-full flex items-center gap-2" variant="secondary">
               <ArrowDownCircle className="h-4 w-4" />
-              Create New Withdrawal
+              INR Withdrawal
+            </Button>
+          </Link>
+          <Link to="/usdt-withdraw">
+            <Button className="w-full flex items-center gap-2">
+              <Wallet className="h-4 w-4" />
+              USDT Withdrawal
             </Button>
           </Link>
         </div>
@@ -141,7 +165,14 @@ const WithdrawalRecordsPage = () => {
               className="bg-card rounded-xl p-5 border border-border/40"
             >
               <div className="flex justify-between mb-2">
-                <p className="text-lg font-medium">{record.id}</p>
+                <div className="flex items-center">
+                  <p className="text-lg font-medium">{record.id}</p>
+                  {isUsdtWithdrawal(record) && 
+                    <span className="ml-2 px-2 py-0.5 bg-amber-900/30 rounded-full text-xs text-amber-400">
+                      USDT
+                    </span>
+                  }
+                </div>
                 <p className={cn(
                   "font-medium",
                   getStatusStyles(record.status)
@@ -151,13 +182,23 @@ const WithdrawalRecordsPage = () => {
               </div>
               
               <div className="mb-4">
-                <p className="text-2xl font-semibold">₹{record.amount}</p>
+                {isUsdtWithdrawal(record) ? (
+                  <div className="flex flex-col">
+                    <p className="text-2xl font-semibold flex items-center">
+                      <Wallet className="h-4 w-4 mr-1 text-amber-400" />
+                      ${convertToUSD(record.amount)}
+                    </p>
+                    <p className="text-xs text-muted-foreground">₹{record.amount} (INR)</p>
+                  </div>
+                ) : (
+                  <p className="text-2xl font-semibold">₹{record.amount}</p>
+                )}
               </div>
               
               <div className="flex justify-between text-muted-foreground">
                 <div>
                   <p>Payment Method</p>
-                  <p>{record.type === "USDT" ? "USDT Wallet" : "Bank Account"}</p>
+                  <p>{isUsdtWithdrawal(record) ? "USDT Wallet" : "Bank Account"}</p>
                 </div>
                 <div className="text-right">
                   <p>Date</p>

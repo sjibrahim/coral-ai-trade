@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Link } from "react-router-dom";
 import { ArrowDownCircle, IndianRupee, Wallet } from "lucide-react";
-import { getTransactions } from "@/services/api";
+import { getTransactions, getGeneralSettings } from "@/services/api";
 import { toast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -17,20 +17,33 @@ interface WithdrawalRecord {
   status: string;
   account: string;
   type: "inr" | "usdt";
+  method?: string;
+}
+
+interface GeneralSettings {
+  usdt_price: string;
 }
 
 const AllWithdrawalsPage = () => {
   const [records, setRecords] = useState<WithdrawalRecord[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("inr");
+  const [usdtPrice, setUsdtPrice] = useState(83);
   const { user } = useAuth(); 
   
   useEffect(() => {
-    const fetchWithdrawalRecords = async () => {
+    const fetchData = async () => {
       try {
         const token = localStorage.getItem('auth_token');
         if (!token) return;
 
+        // Fetch general settings for USDT price
+        const settingsResponse = await getGeneralSettings(token);
+        if (settingsResponse.status && settingsResponse.data) {
+          setUsdtPrice(parseFloat(settingsResponse.data.usdt_price) || 83);
+        }
+
+        // Fetch withdrawal transactions
         const response = await getTransactions(token);
         
         if (response.status && Array.isArray(response.data)) {
@@ -44,7 +57,8 @@ const AllWithdrawalsPage = () => {
               status: tx.status || "processing",
               account: tx.bank_number || "******6413",
               // Determine the type based on the method field
-              type: tx.method === "USDT" ? "usdt" : "inr"
+              type: tx.method === "USDT" ? "usdt" : "inr",
+              method: tx.method || "BANK"
             }));
           
           setRecords(withdrawals);
@@ -62,17 +76,13 @@ const AllWithdrawalsPage = () => {
           description: "Failed to fetch withdrawal records. Please try again.",
           variant: "destructive",
         });
-        
-        // Use sample data as fallback
-        setRecords([
-          
-        ]);
+        setRecords([]);
       } finally {
         setIsLoading(false);
       }
     };
     
-    fetchWithdrawalRecords();
+    fetchData();
   }, []);
   
   const maskValue = (value: string | undefined, visibleCount: number = 5) => {
@@ -102,8 +112,13 @@ const AllWithdrawalsPage = () => {
     return date.toISOString().split('T')[0];
   };
 
-  const inrRecords = records.filter(record => record.type === "inr");
-  const usdtRecords = records.filter(record => record.type === "usdt");
+  // Convert INR to USD based on USDT price
+  const convertToUSD = (amountInr: number) => {
+    return (amountInr / usdtPrice).toFixed(2);
+  };
+
+  const inrRecords = records.filter(record => record.type === "inr" || record.method === "BANK");
+  const usdtRecords = records.filter(record => record.type === "usdt" || record.method === "USDT");
 
   return (
     <MobileLayout showBackButton title="Withdrawal Records">
@@ -210,7 +225,7 @@ const AllWithdrawalsPage = () => {
             )}
           </TabsContent>
           
-          {/* USDT Withdrawals Content */}
+          {/* USDT Withdrawals Content - Updated to show amount in dollars */}
           <TabsContent value="usdt">
             {isLoading ? (
               // Loading skeletons (same as INR)
@@ -252,9 +267,12 @@ const AllWithdrawalsPage = () => {
                   </div>
                   
                   <div className="mb-4">
-                    <div className="flex items-center">
-                      <Wallet className="h-4 w-4 mr-1 text-amber-400" />
-                      <p className="text-2xl font-semibold">{record.amount} USDT</p>
+                    <div className="flex flex-col">
+                      <div className="flex items-center">
+                        <Wallet className="h-4 w-4 mr-1 text-amber-400" />
+                        <p className="text-2xl font-semibold">${convertToUSD(record.amount)}</p>
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-1">₹{record.amount} (INR)</p>
                     </div>
                   </div>
                   

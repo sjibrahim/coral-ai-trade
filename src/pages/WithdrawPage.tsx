@@ -1,5 +1,6 @@
 
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import MobileLayout from "@/components/layout/MobileLayout";
 import { Bell, Check, Wallet } from "lucide-react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
@@ -23,6 +24,7 @@ const WithdrawPage = () => {
   const [error, setError] = useState("");
   const [settings, setSettings] = useState<GeneralSettings>({ min_withdrawal: "300" });
   
+  const navigate = useNavigate();
   const { user, updateProfile } = useAuth();
   const { toast } = useToast();
   
@@ -44,6 +46,22 @@ const WithdrawPage = () => {
     
     fetchSettings();
   }, []);
+
+  // Redirect to bank details page if bank not set
+  useEffect(() => {
+    if (user) {
+      const isBankNotSet = !user.account_number || !user.account_ifsc;
+      
+      if (isBankNotSet) {
+        toast({
+          title: "Bank Details Required",
+          description: "Please set up your bank details before making a withdrawal.",
+          variant: "destructive",
+        });
+        navigate("/bank");
+      }
+    }
+  }, [user, navigate, toast]);
   
   // Safely access user properties with fallbacks for TypeScript
   const availableBalance = user?.wallet ? parseFloat(user.income) : 0;

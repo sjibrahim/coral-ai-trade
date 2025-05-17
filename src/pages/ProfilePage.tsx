@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MobileLayout from "@/components/layout/MobileLayout";
@@ -67,8 +66,10 @@ const ProfilePage = () => {
     navigate('/login');
   };
   
-  // Calculate today's income
-  const todayIncome = 0; 
+  // Get today's income from API response
+  const todayIncome = user?.today_income || 0; 
+  // Get total income from API response
+  const totalIncome = user?.total_income || user?.income || 0;
   
   return (
     <MobileLayout>
@@ -172,7 +173,7 @@ const ProfilePage = () => {
           </button>
         </div>
         
-        {/* Revenue Stats with Eye Icon */}
+        {/* Revenue Stats with Eye Icon - Updated with today_income and total_income */}
         <div className="mx-4 mt-4 rounded-xl overflow-hidden bg-gradient-to-b from-blue-50/10 to-blue-100/20 border border-blue-200/30">
           {isLoading ? (
             <div className="p-4 pb-2 animate-pulse">
@@ -205,10 +206,10 @@ const ProfilePage = () => {
                 </button>
               </div>
               <h2 className="text-2xl font-bold">
-                {hideRevenue ? "****.**₹" : `${user?.income || '0.00'}₹`}
+                {hideRevenue ? "****.**₹" : `${totalIncome}₹`}
               </h2>
               
-              {/* Income Breakdown */}
+              {/* Income Breakdown - Updated with today_income from API */}
               <div className="grid grid-cols-3 gap-2 mt-3 border-t border-blue-200/20 pt-2">
                 <div className="text-center">
                   <p className="text-xs text-muted-foreground">Yesterday's income</p>
@@ -219,7 +220,7 @@ const ProfilePage = () => {
                 <div className="text-center">
                   <p className="text-xs text-muted-foreground">Today's income</p>
                   <p className="font-semibold">
-                    {hideRevenue ? "**.**₹" : `${todayIncome || '0.00'}₹`}
+                    {hideRevenue ? "**.**₹" : `${todayIncome}₹`}
                   </p>
                 </div>
                 <div className="text-center">

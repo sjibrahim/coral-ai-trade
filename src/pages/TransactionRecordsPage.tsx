@@ -2,12 +2,12 @@
 import { useState, useEffect } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
 import { useAuth } from "@/contexts/AuthContext";
-import { getTransactions } from "@/services/api";
+import { getTransactions, getGeneralSettings } from "@/services/api";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
-import { ArrowUpCircle, ArrowDownCircle, Calendar, Check, AlertTriangle, Loader2 } from "lucide-react";
+import { ArrowUpCircle, ArrowDownCircle, Calendar, Check, AlertTriangle, Loader2, Wallet, IndianRupee } from "lucide-react";
 
 interface Transaction {
   txnid: string;
@@ -18,6 +18,7 @@ interface Transaction {
   created_at: string;
   updated_at: string;
   status: string;
+  method?: string;
 }
 
 const TransactionRecordsPage = () => {
@@ -26,13 +27,22 @@ const TransactionRecordsPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState("all");
+  const [usdtPrice, setUsdtPrice] = useState(83); // Default USDT price
 
   useEffect(() => {
-    const fetchTransactions = async () => {
+    const fetchData = async () => {
       if (!user?.token) return;
       
       try {
         setIsLoading(true);
+
+        // Fetch USDT price from general settings
+        const settingsResponse = await getGeneralSettings(user.token);
+        if (settingsResponse.status && settingsResponse.data) {
+          setUsdtPrice(parseFloat(settingsResponse.data.usdt_price) || 83);
+        }
+
+        // Fetch all transactions
         const response = await getTransactions(user.token);
         
         if (response.status) {
@@ -49,13 +59,18 @@ const TransactionRecordsPage = () => {
       }
     };
 
-    fetchTransactions();
+    fetchData();
   }, [user?.token]);
 
   const filteredTransactions = transactions.filter(transaction => {
     if (activeTab === "all") return true;
     return transaction.txn_type.toLowerCase() === activeTab.toLowerCase();
   });
+
+  // Convert INR to USD based on USDT price
+  const convertToUSD = (amountInr: number) => {
+    return (amountInr / usdtPrice).toFixed(2);
+  };
 
   const getStatusIcon = (status: string) => {
     switch (status.toLowerCase()) {
@@ -70,7 +85,12 @@ const TransactionRecordsPage = () => {
     }
   };
 
-  const getTypeIcon = (type: string) => {
+  const getTypeIcon = (type: string, method?: string) => {
+    // Check if it's a USDT withdrawal
+    if (type.toLowerCase() === "withdraw" && method?.toUpperCase() === "USDT") {
+      return <Wallet className="h-5 w-5 text-amber-400" />;
+    }
+
     // Credit transactions
     const creditTypes = ["topup", "checkin", "mission", "invite reward", "team commission", "salary"];
     // Debit transactions
@@ -102,6 +122,11 @@ const TransactionRecordsPage = () => {
       hour: '2-digit',
       minute: '2-digit'
     }).format(date);
+  };
+
+  const isUsdtWithdrawal = (transaction: Transaction) => {
+    return transaction.txn_type.toLowerCase() === "withdraw" && 
+           transaction.method?.toUpperCase() === "USDT";
   };
 
   return (
@@ -137,20 +162,37 @@ const TransactionRecordsPage = () => {
                     <div className="flex justify-between items-center mb-2">
                       <div className="flex items-center">
                         <div className="w-10 h-10 rounded-full bg-card flex items-center justify-center mr-3 border border-border/40">
-                          {getTypeIcon(transaction.txn_type)}
+                          {getTypeIcon(transaction.txn_type, transaction.method)}
                         </div>
                         <div>
-                          <p className="font-medium">{transaction.txn_type}</p>
+                          <p className="font-medium">
+                            {transaction.txn_type}
+                            {isUsdtWithdrawal(transaction) && 
+                              <span className="ml-1 text-xs text-amber-400">(USDT)</span>
+                            }
+                          </p>
                           <p className="text-xs text-muted-foreground">{transaction.txnid}</p>
                         </div>
                       </div>
                       <div className="text-right">
-                        <p className={cn(
-                          "font-semibold text-lg",
-                          isDebitTransaction(transaction.txn_type) ? "text-market-decrease" : "text-market-increase"
-                        )}>
-                          {isDebitTransaction(transaction.txn_type) ? '-' : '+'}₹{transaction.amount}
-                        </p>
+                        {isUsdtWithdrawal(transaction) ? (
+                          <div>
+                            <p className={cn(
+                              "font-semibold text-lg",
+                              "text-market-decrease"
+                            )}>
+                              -${convertToUSD(transaction.amount)}
+                            </p>
+                            <p className="text-xs text-muted-foreground">₹{transaction.amount}</p>
+                          </div>
+                        ) : (
+                          <p className={cn(
+                            "font-semibold text-lg",
+                            isDebitTransaction(transaction.txn_type) ? "text-market-decrease" : "text-market-increase"
+                          )}>
+                            {isDebitTransaction(transaction.txn_type) ? '-' : '+'}₹{transaction.amount}
+                          </p>
+                        )}
                       </div>
                     </div>
                     <Separator className="my-3" />
