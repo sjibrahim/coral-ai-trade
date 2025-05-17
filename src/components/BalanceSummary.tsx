@@ -25,7 +25,7 @@ const BalanceSummary = ({
   };
   
   const displayAmount = (amount: number) => {
-    return hideBalance ? "****.**" : amount.toLocaleString();
+    return hideBalance ? "******" : amount.toLocaleString();
   };
 
   const currencySymbol = asUSDT ? 'USDT' : '₹';
