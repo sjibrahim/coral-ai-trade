@@ -47,14 +47,16 @@ const BalanceSummary = ({
         <span className="text-3xl font-semibold ml-1 text-gradient">{displayAmount(availableBalance)}</span>
       </div>
       
-      {/* Deposit Balance Display */}
-      <div className="flex justify-between items-center pt-2 border-t border-white/10">
-        <div className="text-sm text-muted-foreground">
-          Deposit Balance
-        </div>
-        <div className="flex items-center">
-          <span className="text-sm font-normal">{currencySymbol}</span>
-          <span className="text-base font-medium ml-0.5">{displayAmount(totalDeposit)}</span>
+      {/* Deposit Balance Display - Enhanced and highlighted as requested */}
+      <div className="mt-3 p-3 rounded-xl bg-blue-500/10 border border-blue-500/20 backdrop-blur-sm">
+        <div className="flex justify-between items-center">
+          <div className="text-sm font-medium text-blue-400">
+            Deposit Balance
+          </div>
+          <div className="flex items-center">
+            <span className="text-sm font-normal">{currencySymbol}</span>
+            <span className="text-lg font-semibold ml-0.5 text-blue-100">{displayAmount(totalDeposit)}</span>
+          </div>
         </div>
       </div>
     </div>
