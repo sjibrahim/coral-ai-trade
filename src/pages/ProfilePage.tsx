@@ -70,7 +70,7 @@ const ProfilePage = () => {
   // Get total income from API response
   const totalIncome = user?.total_income || user?.income || 0;
   // Get deposit balance
-  const depositBalance = user?.deposit || 0;
+  const depositBalance = user?.wallet || 0;
   
   return (
     <MobileLayout>
@@ -149,7 +149,7 @@ const ProfilePage = () => {
                   <div className="flex items-center">
                     <span className="text-xl font-normal">₹</span>
                     <span className="text-3xl font-semibold ml-1 text-gradient">
-                      {hideBalance ? "******.**" : user?.wallet ? parseFloat(user?.wallet).toLocaleString() : '0.00'}
+                      {hideBalance ? "******.**" : user?.income ? parseFloat(user?.income).toLocaleString() : '0.00'}
                     </span>
                   </div>
                   
