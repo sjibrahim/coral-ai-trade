@@ -58,17 +58,17 @@ const BalanceSummary = ({
         </div>
       </div>
       
-      {/* Highlighted Deposit Balance */}
-      <div className="p-3 rounded-lg border border-white/10 bg-secondary/40">
-        <div className="flex items-center gap-2 mb-1.5">
-          <BadgeInfo size={16} className="text-primary" />
-          <span className="text-sm font-medium">Deposit Balance</span>
+      {/* Highlighted Deposit Balance - Enhanced for better visibility */}
+      <div className="p-4 mt-2 rounded-lg border-2 border-primary/30 bg-secondary/60 shadow-sm relative overflow-hidden">
+        <div className="flex items-center gap-2 mb-2">
+          <BadgeInfo size={18} className="text-primary" />
+          <span className="text-sm font-semibold text-primary">Deposit Balance</span>
         </div>
         <div className="flex items-center justify-between">
           <span className="text-xs text-muted-foreground">Total deposits</span>
           <div className="flex items-center">
-            <span className="text-sm font-normal">{currencySymbol}</span>
-            <span className="text-base font-semibold ml-0.5">{displayAmount(totalDeposit)}</span>
+            <span className="text-sm font-medium">{currencySymbol}</span>
+            <span className="text-lg font-bold ml-0.5 text-gradient-primary">{displayAmount(totalDeposit)}</span>
           </div>
         </div>
       </div>
