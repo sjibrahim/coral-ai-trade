@@ -149,7 +149,7 @@ const ProfilePage = () => {
                   <div className="flex items-center">
                     <span className="text-xl font-normal">₹</span>
                     <span className="text-3xl font-semibold ml-1 text-gradient">
-                      {hideBalance ? "******.**" : user?.income ? parseFloat(user?.income).toLocaleString() : '0.00'}
+                      {hideBalance ? "********" : user?.income ? parseFloat(user?.income).toLocaleString() : '0.00'}
                     </span>
                   </div>
                   
@@ -165,7 +165,7 @@ const ProfilePage = () => {
                       </div>
                       <div className="flex items-center">
                         <span className="text-lg font-semibold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-indigo-400">
-                          {hideBalance ? "******.**" : `₹${parseFloat(depositBalance.toString()).toLocaleString()}`}
+                          {hideBalance ? "********" : `₹${parseFloat(depositBalance.toString()).toLocaleString()}`}
                         </span>
                       </div>
                     </div>
@@ -231,7 +231,7 @@ const ProfilePage = () => {
                 </button>
               </div>
               <h2 className="text-2xl font-bold">
-                {hideRevenue ? "****.**₹" : `${totalIncome}₹`}
+                {hideRevenue ? "******₹" : `${totalIncome}₹`}
               </h2>
               
               {/* Income Breakdown - Updated with today_income from API */}
@@ -239,19 +239,19 @@ const ProfilePage = () => {
                 <div className="text-center">
                   <p className="text-xs text-muted-foreground">Yesterday's</p>
                   <p className="font-semibold">
-                    {hideRevenue ? "**.**₹" : `${user?.yesterday_income || '0.00'}₹`}
+                    {hideRevenue ? "****₹" : `${user?.yesterday_income || '0.00'}₹`}
                   </p>
                 </div>
                 <div className="text-center">
                   <p className="text-xs text-muted-foreground">Today's income</p>
                   <p className="font-semibold">
-                    {hideRevenue ? "**.**₹" : `${todayIncome}₹`}
+                    {hideRevenue ? "****₹" : `${todayIncome}₹`}
                   </p>
                 </div>
                 <div className="text-center">
                   <p className="text-xs text-muted-foreground">Salary</p>
                   <p className="font-semibold">
-                    {hideRevenue ? "****.**₹" : `${user?.salary || '0.00'}₹`}
+                    {hideRevenue ? "******₹" : `${user?.salary || '0.00'}₹`}
                   </p>
                 </div>
               </div>
