@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MobileLayout from "@/components/layout/MobileLayout";
@@ -123,12 +124,13 @@ const ProfilePage = () => {
         
         {/* Balance Summary with improved design */}
         <div className="px-4">
-          <Card className="bg-gradient-to-br from-blue-950/90 to-indigo-900/80 border border-blue-300/20 overflow-hidden shadow-lg">
+          <Card className="rounded-lg bg-gradient-to-br from-blue-950/90 to-indigo-900/80 border border-blue-300/20 overflow-hidden shadow-lg">
             <CardContent className="p-0">
               {isLoading ? (
                 <div className="p-4 animate-pulse">
                   <div className="h-4 w-32 bg-secondary/40 rounded mb-2"></div>
-                  <div className="h-8 w-40 bg-secondary/40 rounded"></div>
+                  <div className="h-8 w-40 bg-secondary/40 rounded mb-4"></div>
+                  <div className="h-16 w-full bg-secondary/30 rounded"></div>
                 </div>
               ) : (
                 <BalanceSummary
