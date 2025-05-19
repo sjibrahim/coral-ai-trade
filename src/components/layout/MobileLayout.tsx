@@ -113,9 +113,9 @@ const MobileLayout = ({
       {/* Main Content with ScrollArea for reliable scrolling */}
       <main className="flex-1 overflow-hidden relative">
         {noScroll ? (
-          <div className="h-full">{children}</div>
+          <div className="h-[95%]">{children}</div>
         ) : (
-          <ScrollArea className="h-full w-full">{children}</ScrollArea>
+          <ScrollArea className="h-[95%] w-full">{children}</ScrollArea>
         )}
       </main>
 
