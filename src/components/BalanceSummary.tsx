@@ -47,7 +47,7 @@ const BalanceSummary = ({
         <span className="text-3xl font-semibold ml-1 text-gradient">{displayAmount(availableBalance)}</span>
       </div>
       
-      {/* Deposit Balance Display - Using original background styling */}
+      {/* Deposit Balance Display - Using original design */}
       <div className="mt-3 p-3 rounded-xl bg-card border border-border/50">
         <div className="flex justify-between items-center">
           <div className="text-sm font-medium">
