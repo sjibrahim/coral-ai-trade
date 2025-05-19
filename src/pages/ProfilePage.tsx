@@ -7,7 +7,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { 
   ArrowUpCircle, ArrowDownCircle, FileText, LogOut, 
   Wallet, Star, FileCheck, ListTree, CreditCard, Settings, Eye, EyeOff,
-  IndianRupee
+  IndianRupee, BadgeIndianRupee
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useAuth } from '@/contexts/AuthContext';
@@ -23,6 +23,7 @@ const ProfilePage = () => {
   const [avatarUrl, setAvatarUrl] = useState<string>(user?.name || '');
   const [isLoading, setIsLoading] = useState(true);
   const [hideRevenue, setHideRevenue] = useState(false);
+  const [hideBalance, setHideBalance] = useState(false);
   const navigate = useNavigate();
 
   // Only generate avatar once user data is available
@@ -55,6 +56,10 @@ const ProfilePage = () => {
     setHideRevenue(!hideRevenue);
   };
   
+  const toggleBalanceVisibility = () => {
+    setHideBalance(!hideBalance);
+  };
+  
   const handleLogout = () => {
     logout();
     navigate('/login');
@@ -64,6 +69,8 @@ const ProfilePage = () => {
   const todayIncome = user?.today_income || 0; 
   // Get total income from API response
   const totalIncome = user?.total_income || user?.income || 0;
+  // Get deposit balance
+  const depositBalance = user?.deposit || 0;
   
   return (
     <MobileLayout>
@@ -119,7 +126,7 @@ const ProfilePage = () => {
           </div>
         </div>
         
-        {/* Simple Balance Display */}
+        {/* Available Balance Display with Deposit Balance */}
         <div className="px-4">
           <Card className="bg-gradient-to-br from-sky-50/5 to-blue-100/10 border border-blue-200/20 overflow-hidden">
             <CardContent className="p-4">
@@ -132,12 +139,36 @@ const ProfilePage = () => {
                 <>
                   <div className="flex items-center justify-between mb-2">
                     <h3 className="text-sm font-medium text-muted-foreground">Available Balance</h3>
+                    <button 
+                      onClick={toggleBalanceVisibility}
+                      className="p-1 rounded-full hover:bg-white/10 transition-colors"
+                    >
+                      {hideBalance ? <EyeOff size={16} /> : <Eye size={16} />}
+                    </button>
                   </div>
                   <div className="flex items-center">
                     <span className="text-xl font-normal">₹</span>
                     <span className="text-3xl font-semibold ml-1 text-gradient">
-                      {user?.wallet ? parseFloat(user?.wallet).toLocaleString() : '0.00'}
+                      {hideBalance ? "******.**" : user?.wallet ? parseFloat(user?.wallet).toLocaleString() : '0.00'}
                     </span>
+                  </div>
+                  
+                  {/* Deposit Balance Card - Attractive Design */}
+                  <div className="mt-4 p-3 rounded-lg bg-gradient-to-r from-blue-500/10 to-indigo-500/20 border-2 border-blue-500/30 relative overflow-hidden">
+                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-indigo-500 opacity-80"></div>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div className="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center">
+                          <BadgeIndianRupee size={18} className="text-blue-400" />
+                        </div>
+                        <span className="text-sm font-medium text-muted-foreground">Deposit Balance</span>
+                      </div>
+                      <div className="flex items-center">
+                        <span className="text-lg font-semibold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-indigo-400">
+                          {hideBalance ? "******.**" : `₹${parseFloat(depositBalance.toString()).toLocaleString()}`}
+                        </span>
+                      </div>
+                    </div>
                   </div>
                 </>
               )}
