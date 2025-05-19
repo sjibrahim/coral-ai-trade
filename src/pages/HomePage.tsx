@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
 import BalanceSummary from "@/components/BalanceSummary";
@@ -30,8 +31,6 @@ const HomePage = () => {
   const [picksData, setPicksData] = useState<CryptoData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const { user } = useAuth();
-  
-  // No longer need separate refreshUserData effect as it's handled by ProtectedRoute
   
   useEffect(() => {
     const fetchMarketData = async () => {
@@ -96,6 +95,13 @@ const HomePage = () => {
     fetchMarketData();
   }, []);
   
+  // Get the deposit amount
+  const depositAmount = user?.deposit ? parseFloat(user.deposit) : 0;
+  // Get the wallet amount
+  const walletAmount = user?.wallet ? parseFloat(user.wallet) : 0;
+  // Get the income
+  const incomeAmount = user?.income ? parseFloat(user.income) : 0;
+  
   return (
     <MobileLayout>
       <div className="animate-fade-in space-y-4 pb-20">
@@ -120,10 +126,11 @@ const HomePage = () => {
           
           <div className="relative">
             <BalanceSummary 
-              totalBalance={user?.wallet ? parseFloat(user.wallet) : 0}
-              totalDeposit={user?.wallet ? parseFloat(user.wallet) : 0}
-              totalWithdrawal={0} // We don't have this from the API
-              availableBalance={user?.income ? parseFloat(user.income) : 0}
+              totalBalance={walletAmount}
+              totalDeposit={depositAmount}
+              totalWithdrawal={0}
+              availableBalance={incomeAmount}
+              showSmallDeposit={true}
             />
             <ActionButtons />
           </div>

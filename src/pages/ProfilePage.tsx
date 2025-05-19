@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MobileLayout from "@/components/layout/MobileLayout";
@@ -66,6 +65,11 @@ const ProfilePage = () => {
   // Get total income from API response
   const totalIncome = user?.total_income || user?.income || 0;
   
+  // Get the deposit amount
+  const depositAmount = user?.deposit ? parseFloat(user.deposit) : 0;
+  // Get the wallet amount
+  const walletAmount = user?.wallet ? parseFloat(user.wallet) : 0;
+  
   return (
     <MobileLayout>
       <div className="animate-fade-in space-y-4 pb-24">
@@ -120,7 +124,7 @@ const ProfilePage = () => {
           </div>
         </div>
         
-        {/* Simple Balance Display */}
+        {/* Balance Display with Deposit Highlighted */}
         <div className="px-4">
           <Card className="bg-gradient-to-br from-sky-50/5 to-blue-100/10 border border-blue-200/20 overflow-hidden">
             <CardContent className="p-4">
@@ -132,10 +136,11 @@ const ProfilePage = () => {
               ) : (
                 <>
                   <BalanceSummary 
-                    totalBalance={parseFloat(user?.wallet || '0')} 
-                    totalDeposit={parseFloat(user?.total_deposit || '0')} 
-                    totalWithdrawal={parseFloat(user?.total_withdrawal || '0')} 
-                    availableBalance={parseFloat(user?.wallet || '0')}
+                    totalBalance={walletAmount} 
+                    totalDeposit={depositAmount} 
+                    totalWithdrawal={0}
+                    availableBalance={walletAmount}
+                    showDepositProminent={true}
                   />
                 </>
               )}

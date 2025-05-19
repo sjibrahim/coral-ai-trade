@@ -1,6 +1,6 @@
 
 import { cn } from "@/lib/utils";
-import { Eye, EyeOff, BadgeInfo } from "lucide-react";
+import { Eye, EyeOff, BadgeInfo, Wallet, IndianRupee } from "lucide-react";
 import { useState } from "react";
 
 interface BalanceSummaryProps {
@@ -9,6 +9,8 @@ interface BalanceSummaryProps {
   totalWithdrawal: number;
   availableBalance: number;
   asUSDT?: boolean;
+  showDepositProminent?: boolean;
+  showSmallDeposit?: boolean;
 }
 
 const BalanceSummary = ({ 
@@ -16,7 +18,9 @@ const BalanceSummary = ({
   totalDeposit, 
   totalWithdrawal, 
   availableBalance,
-  asUSDT = false
+  asUSDT = false,
+  showDepositProminent = false,
+  showSmallDeposit = false
 }: BalanceSummaryProps) => {
   const [hideBalance, setHideBalance] = useState(false);
   
@@ -47,23 +51,36 @@ const BalanceSummary = ({
         <span className="text-3xl font-semibold ml-1 text-gradient">{displayAmount(availableBalance)}</span>
       </div>
       
-      {/* Prominently Highlighted Deposit Balance */}
-      <div className="p-4 mt-3 rounded-lg border-[3px] border-primary bg-primary/20 shadow-lg relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-primary via-primary/70 to-transparent"></div>
-        <div className="flex items-center gap-2 mb-2">
-          <div className="p-2 bg-primary/30 rounded-full">
-            <BadgeInfo size={24} className="text-primary" />
+      {showSmallDeposit && (
+        <div className="flex items-center justify-between mt-1 text-sm">
+          <div className="flex items-center gap-1 text-muted-foreground">
+            <Wallet size={14} />
+            <span>Total Deposit:</span>
           </div>
-          <span className="text-base font-extrabold text-primary tracking-wide">DEPOSIT BALANCE</span>
-        </div>
-        <div className="flex items-center justify-between mt-2">
-          <span className="text-sm font-medium text-muted-foreground">Total deposits</span>
-          <div className="flex items-center">
-            <span className="text-lg font-medium">{currencySymbol}</span>
-            <span className="text-2xl font-bold ml-0.5 bg-clip-text text-transparent bg-gradient-to-r from-primary to-blue-400">{displayAmount(totalDeposit)}</span>
+          <div className="font-medium">
+            {currencySymbol} {displayAmount(totalDeposit)}
           </div>
         </div>
-      </div>
+      )}
+      
+      {showDepositProminent && (
+        <div className="p-4 mt-3 rounded-lg border-[3px] border-primary bg-primary/20 shadow-lg relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-primary via-primary/70 to-transparent"></div>
+          <div className="flex items-center gap-2 mb-2">
+            <div className="p-2 bg-primary/30 rounded-full">
+              <BadgeInfo size={24} className="text-primary" />
+            </div>
+            <span className="text-base font-extrabold text-primary tracking-wide">DEPOSIT BALANCE</span>
+          </div>
+          <div className="flex items-center justify-between mt-2">
+            <span className="text-sm font-medium text-muted-foreground">Total deposits</span>
+            <div className="flex items-center">
+              <span className="text-lg font-medium">{currencySymbol}</span>
+              <span className="text-2xl font-bold ml-0.5 bg-clip-text text-transparent bg-gradient-to-r from-primary to-blue-400">{displayAmount(totalDeposit)}</span>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
