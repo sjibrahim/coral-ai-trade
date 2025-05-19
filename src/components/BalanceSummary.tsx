@@ -1,6 +1,6 @@
 
 import { cn } from "@/lib/utils";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, BadgeInfo } from "lucide-react";
 import { useState } from "react";
 
 interface BalanceSummaryProps {
@@ -55,6 +55,21 @@ const BalanceSummary = ({
         <div className="flex items-center">
           <span className="text-sm font-normal">{currencySymbol}</span>
           <span className="text-base font-medium ml-0.5">{displayAmount(totalDeposit)}</span>
+        </div>
+      </div>
+      
+      {/* Highlighted Deposit Balance */}
+      <div className="p-3 rounded-lg border border-white/10 bg-secondary/40">
+        <div className="flex items-center gap-2 mb-1.5">
+          <BadgeInfo size={16} className="text-primary" />
+          <span className="text-sm font-medium">Deposit Balance</span>
+        </div>
+        <div className="flex items-center justify-between">
+          <span className="text-xs text-muted-foreground">Total deposits</span>
+          <div className="flex items-center">
+            <span className="text-sm font-normal">{currencySymbol}</span>
+            <span className="text-base font-semibold ml-0.5">{displayAmount(totalDeposit)}</span>
+          </div>
         </div>
       </div>
     </div>
