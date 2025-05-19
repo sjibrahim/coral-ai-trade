@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MobileLayout from "@/components/layout/MobileLayout";
@@ -10,7 +11,6 @@ import {
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useAuth } from '@/contexts/AuthContext';
-import BalanceSummary from '@/components/BalanceSummary';
 
 const getRandomAvatarUrl = () => {
   // Generate a random seed for the avatar
@@ -64,14 +64,12 @@ const ProfilePage = () => {
   const todayIncome = user?.today_income || 0; 
   // Get total income from API response
   const totalIncome = user?.total_income || user?.income || 0;
-  // Get deposit balance
-  const depositBalance = user?.wallet ? parseFloat(user.wallet) : 0;
   
   return (
     <MobileLayout>
       <div className="animate-fade-in space-y-4 pb-24">
         {/* User Profile Header */}
-        <div className="relative bg-gradient-to-r from-blue-900/70 to-indigo-900/70 px-5 pt-5 pb-6 flex items-center">
+        <div className="relative px-5 pt-4 pb-2 flex items-center">
           {isLoading ? (
             <div className="flex items-center gap-3 animate-pulse">
               <div className="w-14 h-14 rounded-full bg-secondary/40"></div>
@@ -121,43 +119,48 @@ const ProfilePage = () => {
           </div>
         </div>
         
-        {/* Balance Summary with improved design */}
+        {/* Simple Balance Display */}
         <div className="px-4">
-          <Card className="bg-gradient-to-br from-blue-950/90 to-indigo-900/80 border border-blue-300/20 overflow-hidden shadow-lg">
-            <CardContent className="p-0">
+          <Card className="bg-gradient-to-br from-sky-50/5 to-blue-100/10 border border-blue-200/20 overflow-hidden">
+            <CardContent className="p-4">
               {isLoading ? (
-                <div className="p-4 animate-pulse">
+                <div className="animate-pulse">
                   <div className="h-4 w-32 bg-secondary/40 rounded mb-2"></div>
                   <div className="h-8 w-40 bg-secondary/40 rounded"></div>
                 </div>
               ) : (
-                <BalanceSummary
-                  totalBalance={depositBalance}
-                  totalDeposit={depositBalance}
-                  totalWithdrawal={0}
-                  availableBalance={depositBalance}
-                />
+                <>
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="text-sm font-medium text-muted-foreground">Available Balance</h3>
+                  </div>
+                  <div className="flex items-center">
+                    <span className="text-xl font-normal">₹</span>
+                    <span className="text-3xl font-semibold ml-1 text-gradient">
+                      {user?.wallet ? parseFloat(user?.wallet).toLocaleString() : '0.00'}
+                    </span>
+                  </div>
+                </>
               )}
             </CardContent>
           </Card>
         </div>
         
-        {/* Quick Action Buttons - Enhanced design */}
+        {/* Quick Action Buttons */}
         <div className="px-4 grid grid-cols-3 gap-2">
           <button 
-            className="bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-md py-3 font-medium text-sm shadow-lg shadow-blue-500/30 transform hover:scale-105 transition-all"
+            className="bg-primary text-white rounded-md py-3 font-medium text-sm shadow-lg shadow-primary/30"
             onClick={() => navigate('/deposit')}
           >
             Recharge
           </button>
           <button 
-            className="bg-gradient-to-r from-slate-800 to-slate-700 border border-blue-300/20 rounded-md py-3 font-medium text-sm transform hover:scale-105 transition-all"
+            className="bg-secondary border border-blue-300/20 rounded-md py-3 font-medium text-sm"
             onClick={() => navigate('/withdraw')}
           >
             Withdraw
           </button>
           <button 
-            className="bg-gradient-to-r from-slate-800 to-slate-700 border border-blue-300/20 rounded-md py-3 font-medium text-sm transform hover:scale-105 transition-all"
+            className="bg-secondary border border-blue-300/20 rounded-md py-3 font-medium text-sm"
             onClick={() => navigate('/transactions')}
           >
             Details
@@ -165,7 +168,7 @@ const ProfilePage = () => {
         </div>
         
         {/* Revenue Stats with Eye Icon - Updated with today_income and total_income */}
-        <div className="mx-4 mt-4 rounded-xl overflow-hidden bg-gradient-to-b from-blue-950/80 to-indigo-900/70 border border-blue-200/30 shadow-lg">
+        <div className="mx-4 mt-4 rounded-xl overflow-hidden bg-gradient-to-b from-blue-50/10 to-blue-100/20 border border-blue-200/30">
           {isLoading ? (
             <div className="p-4 pb-2 animate-pulse">
               <div className="h-4 w-32 bg-secondary/40 rounded mb-3"></div>
@@ -225,9 +228,9 @@ const ProfilePage = () => {
           )}
         </div>
         
-        {/* Profile Options - With improved design */}
+        {/* Profile Options */}
         <div className="px-4 space-y-2.5 mt-2">
-          <h3 className="text-sm font-semibold text-blue-400 ml-1 mb-1">Account</h3>
+          <h3 className="text-sm font-semibold text-muted-foreground ml-1 mb-1">Account</h3>
           
           <ProfileOption
             icon={<ArrowUpCircle className="h-5 w-5 text-teal-400" />}
@@ -247,7 +250,7 @@ const ProfilePage = () => {
             to="/usdt-withdraw"
           />
           
-          <h3 className="text-sm font-semibold text-blue-400 ml-1 mt-4 mb-1">Records</h3>
+          <h3 className="text-sm font-semibold text-muted-foreground ml-1 mt-4 mb-1">Records</h3>
           
           <ProfileOption
             icon={<IndianRupee className="h-5 w-5 text-teal-400" />}
@@ -279,7 +282,7 @@ const ProfilePage = () => {
             to="/all-withdrawals"
           />
           
-          <h3 className="text-sm font-semibold text-blue-400 ml-1 mt-4 mb-1">Other</h3>
+          <h3 className="text-sm font-semibold text-muted-foreground ml-1 mt-4 mb-1">Other</h3>
           
           <ProfileOption
             icon={<Star className="h-5 w-5 text-amber-400" />}
@@ -295,7 +298,7 @@ const ProfilePage = () => {
           
           <div
             onClick={handleLogout}
-            className="flex items-center p-3 rounded-xl bg-red-950/20 hover:bg-red-500/10 cursor-pointer transition-colors mt-4 border border-red-500/20"
+            className="flex items-center p-3 rounded-xl bg-red-50/10 hover:bg-red-500/10 cursor-pointer transition-colors mt-4"
           >
             <div className="w-8 h-8 rounded-full bg-red-500/10 flex items-center justify-center mr-3">
               <LogOut className="h-5 w-5 text-red-400" />
