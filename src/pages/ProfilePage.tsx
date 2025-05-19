@@ -6,12 +6,11 @@ import ProfileOption from "@/components/ProfileOption";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { 
   ArrowUpCircle, ArrowDownCircle, FileText, LogOut, 
-  Wallet, Star, ListTree, CreditCard, Settings, Eye, EyeOff,
-  IndianRupee, BadgeInfo
+  Wallet, Star, FileCheck, ListTree, CreditCard, Settings, Eye, EyeOff,
+  IndianRupee
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useAuth } from '@/contexts/AuthContext';
-import BalanceSummary from "@/components/BalanceSummary";
 
 const getRandomAvatarUrl = () => {
   // Generate a random seed for the avatar
@@ -50,7 +49,7 @@ const ProfilePage = () => {
         setAvatarUrl('https://api.dicebear.com/6.x/avataaars/svg?seed=default');
       };
     }
-  }, [user]);
+  }, [user?.name]);
 
   const toggleRevenueVisibility = () => {
     setHideRevenue(!hideRevenue);
@@ -65,11 +64,6 @@ const ProfilePage = () => {
   const todayIncome = user?.today_income || 0; 
   // Get total income from API response
   const totalIncome = user?.total_income || user?.income || 0;
-  
-  // Get the deposit amount
-  const depositAmount = user?.deposit ? parseFloat(user.deposit) : 0;
-  // Get the wallet amount
-  const walletAmount = user?.wallet ? parseFloat(user.wallet) : 0;
   
   return (
     <MobileLayout>
@@ -125,7 +119,7 @@ const ProfilePage = () => {
           </div>
         </div>
         
-        {/* Balance Display with Deposit Highlighted */}
+        {/* Simple Balance Display */}
         <div className="px-4">
           <Card className="bg-gradient-to-br from-sky-50/5 to-blue-100/10 border border-blue-200/20 overflow-hidden">
             <CardContent className="p-4">
@@ -136,13 +130,15 @@ const ProfilePage = () => {
                 </div>
               ) : (
                 <>
-                  <BalanceSummary 
-                    totalBalance={walletAmount} 
-                    totalDeposit={depositAmount} 
-                    totalWithdrawal={0}
-                    availableBalance={walletAmount}
-                    showDepositProminent={true}
-                  />
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="text-sm font-medium text-muted-foreground">Available Balance</h3>
+                  </div>
+                  <div className="flex items-center">
+                    <span className="text-xl font-normal">₹</span>
+                    <span className="text-3xl font-semibold ml-1 text-gradient">
+                      {user?.wallet ? parseFloat(user?.wallet).toLocaleString() : '0.00'}
+                    </span>
+                  </div>
                 </>
               )}
             </CardContent>
