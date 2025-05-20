@@ -7,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Link } from "react-router-dom";
 import { ArrowDownCircle, IndianRupee, Wallet, Receipt } from "lucide-react";
 import { getTransactions, getGeneralSettings } from "@/services/api";
-import { toast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 
 interface WithdrawalRecord {
@@ -33,6 +33,7 @@ const AllWithdrawalsPage = () => {
   const [activeTab, setActiveTab] = useState("inr");
   const [usdtPrice, setUsdtPrice] = useState(83);
   const { user } = useAuth(); 
+  const { toast } = useToast();
   
   useEffect(() => {
     const fetchData = async () => {
@@ -88,7 +89,7 @@ const AllWithdrawalsPage = () => {
     };
     
     fetchData();
-  }, []);
+  }, [toast]);
   
   const maskValue = (value: string | undefined, visibleCount: number = 5) => {
     if (!value) return "";
@@ -302,7 +303,7 @@ const AllWithdrawalsPage = () => {
                     </div>
                     <div className="flex justify-between items-center mt-1">
                       <span className="text-gray-400">Fee (USDT)</span>
-                      <span className="text-red-400">${parseFloat(record.charges as string) / usdtPrice).toFixed(2)}</span>
+                      <span className="text-red-400">${((parseFloat(record.charges as string) / usdtPrice)).toFixed(2)}</span>
                     </div>
                     <div className="my-1 border-b border-gray-700"></div>
                     <div className="flex justify-between items-center">
