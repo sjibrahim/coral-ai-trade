@@ -9,9 +9,17 @@ interface ProfileOptionProps {
   to: string;
   className?: string;
   badge?: string | number;
+  onClick?: () => void;
 }
 
-const ProfileOption = ({ icon, label, to, className, badge }: ProfileOptionProps) => {
+const ProfileOption = ({ icon, label, to, className, badge, onClick }: ProfileOptionProps) => {
+  const handleClick = (e: React.MouseEvent) => {
+    if (onClick) {
+      e.preventDefault();
+      onClick();
+    }
+  };
+
   return (
     <Link 
       to={to}
@@ -19,6 +27,7 @@ const ProfileOption = ({ icon, label, to, className, badge }: ProfileOptionProps
         "flex items-center justify-between p-3.5 rounded-lg transition-all hover:bg-accent/20 border border-border/30 animate-fade-in bg-card/40",
         className
       )}
+      onClick={handleClick}
     >
       <div className="flex items-center gap-3">
         <div className="w-8 h-8 rounded-full bg-secondary/30 backdrop-blur-sm border border-border/30 flex items-center justify-center">
