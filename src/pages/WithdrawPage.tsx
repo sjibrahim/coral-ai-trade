@@ -1,7 +1,8 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import MobileLayout from "@/components/layout/MobileLayout";
-import { Bell, Check, Wallet } from "lucide-react";
+import { Bell, Check, Wallet, Info } from "lucide-react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { createWithdrawOrder, getGeneralSettings } from "@/services/api";
@@ -11,6 +12,7 @@ import AmountInput from "@/components/payments/AmountInput";
 import BankInfo from "@/components/payments/BankInfo";
 import ConfirmButton from "@/components/payments/ConfirmButton";
 import { motion } from "framer-motion";
+import { useGeneralSettings } from "@/hooks/use-general-settings";
 
 interface GeneralSettings {
   min_withdrawal: string;
@@ -26,6 +28,9 @@ const WithdrawPage = () => {
   const navigate = useNavigate();
   const { user, updateProfile, refreshUserData } = useAuth();
   const { toast } = useToast();
+  
+  // Get general settings using the hook
+  const { settings: generalSettings } = useGeneralSettings();
   
   // Always refresh user data when component mounts
   useEffect(() => {
@@ -73,7 +78,11 @@ const WithdrawPage = () => {
   const ifscCode = user?.account_ifsc || "Not set";
 
   const minWithdrawal = parseInt(settings.min_withdrawal) || 300;
+  const withdrawalFee = parseFloat(generalSettings.withdrawal_fee) || 10;
   const isValidAmount = Number(amount) >= minWithdrawal && Number(amount) <= availableBalance;
+  
+  // Calculate net amount after fee
+  const netAmount = amount ? Math.max(parseFloat(amount) - withdrawalFee, 0) : 0;
   
   const handleConfirm = async () => {
     if (!isValidAmount) {
@@ -163,6 +172,29 @@ const WithdrawPage = () => {
           className="mb-5"
         />
         
+        {/* Withdrawal Fee Information */}
+        <div className="bg-[#1a1e29] rounded-lg p-4 mb-5">
+          <h3 className="text-gray-300 text-sm mb-3 flex items-center">
+            <Info className="h-4 w-4 mr-2 text-blue-400" />
+            Withdrawal Details
+          </h3>
+          <div className="space-y-2 text-sm">
+            <div className="flex justify-between">
+              <span className="text-gray-400">Withdrawal Amount</span>
+              <span className="text-white">₹{amount || '0'}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-400">Withdrawal Fee</span>
+              <span className="text-red-400">₹{withdrawalFee}</span>
+            </div>
+            <div className="h-px bg-gray-700 my-2"></div>
+            <div className="flex justify-between font-medium">
+              <span className="text-gray-300">Net Amount</span>
+              <span className="text-green-400">₹{netAmount.toFixed(2)}</span>
+            </div>
+          </div>
+        </div>
+        
         {/* Bank Information */}
         <div className="bg-[#12131a] py-4 px-4 rounded-2xl mb-5">
           <h3 className="text-gray-300 text-sm mb-3">Your Bank Details</h3>
@@ -221,7 +253,7 @@ const WithdrawPage = () => {
               transition={{ delay: 0.2, duration: 0.3 }}
               className="text-gray-400 text-center"
             >
-              Your withdrawal request for ₹{amount} has been submitted successfully. It will be processed within 24 hours.
+              Your withdrawal request for ₹{amount} has been submitted successfully. After deducting the fee of ₹{withdrawalFee}, you will receive ₹{netAmount.toFixed(2)}. It will be processed within 24 hours.
             </motion.p>
             <Button 
               className="w-full bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white" 

@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Link } from "react-router-dom";
-import { ArrowDownCircle, IndianRupee, Wallet } from "lucide-react";
+import { ArrowDownCircle, IndianRupee, Wallet, Receipt } from "lucide-react";
 import { getTransactions, getGeneralSettings } from "@/services/api";
 import { toast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
@@ -18,10 +18,13 @@ interface WithdrawalRecord {
   account: string;
   type: "inr" | "usdt";
   method?: string;
+  charges?: string | number;
+  net_amount?: string | number;
 }
 
 interface GeneralSettings {
   usdt_price: string;
+  withdrawal_fee: string;
 }
 
 const AllWithdrawalsPage = () => {
@@ -58,7 +61,9 @@ const AllWithdrawalsPage = () => {
               account: tx.bank_number || "******6413",
               // Determine the type based on the method field
               type: tx.method === "USDT" ? "usdt" : "inr",
-              method: tx.method || "BANK"
+              method: tx.method || "BANK",
+              charges: tx.charges || "10",
+              net_amount: tx.net_amount || tx.amount
             }));
           
           setRecords(withdrawals);
@@ -196,10 +201,23 @@ const AllWithdrawalsPage = () => {
                     </p>
                   </div>
                   
-                  <div className="mb-4">
+                  <div className="mb-3">
                     <div className="flex items-center">
                       <IndianRupee className="h-4 w-4 mr-1 text-primary" />
                       <p className="text-2xl font-semibold">{record.amount}</p>
+                    </div>
+                  </div>
+                  
+                  {/* Fee and Net Amount section */}
+                  <div className="bg-[#1a1c25] rounded-lg p-3 mb-3 text-sm">
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-400">Fee</span>
+                      <span className="text-red-400">₹{record.charges}</span>
+                    </div>
+                    <div className="my-1 border-b border-gray-700"></div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-400">Net Amount</span>
+                      <span className="text-green-400">₹{record.net_amount}</span>
                     </div>
                   </div>
                   
@@ -266,13 +284,30 @@ const AllWithdrawalsPage = () => {
                     </p>
                   </div>
                   
-                  <div className="mb-4">
+                  <div className="mb-3">
                     <div className="flex flex-col">
                       <div className="flex items-center">
                         <Wallet className="h-4 w-4 mr-1 text-amber-400" />
                         <p className="text-2xl font-semibold">${convertToUSD(record.amount)}</p>
                       </div>
                       <p className="text-xs text-muted-foreground mt-1">₹{record.amount} (INR)</p>
+                    </div>
+                  </div>
+                  
+                  {/* Fee and Net Amount section */}
+                  <div className="bg-[#1a1c25] rounded-lg p-3 mb-3 text-sm">
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-400">Fee (INR)</span>
+                      <span className="text-red-400">₹{record.charges}</span>
+                    </div>
+                    <div className="flex justify-between items-center mt-1">
+                      <span className="text-gray-400">Fee (USDT)</span>
+                      <span className="text-red-400">${parseFloat(record.charges as string) / usdtPrice).toFixed(2)}</span>
+                    </div>
+                    <div className="my-1 border-b border-gray-700"></div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-400">Net Amount (USDT)</span>
+                      <span className="text-green-400">${(parseFloat(record.net_amount as string) / usdtPrice).toFixed(2)}</span>
                     </div>
                   </div>
                   

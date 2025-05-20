@@ -1,7 +1,7 @@
 
 import { ReactNode } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Menu, X, ChevronLeft, Bell, Sparkles } from 'lucide-react';
+import { Menu, X, ChevronLeft, Bell, Sparkles, Receipt } from 'lucide-react';
 import { useState } from 'react';
 import MobileNavbar from './MobileNavbar';
 import SideMenu from './SideMenu';
@@ -34,6 +34,9 @@ const MobileLayout = ({
   
   // Only show the navbar on main pages
   const shouldShowNavbar = ['/home', '/market', '/team', '/profile', '/'].includes(location.pathname);
+
+  // Add withdrawal-related paths to display receipt icon instead of bell
+  const isWithdrawalPage = ['/withdraw', '/usdt-withdraw', '/withdrawals', '/all-withdrawals'].includes(location.pathname);
 
   return (
     <div className="flex flex-col h-full w-full bg-[#0d0f17] text-foreground relative">
@@ -100,7 +103,11 @@ const MobileLayout = ({
             </div>
           ) : (
             <button className="p-1.5 rounded-full hover:bg-accent/50 transition-colors flex items-center justify-center relative animate-pulse-glow">
-              <Bell className="h-5 w-5" />
+              {isWithdrawalPage ? (
+                <Receipt className="h-5 w-5" />
+              ) : (
+                <Bell className="h-5 w-5" />
+              )}
               <span className="absolute top-0.5 right-0.5 w-1.5 h-1.5 bg-red-500 rounded-full"></span>
             </button>
           )}

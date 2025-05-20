@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
 import { ArrowRight, Check, Copy, AlertCircle, Info, DollarSign } from "lucide-react";
@@ -48,7 +49,10 @@ const UsdtWithdrawalPage = () => {
   
   // Calculate USDT amount based on INR
   const usdtPrice = getUsdtPrice();
+  const withdrawalFee = parseFloat(settings.withdrawal_fee) || 10;
   const usdtAmount = amount ? (parseFloat(amount) / usdtPrice).toFixed(2) : "0";
+  const netAmountInr = amount ? Math.max(parseFloat(amount) - withdrawalFee, 0) : 0;
+  const netAmountUsdt = netAmountInr ? (netAmountInr / usdtPrice).toFixed(2) : "0";
   
   const minWithdrawalInr = parseFloat(settings.min_withdrawal || "300");
   const isValidAmount = Number(amount) >= minWithdrawalInr && Number(amount) <= availableBalance;
@@ -211,9 +215,18 @@ const UsdtWithdrawalPage = () => {
                       <span className="text-gray-400 text-sm">Exchange Rate</span>
                       <span className="text-sm text-gray-300">1 USDT = ₹{usdtPrice}</span>
                     </div>
-                    <div className="flex justify-between items-center">
+                    <div className="flex justify-between items-center mb-2">
                       <span className="text-gray-400 text-sm">Minimum Withdrawal</span>
                       <span className="text-sm text-gray-300">₹{minWithdrawalInr}</span>
+                    </div>
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="text-gray-400 text-sm">Withdrawal Fee</span>
+                      <span className="text-sm text-red-400">₹{withdrawalFee}</span>
+                    </div>
+                    <div className="h-px bg-gray-700 my-2"></div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-400 text-sm">You Will Receive</span>
+                      <span className="text-sm text-green-400">{netAmountUsdt} USDT</span>
                     </div>
                   </div>
                   
@@ -301,6 +314,16 @@ const UsdtWithdrawalPage = () => {
                     </div>
                     
                     <div className="flex justify-between items-center py-2 border-b border-[#353950]">
+                      <span className="text-gray-400">Withdrawal Fee</span>
+                      <span className="text-red-400 font-medium">₹{withdrawalFee}</span>
+                    </div>
+                    
+                    <div className="flex justify-between items-center py-2 border-b border-[#353950]">
+                      <span className="text-gray-400">You Will Receive</span>
+                      <span className="text-green-400 font-medium">{netAmountUsdt} USDT</span>
+                    </div>
+                    
+                    <div className="flex justify-between items-center py-2 border-b border-[#353950]">
                       <span className="text-gray-400">Network</span>
                       <span className="text-white font-medium bg-blue-900/20 text-blue-300 rounded-full px-3 py-0.5 text-xs">TRC20</span>
                     </div>
@@ -372,7 +395,7 @@ const UsdtWithdrawalPage = () => {
             </motion.div>
             <h2 className="text-xl font-semibold text-white">Withdrawal Submitted!</h2>
             <p className="text-gray-400 text-center">
-              Your USDT withdrawal request for {usdtAmount} USDT (₹{amount}) has been successfully submitted. It will be processed within 24 hours.
+              Your USDT withdrawal request for {usdtAmount} USDT (₹{amount}) has been successfully submitted. After deducting the fee of ₹{withdrawalFee}, you will receive {netAmountUsdt} USDT. It will be processed within 24 hours.
             </p>
             <Button 
               className="w-full bg-blue-600 hover:bg-blue-700" 

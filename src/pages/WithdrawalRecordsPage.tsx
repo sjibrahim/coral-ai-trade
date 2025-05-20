@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { ArrowDownCircle, Wallet } from "lucide-react";
+import { ArrowDownCircle, Wallet, ArrowDown, Receipt } from "lucide-react";
 import { Link } from "react-router-dom";
 import { getTransactions, getGeneralSettings } from "@/services/api";
 import { toast } from "@/hooks/use-toast";
@@ -18,6 +18,8 @@ interface WithdrawalRecord {
   created_at?: string;
   type?: string;
   method?: string;
+  charges?: string | number;
+  net_amount?: string | number;
 }
 
 const WithdrawalRecordsPage = () => {
@@ -52,7 +54,9 @@ const WithdrawalRecordsPage = () => {
               transaction_id: tx.txnid || "",
               created_at: tx.created_at || "",
               type: tx.method || "BANK",
-              method: tx.method || "BANK"
+              method: tx.method || "BANK",
+              charges: tx.charges || "10",
+              net_amount: tx.net_amount || tx.amount
             }));
           
           setRecords(withdrawals);
@@ -73,9 +77,33 @@ const WithdrawalRecordsPage = () => {
         
         // Use sample data as fallback
         setRecords([
-          { id: 'WD78901', amount: 800, date: '2023-05-03', status: 'completed', account: '******6413' },
-          { id: 'WD78902', amount: 1200, date: '2023-04-29', status: 'processing', account: '******6413' },
-          { id: 'WD78903', amount: 500, date: '2023-04-25', status: 'completed', account: '******6413' },
+          { 
+            id: 'WD78901', 
+            amount: 800, 
+            date: '2023-05-03', 
+            status: 'completed', 
+            account: '******6413',
+            charges: 10,
+            net_amount: 790
+          },
+          { 
+            id: 'WD78902', 
+            amount: 1200, 
+            date: '2023-04-29', 
+            status: 'processing', 
+            account: '******6413',
+            charges: 10,
+            net_amount: 1190
+          },
+          { 
+            id: 'WD78903', 
+            amount: 500, 
+            date: '2023-04-25', 
+            status: 'completed', 
+            account: '******6413',
+            charges: 10,
+            net_amount: 490
+          },
         ]);
       } finally {
         setIsLoading(false);
@@ -181,7 +209,7 @@ const WithdrawalRecordsPage = () => {
                 </p>
               </div>
               
-              <div className="mb-4">
+              <div className="mb-3">
                 {isUsdtWithdrawal(record) ? (
                   <div className="flex flex-col">
                     <p className="text-2xl font-semibold flex items-center">
@@ -193,6 +221,19 @@ const WithdrawalRecordsPage = () => {
                 ) : (
                   <p className="text-2xl font-semibold">₹{record.amount}</p>
                 )}
+              </div>
+              
+              {/* Fee and Net Amount section */}
+              <div className="bg-[#1a1c25] rounded-lg p-3 mb-3 text-sm">
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-400">Fee</span>
+                  <span className="text-red-400">₹{record.charges}</span>
+                </div>
+                <div className="my-1 border-b border-gray-700"></div>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-400">Net Amount</span>
+                  <span className="text-green-400">₹{record.net_amount}</span>
+                </div>
               </div>
               
               <div className="flex justify-between text-muted-foreground">
