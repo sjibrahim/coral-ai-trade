@@ -1,3 +1,4 @@
+
 // API endpoints for our application
 const API_BASE = '/backend/restapi';
 const BINANCE_API = 'https://api.binance.com/api/v3';
@@ -111,7 +112,8 @@ export const updateBankDetails = async (token: string, bankDetails: {
   account_holder_name: string;
   account_number: string;
   account_ifsc: string;
-  usdt_address?: string; // Added USDT address as an optional field
+  bank_name: string; // Added bank_name field
+  usdt_address?: string;
 }) => {
   return apiRequest(endpoints.updateBank, 'POST', { token, ...bankDetails });
 };

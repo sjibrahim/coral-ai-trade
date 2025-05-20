@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MobileLayout from "@/components/layout/MobileLayout";
@@ -64,6 +63,20 @@ const ProfilePage = () => {
   const handleLogout = () => {
     logout();
     navigate('/login');
+  };
+  
+  const handleDownloadApp = () => {
+    // You would replace this URL with the actual APK download URL
+    const apkDownloadUrl = 'https://example.com/downloads/nexbit-app.apk';
+    
+    // Open the download link in a new tab
+    window.open(apkDownloadUrl, '_blank');
+    
+    toast({
+      title: "Downloading App",
+      description: "Your download should begin shortly. If not, please click the link again.",
+      duration: 5000
+    });
   };
   
   // Get today's income from API response
@@ -199,6 +212,17 @@ const ProfilePage = () => {
           </button>
         </div>
         
+        {/* App Download Button */}
+        <div className="px-4 mt-2">
+          <button 
+            onClick={handleDownloadApp}
+            className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white p-3 rounded-lg font-medium shadow-lg shadow-green-500/20"
+          >
+            <Download size={18} />
+            Download App
+          </button>
+        </div>
+        
         {/* Revenue Stats with Eye Icon - Updated with today_income and total_income */}
         <div className="mx-4 mt-4 rounded-xl overflow-hidden bg-gradient-to-b from-blue-50/10 to-blue-100/20 border border-blue-200/30">
           {isLoading ? (
@@ -326,6 +350,13 @@ const ProfilePage = () => {
             icon={<FileText className="h-5 w-5 text-blue-400" />}
             label="Support & Help"
             to="/support"
+          />
+          
+          <ProfileOption
+            icon={<Download className="h-5 w-5 text-green-400" />}
+            label="Download App"
+            to="#"
+            className="bg-gradient-to-r from-green-500/10 to-emerald-500/10 border-green-500/20"
           />
           
           <div

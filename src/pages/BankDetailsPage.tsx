@@ -6,6 +6,9 @@ import { updateBankDetails } from "@/services/api";
 import { useAuth } from "@/contexts/AuthContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 // Interface for IFSC verification response
 interface IFSCResponse {
@@ -25,7 +28,8 @@ const BankDetailsPage = () => {
     account_holder_name: '',
     account_number: '',
     account_ifsc: '',
-    usdt_address: ''
+    usdt_address: '',
+    bank_name: '' // Added bank_name field
   });
   
   const [isLoading, setIsLoading] = useState(true);
@@ -38,6 +42,7 @@ const BankDetailsPage = () => {
   const [ifscVerifying, setIfscVerifying] = useState(false);
   const [ifscDetails, setIfscDetails] = useState<IFSCResponse | null>(null);
   const [ifscError, setIfscError] = useState<string | null>(null);
+  const [isIfscVerified, setIsIfscVerified] = useState(false);
   
   // Load user bank details when component mounts
   useEffect(() => {
@@ -46,15 +51,22 @@ const BankDetailsPage = () => {
         account_holder_name: user.account_holder_name || '',
         account_number: user.account_number || '',
         account_ifsc: user.account_ifsc || '',
-        usdt_address: user.usdt_address || ''
+        usdt_address: user.usdt_address || '',
+        bank_name: (user as any).bank_name || '' // Access with type assertion
       });
       
       setFormData({
         account_holder_name: user.account_holder_name || '',
         account_number: user.account_number || '',
         account_ifsc: user.account_ifsc || '',
-        usdt_address: user.usdt_address || ''
+        usdt_address: user.usdt_address || '',
+        bank_name: (user as any).bank_name || '' // Access with type assertion
       });
+      
+      // Set IFSC as verified if it exists
+      if (user.account_ifsc) {
+        setIsIfscVerified(true);
+      }
       
       setIsLoading(false);
     }
@@ -68,6 +80,7 @@ const BankDetailsPage = () => {
     if (name === 'account_ifsc') {
       setIfscDetails(null);
       setIfscError(null);
+      setIsIfscVerified(false);
     }
   };
   
@@ -88,6 +101,7 @@ const BankDetailsPage = () => {
     setIfscVerifying(true);
     setIfscDetails(null);
     setIfscError(null);
+    setIsIfscVerified(false);
     
     try {
       const response = await fetch(`https://ifsc.razorpay.com/${ifscCode}`);
@@ -95,19 +109,49 @@ const BankDetailsPage = () => {
       if (!response.ok) {
         if (response.status === 404) {
           setIfscError("Invalid IFSC code. Please verify and try again.");
+          toast({
+            title: "Invalid IFSC Code",
+            description: "The IFSC code you entered is invalid. Please check and try again.",
+            variant: "destructive",
+            duration: 3000,
+          });
         } else {
           setIfscError("Error verifying IFSC code. Please try again later.");
+          toast({
+            title: "Verification Failed",
+            description: "Unable to verify IFSC code. Please try again later.",
+            variant: "destructive",
+            duration: 3000,
+          });
         }
         setIfscDetails(null);
       } else {
         const data: IFSCResponse = await response.json();
         setIfscDetails(data);
         setIfscError(null);
+        setIsIfscVerified(true);
+        
+        // Set bank name from API response
+        if (data.BANK) {
+          setFormData(prev => ({ ...prev, bank_name: data.BANK }));
+        }
+        
+        toast({
+          title: "IFSC Code Verified",
+          description: `Successfully verified IFSC code for ${data.BANK}`,
+          duration: 3000,
+        });
       }
     } catch (error) {
       console.error("Error verifying IFSC:", error);
       setIfscError("Error connecting to verification service. Please try again later.");
       setIfscDetails(null);
+      toast({
+        title: "Verification Error",
+        description: "Error connecting to the verification service. Please try again.",
+        variant: "destructive",
+        duration: 3000,
+      });
     } finally {
       setIfscVerifying(false);
     }
@@ -115,7 +159,13 @@ const BankDetailsPage = () => {
   
   const validateBankForm = () => {
     if (activeTab === "bank") {
-      return formData.account_holder_name && formData.account_number && formData.account_ifsc;
+      return (
+        formData.account_holder_name && 
+        formData.account_number && 
+        formData.account_ifsc && 
+        formData.bank_name && 
+        isIfscVerified
+      );
     } else {
       return true; // USDT address is optional
     }
@@ -127,8 +177,10 @@ const BankDetailsPage = () => {
     // Validate form data based on active tab
     if (!validateBankForm()) {
       toast({
-        title: "All fields are required",
-        description: "Please fill all bank details",
+        title: "Validation Failed",
+        description: activeTab === "bank" 
+          ? "Please fill all bank details and verify your IFSC code" 
+          : "Please check your details",
         variant: "destructive",
         duration: 3000,
       });
@@ -212,24 +264,26 @@ const BankDetailsPage = () => {
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="bg-card rounded-xl p-5 space-y-4">
                   <div>
-                    <label className="block text-muted-foreground mb-2">Account Number</label>
-                    <input
-                      type="text"
+                    <Label htmlFor="account_number">Account Number</Label>
+                    <Input
+                      id="account_number"
                       name="account_number"
                       value={formData.account_number}
                       onChange={handleChange}
-                      className="w-full bg-muted p-3 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                      className="mt-1"
                       required
                     />
                   </div>
                   
                   <div>
                     <div className="flex items-center justify-between mb-2">
-                      <label className="block text-muted-foreground">IFSC Code</label>
-                      <button 
+                      <Label htmlFor="account_ifsc">IFSC Code</Label>
+                      <Button 
                         type="button"
                         onClick={verifyIFSC}
-                        className="text-xs px-2 py-1 bg-primary/20 text-primary rounded"
+                        variant="outline"
+                        size="sm"
+                        className="text-xs px-2 py-1 bg-primary/20 text-primary"
                         disabled={ifscVerifying || !formData.account_ifsc}
                       >
                         {ifscVerifying ? (
@@ -237,15 +291,15 @@ const BankDetailsPage = () => {
                             <Loader2 size={12} className="animate-spin mr-1" />
                             Verifying...
                           </span>
-                        ) : "Verify IFSC"}
-                      </button>
+                        ) : isIfscVerified ? "Verified ✓" : "Verify IFSC"}
+                      </Button>
                     </div>
-                    <input
-                      type="text"
+                    <Input
+                      id="account_ifsc"
                       name="account_ifsc"
                       value={formData.account_ifsc}
                       onChange={handleChange}
-                      className="w-full bg-muted p-3 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                      className="mt-1"
                       required
                     />
                     
@@ -266,31 +320,46 @@ const BankDetailsPage = () => {
                   </div>
                   
                   <div>
-                    <label className="block text-muted-foreground mb-2">Account Holder Name</label>
-                    <input
-                      type="text"
+                    <Label htmlFor="bank_name">Bank Name</Label>
+                    <Input
+                      id="bank_name"
+                      name="bank_name"
+                      value={formData.bank_name}
+                      onChange={handleChange}
+                      className="mt-1 bg-gray-50"
+                      required
+                      readOnly
+                      placeholder="Will be fetched automatically on IFSC verification"
+                    />
+                  </div>
+                  
+                  <div>
+                    <Label htmlFor="account_holder_name">Account Holder Name</Label>
+                    <Input
+                      id="account_holder_name"
                       name="account_holder_name"
                       value={formData.account_holder_name}
                       onChange={handleChange}
-                      className="w-full bg-muted p-3 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                      className="mt-1"
                       required
                     />
                   </div>
                 </div>
                 
                 <div className="grid grid-cols-2 gap-4">
-                  <button
+                  <Button
                     type="button"
                     onClick={() => setIsEditing(false)}
-                    className="py-3 rounded-xl bg-card border border-muted text-lg"
+                    variant="outline"
+                    className="w-full"
                     disabled={isSubmitting}
                   >
                     Cancel
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     type="submit"
-                    className="py-3 rounded-xl bg-primary text-white text-lg"
-                    disabled={isSubmitting}
+                    className="w-full"
+                    disabled={isSubmitting || !validateBankForm()}
                   >
                     {isSubmitting ? (
                       <span className="flex items-center justify-center">
@@ -300,7 +369,7 @@ const BankDetailsPage = () => {
                     ) : (
                       "Save"
                     )}
-                  </button>
+                  </Button>
                 </div>
               </form>
             ) : (
@@ -309,6 +378,11 @@ const BankDetailsPage = () => {
                   <div>
                     <p className="text-muted-foreground mb-1">Account Number</p>
                     <p className="text-xl">{accountDetails.account_number || 'Not set'}</p>
+                  </div>
+                  
+                  <div>
+                    <p className="text-muted-foreground mb-1">Bank Name</p>
+                    <p className="text-xl">{accountDetails.bank_name || 'Not set'}</p>
                   </div>
                   
                   <div>
@@ -322,12 +396,12 @@ const BankDetailsPage = () => {
                   </div>
                 </div>
                 
-                <button
+                <Button
                   onClick={() => setIsEditing(true)}
-                  className="w-full py-3 rounded-xl bg-primary text-white text-lg"
+                  className="w-full py-3 h-12 text-lg"
                 >
                   Edit Bank Details
-                </button>
+                </Button>
               </div>
             )}
           </TabsContent>
@@ -347,13 +421,13 @@ const BankDetailsPage = () => {
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="bg-card rounded-xl p-5 space-y-4">
                   <div>
-                    <label className="block text-muted-foreground mb-2">USDT Address (TRC20)</label>
-                    <input
-                      type="text"
+                    <Label htmlFor="usdt_address">USDT Address (TRC20)</Label>
+                    <Input
+                      id="usdt_address"
                       name="usdt_address"
                       value={formData.usdt_address}
                       onChange={handleChange}
-                      className="w-full bg-muted p-3 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                      className="mt-1"
                       placeholder="Enter your TRC20 USDT address"
                     />
                   </div>
@@ -364,17 +438,18 @@ const BankDetailsPage = () => {
                 </div>
                 
                 <div className="grid grid-cols-2 gap-4">
-                  <button
+                  <Button
                     type="button"
                     onClick={() => setIsEditing(false)}
-                    className="py-3 rounded-xl bg-card border border-muted text-lg"
+                    variant="outline"
+                    className="w-full"
                     disabled={isSubmitting}
                   >
                     Cancel
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     type="submit"
-                    className="py-3 rounded-xl bg-primary text-white text-lg"
+                    className="w-full"
                     disabled={isSubmitting}
                   >
                     {isSubmitting ? (
@@ -385,7 +460,7 @@ const BankDetailsPage = () => {
                     ) : (
                       "Save"
                     )}
-                  </button>
+                  </Button>
                 </div>
               </form>
             ) : (
@@ -403,12 +478,12 @@ const BankDetailsPage = () => {
                   )}
                 </div>
                 
-                <button
+                <Button
                   onClick={() => setIsEditing(true)}
-                  className="w-full py-3 rounded-xl bg-primary text-white text-lg"
+                  className="w-full py-3 h-12 text-lg"
                 >
                   {accountDetails.usdt_address ? 'Edit USDT Address' : 'Add USDT Address'}
-                </button>
+                </Button>
               </div>
             )}
           </TabsContent>
