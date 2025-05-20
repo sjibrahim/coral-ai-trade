@@ -3,10 +3,12 @@ import { useState, useEffect } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { ArrowDownCircle, Wallet, ArrowDown, Receipt } from "lucide-react";
+import { ArrowDownCircle, IndianRupee, Wallet, Clock, Check, X, Receipt } from "lucide-react";
 import { Link } from "react-router-dom";
 import { getTransactions, getGeneralSettings } from "@/services/api";
-import { toast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks/use-toast";
+import { Card, CardContent } from "@/components/ui/card";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface WithdrawalRecord {
   id: string;
@@ -25,7 +27,10 @@ interface WithdrawalRecord {
 const WithdrawalRecordsPage = () => {
   const [records, setRecords] = useState<WithdrawalRecord[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [usdtPrice, setUsdtPrice] = useState(83); // Default USDT price
+  const [usdtPrice, setUsdtPrice] = useState(83); 
+  const [withdrawalFeePercentage, setWithdrawalFeePercentage] = useState(2);
+  const { toast } = useToast();
+  const { user } = useAuth();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -37,6 +42,7 @@ const WithdrawalRecordsPage = () => {
         const settingsResponse = await getGeneralSettings(token);
         if (settingsResponse.status && settingsResponse.data) {
           setUsdtPrice(parseFloat(settingsResponse.data.usdt_price) || 83);
+          setWithdrawalFeePercentage(parseFloat(settingsResponse.data.withdrawal_fee) || 2);
         }
 
         const response = await getTransactions(token);
@@ -74,44 +80,13 @@ const WithdrawalRecordsPage = () => {
           description: "Failed to fetch withdrawal records. Please try again.",
           variant: "destructive",
         });
-        
-        // Use sample data as fallback
-        setRecords([
-          { 
-            id: 'WD78901', 
-            amount: 800, 
-            date: '2023-05-03', 
-            status: 'completed', 
-            account: '******6413',
-            charges: 10,
-            net_amount: 790
-          },
-          { 
-            id: 'WD78902', 
-            amount: 1200, 
-            date: '2023-04-29', 
-            status: 'processing', 
-            account: '******6413',
-            charges: 10,
-            net_amount: 1190
-          },
-          { 
-            id: 'WD78903', 
-            amount: 500, 
-            date: '2023-04-25', 
-            status: 'completed', 
-            account: '******6413',
-            charges: 10,
-            net_amount: 490
-          },
-        ]);
       } finally {
         setIsLoading(false);
       }
     };
     
     fetchData();
-  }, []);
+  }, [toast]);
   
   // Convert INR to USD based on USDT price
   const convertToUSD = (amountInr: number) => {
@@ -122,22 +97,43 @@ const WithdrawalRecordsPage = () => {
     switch(status.toLowerCase()) {
       case 'completed':
       case 'success':
-        return "text-market-increase";
+        return "bg-emerald-500/10 text-emerald-500 border-emerald-500/20";
       case 'processing':
       case 'pending':
-        return "text-amber-500";
+        return "bg-amber-500/10 text-amber-500 border-amber-500/20";
       case 'rejected':
       case 'failed':
-        return "text-market-decrease";
+        return "bg-red-500/10 text-red-500 border-red-500/20";
       default:
-        return "text-muted-foreground";
+        return "bg-gray-500/10 text-gray-400 border-gray-500/20";
+    }
+  };
+  
+  const getStatusIcon = (status: string) => {
+    switch(status.toLowerCase()) {
+      case 'completed':
+      case 'success':
+        return <Check className="h-3 w-3" />;
+      case 'processing':
+      case 'pending':
+        return <Clock className="h-3 w-3" />;
+      case 'rejected':
+      case 'failed':
+        return <X className="h-3 w-3" />;
+      default:
+        return <Clock className="h-3 w-3" />;
     }
   };
   
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     if (isNaN(date.getTime())) return dateString;
-    return date.toISOString().split('T')[0];
+    return date.toLocaleDateString() + " " + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+  };
+
+  const maskValue = (value: string | undefined, visibleCount: number = 5) => {
+    if (!value) return "";
+    return "***********" + value.slice(-visibleCount);
   };
 
   const isUsdtWithdrawal = (record: WithdrawalRecord) => {
@@ -148,15 +144,15 @@ const WithdrawalRecordsPage = () => {
     <MobileLayout showBackButton title="Withdrawal Records">
       <div className="p-4 space-y-4 pb-20 animate-fade-in">
         {/* Create new withdrawal button */}
-        <div className="mb-4 grid grid-cols-2 gap-2">
+        <div className="mb-6 grid grid-cols-2 gap-3">
           <Link to="/withdraw">
-            <Button className="w-full flex items-center gap-2" variant="secondary">
+            <Button className="w-full flex items-center gap-2 bg-gradient-to-r from-blue-600 to-blue-500">
               <ArrowDownCircle className="h-4 w-4" />
               INR Withdrawal
             </Button>
           </Link>
           <Link to="/usdt-withdraw">
-            <Button className="w-full flex items-center gap-2">
+            <Button className="w-full flex items-center gap-2 bg-gradient-to-r from-amber-600 to-amber-500">
               <Wallet className="h-4 w-4" />
               USDT Withdrawal
             </Button>
@@ -165,95 +161,170 @@ const WithdrawalRecordsPage = () => {
         
         {isLoading ? (
           // Loading skeletons
-          Array(4).fill(0).map((_, idx) => (
-            <div key={`skeleton-${idx}`} className="bg-card rounded-xl p-5 border border-border/40 animate-pulse">
-              <div className="flex justify-between mb-2">
-                <div className="h-5 w-24 bg-secondary/40 rounded"></div>
-                <div className="h-5 w-20 bg-secondary/40 rounded"></div>
-              </div>
-              <div className="mb-4">
-                <div className="h-7 w-32 bg-secondary/40 rounded"></div>
-              </div>
-              <div className="flex justify-between">
-                <div>
-                  <div className="h-4 w-16 bg-secondary/40 rounded mb-1"></div>
-                  <div className="h-4 w-24 bg-secondary/40 rounded"></div>
+          Array(3).fill(0).map((_, idx) => (
+            <Card key={`skeleton-${idx}`} className="mb-4 bg-[#1c1e29] border-[#2a2d3a] overflow-hidden animate-pulse">
+              <CardContent className="p-0">
+                <div className="p-4 border-b border-[#2a2d3a] flex justify-between">
+                  <div className="h-5 w-24 bg-[#252836] rounded"></div>
+                  <div className="h-5 w-20 bg-[#252836] rounded"></div>
                 </div>
-                <div className="text-right">
-                  <div className="h-4 w-12 bg-secondary/40 rounded mb-1"></div>
-                  <div className="h-4 w-20 bg-secondary/40 rounded"></div>
+                <div className="p-4">
+                  <div className="h-8 w-32 bg-[#252836] rounded mb-4"></div>
+                  <div className="bg-[#14161f] p-4 mb-4 rounded-lg">
+                    <div className="h-4 w-28 bg-[#252836] rounded mb-3"></div>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="bg-[#252836] h-16 rounded-md"></div>
+                      <div className="bg-[#252836] h-16 rounded-md"></div>
+                    </div>
+                  </div>
+                  <div className="flex justify-between">
+                    <div>
+                      <div className="h-3 w-20 bg-[#252836] rounded mb-1"></div>
+                      <div className="h-3 w-24 bg-[#252836] rounded"></div>
+                    </div>
+                    <div>
+                      <div className="h-3 w-10 bg-[#252836] rounded mb-1"></div>
+                      <div className="h-3 w-20 bg-[#252836] rounded"></div>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
+              </CardContent>
+            </Card>
           ))
         ) : records.length > 0 ? (
-          records.map((record) => (
-            <div 
-              key={record.id}
-              className="bg-card rounded-xl p-5 border border-border/40"
-            >
-              <div className="flex justify-between mb-2">
-                <div className="flex items-center">
-                  <p className="text-lg font-medium">{record.id}</p>
-                  {isUsdtWithdrawal(record) && 
-                    <span className="ml-2 px-2 py-0.5 bg-amber-900/30 rounded-full text-xs text-amber-400">
-                      USDT
-                    </span>
-                  }
-                </div>
-                <p className={cn(
-                  "font-medium",
-                  getStatusStyles(record.status)
-                )}>
-                  {record.status.toUpperCase()}
-                </p>
-              </div>
-              
-              <div className="mb-3">
-                {isUsdtWithdrawal(record) ? (
-                  <div className="flex flex-col">
-                    <p className="text-2xl font-semibold flex items-center">
-                      <Wallet className="h-4 w-4 mr-1 text-amber-400" />
-                      ${convertToUSD(record.amount)}
-                    </p>
-                    <p className="text-xs text-muted-foreground">₹{record.amount} (INR)</p>
+          records.map((record) => {
+            const isUsdt = isUsdtWithdrawal(record);
+            const charges = parseFloat(record.charges as string);
+            const amount = parseFloat(record.amount as string);
+            const netAmount = parseFloat(record.net_amount as string);
+            
+            return (
+              <Card 
+                key={record.id}
+                className="mb-4 bg-gradient-to-br from-[#1c1e29] to-[#151722] border-[#2a2d3a] overflow-hidden"
+              >
+                <CardContent className="p-0">
+                  {/* Header with ID and Status */}
+                  <div className="flex items-center justify-between p-4 border-b border-[#2a2d3a]">
+                    <div className="flex items-center space-x-2">
+                      <Receipt className="h-4 w-4 text-blue-400" />
+                      <span className="text-sm font-medium text-gray-200">{record.id}</span>
+                      {isUsdt && 
+                        <span className="px-1.5 py-0.5 bg-amber-900/30 rounded-full text-xs text-amber-400">
+                          USDT
+                        </span>
+                      }
+                    </div>
+                    <div className={cn(
+                      "px-2 py-0.5 rounded-full text-xs font-medium flex items-center space-x-1",
+                      getStatusStyles(record.status)
+                    )}>
+                      {getStatusIcon(record.status)}
+                      <span>{record.status.toUpperCase()}</span>
+                    </div>
                   </div>
-                ) : (
-                  <p className="text-2xl font-semibold">₹{record.amount}</p>
-                )}
-              </div>
-              
-              {/* Fee and Net Amount section */}
-              <div className="bg-[#1a1c25] rounded-lg p-3 mb-3 text-sm">
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-400">Fee</span>
-                  <span className="text-red-400">₹{record.charges}</span>
-                </div>
-                <div className="my-1 border-b border-gray-700"></div>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-400">Net Amount</span>
-                  <span className="text-green-400">₹{record.net_amount}</span>
-                </div>
-              </div>
-              
-              <div className="flex justify-between text-muted-foreground">
-                <div>
-                  <p>Payment Method</p>
-                  <p>{isUsdtWithdrawal(record) ? "USDT Wallet" : "Bank Account"}</p>
-                </div>
-                <div className="text-right">
-                  <p>Date</p>
-                  <p>{formatDate(record.date)}</p>
-                </div>
-              </div>
-            </div>
-          ))
+                  
+                  {/* Main Content */}
+                  <div className="p-4">
+                    {/* Amount Section */}
+                    <div className="mb-4">
+                      {isUsdt ? (
+                        <>
+                          <div className="flex items-center mb-1">
+                            <Wallet className="h-5 w-5 mr-2 text-amber-400" />
+                            <span className="text-2xl font-bold text-white">${convertToUSD(amount)}</span>
+                          </div>
+                          <span className="text-xs text-gray-400">₹{amount.toLocaleString()} (INR)</span>
+                        </>
+                      ) : (
+                        <div className="flex items-center">
+                          <IndianRupee className="h-5 w-5 mr-2 text-blue-400" />
+                          <span className="text-2xl font-bold text-white">{amount.toLocaleString()}</span>
+                        </div>
+                      )}
+                    </div>
+                    
+                    {/* Transaction Details Card */}
+                    <div className="rounded-lg bg-[#14161f] p-4 mb-4">
+                      <h4 className="text-sm font-medium text-gray-300 mb-3">Transaction Details</h4>
+                      
+                      {/* Fee and Net Amount */}
+                      <div className="grid grid-cols-2 gap-3">
+                        <div className="rounded-md bg-[#1c1e29] p-3">
+                          <p className="text-xs text-gray-500 mb-1">Fee ({withdrawalFeePercentage}%)</p>
+                          {isUsdt ? (
+                            <div>
+                              <p className="text-sm font-medium text-red-400">
+                                ${(charges / usdtPrice).toFixed(2)}
+                              </p>
+                              <p className="text-xs text-gray-500 mt-1">
+                                ₹{charges.toLocaleString()}
+                              </p>
+                            </div>
+                          ) : (
+                            <p className="text-sm font-medium text-red-400">
+                              ₹{charges.toLocaleString()}
+                            </p>
+                          )}
+                        </div>
+                        <div className="rounded-md bg-[#1c1e29] p-3">
+                          <p className="text-xs text-gray-500 mb-1">Net Amount</p>
+                          {isUsdt ? (
+                            <div>
+                              <p className="text-sm font-medium text-green-400">
+                                ${(netAmount / usdtPrice).toFixed(2)}
+                              </p>
+                              <p className="text-xs text-gray-500 mt-1">
+                                ₹{netAmount.toLocaleString()}
+                              </p>
+                            </div>
+                          ) : (
+                            <p className="text-sm font-medium text-green-400">
+                              ₹{netAmount.toLocaleString()}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Footer Details */}
+                    <div className="flex justify-between text-xs text-gray-400">
+                      <div>
+                        <p className="mb-1">
+                          {isUsdt ? "Wallet Address" : "Bank Account"}
+                        </p>
+                        <p>
+                          {isUsdt 
+                            ? maskValue(user?.usdt_address)
+                            : maskValue(user?.account_number)
+                          }
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <p className="mb-1">Date</p>
+                        <p>{formatDate(record.date)}</p>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          })
         ) : (
-          <div className="bg-card rounded-xl p-8 border border-border/40 text-center">
-            <p className="text-muted-foreground mb-4">No withdrawal records found</p>
-            <Link to="/withdraw">
-              <Button>Create Your First Withdrawal</Button>
-            </Link>
+          <div className="bg-[#1c1e29] rounded-xl p-8 border border-[#2a2d3a] text-center mt-8">
+            <div className="bg-blue-500/10 rounded-full p-3 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+              <Receipt className="h-8 w-8 text-blue-400" />
+            </div>
+            <h3 className="text-lg font-medium text-white mb-2">No Withdrawals Yet</h3>
+            <p className="text-gray-400 mb-4">Make your first withdrawal to see records here</p>
+            <div className="grid grid-cols-2 gap-3">
+              <Link to="/withdraw">
+                <Button variant="outline" className="w-full">INR Withdrawal</Button>
+              </Link>
+              <Link to="/usdt-withdraw">
+                <Button className="w-full bg-gradient-to-r from-blue-600 to-blue-500">USDT Withdrawal</Button>
+              </Link>
+            </div>
           </div>
         )}
       </div>
