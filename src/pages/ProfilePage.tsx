@@ -66,17 +66,8 @@ const ProfilePage = () => {
   };
   
   const handleDownloadApp = () => {
-    // You would replace this URL with the actual APK download URL
-    const apkDownloadUrl = 'https://example.com/downloads/nexbit-app.apk';
-    
-    // Open the download link in a new tab
-    window.open(apkDownloadUrl, '_blank');
-    
-    toast({
-      title: "Downloading App",
-      description: "Your download should begin shortly. If not, please click the link again.",
-      duration: 5000
-    });
+    const apkDownloadUrl = '/downloads/nexbit-app.apk';
+    window.open(apkDownloadUrl, '_blank');    
   };
   
   // Get today's income from API response
