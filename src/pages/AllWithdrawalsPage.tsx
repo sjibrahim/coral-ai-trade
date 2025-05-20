@@ -154,9 +154,9 @@ const AllWithdrawalsPage = () => {
     
     return (
       <Card className="mb-4 bg-gradient-to-br from-[#1c1e29] to-[#151722] border-[#2a2d3a] overflow-hidden">
-        <CardContent className="p-0">
+        <CardContent className="p-4">
           {/* Header with ID and Status */}
-          <div className="flex items-center justify-between p-4 border-b border-[#2a2d3a]">
+          <div className="flex items-center justify-between mb-4">
             <div className="flex items-center space-x-2">
               <Receipt className="h-4 w-4 text-blue-400" />
               <span className="text-sm font-medium text-gray-200">{record.id}</span>
@@ -171,70 +171,45 @@ const AllWithdrawalsPage = () => {
           </div>
           
           {/* Main Content */}
-          <div className="p-4">
-            {/* Amount Section */}
-            <div className="mb-4">
-              {isUsdt ? (
-                <>
-                  <div className="flex items-center mb-1">
-                    <Wallet className="h-5 w-5 mr-2 text-amber-400" />
-                    <span className="text-2xl font-bold text-white">${convertToUSD(amount)}</span>
-                  </div>
-                  <span className="text-xs text-gray-400">₹{amount.toLocaleString()} (INR)</span>
-                </>
-              ) : (
+          <div className="space-y-3">
+            {/* Amount */}
+            {isUsdt ? (
+              <div>
                 <div className="flex items-center">
-                  <IndianRupee className="h-5 w-5 mr-2 text-blue-400" />
-                  <span className="text-2xl font-bold text-white">{amount.toLocaleString()}</span>
+                  <Wallet className="h-5 w-5 mr-2 text-amber-400" />
+                  <span className="text-2xl font-bold text-white">${convertToUSD(amount)}</span>
                 </div>
-              )}
-            </div>
+                <span className="text-xs text-gray-400 pl-7">₹{amount.toLocaleString()} (INR)</span>
+              </div>
+            ) : (
+              <div className="flex items-center">
+                <IndianRupee className="h-5 w-5 mr-2 text-blue-400" />
+                <span className="text-2xl font-bold text-white">{amount.toLocaleString()}</span>
+              </div>
+            )}
             
-            {/* Transaction Details Card */}
-            <div className="rounded-lg bg-[#14161f] p-4 mb-4">
-              <h4 className="text-sm font-medium text-gray-300 mb-3">Transaction Details</h4>
-              
-              {/* Fee and Net Amount */}
-              <div className="grid grid-cols-2 gap-3">
-                <div className="rounded-md bg-[#1c1e29] p-3">
-                  <p className="text-xs text-gray-500 mb-1">Fee ({withdrawalFeePercentage}%)</p>
-                  {isUsdt ? (
-                    <div>
-                      <p className="text-sm font-medium text-red-400">
-                        ${(charges / usdtPrice).toFixed(2)}
-                      </p>
-                      <p className="text-xs text-gray-500 mt-1">
-                        ₹{charges.toLocaleString()}
-                      </p>
-                    </div>
-                  ) : (
-                    <p className="text-sm font-medium text-red-400">
-                      ₹{charges.toLocaleString()}
-                    </p>
-                  )}
-                </div>
-                <div className="rounded-md bg-[#1c1e29] p-3">
-                  <p className="text-xs text-gray-500 mb-1">Net Amount</p>
-                  {isUsdt ? (
-                    <div>
-                      <p className="text-sm font-medium text-green-400">
-                        ${(netAmount / usdtPrice).toFixed(2)}
-                      </p>
-                      <p className="text-xs text-gray-500 mt-1">
-                        ₹{netAmount.toLocaleString()}
-                      </p>
-                    </div>
-                  ) : (
-                    <p className="text-sm font-medium text-green-400">
-                      ₹{netAmount.toLocaleString()}
-                    </p>
-                  )}
-                </div>
+            {/* Fee and Net Amount - now integrated directly */}
+            <div className="grid grid-cols-2 gap-2 text-sm">
+              <div>
+                <p className="text-gray-400">Fee ({withdrawalFeePercentage}%)</p>
+                {isUsdt ? (
+                  <p className="text-red-400">${(charges / usdtPrice).toFixed(2)}<span className="text-xs text-gray-500 ml-1">(₹{charges})</span></p>
+                ) : (
+                  <p className="text-red-400">₹{charges.toLocaleString()}</p>
+                )}
+              </div>
+              <div>
+                <p className="text-gray-400">Net Amount</p>
+                {isUsdt ? (
+                  <p className="text-emerald-400">${(netAmount / usdtPrice).toFixed(2)}<span className="text-xs text-gray-500 ml-1">(₹{netAmount})</span></p>
+                ) : (
+                  <p className="text-emerald-400">₹{netAmount.toLocaleString()}</p>
+                )}
               </div>
             </div>
             
             {/* Footer Details */}
-            <div className="flex justify-between text-xs text-gray-400">
+            <div className="flex justify-between text-xs text-gray-400 pt-2 border-t border-gray-700/50">
               <div>
                 <p className="mb-1">
                   {isUsdt ? "Wallet" : "Bank Account"}
@@ -298,29 +273,24 @@ const AllWithdrawalsPage = () => {
               // Loading skeletons
               Array(3).fill(0).map((_, idx) => (
                 <Card key={`skeleton-${idx}`} className="mb-4 bg-[#1c1e29] border-[#2a2d3a] overflow-hidden animate-pulse">
-                  <CardContent className="p-0">
-                    <div className="p-4 border-b border-[#2a2d3a] flex justify-between">
+                  <CardContent className="p-4">
+                    <div className="flex justify-between mb-4">
                       <div className="h-5 w-24 bg-[#252836] rounded"></div>
                       <div className="h-5 w-20 bg-[#252836] rounded"></div>
                     </div>
-                    <div className="p-4">
-                      <div className="h-8 w-32 bg-[#252836] rounded mb-4"></div>
-                      <div className="bg-[#14161f] p-4 mb-4 rounded-lg">
-                        <div className="h-4 w-28 bg-[#252836] rounded mb-3"></div>
-                        <div className="grid grid-cols-2 gap-3">
-                          <div className="bg-[#252836] h-16 rounded-md"></div>
-                          <div className="bg-[#252836] h-16 rounded-md"></div>
-                        </div>
+                    <div className="h-8 w-32 bg-[#252836] rounded mb-4"></div>
+                    <div className="grid grid-cols-2 gap-2 mb-4">
+                      <div className="bg-[#252836] h-12 rounded-md"></div>
+                      <div className="bg-[#252836] h-12 rounded-md"></div>
+                    </div>
+                    <div className="flex justify-between">
+                      <div>
+                        <div className="h-3 w-20 bg-[#252836] rounded mb-1"></div>
+                        <div className="h-3 w-24 bg-[#252836] rounded"></div>
                       </div>
-                      <div className="flex justify-between">
-                        <div>
-                          <div className="h-3 w-20 bg-[#252836] rounded mb-1"></div>
-                          <div className="h-3 w-24 bg-[#252836] rounded"></div>
-                        </div>
-                        <div>
-                          <div className="h-3 w-10 bg-[#252836] rounded mb-1"></div>
-                          <div className="h-3 w-20 bg-[#252836] rounded"></div>
-                        </div>
+                      <div>
+                        <div className="h-3 w-10 bg-[#252836] rounded mb-1"></div>
+                        <div className="h-3 w-20 bg-[#252836] rounded"></div>
                       </div>
                     </div>
                   </CardContent>
@@ -352,29 +322,24 @@ const AllWithdrawalsPage = () => {
               // Loading skeletons (same as INR)
               Array(3).fill(0).map((_, idx) => (
                 <Card key={`skeleton-${idx}`} className="mb-4 bg-[#1c1e29] border-[#2a2d3a] overflow-hidden animate-pulse">
-                  <CardContent className="p-0">
-                    <div className="p-4 border-b border-[#2a2d3a] flex justify-between">
+                  <CardContent className="p-4">
+                    <div className="flex justify-between mb-4">
                       <div className="h-5 w-24 bg-[#252836] rounded"></div>
                       <div className="h-5 w-20 bg-[#252836] rounded"></div>
                     </div>
-                    <div className="p-4">
-                      <div className="h-8 w-32 bg-[#252836] rounded mb-4"></div>
-                      <div className="bg-[#14161f] p-4 mb-4 rounded-lg">
-                        <div className="h-4 w-28 bg-[#252836] rounded mb-3"></div>
-                        <div className="grid grid-cols-2 gap-3">
-                          <div className="bg-[#252836] h-16 rounded-md"></div>
-                          <div className="bg-[#252836] h-16 rounded-md"></div>
-                        </div>
+                    <div className="h-8 w-32 bg-[#252836] rounded mb-4"></div>
+                    <div className="grid grid-cols-2 gap-2 mb-4">
+                      <div className="bg-[#252836] h-12 rounded-md"></div>
+                      <div className="bg-[#252836] h-12 rounded-md"></div>
+                    </div>
+                    <div className="flex justify-between">
+                      <div>
+                        <div className="h-3 w-20 bg-[#252836] rounded mb-1"></div>
+                        <div className="h-3 w-24 bg-[#252836] rounded"></div>
                       </div>
-                      <div className="flex justify-between">
-                        <div>
-                          <div className="h-3 w-20 bg-[#252836] rounded mb-1"></div>
-                          <div className="h-3 w-24 bg-[#252836] rounded"></div>
-                        </div>
-                        <div>
-                          <div className="h-3 w-10 bg-[#252836] rounded mb-1"></div>
-                          <div className="h-3 w-20 bg-[#252836] rounded"></div>
-                        </div>
+                      <div>
+                        <div className="h-3 w-10 bg-[#252836] rounded mb-1"></div>
+                        <div className="h-3 w-20 bg-[#252836] rounded"></div>
                       </div>
                     </div>
                   </CardContent>
