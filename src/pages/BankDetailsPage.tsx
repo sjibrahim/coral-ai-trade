@@ -52,7 +52,7 @@ const BankDetailsPage = () => {
         account_number: user.account_number || '',
         account_ifsc: user.account_ifsc || '',
         usdt_address: user.usdt_address || '',
-        bank_name: (user as any).bank_name || '' // Access with type assertion
+        bank_name: (user as any).bank_name || ''
       });
       
       setFormData({
@@ -60,7 +60,7 @@ const BankDetailsPage = () => {
         account_number: user.account_number || '',
         account_ifsc: user.account_ifsc || '',
         usdt_address: user.usdt_address || '',
-        bank_name: (user as any).bank_name || '' // Access with type assertion
+        bank_name: (user as any).bank_name || '' 
       });
       
       // Set IFSC as verified if it exists
@@ -305,18 +305,11 @@ const BankDetailsPage = () => {
                     
                     {/* IFSC Verification Results */}
                     {ifscError && (
-                      <div className="mt-2 p-2 bg-red-50 border border-red-100 rounded text-sm text-red-600">
+                      <div className="mt-2 p-2 border rounded text-sm text-red-600">
                         {ifscError}
                       </div>
                     )}
                     
-                    {ifscDetails && (
-                      <div className="mt-2 p-3 bg-green-50 border border-green-100 rounded text-sm">
-                        <h4 className="font-medium text-green-800 mb-1">{ifscDetails.BANK}</h4>
-                        <p className="text-green-700">{ifscDetails.BRANCH}</p>
-                        <p className="text-green-600 text-xs mt-1">{ifscDetails.ADDRESS}</p>
-                      </div>
-                    )}
                   </div>
                   
                   <div>
@@ -324,9 +317,9 @@ const BankDetailsPage = () => {
                     <Input
                       id="bank_name"
                       name="bank_name"
-                      value={formData.bank_name}
+                      value={formData.BANK}
                       onChange={handleChange}
-                      className="mt-1 bg-gray-50"
+                      className="mt-1"
                       required
                       readOnly
                       placeholder="Will be fetched automatically on IFSC verification"
