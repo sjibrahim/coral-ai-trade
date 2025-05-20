@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
 import { toast } from "@/components/ui/use-toast";
@@ -317,7 +316,7 @@ const BankDetailsPage = () => {
                     <Input
                       id="bank_name"
                       name="bank_name"
-                      value={formData.BANK}
+                      value={formData.bank_name}
                       onChange={handleChange}
                       className="mt-1"
                       required
