@@ -76,7 +76,7 @@ const WithdrawPage = () => {
   const bankAccount = user?.account_number || "Not set";
   const ifscCode = user?.account_ifsc || "Not set";
   // Using a simple fallback as bank_name is not in the User type
-  const bankName = "Your Bank";
+  const bankName = user?.bank_name || "Not set";
   const accountName = user?.account_holder_name || user?.name || "Account Holder";
 
   const minWithdrawal = parseInt(settings.min_withdrawal) || 300;
