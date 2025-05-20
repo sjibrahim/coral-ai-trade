@@ -202,18 +202,18 @@ const ProfilePage = () => {
             Details
           </button>
         </div>
-        
+
         {/* App Download Button */}
-        <div className="px-4 mt-2">
-          <button 
-            onClick={handleDownloadApp}
-            className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white p-3 rounded-lg font-medium shadow-lg shadow-green-500/20"
-          >
-            <Download size={18} />
-            Download App
-          </button>
-        </div>
-        
+        {/* <div className="px-4 mt-2"> */}
+          {/* <button  */}
+          {/* onClick={handleDownloadApp} */}
+            {/* className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white p-3 rounded-lg font-medium shadow-lg shadow-green-500/20" */}
+          {/* > */}
+            {/* <Download size={18} /> */}
+            {/* Download App */}
+          {/* </button> */}
+        {/* </div> */}
+
         {/* Revenue Stats with Eye Icon - Updated with today_income and total_income */}
         <div className="mx-4 mt-4 rounded-xl overflow-hidden bg-gradient-to-b from-blue-50/10 to-blue-100/20 border border-blue-200/30">
           {isLoading ? (
@@ -346,6 +346,7 @@ const ProfilePage = () => {
           <ProfileOption
             icon={<Download className="h-5 w-5 text-green-400" />}
             label="Download App"
+            onClick={handleDownloadApp}
             to="#"
             className="bg-gradient-to-r from-green-500/10 to-emerald-500/10 border-green-500/20"
           />
