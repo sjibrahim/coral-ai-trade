@@ -4,10 +4,11 @@ import { useNavigate } from 'react-router-dom';
 import MobileLayout from "@/components/layout/MobileLayout";
 import ProfileOption from "@/components/ProfileOption";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { toast } from "@/components/ui/use-toast";
 import { 
   ArrowUpCircle, ArrowDownCircle, FileText, LogOut, 
-  Wallet, Star, FileCheck, ListTree, CreditCard, Settings, Eye, EyeOff,
-  IndianRupee, BadgeIndianRupee
+  Wallet, Star, ListTree, CreditCard, Settings, Eye, EyeOff,
+  IndianRupee, BadgeIndianRupee, Download
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useAuth } from '@/contexts/AuthContext';

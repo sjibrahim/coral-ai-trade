@@ -5,6 +5,19 @@ import { toast } from "@/components/ui/use-toast";
 import { updateBankDetails } from "@/services/api";
 import { useAuth } from "@/contexts/AuthContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Loader2 } from "lucide-react";
+
+// Interface for IFSC verification response
+interface IFSCResponse {
+  BRANCH?: string;
+  CENTRE?: string;
+  DISTRICT?: string;
+  STATE?: string;
+  ADDRESS?: string;
+  BANK?: string;
+  IFSC?: string;
+  [key: string]: string | boolean | null | undefined;
+}
 
 const BankDetailsPage = () => {
   const { user, updateProfile } = useAuth();
@@ -20,6 +33,11 @@ const BankDetailsPage = () => {
   const [formData, setFormData] = useState(accountDetails);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [activeTab, setActiveTab] = useState("bank");
+  
+  // IFSC verification states
+  const [ifscVerifying, setIfscVerifying] = useState(false);
+  const [ifscDetails, setIfscDetails] = useState<IFSCResponse | null>(null);
+  const [ifscError, setIfscError] = useState<string | null>(null);
   
   // Load user bank details when component mounts
   useEffect(() => {
@@ -45,6 +63,54 @@ const BankDetailsPage = () => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+    
+    // Reset IFSC verification when IFSC is changed
+    if (name === 'account_ifsc') {
+      setIfscDetails(null);
+      setIfscError(null);
+    }
+  };
+  
+  // IFSC verification function
+  const verifyIFSC = async () => {
+    const ifscCode = formData.account_ifsc.trim();
+    
+    if (!ifscCode) {
+      toast({
+        title: "IFSC code required",
+        description: "Please enter an IFSC code to verify",
+        variant: "destructive",
+        duration: 3000,
+      });
+      return;
+    }
+    
+    setIfscVerifying(true);
+    setIfscDetails(null);
+    setIfscError(null);
+    
+    try {
+      const response = await fetch(`https://ifsc.razorpay.com/${ifscCode}`);
+      
+      if (!response.ok) {
+        if (response.status === 404) {
+          setIfscError("Invalid IFSC code. Please verify and try again.");
+        } else {
+          setIfscError("Error verifying IFSC code. Please try again later.");
+        }
+        setIfscDetails(null);
+      } else {
+        const data: IFSCResponse = await response.json();
+        setIfscDetails(data);
+        setIfscError(null);
+      }
+    } catch (error) {
+      console.error("Error verifying IFSC:", error);
+      setIfscError("Error connecting to verification service. Please try again later.");
+      setIfscDetails(null);
+    } finally {
+      setIfscVerifying(false);
+    }
   };
   
   const validateBankForm = () => {
@@ -158,7 +224,22 @@ const BankDetailsPage = () => {
                   </div>
                   
                   <div>
-                    <label className="block text-muted-foreground mb-2">IFSC Code</label>
+                    <div className="flex items-center justify-between mb-2">
+                      <label className="block text-muted-foreground">IFSC Code</label>
+                      <button 
+                        type="button"
+                        onClick={verifyIFSC}
+                        className="text-xs px-2 py-1 bg-primary/20 text-primary rounded"
+                        disabled={ifscVerifying || !formData.account_ifsc}
+                      >
+                        {ifscVerifying ? (
+                          <span className="flex items-center">
+                            <Loader2 size={12} className="animate-spin mr-1" />
+                            Verifying...
+                          </span>
+                        ) : "Verify IFSC"}
+                      </button>
+                    </div>
                     <input
                       type="text"
                       name="account_ifsc"
@@ -167,6 +248,21 @@ const BankDetailsPage = () => {
                       className="w-full bg-muted p-3 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-primary"
                       required
                     />
+                    
+                    {/* IFSC Verification Results */}
+                    {ifscError && (
+                      <div className="mt-2 p-2 bg-red-50 border border-red-100 rounded text-sm text-red-600">
+                        {ifscError}
+                      </div>
+                    )}
+                    
+                    {ifscDetails && (
+                      <div className="mt-2 p-3 bg-green-50 border border-green-100 rounded text-sm">
+                        <h4 className="font-medium text-green-800 mb-1">{ifscDetails.BANK}</h4>
+                        <p className="text-green-700">{ifscDetails.BRANCH}</p>
+                        <p className="text-green-600 text-xs mt-1">{ifscDetails.ADDRESS}</p>
+                      </div>
+                    )}
                   </div>
                   
                   <div>
