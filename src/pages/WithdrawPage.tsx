@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import MobileLayout from "@/components/layout/MobileLayout";
@@ -76,7 +75,8 @@ const WithdrawPage = () => {
   const availableBalance = user?.wallet ? parseFloat(user.income) : 0;
   const bankAccount = user?.account_number || "Not set";
   const ifscCode = user?.account_ifsc || "Not set";
-  const bankName = user?.bank_name || "Your Bank";
+  // Using a simple fallback as bank_name is not in the User type
+  const bankName = "Your Bank";
   const accountName = user?.account_holder_name || user?.name || "Account Holder";
 
   const minWithdrawal = parseInt(settings.min_withdrawal) || 300;

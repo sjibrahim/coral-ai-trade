@@ -146,9 +146,11 @@ const AllWithdrawalsPage = () => {
   const usdtRecords = records.filter(record => record.type === "usdt" || record.method === "USDT");
 
   const WithdrawalCard = ({ record, isUsdt = false }: { record: WithdrawalRecord, isUsdt?: boolean }) => {
-    const charges = parseFloat(record.charges as string);
-    const amount = parseFloat(record.amount as string);
-    const netAmount = parseFloat(record.net_amount as string);
+    // Fix the type conversion issues by ensuring proper number types before calculations
+    const charges = typeof record.charges === 'string' ? parseFloat(record.charges) : record.charges || 0;
+    const amount = record.amount;
+    const netAmount = typeof record.net_amount === 'string' ? parseFloat(record.net_amount) : 
+                     (record.net_amount as number) || 0;
     
     return (
       <Card className="mb-4 bg-gradient-to-br from-[#1c1e29] to-[#151722] border-[#2a2d3a] overflow-hidden">

@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
 import { cn } from "@/lib/utils";
@@ -194,9 +193,11 @@ const WithdrawalRecordsPage = () => {
         ) : records.length > 0 ? (
           records.map((record) => {
             const isUsdt = isUsdtWithdrawal(record);
-            const charges = parseFloat(record.charges as string);
-            const amount = parseFloat(record.amount as string);
-            const netAmount = parseFloat(record.net_amount as string);
+            // Fix type conversions by ensuring proper number types
+            const charges = typeof record.charges === 'string' ? parseFloat(record.charges) : record.charges || 0;
+            const amount = record.amount;
+            const netAmount = typeof record.net_amount === 'string' ? parseFloat(record.net_amount) : 
+                            (record.net_amount as number) || 0;
             
             return (
               <Card 
