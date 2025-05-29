@@ -1,64 +1,75 @@
 
 import MobileLayout from "@/components/layout/MobileLayout";
+import { Button } from "@/components/ui/button";
+import { ExternalLink, MessageCircle } from "lucide-react";
 
 const SupportPage = () => {
+  const openCustomerSupport = () => {
+    window.open("https://t.me/nexbitsupport", "_blank");
+  };
+
   return (
     <MobileLayout showBackButton title="Customer Support">
       <div className="p-4 space-y-6 animate-fade-in">
-        <div className="bg-card rounded-xl p-5">
-          <h2 className="text-xl font-semibold mb-4">Contact Customer Support</h2>
-          <p className="text-muted-foreground mb-6">
-            Our customer service team is available 24/7 to assist you with any questions or issues.
-          </p>
-          
-          <div className="space-y-4">
-            <div>
-              <p className="text-muted-foreground mb-1">Email</p>
-              <p className="text-lg">support@cryptotrader.com</p>
-            </div>
-            
-            <div>
-              <p className="text-muted-foreground mb-1">Phone</p>
-              <p className="text-lg">+1 800-123-4567</p>
-            </div>
-            
-            <div>
-              <p className="text-muted-foreground mb-1">Live Chat</p>
-              <p className="text-lg">Available on website and mobile app</p>
-            </div>
+        {/* Header Section */}
+        <div className="text-center space-y-4">
+          <div className="w-20 h-20 mx-auto bg-primary/20 rounded-full flex items-center justify-center">
+            <MessageCircle className="w-10 h-10 text-primary" />
+          </div>
+          <div>
+            <h2 className="text-2xl font-bold mb-2">Need Help?</h2>
+            <p className="text-muted-foreground">
+              Our customer support team is available 24/7 to assist you with any questions or issues.
+            </p>
           </div>
         </div>
-        
-        {/* Chat Form */}
-        <div className="bg-card rounded-xl p-5">
-          <h2 className="text-xl font-semibold mb-4">Send us a message</h2>
-          <form className="space-y-4">
-            <div>
-              <label className="block text-muted-foreground mb-2">Subject</label>
-              <select className="w-full bg-muted p-3 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-primary">
-                <option>Account Issue</option>
-                <option>Deposit Problem</option>
-                <option>Withdrawal Issue</option>
-                <option>Trading Question</option>
-                <option>Other</option>
-              </select>
-            </div>
+
+        {/* Support Card */}
+        <div className="bg-card rounded-xl p-6 border border-border/30">
+          <div className="text-center space-y-4">
+            <h3 className="text-xl font-semibold">Customer Support</h3>
+            <p className="text-muted-foreground">
+              Get instant help and support through our Telegram channel
+            </p>
             
-            <div>
-              <label className="block text-muted-foreground mb-2">Your Message</label>
-              <textarea
-                className="w-full bg-muted p-3 rounded-lg text-lg min-h-[150px] focus:outline-none focus:ring-2 focus:ring-primary"
-                placeholder="Please describe your issue"
-              ></textarea>
+            <div className="bg-muted/50 rounded-lg p-4">
+              <p className="text-sm text-muted-foreground mb-1">Contact us via</p>
+              <p className="font-medium text-lg">@nexbitsupport</p>
             </div>
-            
-            <button
-              type="submit"
-              className="w-full py-4 rounded-xl bg-primary text-white text-lg font-medium"
+
+            <Button 
+              onClick={openCustomerSupport}
+              className="w-full py-3 bg-[#0088cc] hover:bg-[#0077b5] text-white font-medium flex items-center justify-center gap-2"
+              size="lg"
             >
-              SUBMIT
-            </button>
-          </form>
+              <MessageCircle className="w-5 h-5" />
+              Open Telegram Support
+              <ExternalLink className="w-4 h-4" />
+            </Button>
+          </div>
+        </div>
+
+        {/* Support Features */}
+        <div className="bg-card rounded-xl p-5 border border-border/30">
+          <h4 className="font-semibold mb-4">What we can help with:</h4>
+          <div className="space-y-3">
+            <div className="flex items-center gap-3">
+              <div className="w-2 h-2 bg-primary rounded-full"></div>
+              <span className="text-sm">Account Issues</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="w-2 h-2 bg-primary rounded-full"></div>
+              <span className="text-sm">Deposit & Withdrawal Problems</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="w-2 h-2 bg-primary rounded-full"></div>
+              <span className="text-sm">Trading Questions</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="w-2 h-2 bg-primary rounded-full"></div>
+              <span className="text-sm">Technical Support</span>
+            </div>
+          </div>
         </div>
       </div>
     </MobileLayout>
