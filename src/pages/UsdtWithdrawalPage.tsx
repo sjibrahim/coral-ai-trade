@@ -210,27 +210,43 @@ const UsdtWithdrawalPage = () => {
                   />
                   
                   <div className="text-center mt-2">
-                    <p className="text-blue-400 text-sm">≈ {grossUsdtAmount.toFixed(2)} USDT</p>
+                    <p className="text-blue-400 text-sm">≈ {grossUsdtAmount.toFixed(6)} USDT</p>
                   </div>
                   
                   <div className="bg-[#1a1e29] rounded-lg p-4 mt-4">
-                    <div className="flex justify-between items-center mb-2">
+                    <div className="flex justify-between items-center mb-3">
                       <span className="text-gray-400 text-sm">Exchange Rate</span>
                       <span className="text-sm text-gray-300">1 USDT = ₹{usdtPrice}</span>
                     </div>
-                    <div className="flex justify-between items-center mb-2">
+                    <div className="flex justify-between items-center mb-3">
                       <span className="text-gray-400 text-sm">Minimum Withdrawal</span>
                       <span className="text-sm text-gray-300">₹{minWithdrawalInr}</span>
                     </div>
-                    <div className="flex justify-between items-center mb-2">
+                    <div className="flex justify-between items-center mb-3">
                       <span className="text-gray-400 text-sm">Withdrawal Fee</span>
-                      <span className="text-sm text-red-400">{withdrawalFeePercent}% (₹{withdrawalFeeAmount.toFixed(2)})</span>
+                      <span className="text-sm text-red-400">{withdrawalFeePercent}%</span>
                     </div>
-                    <div className="h-px bg-gray-700 my-2"></div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-400 text-sm">You Will Receive</span>
-                      <span className="text-sm text-green-400">{netUsdtAmount.toFixed(2)} USDT</span>
-                    </div>
+                    
+                    {amountValue > 0 && (
+                      <>
+                        <div className="h-px bg-gray-700 my-3"></div>
+                        <div className="space-y-2">
+                          <div className="flex justify-between items-center">
+                            <span className="text-gray-400 text-xs">Withdrawal Amount</span>
+                            <span className="text-xs text-gray-300">₹{amountValue.toFixed(2)}</span>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-gray-400 text-xs">Fee Amount ({withdrawalFeePercent}%)</span>
+                            <span className="text-xs text-red-400">-₹{withdrawalFeeAmount.toFixed(2)}</span>
+                          </div>
+                          <div className="h-px bg-gray-700 my-2"></div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-gray-300 text-sm font-medium">You Will Receive</span>
+                            <span className="text-sm text-green-400 font-medium">{netUsdtAmount.toFixed(6)} USDT</span>
+                          </div>
+                        </div>
+                      </>
+                    )}
                   </div>
                   
                   {!isValidAmount && amount && (
@@ -307,23 +323,28 @@ const UsdtWithdrawalPage = () => {
                   
                   <div className="space-y-3">
                     <div className="flex justify-between items-center py-2 border-b border-[#353950]">
-                      <span className="text-gray-400">Amount (INR)</span>
+                      <span className="text-gray-400">Withdrawal Amount</span>
                       <span className="text-white font-medium">₹{amountValue.toFixed(2)}</span>
                     </div>
                     
                     <div className="flex justify-between items-center py-2 border-b border-[#353950]">
-                      <span className="text-gray-400">Amount (USDT)</span>
-                      <span className="text-white font-medium">{grossUsdtAmount.toFixed(2)} USDT</span>
+                      <span className="text-gray-400">Withdrawal Fee</span>
+                      <span className="text-red-400 font-medium">{withdrawalFeePercent}%</span>
                     </div>
                     
                     <div className="flex justify-between items-center py-2 border-b border-[#353950]">
-                      <span className="text-gray-400">Withdrawal Fee</span>
-                      <span className="text-red-400 font-medium">{withdrawalFeePercent}% (₹{withdrawalFeeAmount.toFixed(2)})</span>
+                      <span className="text-gray-400">Fee Amount</span>
+                      <span className="text-red-400 font-medium">₹{withdrawalFeeAmount.toFixed(2)}</span>
+                    </div>
+                    
+                    <div className="flex justify-between items-center py-2 border-b border-[#353950]">
+                      <span className="text-gray-400">USDT Amount</span>
+                      <span className="text-blue-400 font-medium">{grossUsdtAmount.toFixed(6)} USDT</span>
                     </div>
                     
                     <div className="flex justify-between items-center py-2 border-b border-[#353950]">
                       <span className="text-gray-400">You Will Receive</span>
-                      <span className="text-green-400 font-medium">{netUsdtAmount.toFixed(2)} USDT</span>
+                      <span className="text-green-400 font-medium">{netUsdtAmount.toFixed(6)} USDT</span>
                     </div>
                     
                     <div className="flex justify-between items-center py-2 border-b border-[#353950]">
@@ -398,7 +419,7 @@ const UsdtWithdrawalPage = () => {
             </motion.div>
             <h2 className="text-xl font-semibold text-white">Withdrawal Submitted!</h2>
             <p className="text-gray-400 text-center">
-              Your USDT withdrawal request for {grossUsdtAmount.toFixed(2)} USDT (₹{amountValue.toFixed(2)}) has been successfully submitted. After deducting the fee of {withdrawalFeePercent}% (₹{withdrawalFeeAmount.toFixed(2)}), you will receive {netUsdtAmount.toFixed(2)} USDT. It will be processed within 24 hours.
+              Your USDT withdrawal request for ₹{amountValue.toFixed(2)} has been successfully submitted. After deducting the fee of {withdrawalFeePercent}% (₹{withdrawalFeeAmount.toFixed(2)}), you will receive {netUsdtAmount.toFixed(6)} USDT. It will be processed within 24 hours.
             </p>
             <Button 
               className="w-full bg-blue-600 hover:bg-blue-700" 
