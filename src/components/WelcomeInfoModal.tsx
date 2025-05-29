@@ -59,7 +59,7 @@ export function WelcomeInfoModal() {
           
           {/* Customer Support with clickable link */}
           <div 
-            onClick={openCustomerSupport}
+            onClick={openTelegramChannel}
             className="pt-1 bg-white/5 rounded-lg p-3 border border-white/10 flex justify-between items-center cursor-pointer hover:bg-white/10 transition-colors"
           >
             <p className="text-gray-300">
