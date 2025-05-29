@@ -21,7 +21,7 @@ export function WelcomeInfoModal() {
   };
 
   const openTelegramChannel = () => {
-    window.open(settings.telegram_channel || "https://t.me/nexbit_official", "_blank");
+    window.open(settings.telegram_channel || "https://t.me/nexbitsupport", "_blank");
   };
 
   const openCustomerSupport = () => {
@@ -63,7 +63,7 @@ export function WelcomeInfoModal() {
             className="pt-1 bg-white/5 rounded-lg p-3 border border-white/10 flex justify-between items-center cursor-pointer hover:bg-white/10 transition-colors"
           >
             <p className="text-gray-300">
-              Customer Support: <span className="text-blue-300">{settings.customer_support || "nexbit_support"}</span>
+              Customer Support: <span className="text-blue-300">{settings.customer_support || "nexbitsupport"}</span>
             </p>
             <ExternalLink size={16} className="text-blue-300" />
           </div>
