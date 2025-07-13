@@ -377,15 +377,7 @@ const RegisterPage = () => {
     </div>
   );
   
-  // For mobile, wrap in MobileLayout, for desktop show directly
-  if (isMobile) {
-    return (
-      <MobileLayout>
-        {content}
-      </MobileLayout>
-    );
-  }
-  
+  // Always return content directly without MobileLayout for register page
   return content;
 };
 
