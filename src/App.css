@@ -29,6 +29,28 @@ main {
   -webkit-overflow-scrolling: touch !important;
 }
 
+/* Prevent zoom on mobile input focus */
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="password"] {
+  font-size: 16px !important;
+}
+
+@media screen and (max-width: 768px) {
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="password"] {
+    font-size: 16px !important;
+  }
+}
+
+/* Custom class to ensure 16px font size */
+.font-size-16 {
+  font-size: 16px !important;
+}
+
 @keyframes logo-spin {
   from {
     transform: rotate(0deg);
