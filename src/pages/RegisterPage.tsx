@@ -121,7 +121,7 @@ const RegisterPage = () => {
   };
   
   const content = (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-green-50 relative">
+    <div className="h-screen bg-gradient-to-br from-emerald-50 via-white to-green-50 relative overflow-y-auto">
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-green-400/20 to-emerald-500/20 rounded-full blur-3xl animate-pulse"></div>
@@ -136,7 +136,7 @@ const RegisterPage = () => {
       </div>
 
       {/* Content Container */}
-      <div className="relative z-10 px-4 sm:px-6 py-6 pb-12">
+      <div className="relative z-10 px-4 sm:px-6 py-4">
         {/* Header */}
         <div className="text-center mb-6">
           <div className="mx-auto mb-4">
