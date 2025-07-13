@@ -149,7 +149,7 @@ const WithdrawPage = () => {
         </div>
       )}
     >
-      <div className="flex flex-col h-full bg-[#0d0f17] p-4">
+      <div className="flex flex-col h-full bg-background p-4">
         {/* Main content wrapper with fixed height and scroll for content */}
         <div className="flex flex-col" style={{ height: "calc(100vh - 180px)" }}>
           <div className="overflow-y-auto flex-grow pb-4">
@@ -231,7 +231,7 @@ const WithdrawPage = () => {
         </div>
         
         {/* Fixed bottom section for submit button */}
-        <div className="mt-auto py-3 bg-[#0d0f17] fixed bottom-0 left-0 right-0 px-4">
+        <div className="mt-auto py-3 bg-background fixed bottom-0 left-0 right-0 px-4">
           <ConfirmButton
             onClick={handleConfirm}
             disabled={!isValidAmount || bankAccount === "Not set" || ifscCode === "Not set"}
