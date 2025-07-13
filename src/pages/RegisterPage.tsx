@@ -120,9 +120,9 @@ const RegisterPage = () => {
   };
   
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-green-50 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-green-50 relative">
       {/* Animated Background Elements */}
-      <div className="absolute inset-0 overflow-hidden">
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-green-400/20 to-emerald-500/20 rounded-full blur-3xl animate-pulse"></div>
         <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-blue-400/20 to-green-400/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-green-300/10 to-emerald-300/10 rounded-full blur-3xl animate-pulse delay-500"></div>
@@ -136,7 +136,7 @@ const RegisterPage = () => {
 
       {/* Scrollable Content Container */}
       <div className="relative z-10 min-h-screen overflow-y-auto">
-        <div className="flex flex-col min-h-screen px-4 sm:px-6 py-6">
+        <div className="px-4 sm:px-6 py-6 pb-12">
           {/* Header */}
           <div className="text-center mb-6">
             <div className="mx-auto mb-4">
@@ -183,175 +183,173 @@ const RegisterPage = () => {
           </div>
 
           {/* Registration Form */}
-          <div className="flex-1 flex items-center justify-center">
-            <div className="w-full max-w-md">
-              <div className="bg-white/90 backdrop-blur-xl rounded-3xl p-6 shadow-2xl border border-white/20">
-                <form onSubmit={handleRegister} className="space-y-4">
-                  {/* Phone Number Field */}
-                  <div className="space-y-2">
-                    <Label htmlFor="phone" className="text-sm font-semibold text-gray-700">
-                      Phone Number
-                    </Label>
-                    <div className="relative group">
-                      <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
-                        <span className="text-sm font-medium text-gray-500 border-r border-gray-300 pr-3 mr-3">🇮🇳 +91</span>
-                      </div>
-                      <Input
-                        id="phone"
-                        name="phone"
-                        type="tel"
-                        value={formData.phone}
-                        onChange={handleChange}
-                        placeholder="9876543210"
-                        className="h-12 pl-20 pr-12 text-base bg-gray-50/50 border-2 border-gray-200 hover:border-green-300 focus:border-green-500 focus:bg-white rounded-2xl transition-all duration-300"
-                        maxLength={10}
-                        required
-                        inputMode="numeric"
-                        pattern="[0-9]*"
-                      />
-                      <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
-                        <Phone className="w-5 h-5 text-gray-400 group-hover:text-green-500 transition-colors duration-300" />
-                      </div>
+          <div className="w-full max-w-md mx-auto">
+            <div className="bg-white/90 backdrop-blur-xl rounded-3xl p-6 shadow-2xl border border-white/20">
+              <form onSubmit={handleRegister} className="space-y-4">
+                {/* Phone Number Field */}
+                <div className="space-y-2">
+                  <Label htmlFor="phone" className="text-sm font-semibold text-gray-700">
+                    Phone Number
+                  </Label>
+                  <div className="relative group">
+                    <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+                      <span className="text-sm font-medium text-gray-500 border-r border-gray-300 pr-3 mr-3">🇮🇳 +91</span>
                     </div>
-                    {formData.phone && formData.phone.length < 10 && (
-                      <p className="text-xs text-red-500 ml-1">Please enter 10 digits</p>
-                    )}
-                  </div>
-                  
-                  {/* Email Field */}
-                  <div className="space-y-2">
-                    <Label htmlFor="email" className="text-sm font-semibold text-gray-700">
-                      Email Address
-                    </Label>
-                    <div className="relative group">
-                      <Input
-                        id="email"
-                        name="email"
-                        type="email"
-                        value={formData.email}
-                        onChange={handleChange}
-                        placeholder="Enter your email address"
-                        className="h-12 pl-4 pr-12 text-base bg-gray-50/50 border-2 border-gray-200 hover:border-green-300 focus:border-green-500 focus:bg-white rounded-2xl transition-all duration-300"
-                        required
-                      />
-                      <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
-                        <Mail className="w-5 h-5 text-gray-400 group-hover:text-green-500 transition-colors duration-300" />
-                      </div>
-                    </div>
-                  </div>
-                  
-                  {/* Password Field */}
-                  <div className="space-y-2">
-                    <Label htmlFor="password" className="text-sm font-semibold text-gray-700">
-                      Password
-                    </Label>
-                    <div className="relative group">
-                      <Input
-                        id="password"
-                        name="password"
-                        type={showPassword ? "text" : "password"}
-                        value={formData.password}
-                        onChange={handleChange}
-                        placeholder="Create a secure password"
-                        className="h-12 pl-4 pr-12 text-base bg-gray-50/50 border-2 border-gray-200 hover:border-green-300 focus:border-green-500 focus:bg-white rounded-2xl transition-all duration-300"
-                        required
-                      />
-                      <button
-                        type="button"
-                        className="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-400 hover:text-green-500 transition-colors duration-300"
-                        onClick={() => setShowPassword(!showPassword)}
-                      >
-                        {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                      </button>
-                    </div>
-                  </div>
-                  
-                  {/* Confirm Password Field */}
-                  <div className="space-y-2">
-                    <Label htmlFor="confirmPassword" className="text-sm font-semibold text-gray-700">
-                      Confirm Password
-                    </Label>
-                    <div className="relative group">
-                      <Input
-                        id="confirmPassword"
-                        name="confirmPassword"
-                        type={showPassword ? "text" : "password"}
-                        value={formData.confirmPassword}
-                        onChange={handleChange}
-                        placeholder="Confirm your password"
-                        className="h-12 pl-4 pr-12 text-base bg-gray-50/50 border-2 border-gray-200 hover:border-green-300 focus:border-green-500 focus:bg-white rounded-2xl transition-all duration-300"
-                        required
-                      />
-                      <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
-                        <Lock className="w-5 h-5 text-gray-400 group-hover:text-green-500 transition-colors duration-300" />
-                      </div>
-                    </div>
-                  </div>
-                  
-                  {/* Referral Code Field */}
-                  <div className="space-y-2">
-                    <Label htmlFor="referral_code" className="text-sm font-semibold text-gray-700">
-                      Referral Code <span className="text-xs text-gray-500 font-normal">(Optional)</span>
-                    </Label>
-                    <div className="relative group">
-                      <Input
-                        id="referral_code"
-                        name="referral_code"
-                        type="text"
-                        value={formData.referral_code}
-                        onChange={handleChange}
-                        placeholder="Enter referral code"
-                        className="h-12 pl-12 pr-4 text-base bg-gray-50/50 border-2 border-gray-200 hover:border-green-300 focus:border-green-500 focus:bg-white rounded-2xl transition-all duration-300"
-                      />
-                      <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
-                        <Gift className="w-5 h-5 text-gray-400 group-hover:text-green-500 transition-colors duration-300" />
-                      </div>
-                    </div>
-                  </div>
-                  
-                  {/* Terms Checkbox */}
-                  <div className="flex items-start space-x-2 pt-2">
-                    <Checkbox 
-                      id="terms" 
-                      checked={agreeTerms} 
-                      onCheckedChange={(checked) => setAgreeTerms(checked as boolean)}
-                      className="mt-0.5"
+                    <Input
+                      id="phone"
+                      name="phone"
+                      type="tel"
+                      value={formData.phone}
+                      onChange={handleChange}
+                      placeholder="9876543210"
+                      className="h-12 text-base pl-20 pr-12 bg-gray-50/50 border-2 border-gray-200 hover:border-green-300 focus:border-green-500 focus:bg-white rounded-2xl transition-all duration-300"
+                      maxLength={10}
+                      required
+                      inputMode="numeric"
+                      pattern="[0-9]*"
                     />
-                    <label
-                      htmlFor="terms"
-                      className="text-sm text-gray-600 leading-relaxed"
-                    >
-                      I agree to the{" "}
-                      <Link to="/terms" className="text-green-600 hover:text-green-700 font-medium hover:underline transition-colors duration-300">
-                        Terms of Service
-                      </Link>
-                      {" "}and{" "}
-                      <Link to="/privacy" className="text-green-600 hover:text-green-700 font-medium hover:underline transition-colors duration-300">
-                        Privacy Policy
-                      </Link>
-                    </label>
+                    <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
+                      <Phone className="w-5 h-5 text-gray-400 group-hover:text-green-500 transition-colors duration-300" />
+                    </div>
                   </div>
-                  
-                  {/* Submit Button */}
-                  <Button 
-                    type="submit" 
-                    className="w-full h-12 text-base font-semibold bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300"
-                    disabled={!agreeTerms || isSubmitting}
+                  {formData.phone && formData.phone.length < 10 && (
+                    <p className="text-xs text-red-500 ml-1">Please enter 10 digits</p>
+                  )}
+                </div>
+                
+                {/* Email Field */}
+                <div className="space-y-2">
+                  <Label htmlFor="email" className="text-sm font-semibold text-gray-700">
+                    Email Address
+                  </Label>
+                  <div className="relative group">
+                    <Input
+                      id="email"
+                      name="email"
+                      type="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      placeholder="Enter your email address"
+                      className="h-12 text-base pl-4 pr-12 bg-gray-50/50 border-2 border-gray-200 hover:border-green-300 focus:border-green-500 focus:bg-white rounded-2xl transition-all duration-300"
+                      required
+                    />
+                    <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
+                      <Mail className="w-5 h-5 text-gray-400 group-hover:text-green-500 transition-colors duration-300" />
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Password Field */}
+                <div className="space-y-2">
+                  <Label htmlFor="password" className="text-sm font-semibold text-gray-700">
+                    Password
+                  </Label>
+                  <div className="relative group">
+                    <Input
+                      id="password"
+                      name="password"
+                      type={showPassword ? "text" : "password"}
+                      value={formData.password}
+                      onChange={handleChange}
+                      placeholder="Create a secure password"
+                      className="h-12 text-base pl-4 pr-12 bg-gray-50/50 border-2 border-gray-200 hover:border-green-300 focus:border-green-500 focus:bg-white rounded-2xl transition-all duration-300"
+                      required
+                    />
+                    <button
+                      type="button"
+                      className="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-400 hover:text-green-500 transition-colors duration-300"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                    </button>
+                  </div>
+                </div>
+                
+                {/* Confirm Password Field */}
+                <div className="space-y-2">
+                  <Label htmlFor="confirmPassword" className="text-sm font-semibold text-gray-700">
+                    Confirm Password
+                  </Label>
+                  <div className="relative group">
+                    <Input
+                      id="confirmPassword"
+                      name="confirmPassword"
+                      type={showPassword ? "text" : "password"}
+                      value={formData.confirmPassword}
+                      onChange={handleChange}
+                      placeholder="Confirm your password"
+                      className="h-12 text-base pl-4 pr-12 bg-gray-50/50 border-2 border-gray-200 hover:border-green-300 focus:border-green-500 focus:bg-white rounded-2xl transition-all duration-300"
+                      required
+                    />
+                    <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
+                      <Lock className="w-5 h-5 text-gray-400 group-hover:text-green-500 transition-colors duration-300" />
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Referral Code Field */}
+                <div className="space-y-2">
+                  <Label htmlFor="referral_code" className="text-sm font-semibold text-gray-700">
+                    Referral Code <span className="text-xs text-gray-500 font-normal">(Optional)</span>
+                  </Label>
+                  <div className="relative group">
+                    <Input
+                      id="referral_code"
+                      name="referral_code"
+                      type="text"
+                      value={formData.referral_code}
+                      onChange={handleChange}
+                      placeholder="Enter referral code"
+                      className="h-12 text-base pl-12 pr-4 bg-gray-50/50 border-2 border-gray-200 hover:border-green-300 focus:border-green-500 focus:bg-white rounded-2xl transition-all duration-300"
+                    />
+                    <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+                      <Gift className="w-5 h-5 text-gray-400 group-hover:text-green-500 transition-colors duration-300" />
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Terms Checkbox */}
+                <div className="flex items-start space-x-2 pt-2">
+                  <Checkbox 
+                    id="terms" 
+                    checked={agreeTerms} 
+                    onCheckedChange={(checked) => setAgreeTerms(checked as boolean)}
+                    className="mt-0.5"
+                  />
+                  <label
+                    htmlFor="terms"
+                    className="text-sm text-gray-600 leading-relaxed"
                   >
-                    {isSubmitting ? (
-                      <div className="flex items-center gap-2">
-                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                        <span>Creating Account...</span>
-                      </div>
-                    ) : (
-                      <div className="flex items-center gap-2">
-                        <UserPlus className="w-5 h-5" />
-                        <span>Create Account</span>
-                      </div>
-                    )}
-                  </Button>
-                </form>
-              </div>
+                    I agree to the{" "}
+                    <Link to="/terms" className="text-green-600 hover:text-green-700 font-medium hover:underline transition-colors duration-300">
+                      Terms of Service
+                    </Link>
+                    {" "}and{" "}
+                    <Link to="/privacy" className="text-green-600 hover:text-green-700 font-medium hover:underline transition-colors duration-300">
+                      Privacy Policy
+                    </Link>
+                  </label>
+                </div>
+                
+                {/* Submit Button */}
+                <Button 
+                  type="submit" 
+                  className="w-full h-12 text-base font-semibold bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300"
+                  disabled={!agreeTerms || isSubmitting}
+                >
+                  {isSubmitting ? (
+                    <div className="flex items-center gap-2">
+                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      <span>Creating Account...</span>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-2">
+                      <UserPlus className="w-5 h-5" />
+                      <span>Create Account</span>
+                    </div>
+                  )}
+                </Button>
+              </form>
             </div>
           </div>
           
