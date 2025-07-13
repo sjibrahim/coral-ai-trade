@@ -115,17 +115,17 @@ const LoginPage = () => {
       <div className="relative z-10 flex flex-col min-h-screen">
         {/* Header - Responsive spacing */}
         <div className={`${isMobile ? 'pt-8 pb-4' : 'pt-12 pb-6'} px-4 sm:px-6 text-center`}>
-          <div className={`${isMobile ? 'w-14 h-14' : 'w-16 h-16'} mx-auto mb-3 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center shadow-lg animate-fade-in-scale`}>
+          <div className="mx-auto mb-3">
             <img 
               src="https://ik.imagekit.io/spmcumfu9/trexo.jpeg" 
               alt="Trexo Logo" 
-              className={`${isMobile ? 'w-8 h-8' : 'w-10 h-10'} rounded-xl object-cover`}
+              className={`${isMobile ? 'w-16 h-16' : 'w-20 h-20'} mx-auto rounded-2xl object-cover shadow-lg`}
             />
           </div>
-          <h1 className={`${isMobile ? 'text-2xl' : 'text-3xl'} font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-2 animate-slide-in-up`}>
+          <h1 className={`${isMobile ? 'text-2xl' : 'text-3xl'} font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-2`}>
             Trexo
           </h1>
-          <p className={`text-muted-foreground animate-slide-in-up delay-200 ${isMobile ? 'text-sm' : 'text-base'}`}>
+          <p className={`text-muted-foreground ${isMobile ? 'text-sm' : 'text-base'}`}>
             Secure Crypto Trading Platform
           </p>
         </div>
