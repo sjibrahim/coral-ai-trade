@@ -121,7 +121,7 @@ const RegisterPage = () => {
   };
   
   const content = (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-green-50 relative">
+    <div className="h-screen bg-gradient-to-br from-emerald-50 via-white to-green-50 relative overflow-hidden">
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-green-400/20 to-emerald-500/20 rounded-full blur-3xl animate-pulse"></div>
@@ -135,57 +135,58 @@ const RegisterPage = () => {
         <div className="absolute bottom-64 right-12 w-2 h-2 bg-emerald-500/40 rounded-full animate-bounce delay-500"></div>
       </div>
 
-      {/* Content Container */}
-      <div className="relative z-10 px-4 py-4">{/* Reduced padding from py-6 to py-4 */}
-        {/* Header */}
-        <div className="text-center mb-4">{/* Reduced margin from mb-6 to mb-4 */}
-          <div className="mx-auto mb-3">{/* Reduced margin from mb-4 to mb-3 */}
-            <img 
-              src="https://ik.imagekit.io/spmcumfu9/trexo.jpeg" 
-              alt="Trexo Logo" 
-              className={`${isMobile ? 'w-16 h-16' : 'w-20 h-20'} mx-auto rounded-2xl object-cover shadow-lg`}
-            />
+      {/* Scrollable Content Container */}
+      <div className="relative z-10 h-full overflow-y-auto">
+        <div className="px-4 py-2">{/* Minimal padding */}
+          {/* Header */}
+          <div className="text-center mb-3">
+            <div className="mx-auto mb-2">
+              <img 
+                src="https://ik.imagekit.io/spmcumfu9/trexo.jpeg" 
+                alt="Trexo Logo" 
+                className={`${isMobile ? 'w-14 h-14' : 'w-16 h-16'} mx-auto rounded-2xl object-cover shadow-lg`}
+              />
+            </div>
+            <h1 className={`${isMobile ? 'text-xl' : 'text-2xl'} font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-1`}>
+              Join Trexo
+            </h1>
+            <p className={`text-muted-foreground ${isMobile ? 'text-xs' : 'text-sm'}`}>
+              Start your trading journey today
+            </p>
           </div>
-          <h1 className={`${isMobile ? 'text-2xl' : 'text-3xl'} font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-1`}>{/* Reduced margin from mb-2 to mb-1 */}
-            Join Trexo
-          </h1>
-          <p className={`text-muted-foreground ${isMobile ? 'text-sm' : 'text-base'}`}>
-            Start your trading journey today
-          </p>
-        </div>
 
-        {/* Trust Badges */}
-        <div className="mb-4">{/* Reduced margin from mb-6 to mb-4 */}
-          <div className="flex flex-wrap justify-center gap-2 mb-3">
-            <div className="flex items-center gap-1 bg-white/70 backdrop-blur-sm px-3 py-1.5 rounded-full border border-green-200/50">
-              <Shield className="w-3 h-3 text-green-600" />
-              <span className="text-xs font-medium text-green-700">Bank Grade Security</span>
+          {/* Trust Badges */}
+          <div className="mb-3">
+            <div className="flex flex-wrap justify-center gap-1 mb-2">
+              <div className="flex items-center gap-1 bg-white/70 backdrop-blur-sm px-2 py-1 rounded-full border border-green-200/50">
+                <Shield className="w-3 h-3 text-green-600" />
+                <span className="text-xs font-medium text-green-700">Bank Grade Security</span>
+              </div>
+              <div className="flex items-center gap-1 bg-white/70 backdrop-blur-sm px-2 py-1 rounded-full border border-blue-200/50">
+                <Lock className="w-3 h-3 text-blue-600" />
+                <span className="text-xs font-medium text-blue-700">256-bit Encryption</span>
+              </div>
             </div>
-            <div className="flex items-center gap-1 bg-white/70 backdrop-blur-sm px-3 py-1.5 rounded-full border border-blue-200/50">
-              <Lock className="w-3 h-3 text-blue-600" />
-              <span className="text-xs font-medium text-blue-700">256-bit Encryption</span>
+            <div className="flex flex-wrap justify-center gap-1">
+              <div className="flex items-center gap-1 bg-white/70 backdrop-blur-sm px-2 py-1 rounded-full border border-purple-200/50">
+                <Award className="w-3 h-3 text-purple-600" />
+                <span className="text-xs font-medium text-purple-700">Trusted by 1M+</span>
+              </div>
+              <div className="flex items-center gap-1 bg-white/70 backdrop-blur-sm px-2 py-1 rounded-full border border-orange-200/50">
+                <Zap className="w-3 h-3 text-orange-600" />
+                <span className="text-xs font-medium text-orange-700">Instant Trading</span>
+              </div>
+              <div className="flex items-center gap-1 bg-white/70 backdrop-blur-sm px-2 py-1 rounded-full border border-green-200/50">
+                <CheckCircle className="w-3 h-3 text-green-600" />
+                <span className="text-xs font-medium text-green-700">RBI Compliant</span>
+              </div>
             </div>
           </div>
-          <div className="flex flex-wrap justify-center gap-2">
-            <div className="flex items-center gap-1 bg-white/70 backdrop-blur-sm px-3 py-1.5 rounded-full border border-purple-200/50">
-              <Award className="w-3 h-3 text-purple-600" />
-              <span className="text-xs font-medium text-purple-700">Trusted by 1M+</span>
-            </div>
-            <div className="flex items-center gap-1 bg-white/70 backdrop-blur-sm px-3 py-1.5 rounded-full border border-orange-200/50">
-              <Zap className="w-3 h-3 text-orange-600" />
-              <span className="text-xs font-medium text-orange-700">Instant Trading</span>
-            </div>
-            <div className="flex items-center gap-1 bg-white/70 backdrop-blur-sm px-3 py-1.5 rounded-full border border-green-200/50">
-              <CheckCircle className="w-3 h-3 text-green-600" />
-              <span className="text-xs font-medium text-green-700">RBI Compliant</span>
-            </div>
-          </div>
-        </div>
 
-        {/* Registration Form */}
-        <div className="w-full max-w-md mx-auto mb-4">{/* Added mb-4 to reduce bottom spacing */}
-          <div className="bg-white/90 backdrop-blur-xl rounded-3xl p-5 shadow-2xl border border-white/20">{/* Reduced padding from p-6 to p-5 */}
-            <form onSubmit={handleRegister} className="space-y-4">
+          {/* Registration Form */}
+          <div className="w-full max-w-md mx-auto mb-2">
+            <div className="bg-white/90 backdrop-blur-xl rounded-3xl p-4 shadow-2xl border border-white/20">
+              <form onSubmit={handleRegister} className="space-y-3">
               {/* Phone Number Field */}
               <div className="space-y-2">
                 <Label htmlFor="phone" className="text-sm font-semibold text-gray-700">
@@ -352,26 +353,27 @@ const RegisterPage = () => {
             </form>
           </div>
         </div>
-        
-        {/* Footer */}
-        <div className="text-center space-y-2 mt-4">{/* Reduced spacing and margin */}
-          <p className="text-gray-600">
-            Already have an account?{" "}
-            <Link to="/login" className="text-green-600 hover:text-green-700 font-semibold transition-colors duration-300">
-              Sign In
-            </Link>
-          </p>
           
-          <p className="text-xs text-gray-500 leading-relaxed px-4">
-            By creating an account, you agree to our{" "}
-            <Link to="/terms" className="text-green-600 hover:underline transition-colors duration-300">
-              Terms
-            </Link>{" "}
-            and{" "}
-            <Link to="/privacy" className="text-green-600 hover:underline transition-colors duration-300">
-              Privacy Policy
-            </Link>
-          </p>
+          {/* Footer */}
+          <div className="text-center space-y-1 mt-2 pb-2">
+            <p className="text-gray-600 text-sm">
+              Already have an account?{" "}
+              <Link to="/login" className="text-green-600 hover:text-green-700 font-semibold transition-colors duration-300">
+                Sign In
+              </Link>
+            </p>
+            
+            <p className="text-xs text-gray-500 leading-relaxed px-4">
+              By creating an account, you agree to our{" "}
+              <Link to="/terms" className="text-green-600 hover:underline transition-colors duration-300">
+                Terms
+              </Link>{" "}
+              and{" "}
+              <Link to="/privacy" className="text-green-600 hover:underline transition-colors duration-300">
+                Privacy Policy
+              </Link>
+            </p>
+          </div>
         </div>
       </div>
     </div>
