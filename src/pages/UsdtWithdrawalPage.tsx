@@ -149,7 +149,7 @@ const UsdtWithdrawalPage = () => {
       showBackButton 
       title="USDT Withdrawal"
     >
-      <div className="flex flex-col h-full bg-background">
+      <div className="flex flex-col h-full bg-[#0d0f17]">
         {/* Header Section - Balance Card */}
         <div className="px-4 pt-4">
           <div className="bg-gradient-to-br from-blue-800/30 to-indigo-800/30 rounded-2xl p-4 border border-indigo-500/20 mb-4">
@@ -263,7 +263,7 @@ const UsdtWithdrawalPage = () => {
                   )}
                 </div>
                 
-                <div className="fixed bottom-0 left-0 right-0 bg-background border-t border-border pb-4 pt-3 px-4">
+                <div className="fixed bottom-0 left-0 right-0 bg-[#0d0f17] border-t border-[#1a1e29] pb-4 pt-3 px-4">
                   <ConfirmButton
                     onClick={isValidAmount ? handleNextStep : undefined}
                     disabled={!isValidAmount}
@@ -295,7 +295,7 @@ const UsdtWithdrawalPage = () => {
                   </div>
                 </div>
                 
-                <div className="fixed bottom-0 left-0 right-0 bg-background border-t border-border pb-4 pt-3 px-4">
+                <div className="fixed bottom-0 left-0 right-0 bg-[#0d0f17] border-t border-[#1a1e29] pb-4 pt-3 px-4">
                   <div className="flex space-x-3">
                     <Button 
                       variant="outline" 
@@ -376,7 +376,7 @@ const UsdtWithdrawalPage = () => {
                   )}
                 </div>
                 
-                <div className="fixed bottom-0 left-0 right-0 bg-background border-t border-border pb-4 pt-3 px-4">
+                <div className="fixed bottom-0 left-0 right-0 bg-[#0d0f17] border-t border-[#1a1e29] pb-4 pt-3 px-4">
                   <div className="flex space-x-3">
                     <Button 
                       variant="outline" 

@@ -39,7 +39,7 @@ const MobileLayout = ({
   const isWithdrawalPage = ['/withdraw', '/usdt-withdraw', '/withdrawals', '/all-withdrawals'].includes(location.pathname);
 
   return (
-    <div className="flex flex-col h-full w-full bg-background text-foreground relative">
+    <div className="flex flex-col h-full w-full bg-[#0d0f17] text-foreground relative">
       {/* Enhanced background with animated elements */}
       <div className="absolute inset-0 z-0 overflow-hidden">
         {/* Background pattern */}
@@ -72,7 +72,7 @@ const MobileLayout = ({
       
       {/* Header */}
       {(title || showBackButton) && (
-        <header className="sticky top-0 z-20 px-4 py-3 flex items-center justify-between bg-background/90 backdrop-blur-md border-b border-white/5">
+        <header className="sticky top-0 z-20 px-4 py-3 flex items-center justify-between bg-[#0d0f17]/90 backdrop-blur-md border-b border-white/5">
           <div className="flex items-center gap-2">
             {showBackButton ? (
               <button 
