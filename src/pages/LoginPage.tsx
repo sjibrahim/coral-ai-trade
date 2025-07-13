@@ -1,9 +1,10 @@
 
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Eye, EyeOff, LogIn, TrendingUp, Shield, Zap } from "lucide-react";
+import { Eye, EyeOff, LogIn, Shield, TrendingUp, Smartphone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "@/components/ui/use-toast";
 
@@ -22,11 +23,11 @@ const LoginPage = () => {
   } catch (error) {
     console.error("Auth context not available:", error);
     return (
-      <div className="flex flex-col min-h-[100svh] bg-gradient-to-br from-slate-50 via-white to-green-50/30 p-6 items-center justify-center">
-        <div className="w-16 h-16 rounded-full flex items-center justify-center animate-pulse-ring">
-          <div className="w-8 h-8 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div>
+      <div className="flex min-h-screen bg-background items-center justify-center p-4">
+        <div className="flex flex-col items-center space-y-4">
+          <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+          <p className="text-muted-foreground">Loading Trexo...</p>
         </div>
-        <p className="mt-4 text-muted-foreground animate-fade-in-scale">Loading Trexo...</p>
       </div>
     );
   }
@@ -76,74 +77,92 @@ const LoginPage = () => {
   };
   
   return (
-    <div className="flex flex-col min-h-[100svh] bg-gradient-to-br from-slate-50 via-white to-green-50/30 relative overflow-hidden">
-      {/* Background decorative elements */}
-      <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
-        <div className="absolute top-20 left-10 w-32 h-32 bg-green-200/20 rounded-full blur-3xl animate-float"></div>
-        <div className="absolute bottom-32 right-10 w-24 h-24 bg-blue-200/20 rounded-full blur-2xl animate-float" style={{animationDelay: '2s'}}></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-green-100/30 to-blue-100/30 rounded-full blur-3xl"></div>
-      </div>
-
-      <div className="flex-1 flex flex-col justify-center px-6 py-12 relative z-10">
-        {/* Logo and Brand Section */}
-        <div className="text-center mb-8 animate-fade-in-scale">
-          <div className="w-24 h-24 mx-auto mb-6 rounded-2xl overflow-hidden shadow-2xl ring-4 ring-white/50 animate-pulse-ring">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 flex flex-col">
+      {/* Header with logo and branding */}
+      <div className="flex-shrink-0 pt-8 pb-4 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-md mx-auto text-center">
+          <div className="w-20 h-20 mx-auto mb-4 bg-primary/10 rounded-2xl flex items-center justify-center shadow-lg border border-primary/20">
             <img 
               src="https://ik.imagekit.io/spmcumfu9/trexo.jpeg" 
               alt="Trexo Logo" 
-              className="w-full h-full object-cover"
+              className="w-12 h-12 rounded-xl object-cover"
             />
           </div>
-          <h1 className="text-4xl font-bold text-gradient-trexo mb-2">
-            Trexo
+          <h1 className="text-3xl sm:text-4xl font-bold text-foreground mb-2">
+            Welcome to <span className="text-primary">Trexo</span>
           </h1>
-          <p className="text-lg text-gray-600 font-medium">
-            Professional Trading Platform
+          <p className="text-muted-foreground text-sm sm:text-base">
+            Your professional trading platform
           </p>
-          <div className="flex justify-center items-center gap-6 mt-4 text-sm text-gray-500">
-            <div className="flex items-center gap-1">
-              <TrendingUp className="w-4 h-4 text-green-500" />
-              <span>Live Markets</span>
+          
+          {/* Feature badges */}
+          <div className="flex flex-wrap justify-center gap-3 mt-4">
+            <div className="flex items-center gap-1.5 bg-primary/10 text-primary px-3 py-1.5 rounded-full text-xs font-medium">
+              <TrendingUp className="w-3 h-3" />
+              <span>Live Trading</span>
             </div>
-            <div className="flex items-center gap-1">
-              <Shield className="w-4 h-4 text-green-500" />
+            <div className="flex items-center gap-1.5 bg-primary/10 text-primary px-3 py-1.5 rounded-full text-xs font-medium">
+              <Shield className="w-3 h-3" />
               <span>Secure</span>
             </div>
-            <div className="flex items-center gap-1">
-              <Zap className="w-4 h-4 text-green-500" />
-              <span>Fast</span>
+            <div className="flex items-center gap-1.5 bg-primary/10 text-primary px-3 py-1.5 rounded-full text-xs font-medium">
+              <Smartphone className="w-3 h-3" />
+              <span>Mobile Ready</span>
             </div>
           </div>
         </div>
+      </div>
 
-        {/* Login Form */}
-        <div className="max-w-sm mx-auto w-full">
-          <div className="card-modern p-8 animate-slide-in-up">
-            <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">
-              Welcome Back
-            </h2>
+      {/* Main content */}
+      <div className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 pb-8">
+        <div className="w-full max-w-md space-y-6">
+          {/* Login form card */}
+          <div className="bg-card border border-border rounded-2xl shadow-xl p-6 sm:p-8">
+            <div className="text-center mb-6">
+              <h2 className="text-2xl font-semibold text-card-foreground mb-2">
+                Sign In
+              </h2>
+              <p className="text-muted-foreground text-sm">
+                Access your trading account
+              </p>
+            </div>
             
             <form onSubmit={handleLogin} className="space-y-5">
-              <div className="space-y-2 animate-slide-in-left">
-                <label className="text-sm font-semibold text-gray-700 block" htmlFor="phone">
+              {/* Phone number field */}
+              <div className="space-y-2">
+                <Label 
+                  htmlFor="phone" 
+                  className="text-sm font-semibold text-foreground flex items-center gap-2"
+                >
                   Phone Number
-                </label>
-                <Input
-                  id="phone"
-                  name="phone"
-                  type="text"
-                  value={formData.phone}
-                  onChange={handleChange}
-                  placeholder="Enter your phone number"
-                  className="input-modern h-12 w-full"
-                  required
-                />
+                  <span className="text-destructive">*</span>
+                </Label>
+                <div className="relative">
+                  <Input
+                    id="phone"
+                    name="phone"
+                    type="tel"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    placeholder="Enter your phone number"
+                    className="h-12 pl-4 pr-4 text-base border-2 border-input focus:border-primary focus:ring-4 focus:ring-primary/20 transition-all duration-200 rounded-xl bg-background"
+                    required
+                  />
+                  <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                    <Smartphone className="w-4 h-4 text-muted-foreground" />
+                  </div>
+                </div>
               </div>
               
-              <div className="space-y-2 animate-slide-in-right">
-                <label className="text-sm font-semibold text-gray-700 block" htmlFor="password">
+              {/* Password field */}
+              <div className="space-y-2">
+                <Label 
+                  htmlFor="password" 
+                  className="text-sm font-semibold text-foreground flex items-center gap-2"
+                >
                   Password
-                </label>
+                  <span className="text-destructive">*</span>
+                </Label>
                 <div className="relative">
                   <Input
                     id="password"
@@ -152,48 +171,63 @@ const LoginPage = () => {
                     value={formData.password}
                     onChange={handleChange}
                     placeholder="Enter your password"
-                    className="input-modern h-12 w-full pr-12"
+                    className="h-12 pl-4 pr-12 text-base border-2 border-input focus:border-primary focus:ring-4 focus:ring-primary/20 transition-all duration-200 rounded-xl bg-background"
                     required
                   />
                   <button
                     type="button"
-                    className="absolute right-0 top-0 h-12 px-3 text-gray-500 hover:text-gray-700 transition-colors flex items-center"
+                    className="absolute inset-y-0 right-0 flex items-center pr-3 text-muted-foreground hover:text-foreground transition-colors"
                     onClick={() => setShowPassword(!showPassword)}
                   >
-                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
                 </div>
               </div>
               
+              {/* Submit button */}
               <Button 
                 type="submit" 
-                className="btn-primary-modern w-full h-12 text-base mt-6 animate-slide-in-up"
+                className="w-full h-12 text-base font-semibold rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 mt-6"
                 disabled={isSubmitting}
               >
                 {isSubmitting ? (
                   <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    <div className="w-4 h-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin"></div>
                     <span>Signing In...</span>
                   </div>
                 ) : (
                   <div className="flex items-center gap-2">
                     <LogIn className="w-4 h-4" />
-                    <span>Sign In</span>
+                    <span>Sign In to Trexo</span>
                   </div>
                 )}
               </Button>
             </form>
           </div>
           
-          {/* Register Link */}
-          <div className="text-center mt-6 animate-fade-in-scale">
-            <p className="text-gray-600">
+          {/* Register link */}
+          <div className="text-center">
+            <p className="text-muted-foreground text-sm">
               New to Trexo?{" "}
               <Link 
                 to="/register" 
-                className="text-green-600 hover:text-green-700 font-semibold hover:underline transition-colors"
+                className="text-primary hover:text-primary/80 font-semibold hover:underline transition-colors"
               >
                 Create Account
+              </Link>
+            </p>
+          </div>
+          
+          {/* Additional info */}
+          <div className="bg-primary/5 border border-primary/20 rounded-xl p-4 text-center">
+            <p className="text-xs text-muted-foreground">
+              By signing in, you agree to our{" "}
+              <Link to="/terms" className="text-primary hover:underline">
+                Terms of Service
+              </Link>{" "}
+              and{" "}
+              <Link to="/privacy" className="text-primary hover:underline">
+                Privacy Policy
               </Link>
             </p>
           </div>
@@ -201,8 +235,8 @@ const LoginPage = () => {
       </div>
       
       {/* Footer */}
-      <div className="text-center py-6 animate-fade-in-scale">
-        <p className="text-xs text-gray-500">
+      <div className="flex-shrink-0 text-center py-4 px-4">
+        <p className="text-xs text-muted-foreground">
           &copy; 2025 Trexo. Empowering traders worldwide.
         </p>
       </div>
