@@ -136,17 +136,17 @@ const RegisterPage = () => {
       </div>
 
       {/* Content Container */}
-      <div className="relative z-10 px-4 sm:px-6 py-6 pb-12">
+      <div className="relative z-10 px-4 py-4">{/* Reduced padding from py-6 to py-4 */}
         {/* Header */}
-        <div className="text-center mb-6">
-          <div className="mx-auto mb-4">
+        <div className="text-center mb-4">{/* Reduced margin from mb-6 to mb-4 */}
+          <div className="mx-auto mb-3">{/* Reduced margin from mb-4 to mb-3 */}
             <img 
               src="https://ik.imagekit.io/spmcumfu9/trexo.jpeg" 
               alt="Trexo Logo" 
               className={`${isMobile ? 'w-16 h-16' : 'w-20 h-20'} mx-auto rounded-2xl object-cover shadow-lg`}
             />
           </div>
-          <h1 className={`${isMobile ? 'text-2xl' : 'text-3xl'} font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-2`}>
+          <h1 className={`${isMobile ? 'text-2xl' : 'text-3xl'} font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-1`}>{/* Reduced margin from mb-2 to mb-1 */}
             Join Trexo
           </h1>
           <p className={`text-muted-foreground ${isMobile ? 'text-sm' : 'text-base'}`}>
@@ -155,7 +155,7 @@ const RegisterPage = () => {
         </div>
 
         {/* Trust Badges */}
-        <div className="mb-6">
+        <div className="mb-4">{/* Reduced margin from mb-6 to mb-4 */}
           <div className="flex flex-wrap justify-center gap-2 mb-3">
             <div className="flex items-center gap-1 bg-white/70 backdrop-blur-sm px-3 py-1.5 rounded-full border border-green-200/50">
               <Shield className="w-3 h-3 text-green-600" />
@@ -183,8 +183,8 @@ const RegisterPage = () => {
         </div>
 
         {/* Registration Form */}
-        <div className="w-full max-w-md mx-auto">
-          <div className="bg-white/90 backdrop-blur-xl rounded-3xl p-6 shadow-2xl border border-white/20">
+        <div className="w-full max-w-md mx-auto mb-4">{/* Added mb-4 to reduce bottom spacing */}
+          <div className="bg-white/90 backdrop-blur-xl rounded-3xl p-5 shadow-2xl border border-white/20">{/* Reduced padding from p-6 to p-5 */}
             <form onSubmit={handleRegister} className="space-y-4">
               {/* Phone Number Field */}
               <div className="space-y-2">
@@ -354,7 +354,7 @@ const RegisterPage = () => {
         </div>
         
         {/* Footer */}
-        <div className="text-center space-y-3 mt-6">
+        <div className="text-center space-y-2 mt-4">{/* Reduced spacing and margin */}
           <p className="text-gray-600">
             Already have an account?{" "}
             <Link to="/login" className="text-green-600 hover:text-green-700 font-semibold transition-colors duration-300">
