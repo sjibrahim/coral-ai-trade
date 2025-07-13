@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "@/hooks/use-toast";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -15,6 +16,7 @@ const LoginPage = () => {
     password: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const isMobile = useIsMobile();
   
   let auth;
   try {
@@ -111,64 +113,64 @@ const LoginPage = () => {
 
       {/* Content */}
       <div className="relative z-10 flex flex-col min-h-screen">
-        {/* Header - Moved up */}
-        <div className="pt-12 pb-6 px-6 text-center">
-          <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center shadow-lg animate-fade-in-scale">
+        {/* Header - Responsive spacing */}
+        <div className={`${isMobile ? 'pt-8 pb-4' : 'pt-12 pb-6'} px-4 sm:px-6 text-center`}>
+          <div className={`${isMobile ? 'w-14 h-14' : 'w-16 h-16'} mx-auto mb-3 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center shadow-lg animate-fade-in-scale`}>
             <img 
               src="https://ik.imagekit.io/spmcumfu9/trexo.jpeg" 
               alt="Trexo Logo" 
-              className="w-10 h-10 rounded-xl object-cover"
+              className={`${isMobile ? 'w-8 h-8' : 'w-10 h-10'} rounded-xl object-cover`}
             />
           </div>
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-2 animate-slide-in-up">
+          <h1 className={`${isMobile ? 'text-2xl' : 'text-3xl'} font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-2 animate-slide-in-up`}>
             Trexo
           </h1>
-          <p className="text-muted-foreground animate-slide-in-up delay-200">
+          <p className={`text-muted-foreground animate-slide-in-up delay-200 ${isMobile ? 'text-sm' : 'text-base'}`}>
             Secure Crypto Trading Platform
           </p>
         </div>
 
-        {/* Trust Badges */}
-        <div className="px-6 mb-6">
-          <div className="flex flex-wrap justify-center gap-2 mb-4">
-            <div className="flex items-center gap-1 bg-white/70 backdrop-blur-sm px-3 py-1 rounded-full border border-green-200/50">
-              <Shield className="w-3 h-3 text-green-600" />
-              <span className="text-xs font-medium text-green-700">Bank Grade Security</span>
+        {/* Trust Badges - More compact on mobile */}
+        <div className={`px-4 sm:px-6 ${isMobile ? 'mb-4' : 'mb-6'}`}>
+          <div className="flex flex-wrap justify-center gap-1.5 sm:gap-2 mb-3 sm:mb-4">
+            <div className="flex items-center gap-1 bg-white/70 backdrop-blur-sm px-2 sm:px-3 py-1 rounded-full border border-green-200/50">
+              <Shield className={`${isMobile ? 'w-3 h-3' : 'w-3 h-3'} text-green-600`} />
+              <span className={`${isMobile ? 'text-xs' : 'text-xs'} font-medium text-green-700`}>Bank Grade Security</span>
             </div>
-            <div className="flex items-center gap-1 bg-white/70 backdrop-blur-sm px-3 py-1 rounded-full border border-blue-200/50">
-              <Lock className="w-3 h-3 text-blue-600" />
-              <span className="text-xs font-medium text-blue-700">256-bit Encryption</span>
+            <div className="flex items-center gap-1 bg-white/70 backdrop-blur-sm px-2 sm:px-3 py-1 rounded-full border border-blue-200/50">
+              <Lock className={`${isMobile ? 'w-3 h-3' : 'w-3 h-3'} text-blue-600`} />
+              <span className={`${isMobile ? 'text-xs' : 'text-xs'} font-medium text-blue-700`}>256-bit Encryption</span>
             </div>
           </div>
-          <div className="flex flex-wrap justify-center gap-2">
-            <div className="flex items-center gap-1 bg-white/70 backdrop-blur-sm px-3 py-1 rounded-full border border-purple-200/50">
-              <Award className="w-3 h-3 text-purple-600" />
-              <span className="text-xs font-medium text-purple-700">Trusted by 1M+</span>
+          <div className="flex flex-wrap justify-center gap-1.5 sm:gap-2">
+            <div className="flex items-center gap-1 bg-white/70 backdrop-blur-sm px-2 sm:px-3 py-1 rounded-full border border-purple-200/50">
+              <Award className={`${isMobile ? 'w-3 h-3' : 'w-3 h-3'} text-purple-600`} />
+              <span className={`${isMobile ? 'text-xs' : 'text-xs'} font-medium text-purple-700`}>Trusted by 1M+</span>
             </div>
-            <div className="flex items-center gap-1 bg-white/70 backdrop-blur-sm px-3 py-1 rounded-full border border-orange-200/50">
-              <Zap className="w-3 h-3 text-orange-600" />
-              <span className="text-xs font-medium text-orange-700">Instant Trading</span>
+            <div className="flex items-center gap-1 bg-white/70 backdrop-blur-sm px-2 sm:px-3 py-1 rounded-full border border-orange-200/50">
+              <Zap className={`${isMobile ? 'w-3 h-3' : 'w-3 h-3'} text-orange-600`} />
+              <span className={`${isMobile ? 'text-xs' : 'text-xs'} font-medium text-orange-700`}>Instant Trading</span>
             </div>
-            <div className="flex items-center gap-1 bg-white/70 backdrop-blur-sm px-3 py-1 rounded-full border border-green-200/50">
-              <CheckCircle className="w-3 h-3 text-green-600" />
-              <span className="text-xs font-medium text-green-700">RBI Compliant</span>
+            <div className="flex items-center gap-1 bg-white/70 backdrop-blur-sm px-2 sm:px-3 py-1 rounded-full border border-green-200/50">
+              <CheckCircle className={`${isMobile ? 'w-3 h-3' : 'w-3 h-3'} text-green-600`} />
+              <span className={`${isMobile ? 'text-xs' : 'text-xs'} font-medium text-green-700`}>RBI Compliant</span>
             </div>
           </div>
         </div>
 
-        {/* Login Form - Positioned higher */}
-        <div className="flex-1 px-6 flex items-start justify-center pt-4">
+        {/* Login Form - Responsive positioning and sizing */}
+        <div className="flex-1 px-4 sm:px-6 flex items-start justify-center pt-2 sm:pt-4">
           <div className="w-full max-w-sm">
-            <div className="bg-white/90 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-white/20 animate-fade-in-scale">
-              <form onSubmit={handleLogin} className="space-y-6">
+            <div className="bg-white/90 backdrop-blur-xl rounded-3xl p-6 sm:p-8 shadow-2xl border border-white/20 animate-fade-in-scale">
+              <form onSubmit={handleLogin} className="space-y-5 sm:space-y-6">
                 {/* Phone Field with Indian Country Code */}
-                <div className="space-y-3">
+                <div className="space-y-2 sm:space-y-3">
                   <Label htmlFor="phone" className="text-sm font-semibold text-gray-700">
                     Phone Number
                   </Label>
                   <div className="relative group">
-                    <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
-                      <span className="text-sm font-medium text-gray-500 border-r border-gray-300 pr-3 mr-3">🇮🇳 +91</span>
+                    <div className="absolute inset-y-0 left-0 flex items-center pl-3 sm:pl-4 pointer-events-none">
+                      <span className={`${isMobile ? 'text-sm' : 'text-sm'} font-medium text-gray-500 border-r border-gray-300 pr-2 sm:pr-3 mr-2 sm:mr-3`}>🇮🇳 +91</span>
                     </div>
                     <Input
                       id="phone"
@@ -176,13 +178,15 @@ const LoginPage = () => {
                       type="tel"
                       value={formData.phone}
                       onChange={handleChange}
-                      placeholder="Enter 10-digit mobile number"
-                      className="h-14 pl-20 pr-12 text-base bg-gray-50/50 border-2 border-gray-200 hover:border-green-300 focus:border-green-500 focus:bg-white rounded-2xl transition-all duration-300 group-hover:shadow-md focus:shadow-lg"
+                      placeholder="9876543210"
+                      className={`${isMobile ? 'h-12 pl-16 pr-10 text-base' : 'h-14 pl-20 pr-12 text-base'} bg-gray-50/50 border-2 border-gray-200 hover:border-green-300 focus:border-green-500 focus:bg-white rounded-2xl transition-all duration-300 group-hover:shadow-md focus:shadow-lg`}
                       maxLength={10}
                       required
+                      inputMode="numeric"
+                      pattern="[0-9]*"
                     />
-                    <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
-                      <Smartphone className="w-5 h-5 text-gray-400 group-hover:text-green-500 transition-colors duration-300" />
+                    <div className={`absolute inset-y-0 right-0 flex items-center ${isMobile ? 'pr-3' : 'pr-4'} pointer-events-none`}>
+                      <Smartphone className={`${isMobile ? 'w-4 h-4' : 'w-5 h-5'} text-gray-400 group-hover:text-green-500 transition-colors duration-300`} />
                     </div>
                   </div>
                   {formData.phone && formData.phone.length < 10 && (
@@ -191,7 +195,7 @@ const LoginPage = () => {
                 </div>
                 
                 {/* Password Field */}
-                <div className="space-y-3">
+                <div className="space-y-2 sm:space-y-3">
                   <Label htmlFor="password" className="text-sm font-semibold text-gray-700">
                     Password
                   </Label>
@@ -202,16 +206,16 @@ const LoginPage = () => {
                       type={showPassword ? "text" : "password"}
                       value={formData.password}
                       onChange={handleChange}
-                      placeholder="Enter your password"
-                      className="h-14 pl-4 pr-12 text-base bg-gray-50/50 border-2 border-gray-200 hover:border-green-300 focus:border-green-500 focus:bg-white rounded-2xl transition-all duration-300 group-hover:shadow-md focus:shadow-lg"
+                      placeholder="Enter your secure password"
+                      className={`${isMobile ? 'h-12 pl-3 pr-10 text-base' : 'h-14 pl-4 pr-12 text-base'} bg-gray-50/50 border-2 border-gray-200 hover:border-green-300 focus:border-green-500 focus:bg-white rounded-2xl transition-all duration-300 group-hover:shadow-md focus:shadow-lg`}
                       required
                     />
                     <button
                       type="button"
-                      className="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-400 hover:text-green-500 transition-colors duration-300"
+                      className={`absolute inset-y-0 right-0 flex items-center ${isMobile ? 'pr-3' : 'pr-4'} text-gray-400 hover:text-green-500 transition-colors duration-300`}
                       onClick={() => setShowPassword(!showPassword)}
                     >
-                      {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                      {showPassword ? <EyeOff className={`${isMobile ? 'w-4 h-4' : 'w-5 h-5'}`} /> : <Eye className={`${isMobile ? 'w-4 h-4' : 'w-5 h-5'}`} />}
                     </button>
                   </div>
                 </div>
@@ -219,17 +223,17 @@ const LoginPage = () => {
                 {/* Submit Button */}
                 <Button 
                   type="submit" 
-                  className="w-full h-14 text-base font-semibold bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300"
+                  className={`w-full ${isMobile ? 'h-12 text-base' : 'h-14 text-base'} font-semibold bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300`}
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? (
-                    <div className="flex items-center gap-3">
-                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    <div className="flex items-center gap-2 sm:gap-3">
+                      <div className={`${isMobile ? 'w-4 h-4' : 'w-5 h-5'} border-2 border-white border-t-transparent rounded-full animate-spin`}></div>
                       <span>Signing In...</span>
                     </div>
                   ) : (
-                    <div className="flex items-center gap-3">
-                      <LogIn className="w-5 h-5" />
+                    <div className="flex items-center gap-2 sm:gap-3">
+                      <LogIn className={`${isMobile ? 'w-4 h-4' : 'w-5 h-5'}`} />
                       <span>Sign In</span>
                     </div>
                   )}
@@ -239,16 +243,16 @@ const LoginPage = () => {
           </div>
         </div>
         
-        {/* Footer */}
-        <div className="flex-shrink-0 p-6 text-center space-y-4">
-          <p className="text-gray-600">
+        {/* Footer - Responsive spacing */}
+        <div className={`flex-shrink-0 ${isMobile ? 'p-4' : 'p-6'} text-center space-y-3 sm:space-y-4`}>
+          <p className={`text-gray-600 ${isMobile ? 'text-sm' : 'text-base'}`}>
             New to Trexo?{" "}
             <Link to="/register" className="text-green-600 hover:text-green-700 font-semibold transition-colors duration-300">
               Create Account
             </Link>
           </p>
           
-          <p className="text-xs text-gray-500 leading-relaxed px-4">
+          <p className={`${isMobile ? 'text-xs' : 'text-xs'} text-gray-500 leading-relaxed px-2 sm:px-4`}>
             By signing in, you agree to our{" "}
             <Link to="/terms" className="text-green-600 hover:underline transition-colors duration-300">
               Terms
