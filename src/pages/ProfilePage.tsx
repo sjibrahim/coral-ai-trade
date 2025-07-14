@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from '@/contexts/AuthContext';
 import { 
   Crown, User, Settings, Bell, Shield, Star, 
-  Wallet, ArrowUpRight, Send, Users,
+  Wallet, ArrowUpRight, Send,
   CreditCard, FileText, LogOut,
   Eye, EyeOff, TrendingUp, Award, Zap,
   BarChart3, Target, Gift, DollarSign,
@@ -58,8 +58,7 @@ const ProfilePage = () => {
   const quickActions = [
     { icon: Wallet, label: "Deposit", gradient: "from-emerald-500 to-green-600", link: "/deposit" },
     { icon: Send, label: "Withdraw", gradient: "from-blue-500 to-indigo-600", link: "/withdraw" },
-    { icon: BarChart3, label: "Trade", gradient: "from-purple-500 to-violet-600", link: "/market" },
-    { icon: Users, label: "Invite", gradient: "from-orange-500 to-red-500", link: "/invite" }
+    { icon: BarChart3, label: "Trade", gradient: "from-purple-500 to-violet-600", link: "/market" }
   ];
 
   const profileMenuItems = [
@@ -69,7 +68,7 @@ const ProfilePage = () => {
         { icon: Activity, label: "Contract Records", link: "/contract-record", color: "emerald" },
         { icon: FileText, label: "Transaction Records", link: "/transactions", color: "blue" },
         { icon: IndianRupee, label: "Withdrawals", link: "/all-withdrawals", color: "pink" },
-        { icon: Users, label: "My Team", link: "/team", color: "purple" }
+        { icon: User, label: "My Team", link: "/team", color: "purple" }
       ]
     },
     {
@@ -187,7 +186,7 @@ const ProfilePage = () => {
             </Card>
           </div>
 
-          {/* Quick Actions */}
+          {/* Quick Actions - 3 in one row */}
           <Card className="bg-white/90 backdrop-blur-sm border border-gray-200/50 shadow-lg">
             <CardHeader className="pb-3">
               <CardTitle className="text-base flex items-center gap-2">
@@ -196,7 +195,7 @@ const ProfilePage = () => {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-4 gap-3">
+              <div className="grid grid-cols-3 gap-3">
                 {quickActions.map((action, idx) => (
                   <button
                     key={idx}

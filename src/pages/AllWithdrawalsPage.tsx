@@ -4,7 +4,7 @@ import MobileLayout from "@/components/layout/MobileLayout";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { ArrowDownCircle, IndianRupee, Receipt, Check, X, Clock, Wallet, Target } from "lucide-react";
+import { ArrowDownCircle, IndianRupee, Receipt, Check, X, Clock, Wallet, Target, Plus } from "lucide-react";
 import { getTransactions, getGeneralSettings } from "@/services/api";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
@@ -108,15 +108,15 @@ const AllWithdrawalsPage = () => {
     switch(status.toLowerCase()) {
       case 'completed':
       case 'success':
-        return <Check className="h-3 w-3" />;
+        return <Check className="h-4 w-4" />;
       case 'processing':
       case 'pending':
-        return <Clock className="h-3 w-3" />;
+        return <Clock className="h-4 w-4" />;
       case 'rejected':
       case 'failed':
-        return <X className="h-3 w-3" />;
+        return <X className="h-4 w-4" />;
       default:
-        return <Clock className="h-3 w-3" />;
+        return <Clock className="h-4 w-4" />;
     }
   };
   
@@ -128,24 +128,18 @@ const AllWithdrawalsPage = () => {
 
   return (
     <MobileLayout showBackButton title="Withdrawal History">
-      <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-green-50 relative overflow-hidden">
-        {/* Background Elements */}
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute -top-20 -right-20 w-40 h-40 bg-emerald-400/20 rounded-full blur-2xl animate-pulse"></div>
-          <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-green-400/20 rounded-full blur-2xl animate-pulse delay-1000"></div>
-        </div>
-
-        <div className="relative z-10 p-4 space-y-4 pb-24">
+      <div className="min-h-screen bg-gray-50">
+        <div className="p-4 space-y-6 pb-24">
           {/* Header Card */}
-          <Card className="bg-gradient-to-r from-emerald-600 to-green-600 text-white border-0 shadow-xl">
-            <CardContent className="p-4">
+          <Card className="bg-gradient-to-r from-emerald-500 to-green-600 text-white border-0 shadow-lg">
+            <CardContent className="p-6">
               <div className="flex items-center justify-center">
-                <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center mr-3">
-                  <ArrowDownCircle className="w-4 h-4 text-white" />
+                <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mr-4">
+                  <ArrowDownCircle className="w-6 h-6 text-white" />
                 </div>
                 <div className="text-center">
                   <h1 className="text-lg font-bold">Withdrawals</h1>
-                  <p className="text-emerald-100 text-xs">Track your withdrawal history</p>
+                  <p className="text-emerald-100 text-sm">Track your withdrawal history</p>
                 </div>
               </div>
             </CardContent>
@@ -153,108 +147,112 @@ const AllWithdrawalsPage = () => {
 
           {/* New Withdrawal Button */}
           <Link to="/withdraw">
-            <Button className="w-full bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white text-sm h-10">
-              <ArrowDownCircle className="h-4 w-4 mr-2" />
+            <Button className="w-full bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white h-12 text-base shadow-lg">
+              <Plus className="h-5 w-5 mr-2" />
               New Withdrawal
             </Button>
           </Link>
         
           {isLoading ? (
             // Loading skeletons
-            Array(3).fill(0).map((_, idx) => (
-              <Card key={`skeleton-${idx}`} className="bg-white/90 backdrop-blur-sm border border-gray-200/50 animate-pulse">
-                <CardContent className="p-4 space-y-3">
-                  <div className="flex justify-between items-center">
-                    <div className="h-4 w-20 bg-gray-200 rounded"></div>
-                    <div className="h-4 w-16 bg-gray-200 rounded"></div>
-                  </div>
-                  <div className="h-6 w-24 bg-gray-200 rounded"></div>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="h-12 bg-gray-200 rounded"></div>
-                    <div className="h-12 bg-gray-200 rounded"></div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))
-          ) : records.length > 0 ? (
-            records.map((record) => {
-              const charges = typeof record.charges === 'string' ? parseFloat(record.charges) : record.charges || 0;
-              const amount = record.amount;
-              const netAmount = typeof record.net_amount === 'string' ? parseFloat(record.net_amount) : 
-                              (record.net_amount as number) || 0;
-              
-              return (
-                <Card 
-                  key={record.id}
-                  className="bg-white/90 backdrop-blur-sm border border-emerald-200/50 hover:shadow-lg transition-all duration-300"
-                >
-                  <CardContent className="p-4">
-                    {/* Header */}
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="flex items-center space-x-2">
-                        <Receipt className="h-4 w-4 text-emerald-600" />
-                        <span className="text-sm font-medium text-gray-700">{record.id}</span>
-                      </div>
-                      <div className={cn(
-                        "px-2 py-1 rounded-full text-xs font-medium flex items-center space-x-1",
-                        getStatusStyles(record.status)
-                      )}>
-                        {getStatusIcon(record.status)}
-                        <span>{record.status.toUpperCase()}</span>
-                      </div>
+            <div className="space-y-4">
+              {Array(3).fill(0).map((_, idx) => (
+                <Card key={`skeleton-${idx}`} className="bg-white shadow-sm animate-pulse">
+                  <CardContent className="p-4 space-y-4">
+                    <div className="flex justify-between items-center">
+                      <div className="h-4 w-20 bg-gray-200 rounded"></div>
+                      <div className="h-4 w-16 bg-gray-200 rounded"></div>
                     </div>
-                    
-                    {/* Amount */}
-                    <div className="mb-3">
-                      <div className="flex items-center">
-                        <IndianRupee className="h-5 w-5 mr-2 text-emerald-600" />
-                        <span className="text-2xl font-bold text-gray-900">{amount.toLocaleString()}</span>
-                      </div>
-                    </div>
-                    
-                    {/* Transaction Details */}
-                    <div className="grid grid-cols-2 gap-3 mb-3">
-                      <div className="bg-gray-50 rounded-lg p-3">
-                        <div className="flex items-center text-gray-600 text-xs mb-1">
-                          <Target className="w-3 h-3 mr-1" />
-                          <span>Fee ({withdrawalFeePercentage}%)</span>
-                        </div>
-                        <p className="text-sm font-medium text-red-600">₹{charges.toLocaleString()}</p>
-                      </div>
-                      <div className="bg-gray-50 rounded-lg p-3">
-                        <div className="flex items-center text-gray-600 text-xs mb-1">
-                          <Wallet className="w-3 h-3 mr-1" />
-                          <span>Net Amount</span>
-                        </div>
-                        <p className="text-sm font-medium text-emerald-600">₹{netAmount.toLocaleString()}</p>
-                      </div>
-                    </div>
-                    
-                    {/* Footer Details */}
-                    <div className="flex justify-between text-xs text-gray-500">
-                      <div>
-                        <p className="mb-1">Bank Account</p>
-                        <p>{maskValue(user?.account_number)}</p>
-                      </div>
-                      <div className="text-right">
-                        <p className="mb-1">Date</p>
-                        <p>{formatDate(record.date)}</p>
-                      </div>
+                    <div className="h-8 w-24 bg-gray-200 rounded"></div>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="h-16 bg-gray-200 rounded"></div>
+                      <div className="h-16 bg-gray-200 rounded"></div>
                     </div>
                   </CardContent>
                 </Card>
-              );
-            })
+              ))}
+            </div>
+          ) : records.length > 0 ? (
+            <div className="space-y-4">
+              {records.map((record) => {
+                const charges = typeof record.charges === 'string' ? parseFloat(record.charges) : record.charges || 0;
+                const amount = record.amount;
+                const netAmount = typeof record.net_amount === 'string' ? parseFloat(record.net_amount) : 
+                                (record.net_amount as number) || 0;
+                
+                return (
+                  <Card 
+                    key={record.id}
+                    className="bg-white shadow-sm hover:shadow-md transition-shadow duration-200"
+                  >
+                    <CardContent className="p-4">
+                      {/* Header */}
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center space-x-3">
+                          <Receipt className="h-5 w-5 text-emerald-600" />
+                          <span className="text-base font-medium text-gray-700">{record.id}</span>
+                        </div>
+                        <div className={cn(
+                          "px-3 py-1 rounded-full text-sm font-medium flex items-center space-x-1",
+                          getStatusStyles(record.status)
+                        )}>
+                          {getStatusIcon(record.status)}
+                          <span>{record.status.toUpperCase()}</span>
+                        </div>
+                      </div>
+                      
+                      {/* Amount */}
+                      <div className="mb-4">
+                        <div className="flex items-center">
+                          <IndianRupee className="h-6 w-6 mr-2 text-emerald-600" />
+                          <span className="text-2xl font-bold text-gray-900">{amount.toLocaleString()}</span>
+                        </div>
+                      </div>
+                      
+                      {/* Transaction Details */}
+                      <div className="grid grid-cols-2 gap-3 mb-4">
+                        <div className="bg-gray-50 rounded-lg p-3">
+                          <div className="flex items-center text-gray-600 text-sm mb-1">
+                            <Target className="w-4 h-4 mr-1" />
+                            <span>Fee ({withdrawalFeePercentage}%)</span>
+                          </div>
+                          <p className="text-base font-medium text-red-600">₹{charges.toLocaleString()}</p>
+                        </div>
+                        <div className="bg-gray-50 rounded-lg p-3">
+                          <div className="flex items-center text-gray-600 text-sm mb-1">
+                            <Wallet className="w-4 h-4 mr-1" />
+                            <span>Net Amount</span>
+                          </div>
+                          <p className="text-base font-medium text-emerald-600">₹{netAmount.toLocaleString()}</p>
+                        </div>
+                      </div>
+                      
+                      {/* Footer Details */}
+                      <div className="flex justify-between text-sm text-gray-500">
+                        <div>
+                          <p className="mb-1">Bank Account</p>
+                          <p>{maskValue(user?.account_number)}</p>
+                        </div>
+                        <div className="text-right">
+                          <p className="mb-1">Date</p>
+                          <p>{formatDate(record.date)}</p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
           ) : (
-            <Card className="bg-white/90 backdrop-blur-sm border border-emerald-200/50">
+            <Card className="bg-white shadow-sm">
               <CardContent className="p-8 text-center">
-                <div className="bg-emerald-100 rounded-full p-3 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                  <Receipt className="h-8 w-8 text-emerald-600" />
+                <div className="bg-emerald-100 rounded-full p-4 w-20 h-20 mx-auto mb-4 flex items-center justify-center">
+                  <Receipt className="h-10 w-10 text-emerald-600" />
                 </div>
                 <h3 className="text-lg font-medium text-gray-900 mb-2">No Withdrawals Yet</h3>
-                <p className="text-gray-600 mb-4 text-sm">Make your first withdrawal to see records here</p>
+                <p className="text-gray-600 mb-6 text-base">Make your first withdrawal to see records here</p>
                 <Link to="/withdraw">
-                  <Button className="bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-sm">
+                  <Button className="bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-base px-8">
                     Start Withdrawal
                   </Button>
                 </Link>
