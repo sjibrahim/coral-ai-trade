@@ -288,94 +288,94 @@ const HomePage = () => {
             </CardContent>
           </Card>
 
-          {/* Top Cryptocurrencies - Premium Design */}
+          {/* Top Cryptocurrencies - Mobile Optimized Premium Design */}
           <Card className="bg-white/95 backdrop-blur-sm border border-emerald-200/50 shadow-2xl overflow-hidden relative">
             <div className="absolute inset-0 bg-gradient-to-r from-emerald-50/50 via-white/50 to-green-50/50"></div>
-            <CardHeader className="pb-4 relative z-10">
+            <CardHeader className="pb-3 relative z-10">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-lg flex items-center gap-2 font-trading">
-                  <div className="w-8 h-8 bg-gradient-to-r from-emerald-500 to-green-600 rounded-xl flex items-center justify-center">
-                    <Star className="w-4 h-4 text-white" />
+                <CardTitle className="text-sm flex items-center gap-2 font-trading">
+                  <div className="w-6 h-6 bg-gradient-to-r from-emerald-500 to-green-600 rounded-lg flex items-center justify-center">
+                    <Star className="w-3 h-3 text-white" />
                   </div>
-                  <span className="bg-gradient-to-r from-emerald-700 to-green-600 bg-clip-text text-transparent">
-                    Top Cryptocurrencies
+                  <span className="bg-gradient-to-r from-emerald-700 to-green-600 bg-clip-text text-transparent text-base">
+                    Top Cryptos
                   </span>
                 </CardTitle>
-                <Link to="/market" className="px-4 py-2 bg-gradient-to-r from-emerald-500 to-green-600 text-white text-sm font-medium rounded-full hover:shadow-lg transition-all duration-300 hover:scale-105">
+                <Link to="/market" className="px-3 py-1.5 bg-gradient-to-r from-emerald-500 to-green-600 text-white text-xs font-medium rounded-full hover:shadow-lg transition-all duration-300 hover:scale-105">
                   View All
                 </Link>
               </div>
             </CardHeader>
-            <CardContent className="relative z-10">
+            <CardContent className="relative z-10 pt-0">
               {isLoading ? (
-                <div className="space-y-4">
+                <div className="space-y-2">
                   {Array(4).fill(0).map((_, idx) => (
-                    <div key={idx} className="animate-pulse flex items-center justify-between p-4 bg-gradient-to-r from-gray-50 to-gray-100 rounded-2xl border border-gray-200/50">
-                      <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 bg-gradient-to-r from-gray-200 to-gray-300 rounded-2xl"></div>
+                    <div key={idx} className="animate-pulse flex items-center justify-between p-3 bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl border border-gray-200/50">
+                      <div className="flex items-center gap-2">
+                        <div className="w-8 h-8 bg-gradient-to-r from-gray-200 to-gray-300 rounded-xl"></div>
                         <div>
-                          <div className="h-4 w-20 bg-gray-200 rounded-lg mb-2"></div>
-                          <div className="h-3 w-12 bg-gray-200 rounded-lg"></div>
+                          <div className="h-3 w-16 bg-gray-200 rounded mb-1"></div>
+                          <div className="h-2 w-10 bg-gray-200 rounded"></div>
                         </div>
                       </div>
                       <div className="text-right">
-                        <div className="h-4 w-16 bg-gray-200 rounded-lg mb-2"></div>
-                        <div className="h-3 w-10 bg-gray-200 rounded-lg"></div>
+                        <div className="h-3 w-12 bg-gray-200 rounded mb-1"></div>
+                        <div className="h-2 w-8 bg-gray-200 rounded"></div>
                       </div>
                     </div>
                   ))}
                 </div>
               ) : (
-                <div className="space-y-3">
-                  {marketData.slice(0, 6).map((crypto, idx) => (
+                <div className="space-y-2">
+                  {marketData.slice(0, 5).map((crypto, idx) => (
                     <Link
                       key={crypto.id}
                       to={`/coin/${crypto.id}`}
-                      className="group flex items-center justify-between p-4 rounded-2xl bg-gradient-to-r from-white/80 to-emerald-50/30 hover:from-emerald-50 hover:to-green-50 transition-all duration-500 hover:shadow-xl border border-emerald-100/50 hover:border-emerald-200 backdrop-blur-sm"
+                      className="group flex items-center justify-between p-3 rounded-xl bg-gradient-to-r from-white/80 to-emerald-50/30 hover:from-emerald-50 hover:to-green-50 transition-all duration-500 hover:shadow-lg border border-emerald-100/50 hover:border-emerald-200 backdrop-blur-sm animate-fade-in"
                       style={{
                         animationDelay: `${idx * 100}ms`
                       }}
                     >
-                      <div className="flex items-center gap-4">
+                      <div className="flex items-center gap-3">
                         <div className="relative">
-                          <div className="w-12 h-12 bg-gradient-to-r from-emerald-100 to-green-100 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-all duration-300 group-hover:shadow-lg border border-emerald-200/50">
+                          <div className="w-8 h-8 bg-gradient-to-r from-emerald-100 to-green-100 rounded-xl flex items-center justify-center group-hover:scale-110 transition-all duration-300 group-hover:shadow-md border border-emerald-200/50">
                             <img 
                               src={crypto.logo} 
                               alt={crypto.name} 
-                              className="w-7 h-7 rounded-xl"
+                              className="w-5 h-5 rounded-lg"
                               onError={(e) => {
                                 const target = e.target as HTMLImageElement;
                                 target.src = `https://raw.githubusercontent.com/Pymmdrza/CryptoIconsCDN/mainx/PNG/${crypto.symbol.toUpperCase()}.png`;
                               }}
                             />
                           </div>
-                          <div className="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-r from-emerald-400 to-green-500 rounded-full flex items-center justify-center">
-                            <span className="text-xs text-white font-bold">#{idx + 1}</span>
+                          <div className="absolute -top-0.5 -right-0.5 w-3 h-3 bg-gradient-to-r from-emerald-400 to-green-500 rounded-full flex items-center justify-center">
+                            <span className="text-[8px] text-white font-bold">#{idx + 1}</span>
                           </div>
                         </div>
                         <div>
-                          <div className="font-bold text-gray-900 group-hover:text-emerald-700 transition-colors text-lg font-trading">
-                            {crypto.name}
+                          <div className="font-bold text-gray-900 group-hover:text-emerald-700 transition-colors text-sm font-trading">
+                            {crypto.name.length > 8 ? crypto.name.substring(0, 8) + '...' : crypto.name}
                           </div>
-                          <div className="text-sm text-gray-500 font-mono font-semibold">{crypto.symbol.toUpperCase()}</div>
+                          <div className="text-xs text-gray-500 font-mono font-medium">{crypto.symbol.toUpperCase()}</div>
                         </div>
                       </div>
                       <div className="text-right">
-                        <div className="font-bold text-gray-900 text-lg font-mono">
-                          ₹{crypto.price.toLocaleString()}
+                        <div className="font-bold text-gray-900 text-sm font-mono">
+                          ₹{crypto.price > 100 ? crypto.price.toLocaleString(undefined, {maximumFractionDigits: 0}) : crypto.price.toLocaleString()}
                         </div>
                         <div className={cn(
-                          "text-sm flex items-center justify-end font-bold font-mono px-2 py-1 rounded-full",
+                          "text-xs flex items-center justify-end font-bold font-mono px-1.5 py-0.5 rounded-full",
                           (crypto.change || 0) >= 0 
                             ? "text-emerald-700 bg-emerald-100/80" 
                             : "text-red-700 bg-red-100/80"
                         )}>
                           {(crypto.change || 0) >= 0 ? (
-                            <TrendingUp className="w-3 h-3 mr-1" />
+                            <TrendingUp className="w-2.5 h-2.5 mr-0.5" />
                           ) : (
-                            <TrendingDown className="w-3 h-3 mr-1" />
+                            <TrendingDown className="w-2.5 h-2.5 mr-0.5" />
                           )}
-                          {(crypto.change || 0) >= 0 ? '+' : ''}{crypto.change || 0}%
+                          {(crypto.change || 0) >= 0 ? '+' : ''}{Math.abs(crypto.change || 0).toFixed(1)}%
                         </div>
                       </div>
                     </Link>
