@@ -1,4 +1,3 @@
-
 import { Route, Routes, Navigate } from 'react-router-dom';
 import ProtectedRoute from '@/components/ProtectedRoute';
 
@@ -14,6 +13,7 @@ import WithdrawPage from '@/pages/WithdrawPage';
 import InvitePage from '@/pages/InvitePage';
 import BankDetailsPage from '@/pages/BankDetailsPage';
 import ChangePasswordPage from '@/pages/ChangePasswordPage';
+import SecurityPage from '@/pages/SecurityPage';
 import SupportPage from '@/pages/SupportPage';
 import DepositRecordsPage from '@/pages/DepositRecordsPage';
 import WithdrawalRecordsPage from '@/pages/WithdrawalRecordsPage';
@@ -54,6 +54,7 @@ const AppRoutes = () => {
       <Route path="/vip" element={<ProtectedRoute><VipPage /></ProtectedRoute>} />
       <Route path="/bank" element={<ProtectedRoute><BankDetailsPage /></ProtectedRoute>} />
       <Route path="/change-password" element={<ProtectedRoute><ChangePasswordPage /></ProtectedRoute>} />
+      <Route path="/security" element={<ProtectedRoute><SecurityPage /></ProtectedRoute>} />
       <Route path="/support" element={<ProtectedRoute><SupportPage /></ProtectedRoute>} />
       <Route path="/deposit-records" element={<ProtectedRoute><DepositRecordsPage /></ProtectedRoute>} />
       <Route path="/withdrawal-records" element={<ProtectedRoute><WithdrawalRecordsPage /></ProtectedRoute>} />
