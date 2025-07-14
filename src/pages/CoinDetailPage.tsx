@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useCallback } from 'react';
 import { useParams, useLocation, Link, useNavigate } from 'react-router-dom';
 import MobileLayout from '@/components/layout/MobileLayout';
@@ -9,7 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { mockCryptoCurrencies } from '@/data/mockData';
-import { ArrowUp, ArrowDown, TrendingUp, Activity, BarChart3 } from 'lucide-react';
+import { ArrowUp, ArrowDown, TrendingUp, Activity, BarChart3, X, Info } from 'lucide-react';
 import { getBinancePrice, getBinanceKlines, getMarketData, getCoin, placeTrade } from '@/services/api';
 import { useToast } from '@/hooks/use-toast';
 
@@ -250,11 +251,6 @@ const CoinDetailPage = () => {
 
   const predefinedAmounts = ['600', '1000', '2000', '3000', '5000', '10000'];
   
-  const toggleFullscreen = () => {
-  };
-
-  const transformedChartData = [];
-  
   const handleTradeComplete = (finalPrice: number) => {
     if (tradeApiResponse) {
       if (user && typeof tradeApiResponse.new_balance === 'number') {
@@ -300,7 +296,7 @@ const CoinDetailPage = () => {
   }, []);
   
   return (
-    <MobileLayout showBackButton title={crypto.name} noScroll={false}>
+    <MobileLayout showBackButton title={crypto.name} noScroll={false} hideFooter={true}>
       <div className="flex flex-col h-full bg-gradient-to-br from-emerald-50 via-white to-green-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
         <div className="p-4">
           {/* Coin Header Info with Trexo Design */}
@@ -386,45 +382,117 @@ const CoinDetailPage = () => {
         </div>
       </div>
 
-      {/* Trade Modals */}
+      {/* Enhanced Trade Modal */}
       <Dialog open={isBuyModalOpen || isSellModalOpen} onOpenChange={closeModal}>
-        <DialogContent className="sm:max-w-md bg-white dark:bg-gray-800 border-emerald-200 dark:border-emerald-800">
-          <DialogTitle className="text-emerald-600 dark:text-emerald-400">
-            Place {direction} Trade
-          </DialogTitle>
-          <div className="space-y-4">
+        <DialogContent className="sm:max-w-md bg-white border-none rounded-3xl p-0 overflow-hidden">
+          {/* Header */}
+          <div className="flex items-center justify-between p-6 pb-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center">
+                <span className="text-white font-bold text-sm">₿</span>
+              </div>
+              <div>
+                <h3 className="font-bold text-lg">{crypto.symbol}/USD</h3>
+              </div>
+              <div className={`px-3 py-1 rounded-full text-sm font-medium ${
+                direction === 'Call' ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'
+              }`}>
+                {direction}
+              </div>
+            </div>
+            <Button variant="ghost" size="icon" onClick={closeModal} className="rounded-full bg-gray-100">
+              <X className="h-5 w-5" />
+            </Button>
+          </div>
+
+          <div className="px-6 pb-6 space-y-6">
+            {/* Time Period */}
             <div>
-              <label className="text-sm font-medium">Amount (₹)</label>
-              <Input
-                type="number"
-                value={tradeAmount}
-                onChange={(e) => setTradeAmount(e.target.value)}
-                className="mt-1"
-              />
+              <div className="flex items-center gap-2 mb-3">
+                <span className="font-medium text-gray-700">Time Period</span>
+                <Info className="h-4 w-4 text-gray-400" />
+              </div>
+              <div className="flex gap-2">
+                {['1min', '2min', '5min', '10min', '15min'].map((period) => (
+                  <button
+                    key={period}
+                    onClick={() => setSelectedTimePeriod(period)}
+                    className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                      selectedTimePeriod === period
+                        ? 'bg-emerald-200 text-emerald-800'
+                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    }`}
+                  >
+                    {period}
+                  </button>
+                ))}
+              </div>
             </div>
-            <div>
-              <label className="text-sm font-medium">Time Period</label>
-              <select 
-                value={selectedTimePeriod} 
-                onChange={(e) => setSelectedTimePeriod(e.target.value)}
-                className="w-full mt-1 p-2 border rounded-md"
-              >
-                <option value="1min">1 Minute</option>
-                <option value="3min">3 Minutes</option>
-                <option value="5min">5 Minutes</option>
-              </select>
+
+            {/* Available Balance */}
+            <div className="flex justify-between items-center">
+              <span className="text-gray-600">Available Balance</span>
+              <span className="font-bold">₹{user?.balance || '100.00'}</span>
             </div>
-            <div className="flex gap-2">
-              <Button 
-                onClick={handleConfirmTrade}
-                className="flex-1 bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white"
-              >
-                Confirm Trade
-              </Button>
-              <Button variant="outline" onClick={closeModal}>
-                Cancel
-              </Button>
+
+            {/* Amount Input */}
+            <div className="space-y-3">
+              <div className="relative">
+                <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500 text-lg">₹</span>
+                <Input
+                  type="number"
+                  value={tradeAmount}
+                  onChange={(e) => setTradeAmount(e.target.value)}
+                  className="pl-8 h-14 text-lg font-medium bg-gray-50 border-gray-200 rounded-2xl"
+                  placeholder="1000"
+                />
+              </div>
+              
+              {/* Quick Amount Buttons */}
+              <div className="grid grid-cols-3 gap-2">
+                {predefinedAmounts.map((amount) => (
+                  <button
+                    key={amount}
+                    onClick={() => setTradeAmount(amount)}
+                    className={`p-3 rounded-xl text-sm font-medium transition-all ${
+                      tradeAmount === amount
+                        ? 'bg-emerald-500 text-white border-2 border-emerald-600'
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    }`}
+                  >
+                    ₹{amount}
+                  </button>
+                ))}
+              </div>
             </div>
+
+            {/* Trade Summary */}
+            <div className="bg-gray-50 rounded-2xl p-4 space-y-3">
+              <div className="flex justify-between">
+                <span className="text-gray-600">Direction</span>
+                <span className="text-gray-600">Current Price</span>
+                <span className="text-gray-600">Investment</span>
+              </div>
+              <div className="flex justify-between">
+                <span className={`font-bold ${direction === 'Call' ? 'text-emerald-600' : 'text-red-600'}`}>
+                  {direction}
+                </span>
+                <span className="font-bold">₹{livePrice.toLocaleString()}</span>
+                <span className="font-bold">₹{tradeAmount}</span>
+              </div>
+            </div>
+
+            {/* Confirm Button */}
+            <Button 
+              onClick={handleConfirmTrade}
+              className={`w-full h-14 text-lg font-bold rounded-2xl ${
+                direction === 'Call' 
+                  ? 'bg-emerald-500 hover:bg-emerald-600' 
+                  : 'bg-red-500 hover:bg-red-600'
+              } text-white`}
+            >
+              BUY {selectedTimePeriod}
+            </Button>
           </div>
         </DialogContent>
       </Dialog>
@@ -437,6 +505,7 @@ const CoinDetailPage = () => {
         direction={direction}
         duration={tradeTimer}
         onComplete={handleTradeComplete}
+        tradeApiResponse={tradeApiResponse}
       />
     </MobileLayout>
   );

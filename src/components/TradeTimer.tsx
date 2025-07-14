@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -112,7 +111,6 @@ const TradeTimer: React.FC<TradeTimerProps> = ({
   // Reset state when modal is closed
   const handleClose = () => {
     onClose();
-    // Delay the reset to prevent flickering during close animation
     setTimeout(() => {
       setIsCompleted(false);
       setTimeRemaining(duration);
@@ -120,15 +118,16 @@ const TradeTimer: React.FC<TradeTimerProps> = ({
     }, 300);
   };
 
-  // Calculate price difference and percentage
   const priceDifference = endPrice - startPrice;
   const percentageChange = startPrice > 0 ? (priceDifference / startPrice) * 100 : 0;
 
-  return (
-    <Dialog open={open} onOpenChange={(open) => !open && handleClose()}>
-      <DialogContent className="bg-[#1E2032] border-none max-w-[300px] mx-auto rounded-2xl text-white">
-        {isCompleted ? (
-          // Trade result display redesigned to match reference image
+  if (!open) return null;
+
+  if (isCompleted) {
+    // Trade Result Modal - Design 3
+    return (
+      <Dialog open={open} onOpenChange={(open) => !open && handleClose()}>
+        <DialogContent className="bg-[#1E2032] border-none max-w-[300px] mx-auto rounded-2xl text-white">
           <div className="flex flex-col items-center justify-center py-6 relative">
             {/* Close button */}
             <div className="absolute top-2 right-2">
@@ -197,47 +196,54 @@ const TradeTimer: React.FC<TradeTimerProps> = ({
               Go to Home
             </Button>
           </div>
-        ) : (
-          <div className="flex flex-col items-center justify-center py-8">
-            <div className="relative w-36 h-36 mb-4">
-              <svg className="w-full h-full" viewBox="0 0 100 100">
-                <circle 
-                  cx="50" 
-                  cy="50" 
-                  r="45" 
-                  fill="transparent" 
-                  stroke="#2C2F3E" 
-                  strokeWidth="8"
-                />
-                <circle 
-                  cx="50" 
-                  cy="50" 
-                  r="45" 
-                  fill="transparent" 
-                  stroke="#0E6FFF" 
-                  strokeWidth="8" 
-                  strokeDasharray={circumference} 
-                  strokeDashoffset={circumference * (1 - progress)}
-                  transform="rotate(-90 50 50)"
-                />
-              </svg>
-              <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-5xl font-bold">{timeRemaining}</span>
-              </div>
+        </DialogContent>
+      </Dialog>
+    );
+  }
+
+  // Trade Progress Modal - Design 2
+  return (
+    <Dialog open={open} onOpenChange={(open) => !open && handleClose()}>
+      <DialogContent className="bg-[#1E2032] border-none max-w-[300px] mx-auto rounded-2xl text-white">
+        <div className="flex flex-col items-center justify-center py-8">
+          <div className="relative w-36 h-36 mb-4">
+            <svg className="w-full h-full" viewBox="0 0 100 100">
+              <circle 
+                cx="50" 
+                cy="50" 
+                r="45" 
+                fill="transparent" 
+                stroke="#2C2F3E" 
+                strokeWidth="8"
+              />
+              <circle 
+                cx="50" 
+                cy="50" 
+                r="45" 
+                fill="transparent" 
+                stroke="#0E6FFF" 
+                strokeWidth="8" 
+                strokeDasharray={circumference} 
+                strokeDashoffset={circumference * (1 - progress)}
+                transform="rotate(-90 50 50)"
+              />
+            </svg>
+            <div className="absolute inset-0 flex items-center justify-center">
+              <span className="text-5xl font-bold">{timeRemaining}</span>
             </div>
-            <div className="text-center mt-2">
-              <p className="text-gray-400">Starting price: ${startPrice.toFixed(2)}</p>
-              <p className="text-gray-400">Current price: ${currentPrice.toFixed(2)}</p>
-            </div>
-            <Button 
-              variant="outline" 
-              className="mt-4 px-8 py-2 rounded-full text-gray-400 border-gray-700"
-              onClick={handleClose}
-            >
-              Go to home
-            </Button>
           </div>
-        )}
+          <div className="text-center mt-2">
+            <p className="text-gray-400">Starting price: ${startPrice.toFixed(2)}</p>
+            <p className="text-gray-400">Current price: ${currentPrice.toFixed(2)}</p>
+          </div>
+          <Button 
+            variant="outline" 
+            className="mt-4 px-8 py-2 rounded-full text-gray-400 border-gray-700"
+            onClick={handleClose}
+          >
+            Go to home
+          </Button>
+        </div>
       </DialogContent>
     </Dialog>
   );
