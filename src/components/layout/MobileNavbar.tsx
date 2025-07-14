@@ -11,33 +11,34 @@ const MobileNavbar = () => {
   };
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-20 bg-[#0F1219] backdrop-blur-lg border-t border-border/20 h-16 pb-safe">
-      <div className="flex justify-between items-center h-full px-8 max-w-md mx-auto">
+    <nav className="fixed bottom-0 left-0 right-0 z-20 bg-white/95 backdrop-blur-lg border-t border-gray-200/50 shadow-lg">
+      <div className="flex justify-between items-center h-16 px-6 max-w-md mx-auto">
         <NavItem 
           to="/home" 
-          icon={<Home className="h-6 w-6" />} 
+          icon={<Home className="h-5 w-5" />} 
           label="Home" 
           active={isActive('/home') || isActive('/')} 
         />
         <NavItem 
           to="/market" 
-          icon={<LayoutDashboard className="h-6 w-6" />} 
+          icon={<LayoutDashboard className="h-5 w-5" />} 
           label="Market" 
           active={isActive('/market')} 
         />
         <NavItem 
           to="/team" 
-          icon={<Users className="h-6 w-6" />} 
+          icon={<Users className="h-5 w-5" />} 
           label="Team" 
           active={isActive('/team')} 
         />
         <NavItem 
           to="/profile" 
-          icon={<UserCircle className="h-6 w-6" />} 
+          icon={<UserCircle className="h-5 w-5" />} 
           label="Profile" 
           active={isActive('/profile')} 
         />
       </div>
+      <div className="h-safe"></div>
     </nav>
   );
 };
@@ -54,25 +55,27 @@ const NavItem = ({ to, icon, label, active }: NavItemProps) => {
     <Link 
       to={to} 
       className={cn(
-        "flex flex-col items-center justify-center transition-all",
-        active ? "scale-110" : ""
+        "flex flex-col items-center justify-center transition-all duration-300 py-2 px-3 rounded-xl relative group",
+        active ? "scale-105" : "hover:scale-105"
       )}
     >
       <div className={cn(
-        "flex items-center justify-center rounded-full transition-colors",
+        "flex items-center justify-center rounded-full p-2 transition-all duration-300",
         active 
-          ? "text-primary" 
-          : "text-muted-foreground"
+          ? "text-white bg-gradient-to-r from-emerald-500 to-green-600 shadow-lg" 
+          : "text-gray-600 group-hover:text-emerald-600 group-hover:bg-emerald-50"
       )}>
         {icon}
       </div>
       <span className={cn(
-        "text-xs mt-0.5",
-        active ? "text-primary" : "text-muted-foreground"
+        "text-xs mt-1 font-medium transition-colors duration-300",
+        active ? "text-emerald-600" : "text-gray-600 group-hover:text-emerald-600"
       )}>
         {label}
       </span>
-      {active && <div className="w-1 h-1 rounded-full bg-primary mt-0.5"></div>}
+      {active && (
+        <div className="absolute -bottom-1 w-1 h-1 rounded-full bg-emerald-500 animate-pulse"></div>
+      )}
     </Link>
   );
 };

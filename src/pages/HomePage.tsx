@@ -9,7 +9,7 @@ import {
   EyeOff,
   ArrowUpRight,
   ArrowDownRight,
-  CreditCard,
+  Wallet,
   Send,
   BarChart3,
   Users,
@@ -17,15 +17,18 @@ import {
   Star,
   Activity,
   DollarSign,
-  Percent,
-  Clock,
-  Award,
   Shield,
   Zap,
   Target,
   Globe,
+  CheckCircle2,
+  Sparkles,
+  Crown,
+  Award,
   Lock,
-  CheckCircle2
+  PieChart,
+  LineChart,
+  Clock
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getMarketData } from "@/services/api";
@@ -104,88 +107,111 @@ const HomePage = () => {
   const totalBalance = walletAmount + incomeAmount;
 
   const quickActions = [
-    { icon: CreditCard, label: "Deposit", color: "bg-green-500", link: "/deposit" },
-    { icon: Send, label: "Withdraw", color: "bg-blue-500", link: "/withdraw" },
-    { icon: BarChart3, label: "Trade", color: "bg-purple-500", link: "/market" },
-    { icon: Users, label: "Refer", color: "bg-orange-500", link: "/invite" }
+    { icon: Wallet, label: "Deposit", color: "from-emerald-500 to-emerald-600", link: "/deposit" },
+    { icon: Send, label: "Withdraw", color: "from-blue-500 to-blue-600", link: "/withdraw" },
+    { icon: BarChart3, label: "Trade", color: "from-purple-500 to-purple-600", link: "/market" },
+    { icon: Users, label: "Invite", color: "from-orange-500 to-orange-600", link: "/invite" }
   ];
 
   const stats = [
-    { label: "24h Volume", value: "₹2.4B", change: "+12.5%", positive: true },
-    { label: "Active Traders", value: "125K+", change: "+8.2%", positive: true },
-    { label: "Markets", value: "150+", change: "New", positive: true },
-    { label: "Security", value: "100%", change: "Secured", positive: true }
+    { label: "24h Volume", value: "₹2.4B", change: "+12.5%", positive: true, icon: Activity },
+    { label: "Active Users", value: "125K+", change: "+8.2%", positive: true, icon: Users },
+    { label: "Security Level", value: "AAA+", change: "Verified", positive: true, icon: Shield },
+    { label: "Uptime", value: "99.9%", change: "Reliable", positive: true, icon: Zap }
   ];
 
   const features = [
-    { icon: Shield, title: "Bank-grade Security", desc: "Advanced encryption" },
-    { icon: Activity, title: "Real-time Trading", desc: "Lightning fast execution" },
-    { icon: Globe, title: "Global Markets", desc: "150+ cryptocurrencies" },
-    { icon: Award, title: "Trusted Platform", desc: "Used by millions" }
+    { icon: Crown, title: "Premium Trading", desc: "Advanced tools & features", gradient: "from-yellow-400 to-amber-500" },
+    { icon: Shield, title: "Bank Security", desc: "Military-grade encryption", gradient: "from-green-400 to-emerald-500" },
+    { icon: Sparkles, title: "AI Analytics", desc: "Smart trading insights", gradient: "from-purple-400 to-violet-500" },
+    { icon: Globe, title: "Global Access", desc: "Trade anywhere, anytime", gradient: "from-blue-400 to-cyan-500" }
   ];
   
   return (
     <MobileLayout>
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-green-50/30">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-green-50/30 overflow-hidden">
         <WelcomeInfoModal />
         
-        <div className="px-4 py-6 space-y-6">
-          {/* Professional Header */}
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">Portfolio</h1>
-              <p className="text-gray-600 text-sm">Professional Trading Dashboard</p>
+        {/* Animated Background Elements */}
+        <div className="fixed inset-0 pointer-events-none">
+          <div className="absolute top-20 left-4 w-32 h-32 bg-gradient-to-r from-emerald-200/20 to-green-200/20 rounded-full blur-3xl animate-float"></div>
+          <div className="absolute top-40 right-8 w-24 h-24 bg-gradient-to-r from-blue-200/20 to-cyan-200/20 rounded-full blur-2xl animate-float" style={{animationDelay: '2s'}}></div>
+          <div className="absolute bottom-40 left-8 w-20 h-20 bg-gradient-to-r from-purple-200/20 to-pink-200/20 rounded-full blur-2xl animate-float" style={{animationDelay: '4s'}}></div>
+        </div>
+        
+        <div className="px-4 py-6 space-y-6 relative z-10">
+          {/* Premium Header */}
+          <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 bg-gradient-to-r from-emerald-500 to-green-600 rounded-xl flex items-center justify-center shadow-lg">
+                <Crown className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
+                  Trading Hub
+                </h1>
+                <p className="text-sm text-gray-600 flex items-center gap-1">
+                  <Sparkles className="w-3 h-3" />
+                  Premium Experience
+                </p>
+              </div>
             </div>
             <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm" className="rounded-full">
-                <Bell className="w-4 h-4" />
+              <Button variant="outline" size="sm" className="rounded-full border-emerald-200 hover:bg-emerald-50">
+                <Bell className="w-4 h-4 text-emerald-600" />
               </Button>
             </div>
           </div>
 
-          {/* Balance Overview */}
-          <Card className="bg-gradient-to-r from-green-600 to-emerald-600 text-white border-0">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <div>
-                  <p className="text-green-100 text-sm font-medium">Total Portfolio Value</p>
-                  <div className="flex items-center gap-2 mt-1">
-                    <span className="text-3xl font-bold">
-                      {showBalance ? `₹${totalBalance.toLocaleString()}` : "••••••"}
-                    </span>
-                    <button 
-                      onClick={() => setShowBalance(!showBalance)}
-                      className="p-1 rounded-full hover:bg-white/10"
-                    >
-                      {showBalance ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
-                    </button>
+          {/* Balance Card with Premium Design */}
+          <Card className="bg-gradient-to-r from-emerald-600 via-emerald-700 to-green-600 text-white border-0 shadow-2xl overflow-hidden relative">
+            <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent"></div>
+            <CardContent className="p-6 relative z-10">
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+                    <PieChart className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <p className="text-emerald-100 text-sm font-medium">Total Portfolio</p>
+                    <div className="flex items-center gap-2 mt-1">
+                      <span className="text-3xl font-bold">
+                        {showBalance ? `₹${totalBalance.toLocaleString()}` : "••••••"}
+                      </span>
+                      <button 
+                        onClick={() => setShowBalance(!showBalance)}
+                        className="p-1.5 rounded-full hover:bg-white/10 transition-colors"
+                      >
+                        {showBalance ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+                      </button>
+                    </div>
                   </div>
                 </div>
                 <div className="text-right">
-                  <div className="flex items-center text-green-100">
-                    <ArrowUpRight className="w-4 h-4 mr-1" />
-                    <span className="text-sm font-medium">+12.5%</span>
+                  <div className="flex items-center text-emerald-100 mb-1">
+                    <TrendingUp className="w-4 h-4 mr-1" />
+                    <span className="text-lg font-semibold">+12.5%</span>
                   </div>
-                  <p className="text-xs text-green-200">Last 24h</p>
+                  <p className="text-xs text-emerald-200">24h Change</p>
                 </div>
               </div>
               
               <div className="grid grid-cols-2 gap-4">
-                <div className="bg-white/10 rounded-xl p-3">
-                  <div className="flex items-center gap-2 mb-1">
-                    <DollarSign className="w-4 h-4" />
-                    <span className="text-sm">Available</span>
+                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Wallet className="w-4 h-4 text-emerald-200" />
+                    <span className="text-sm text-emerald-200">Available Balance</span>
                   </div>
-                  <p className="font-semibold">
+                  <p className="text-xl font-bold">
                     {showBalance ? `₹${walletAmount.toLocaleString()}` : "••••"}
                   </p>
                 </div>
-                <div className="bg-white/10 rounded-xl p-3">
-                  <div className="flex items-center gap-2 mb-1">
-                    <TrendingUp className="w-4 h-4" />
-                    <span className="text-sm">P&L</span>
+                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+                  <div className="flex items-center gap-2 mb-2">
+                    <LineChart className="w-4 h-4 text-emerald-200" />
+                    <span className="text-sm text-emerald-200">Total Profit</span>
                   </div>
-                  <p className="font-semibold">
+                  <p className="text-xl font-bold">
                     {showBalance ? `₹${incomeAmount.toLocaleString()}` : "••••"}
                   </p>
                 </div>
@@ -193,43 +219,59 @@ const HomePage = () => {
             </CardContent>
           </Card>
 
-          {/* Quick Actions */}
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-lg">Quick Actions</CardTitle>
+          {/* Quick Actions with Premium Icons */}
+          <Card className="bg-white/90 backdrop-blur-sm border border-gray-200/50 shadow-xl">
+            <CardHeader className="pb-4">
+              <CardTitle className="text-lg flex items-center gap-2">
+                <Zap className="w-5 h-5 text-emerald-600" />
+                Quick Actions
+              </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-4 gap-3">
+              <div className="grid grid-cols-2 gap-4">
                 {quickActions.map((action, idx) => (
                   <Link 
                     key={idx}
                     to={action.link}
-                    className="flex flex-col items-center p-4 rounded-xl bg-gray-50 hover:bg-gray-100 transition-all duration-200 hover:scale-105"
+                    className="group p-4 rounded-xl bg-gradient-to-br from-gray-50 to-white hover:from-gray-100 hover:to-gray-50 transition-all duration-300 hover:scale-105 hover:shadow-lg border border-gray-200/50"
                   >
-                    <div className={cn("w-12 h-12 rounded-full flex items-center justify-center mb-2", action.color)}>
+                    <div className={cn(
+                      "w-12 h-12 rounded-xl flex items-center justify-center mb-3 bg-gradient-to-r transition-all duration-300 group-hover:scale-110",
+                      action.color
+                    )}>
                       <action.icon className="w-6 h-6 text-white" />
                     </div>
-                    <span className="text-xs font-medium text-gray-700">{action.label}</span>
+                    <span className="text-sm font-semibold text-gray-700 group-hover:text-gray-900 transition-colors">
+                      {action.label}
+                    </span>
                   </Link>
                 ))}
               </div>
             </CardContent>
           </Card>
 
-          {/* Market Stats */}
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-lg">Market Overview</CardTitle>
+          {/* Market Stats with Animations */}
+          <Card className="bg-white/90 backdrop-blur-sm border border-gray-200/50 shadow-xl">
+            <CardHeader className="pb-4">
+              <CardTitle className="text-lg flex items-center gap-2">
+                <Activity className="w-5 h-5 text-emerald-600" />
+                Market Insights
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-2 gap-4">
                 {stats.map((stat, idx) => (
-                  <div key={idx} className="bg-gray-50 rounded-xl p-4">
-                    <p className="text-xs text-gray-600 mb-1">{stat.label}</p>
+                  <div key={idx} className="group p-4 rounded-xl bg-gradient-to-br from-gray-50 to-white border border-gray-200/50 hover:shadow-lg transition-all duration-300 hover:scale-105">
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-emerald-500 to-green-600 flex items-center justify-center">
+                        <stat.icon className="w-4 h-4 text-white" />
+                      </div>
+                      <p className="text-xs text-gray-600 font-medium">{stat.label}</p>
+                    </div>
                     <p className="text-lg font-bold text-gray-900">{stat.value}</p>
                     <div className={cn(
-                      "text-xs font-medium flex items-center gap-1",
-                      stat.positive ? "text-green-600" : "text-red-500"
+                      "text-xs font-medium flex items-center gap-1 mt-1",
+                      stat.positive ? "text-emerald-600" : "text-red-500"
                     )}>
                       {stat.positive ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
                       {stat.change}
@@ -241,11 +283,14 @@ const HomePage = () => {
           </Card>
 
           {/* Top Cryptocurrencies */}
-          <Card>
-            <CardHeader className="pb-3">
+          <Card className="bg-white/90 backdrop-blur-sm border border-gray-200/50 shadow-xl">
+            <CardHeader className="pb-4">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-lg">Top Cryptocurrencies</CardTitle>
-                <Link to="/market" className="text-green-600 text-sm font-medium hover:text-green-700">
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Star className="w-5 h-5 text-emerald-600" />
+                  Top Cryptocurrencies
+                </CardTitle>
+                <Link to="/market" className="text-emerald-600 text-sm font-medium hover:text-emerald-700 transition-colors">
                   View All
                 </Link>
               </div>
@@ -254,16 +299,16 @@ const HomePage = () => {
               {isLoading ? (
                 <div className="space-y-4">
                   {Array(4).fill(0).map((_, idx) => (
-                    <div key={idx} className="animate-pulse flex items-center justify-between p-3 bg-gray-50 rounded-xl">
+                    <div key={idx} className="animate-pulse flex items-center justify-between p-4 bg-gray-50 rounded-xl">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 bg-gray-200 rounded-full"></div>
                         <div>
-                          <div className="h-4 w-20 bg-gray-200 rounded mb-1"></div>
+                          <div className="h-4 w-20 bg-gray-200 rounded mb-2"></div>
                           <div className="h-3 w-12 bg-gray-200 rounded"></div>
                         </div>
                       </div>
                       <div className="text-right">
-                        <div className="h-4 w-16 bg-gray-200 rounded mb-1"></div>
+                        <div className="h-4 w-16 bg-gray-200 rounded mb-2"></div>
                         <div className="h-3 w-10 bg-gray-200 rounded"></div>
                       </div>
                     </div>
@@ -275,14 +320,14 @@ const HomePage = () => {
                     <Link
                       key={crypto.id}
                       to={`/coin/${crypto.id}`}
-                      className="flex items-center justify-between p-3 rounded-xl hover:bg-gray-50 transition-all duration-200"
+                      className="group flex items-center justify-between p-4 rounded-xl hover:bg-gray-50 transition-all duration-300 hover:shadow-lg border border-transparent hover:border-gray-200"
                     >
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
+                        <div className="w-10 h-10 bg-gradient-to-r from-gray-100 to-gray-200 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
                           <img 
                             src={crypto.logo} 
                             alt={crypto.name} 
-                            className="w-6 h-6"
+                            className="w-6 h-6 rounded-full"
                             onError={(e) => {
                               const target = e.target as HTMLImageElement;
                               target.src = `https://raw.githubusercontent.com/Pymmdrza/CryptoIconsCDN/mainx/PNG/${crypto.symbol.toUpperCase()}.png`;
@@ -290,7 +335,7 @@ const HomePage = () => {
                           />
                         </div>
                         <div>
-                          <div className="font-semibold text-gray-900">{crypto.name}</div>
+                          <div className="font-semibold text-gray-900 group-hover:text-emerald-700 transition-colors">{crypto.name}</div>
                           <div className="text-sm text-gray-500">{crypto.symbol.toUpperCase()}</div>
                         </div>
                       </div>
@@ -299,8 +344,8 @@ const HomePage = () => {
                           ₹{crypto.price.toLocaleString()}
                         </div>
                         <div className={cn(
-                          "text-sm flex items-center justify-end",
-                          (crypto.change || 0) >= 0 ? "text-green-600" : "text-red-500"
+                          "text-sm flex items-center justify-end font-medium",
+                          (crypto.change || 0) >= 0 ? "text-emerald-600" : "text-red-500"
                         )}>
                           {(crypto.change || 0) >= 0 ? (
                             <ArrowUpRight className="w-3 h-3 mr-1" />
@@ -317,44 +362,53 @@ const HomePage = () => {
             </CardContent>
           </Card>
 
-          {/* Platform Features */}
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-lg">Why Choose Our Platform</CardTitle>
+          {/* Premium Features */}
+          <Card className="bg-white/90 backdrop-blur-sm border border-gray-200/50 shadow-xl">
+            <CardHeader className="pb-4">
+              <CardTitle className="text-lg flex items-center gap-2">
+                <Award className="w-5 h-5 text-emerald-600" />
+                Premium Features
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-2 gap-4">
                 {features.map((feature, idx) => (
-                  <div key={idx} className="flex items-start gap-3 p-3 bg-gray-50 rounded-xl">
-                    <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <feature.icon className="w-4 h-4 text-green-600" />
+                  <div key={idx} className="group p-4 rounded-xl bg-gradient-to-br from-gray-50 to-white border border-gray-200/50 hover:shadow-lg transition-all duration-300 hover:scale-105">
+                    <div className={cn(
+                      "w-10 h-10 rounded-xl flex items-center justify-center mb-3 bg-gradient-to-r group-hover:scale-110 transition-transform",
+                      feature.gradient
+                    )}>
+                      <feature.icon className="w-5 h-5 text-white" />
                     </div>
-                    <div>
-                      <h4 className="font-semibold text-sm text-gray-900">{feature.title}</h4>
-                      <p className="text-xs text-gray-600">{feature.desc}</p>
-                    </div>
+                    <h4 className="font-semibold text-sm text-gray-900 mb-1 group-hover:text-emerald-700 transition-colors">
+                      {feature.title}
+                    </h4>
+                    <p className="text-xs text-gray-600">{feature.desc}</p>
                   </div>
                 ))}
               </div>
             </CardContent>
           </Card>
 
-          {/* Trading Tips */}
-          <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
-            <CardContent className="p-6">
+          {/* Trading Tip with Animation */}
+          <Card className="bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 border-blue-200/50 shadow-xl overflow-hidden relative">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-l from-blue-200/20 to-transparent rounded-full blur-2xl"></div>
+            <CardContent className="p-6 relative z-10">
               <div className="flex items-start gap-4">
-                <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
-                  <Star className="w-5 h-5 text-white" />
+                <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
+                  <Target className="w-6 h-6 text-white" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="font-semibold text-gray-900 mb-2">Pro Trading Tip</h3>
-                  <p className="text-sm text-gray-600 mb-4">
-                    Diversify your portfolio across different cryptocurrencies to manage risk effectively. 
-                    Set stop-loss orders to protect your investments.
+                  <h3 className="font-bold text-gray-900 mb-2 flex items-center gap-2">
+                    <Clock className="w-4 h-4 text-blue-600" />
+                    Pro Trading Insight
+                  </h3>
+                  <p className="text-sm text-gray-700 mb-4 leading-relaxed">
+                    Diversification is key to successful trading. Spread your investments across different cryptocurrencies and set stop-loss orders to minimize risks.
                   </p>
-                  <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-xl">
-                    <Target className="w-4 h-4 mr-2" />
-                    Learn Advanced Trading
+                  <Button className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl font-semibold transition-all duration-300 hover:scale-105 shadow-lg">
+                    <Sparkles className="w-4 h-4 mr-2" />
+                    Unlock Advanced Analytics
                   </Button>
                 </div>
               </div>
@@ -362,7 +416,7 @@ const HomePage = () => {
           </Card>
 
           {/* Bottom spacing for navigation */}
-          <div className="h-4"></div>
+          <div className="h-20"></div>
         </div>
       </div>
     </MobileLayout>
