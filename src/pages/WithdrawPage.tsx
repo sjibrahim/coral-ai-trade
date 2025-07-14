@@ -136,33 +136,33 @@ const WithdrawPage = () => {
           <div className="absolute bottom-20 right-20 w-64 h-64 bg-green-400/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
         </div>
 
-        <div className="relative z-10 p-4 space-y-4">
+        <div className="relative z-10 p-3 space-y-3">
           {/* Balance Header */}
           <motion.div 
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="text-center py-4"
+            className="text-center py-3"
           >
-            <Card className="bg-gradient-to-r from-emerald-600 via-emerald-700 to-green-600 text-white border-0 shadow-xl">
-              <CardContent className="p-4">
-                <div className="flex items-center justify-center mb-3">
-                  <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mr-3">
-                    <TrendingDown className="w-6 h-6 text-white" />
+            <Card className="bg-gradient-to-r from-emerald-600 via-emerald-700 to-green-600 text-white border-0 shadow-lg">
+              <CardContent className="p-3">
+                <div className="flex items-center justify-center mb-2">
+                  <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center mr-2">
+                    <TrendingDown className="w-5 h-5 text-white" />
                   </div>
                   <div>
-                    <h1 className="text-lg font-bold">Withdraw Earnings</h1>
+                    <h1 className="text-base font-bold">Withdraw Earnings</h1>
                     <p className="text-xs text-emerald-100">Transfer your profits securely</p>
                   </div>
                 </div>
                 
-                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 border border-white/20">
+                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-2 border border-white/20">
                   <div className="flex items-center justify-center mb-1">
                     <Wallet className="w-4 h-4 text-emerald-200 mr-2" />
                     <span className="text-xs text-emerald-200">Available Balance</span>
                   </div>
-                  <p className="text-xl font-bold text-white">₹{availableBalance.toLocaleString()}</p>
+                  <p className="text-lg font-bold text-white">₹{availableBalance.toLocaleString()}</p>
                   
-                  <div className="flex justify-center space-x-4 mt-2 text-xs">
+                  <div className="flex justify-center space-x-3 mt-2 text-xs">
                     <div className="flex items-center text-green-200">
                       <Target className="w-3 h-3 mr-1" />
                       <span>Min: ₹{minWithdrawal}</span>
@@ -184,7 +184,7 @@ const WithdrawPage = () => {
               animate={{ opacity: 1, x: 0 }}
             >
               <Card className="bg-red-50 border border-red-200">
-                <CardContent className="p-3">
+                <CardContent className="p-2">
                   <p className="text-red-600 text-xs">{error}</p>
                 </CardContent>
               </Card>
@@ -198,9 +198,9 @@ const WithdrawPage = () => {
             transition={{ delay: 0.1 }}
           >
             <Card className="bg-white/90 backdrop-blur-sm border border-emerald-200/50 shadow-lg">
-              <CardContent className="p-4">
-                <div className="flex items-center mb-3">
-                  <div className="w-6 h-6 bg-gradient-to-br from-rose-500 to-pink-600 rounded-lg flex items-center justify-center mr-2">
+              <CardContent className="p-3">
+                <div className="flex items-center mb-2">
+                  <div className="w-5 h-5 bg-gradient-to-br from-rose-500 to-pink-600 rounded-lg flex items-center justify-center mr-2">
                     <ArrowDown className="w-3 h-3 text-white" />
                   </div>
                   <h3 className="text-sm font-semibold text-gray-800">Withdrawal Amount</h3>
@@ -224,8 +224,8 @@ const WithdrawPage = () => {
             transition={{ delay: 0.2 }}
           >
             <Card className="bg-white/90 backdrop-blur-sm border border-emerald-200/50 shadow-lg">
-              <CardContent className="p-4">
-                <h3 className="text-sm font-semibold text-gray-800 mb-3">Transaction Summary</h3>
+              <CardContent className="p-3">
+                <h3 className="text-sm font-semibold text-gray-800 mb-2">Transaction Summary</h3>
                 <div className="space-y-2">
                   <div className="flex justify-between items-center text-xs">
                     <span className="text-gray-600">Withdrawal Amount</span>
@@ -252,15 +252,15 @@ const WithdrawPage = () => {
             transition={{ delay: 0.3 }}
           >
             <Card className="bg-white/90 backdrop-blur-sm border border-emerald-200/50 shadow-lg">
-              <CardContent className="p-4">
-                <div className="flex items-center mb-3">
-                  <div className="w-6 h-6 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center mr-2">
+              <CardContent className="p-3">
+                <div className="flex items-center mb-2">
+                  <div className="w-5 h-5 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center mr-2">
                     <CreditCard className="w-3 h-3 text-white" />
                   </div>
                   <h3 className="text-sm font-semibold text-gray-800">Destination Bank</h3>
                 </div>
                 
-                <div className="bg-gray-50 rounded-lg p-3 space-y-2">
+                <div className="bg-gray-50 rounded-lg p-2 space-y-1">
                   {[
                     { label: "Account Holder", value: accountName },
                     { label: "Account Number", value: bankAccount },
@@ -284,15 +284,26 @@ const WithdrawPage = () => {
             transition={{ delay: 0.4 }}
             className="pt-2"
           >
-            <ConfirmButton
+            <button
               onClick={handleConfirm}
-              disabled={!isValidAmount || bankAccount === "Not set" || ifscCode === "Not set"}
-              isLoading={isProcessing}
-              text="PROCESS WITHDRAWAL"
-              className="w-full h-12 bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white font-bold text-sm rounded-xl shadow-lg border-0"
-            />
+              disabled={!isValidAmount || bankAccount === "Not set" || ifscCode === "Not set" || isProcessing}
+              className={`w-full h-11 rounded-xl font-bold text-sm shadow-lg border-0 transition-all ${
+                isValidAmount && bankAccount !== "Not set" && ifscCode !== "Not set" && !isProcessing
+                  ? "bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white"
+                  : "bg-gray-300 text-gray-500 cursor-not-allowed"
+              }`}
+            >
+              {isProcessing ? (
+                <div className="flex items-center justify-center">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                  Processing...
+                </div>
+              ) : (
+                "PROCESS WITHDRAWAL"
+              )}
+            </button>
             
-            <div className="flex items-center justify-center mt-3 text-xs text-gray-500">
+            <div className="flex items-center justify-center mt-2 text-xs text-gray-500">
               <Clock className="w-3 h-3 mr-1" />
               <span>Processed within 24 hours on business days</span>
             </div>
