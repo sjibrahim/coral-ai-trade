@@ -227,36 +227,44 @@ const BankDetailsPage = () => {
   
   return (
     <MobileLayout showBackButton title="Bank Details" hideNavbar>
-      <div className="min-h-screen bg-gradient-to-br from-indigo-950 via-purple-950 to-pink-950">
-        {/* Animated Background */}
+      <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-green-50 relative overflow-hidden">
+        {/* Background Elements */}
         <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-0 right-0 w-72 h-72 bg-indigo-500/20 rounded-full blur-3xl animate-pulse"></div>
-          <div className="absolute bottom-0 left-0 w-72 h-72 bg-purple-500/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
+          <div className="absolute top-0 right-0 w-72 h-72 bg-emerald-400/20 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute bottom-0 left-0 w-72 h-72 bg-green-400/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
         </div>
 
-        <div className="relative z-10 p-4 space-y-6">
-          {/* Hero Section */}
+        <div className="relative z-10 p-4 space-y-4">
+          {/* Header Card */}
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-center py-8"
+            className="text-center py-4"
           >
-            <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-blue-400 to-purple-600 rounded-full flex items-center justify-center shadow-2xl">
-              <CreditCard className="w-10 h-10 text-white" />
-            </div>
-            <h1 className="text-3xl font-bold text-white mb-2">Bank Account</h1>
-            <p className="text-purple-200 text-sm">Secure your withdrawal destination</p>
-            
-            <div className="flex justify-center items-center mt-4 space-x-4 text-xs">
-              <div className="flex items-center text-green-300">
-                <Shield className="w-3 h-3 mr-1" />
-                <span>256-bit Encrypted</span>
-              </div>
-              <div className="flex items-center text-blue-300">
-                <CheckCircle className="w-3 h-3 mr-1" />
-                <span>Bank Verified</span>
-              </div>
-            </div>
+            <Card className="bg-gradient-to-r from-emerald-600 via-emerald-700 to-green-600 text-white border-0 shadow-xl">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-center mb-3">
+                  <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mr-3">
+                    <CreditCard className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <h1 className="text-lg font-bold">Bank Account</h1>
+                    <p className="text-xs text-emerald-100">Secure your withdrawal destination</p>
+                  </div>
+                </div>
+                
+                <div className="flex justify-center items-center gap-4 text-xs">
+                  <div className="flex items-center text-green-200">
+                    <Shield className="w-3 h-3 mr-1" />
+                    <span>256-bit Encrypted</span>
+                  </div>
+                  <div className="flex items-center text-emerald-200">
+                    <CheckCircle className="w-3 h-3 mr-1" />
+                    <span>Bank Verified</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </motion.div>
 
           {isLoading ? (
@@ -265,22 +273,22 @@ const BankDetailsPage = () => {
               animate={{ opacity: 1 }}
               className="flex justify-center items-center py-20"
             >
-              <Loader2 className="w-8 h-8 animate-spin text-purple-400" />
+              <Loader2 className="w-8 h-8 animate-spin text-emerald-500" />
             </motion.div>
           ) : isEditing ? (
             <motion.form 
               onSubmit={handleSubmit} 
-              className="space-y-6"
+              className="space-y-4"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
             >
               {/* Form Fields */}
-              <Card className="bg-white/10 backdrop-blur-xl border-0 shadow-2xl">
-                <CardContent className="p-6 space-y-6">
+              <Card className="bg-white/90 backdrop-blur-sm border border-emerald-200/50 shadow-lg">
+                <CardContent className="p-4 space-y-4">
                   {/* Account Holder Name */}
                   <div>
-                    <Label htmlFor="account_holder_name" className="text-white mb-2 flex items-center">
-                      <User className="w-4 h-4 mr-2" />
+                    <Label htmlFor="account_holder_name" className="text-gray-700 text-xs mb-1 flex items-center">
+                      <User className="w-3 h-3 mr-1" />
                       Account Holder Name
                     </Label>
                     <Input
@@ -288,15 +296,15 @@ const BankDetailsPage = () => {
                       name="account_holder_name"
                       value={formData.account_holder_name}
                       onChange={handleChange}
-                      className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
+                      className="bg-white border-gray-200 text-gray-900 text-sm"
                       required
                     />
                   </div>
 
                   {/* Account Number */}
                   <div>
-                    <Label htmlFor="account_number" className="text-white mb-2 flex items-center">
-                      <Hash className="w-4 h-4 mr-2" />
+                    <Label htmlFor="account_number" className="text-gray-700 text-xs mb-1 flex items-center">
+                      <Hash className="w-3 h-3 mr-1" />
                       Account Number
                     </Label>
                     <Input
@@ -304,16 +312,16 @@ const BankDetailsPage = () => {
                       name="account_number"
                       value={formData.account_number}
                       onChange={handleChange}
-                      className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
+                      className="bg-white border-gray-200 text-gray-900 text-sm"
                       required
                     />
                   </div>
                   
                   {/* IFSC Code */}
                   <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <Label htmlFor="account_ifsc" className="text-white flex items-center">
-                        <Hash className="w-4 h-4 mr-2" />
+                    <div className="flex items-center justify-between mb-1">
+                      <Label htmlFor="account_ifsc" className="text-gray-700 text-xs flex items-center">
+                        <Hash className="w-3 h-3 mr-1" />
                         IFSC Code
                       </Label>
                       <Button 
@@ -321,16 +329,16 @@ const BankDetailsPage = () => {
                         onClick={verifyIFSC}
                         variant="outline"
                         size="sm"
-                        className={`text-xs px-3 py-1 ${
+                        className={`text-xs px-2 py-1 h-6 ${
                           isIfscVerified 
-                            ? "bg-green-500/20 text-green-300 border-green-400/30" 
-                            : "bg-purple-500/20 text-purple-300 border-purple-400/30"
+                            ? "bg-green-50 text-green-700 border-green-200" 
+                            : "bg-emerald-50 text-emerald-700 border-emerald-200"
                         }`}
                         disabled={ifscVerifying || !formData.account_ifsc}
                       >
                         {ifscVerifying ? (
                           <span className="flex items-center">
-                            <Loader2 size={12} className="animate-spin mr-1" />
+                            <Loader2 size={10} className="animate-spin mr-1" />
                             Verifying...
                           </span>
                         ) : isIfscVerified ? "Verified ✓" : "Verify IFSC"}
@@ -341,22 +349,22 @@ const BankDetailsPage = () => {
                       name="account_ifsc"
                       value={formData.account_ifsc}
                       onChange={handleChange}
-                      className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
+                      className="bg-white border-gray-200 text-gray-900 text-sm"
                       required
                     />
                     
                     {/* IFSC Verification Results */}
                     {ifscError && (
-                      <div className="mt-2 p-3 bg-red-500/20 border border-red-400/30 rounded-lg">
-                        <p className="text-red-300 text-sm">{ifscError}</p>
+                      <div className="mt-2 p-2 bg-red-50 border border-red-200 rounded-lg">
+                        <p className="text-red-600 text-xs">{ifscError}</p>
                       </div>
                     )}
                   </div>
                   
                   {/* Bank Name */}
                   <div>
-                    <Label htmlFor="bank_name" className="text-white mb-2 flex items-center">
-                      <Building className="w-4 h-4 mr-2" />
+                    <Label htmlFor="bank_name" className="text-gray-700 text-xs mb-1 flex items-center">
+                      <Building className="w-3 h-3 mr-1" />
                       Bank Name
                     </Label>
                     <Input
@@ -364,7 +372,7 @@ const BankDetailsPage = () => {
                       name="bank_name"
                       value={formData.bank_name}
                       onChange={handleChange}
-                      className="bg-white/5 border-white/20 text-gray-400"
+                      className="bg-gray-50 border-gray-200 text-gray-600 text-sm"
                       required
                       readOnly
                       placeholder="Will be fetched automatically on IFSC verification"
@@ -374,24 +382,24 @@ const BankDetailsPage = () => {
               </Card>
               
               {/* Action Buttons */}
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-3">
                 <Button
                   type="button"
                   onClick={() => setIsEditing(false)}
                   variant="outline"
-                  className="bg-white/10 border-white/20 text-white hover:bg-white/20"
+                  className="bg-white border-gray-200 text-gray-700 hover:bg-gray-50 text-sm"
                   disabled={isSubmitting}
                 >
                   Cancel
                 </Button>
                 <Button
                   type="submit"
-                  className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white border-0"
+                  className="bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white border-0 text-sm"
                   disabled={isSubmitting || !validateForm()}
                 >
                   {isSubmitting ? (
                     <span className="flex items-center justify-center">
-                      <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                      <Loader2 className="w-3 h-3 animate-spin mr-1" />
                       Saving...
                     </span>
                   ) : (
@@ -403,30 +411,30 @@ const BankDetailsPage = () => {
           ) : (
             /* Display Mode */
             <motion.div 
-              className="space-y-6"
+              className="space-y-4"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
             >
-              <Card className="bg-white/10 backdrop-blur-xl border-0 shadow-2xl">
-                <CardContent className="p-6 space-y-6">
+              <Card className="bg-white/90 backdrop-blur-sm border border-emerald-200/50 shadow-lg">
+                <CardContent className="p-4 space-y-4">
                   {[
                     { icon: User, label: "Account Holder", value: accountDetails.account_holder_name },
                     { icon: Hash, label: "Account Number", value: accountDetails.account_number },
                     { icon: Hash, label: "IFSC Code", value: accountDetails.account_ifsc },
                     { icon: Building, label: "Bank Name", value: accountDetails.bank_name }
                   ].map((detail, idx) => (
-                    <div key={idx} className="flex items-center justify-between p-4 bg-white/5 rounded-xl">
+                    <div key={idx} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                       <div className="flex items-center">
-                        <div className="w-10 h-10 bg-gradient-to-br from-purple-400 to-pink-600 rounded-lg flex items-center justify-center mr-4">
-                          <detail.icon className="w-5 h-5 text-white" />
+                        <div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-green-600 rounded-lg flex items-center justify-center mr-3">
+                          <detail.icon className="w-4 h-4 text-white" />
                         </div>
                         <div>
-                          <p className="text-gray-300 text-sm">{detail.label}</p>
-                          <p className="text-white font-medium">{detail.value || 'Not set'}</p>
+                          <p className="text-gray-600 text-xs">{detail.label}</p>
+                          <p className="text-gray-900 font-medium text-sm">{detail.value || 'Not set'}</p>
                         </div>
                       </div>
                       {detail.value && (
-                        <CheckCircle className="w-5 h-5 text-green-400" />
+                        <CheckCircle className="w-4 h-4 text-green-500" />
                       )}
                     </div>
                   ))}
@@ -435,9 +443,9 @@ const BankDetailsPage = () => {
               
               <Button
                 onClick={() => setIsEditing(true)}
-                className="w-full h-14 bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white font-bold rounded-2xl shadow-2xl border-0"
+                className="w-full h-12 bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white font-bold rounded-xl shadow-lg border-0"
               >
-                <Edit3 className="w-5 h-5 mr-2" />
+                <Edit3 className="w-4 h-4 mr-2" />
                 {accountDetails.account_number ? 'Edit Bank Details' : 'Add Bank Details'}
               </Button>
             </motion.div>
