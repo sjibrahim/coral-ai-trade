@@ -59,13 +59,13 @@ const ProfilePage = () => {
                   </div>
                   <div className="flex-1">
                     <h1 className="text-xl font-bold">{user?.name || "User"}</h1>
-                    <div className="flex items-center text-emerald-100 text-sm mt-1">
+                    <div className="flex items-center text-emerald-100 text-base mt-1">
                       <Phone className="w-4 h-4 mr-1" />
                       <span>+91 {user?.phone || "N/A"}</span>
                     </div>
-                    <div className="flex items-center text-emerald-100 text-sm mt-1">
+                    <div className="flex items-center text-emerald-100 text-base mt-1">
                       <Calendar className="w-4 h-4 mr-1" />
-                      <span>Member since {user?.created_at ? new Date(user.created_at).getFullYear() : "N/A"}</span>
+                      <span>Member since 2024</span>
                     </div>
                   </div>
                 </div>
@@ -84,9 +84,9 @@ const ProfilePage = () => {
                 <div className="text-center">
                   <div className="flex items-center justify-center mb-2">
                     <Wallet className="w-5 h-5 text-emerald-600 mr-2" />
-                    <span className="text-gray-600 text-sm font-medium">Current Balance</span>
+                    <span className="text-gray-600 text-base font-medium">Current Balance</span>
                   </div>
-                  <p className="text-2xl font-bold text-gray-900">₹{user?.balance || "0.00"}</p>
+                  <p className="text-2xl font-bold text-gray-900">₹{user?.wallet || "0.00"}</p>
                 </div>
               </CardContent>
             </Card>
@@ -100,7 +100,7 @@ const ProfilePage = () => {
           >
             <Card className="bg-white/90 backdrop-blur-sm border border-emerald-200/50 shadow-lg">
               <CardContent className="p-4">
-                <h2 className="text-base font-semibold text-gray-800 mb-3">Quick Actions</h2>
+                <h2 className="text-lg font-semibold text-gray-800 mb-3">Quick Actions</h2>
                 <div className="grid grid-cols-2 gap-3">
                   {quickActions.map((action, index) => (
                     <Link
@@ -118,7 +118,7 @@ const ProfilePage = () => {
                           <div className={`w-10 h-10 mx-auto mb-2 bg-gradient-to-br ${action.color} rounded-lg flex items-center justify-center`}>
                             <action.icon className="w-5 h-5 text-white" />
                           </div>
-                          <span className="text-gray-700 text-sm font-medium">{action.label}</span>
+                          <span className="text-gray-700 text-base font-medium">{action.label}</span>
                         </div>
                       </motion.div>
                     </Link>
@@ -136,7 +136,7 @@ const ProfilePage = () => {
           >
             <Card className="bg-white/90 backdrop-blur-sm border border-emerald-200/50 shadow-lg">
               <CardContent className="p-4">
-                <h2 className="text-base font-semibold text-gray-800 mb-3">Account</h2>
+                <h2 className="text-lg font-semibold text-gray-800 mb-3">Account</h2>
                 <div className="space-y-2">
                   {menuItems.map((item, index) => (
                     <Link

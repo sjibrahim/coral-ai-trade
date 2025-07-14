@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
 import { Card, CardContent } from "@/components/ui/card";
 import { useAuth } from "@/contexts/AuthContext";
-import { getTransactionRecords } from "@/services/api";
+import { getTransactions } from "@/services/api";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/components/ui/use-toast";
 import { ArrowUpRight, ArrowDownLeft, Wallet, TrendingUp, Calendar, Clock } from "lucide-react";
@@ -29,7 +29,7 @@ const TransactionRecordsPage = () => {
       try {
         setIsLoading(true);
         if (user?.token) {
-          const response = await getTransactionRecords(user.token);
+          const response = await getTransactions(user.token);
           if (response.status) {
             setRecords(response.data || []);
           } else {
@@ -72,7 +72,7 @@ const TransactionRecordsPage = () => {
                   </div>
                   <div className="text-center">
                     <h1 className="text-lg font-bold">Transaction History</h1>
-                    <p className="text-emerald-100 text-sm">Your account activity</p>
+                    <p className="text-emerald-100 text-base">Your account activity</p>
                   </div>
                 </div>
               </CardContent>
@@ -140,10 +140,10 @@ const TransactionRecordsPage = () => {
                         <h3 className="font-medium text-gray-900 text-base truncate">
                           {record.description || record.type}
                         </h3>
-                        <div className="flex items-center text-gray-500 text-sm mt-1">
-                          <Calendar className="w-3 h-3 mr-1" />
+                        <div className="flex items-center text-gray-500 text-base mt-1">
+                          <Calendar className="w-4 h-4 mr-1" />
                           <span>{new Date(record.created_at).toLocaleDateString()}</span>
-                          <Clock className="w-3 h-3 ml-2 mr-1" />
+                          <Clock className="w-4 h-4 ml-2 mr-1" />
                           <span>{new Date(record.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                         </div>
                       </div>
@@ -155,7 +155,7 @@ const TransactionRecordsPage = () => {
                         }`}>
                           {record.type.toLowerCase().includes('deposit') || record.type.toLowerCase().includes('credit') ? '+' : '-'}₹{record.amount}
                         </p>
-                        <span className={`text-xs px-2 py-1 rounded-full ${
+                        <span className={`text-sm px-2 py-1 rounded-full ${
                           record.status === 'completed' || record.status === 'success'
                             ? 'bg-emerald-100 text-emerald-700'
                             : record.status === 'pending'

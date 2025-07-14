@@ -1,9 +1,8 @@
-
 import { useState, useEffect } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
 import { Card, CardContent } from "@/components/ui/card";
 import { useAuth } from "@/contexts/AuthContext";
-import { getWithdrawalRecords } from "@/services/api";
+import { getWithdrawRecords } from "@/services/api";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/components/ui/use-toast";
 import { ArrowUpRight, Banknote, Calendar, Clock, CheckCircle, XCircle, Loader } from "lucide-react";
@@ -30,7 +29,7 @@ const AllWithdrawalsPage = () => {
       try {
         setIsLoading(true);
         if (user?.token) {
-          const response = await getWithdrawalRecords(user.token);
+          const response = await getWithdrawRecords(user.token);
           if (response.status) {
             setRecords(response.data || []);
           } else {
