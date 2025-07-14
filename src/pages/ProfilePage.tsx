@@ -8,11 +8,11 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from '@/contexts/AuthContext';
 import { 
   Crown, User, Settings, Bell, Shield, Star, 
-  Wallet, ArrowUpRight, Send,
+  Wallet, ArrowUpRight, Send, Users,
   CreditCard, FileText, LogOut,
   Eye, EyeOff, TrendingUp, Award, Zap,
   BarChart3, Target, Gift, DollarSign,
-  IndianRupee, Activity, Sparkles, Users
+  IndianRupee, Activity, Sparkles
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -59,21 +59,21 @@ const ProfilePage = () => {
     { icon: Wallet, label: "Deposit", gradient: "from-emerald-500 to-green-600", link: "/deposit" },
     { icon: Send, label: "Withdraw", gradient: "from-blue-500 to-indigo-600", link: "/withdraw" },
     { icon: BarChart3, label: "Trade", gradient: "from-purple-500 to-violet-600", link: "/market" },
-    { icon: Users, label: "Team", gradient: "from-orange-500 to-red-500", link: "/team" }
+    { icon: Users, label: "Invite", gradient: "from-orange-500 to-red-500", link: "/invite" }
   ];
 
   const profileMenuItems = [
     {
-      category: "Trading",
+      category: "Trading & Records",
       items: [
         { icon: Activity, label: "Contract Records", link: "/contract-record", color: "emerald" },
         { icon: FileText, label: "Transaction Records", link: "/transactions", color: "blue" },
-        { icon: IndianRupee, label: "Withdrawal History", link: "/all-withdrawals", color: "pink" },
-        { icon: Target, label: "Invite Friends", link: "/team", color: "purple" }
+        { icon: IndianRupee, label: "Withdrawals", link: "/all-withdrawals", color: "pink" },
+        { icon: Users, label: "My Team", link: "/team", color: "purple" }
       ]
     },
     {
-      category: "Account",
+      category: "Account & Settings",
       items: [
         { icon: CreditCard, label: "Bank Details", link: "/bank", color: "green" },
         { icon: Shield, label: "Security", link: "/security", color: "red" },
@@ -111,77 +111,77 @@ const ProfilePage = () => {
           {/* Profile Header */}
           <Card className="bg-gradient-to-r from-emerald-600 via-emerald-700 to-green-600 text-white border-0 shadow-xl overflow-hidden relative">
             <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent"></div>
-            <CardContent className="p-4 relative z-10">
-              <div className="flex items-center gap-3">
+            <CardContent className="p-5 relative z-10">
+              <div className="flex items-center gap-4">
                 <div className="relative">
-                  <Avatar className="w-12 h-12 border-2 border-white/30 shadow-lg">
+                  <Avatar className="w-16 h-16 border-3 border-white/30 shadow-lg">
                     <AvatarImage src={avatarUrl} alt={user?.name || ''} />
-                    <AvatarFallback className="bg-white/20 text-white font-bold">
+                    <AvatarFallback className="bg-white/20 text-white font-bold text-xl">
                       {user?.name?.charAt(0) || 'T'}
                     </AvatarFallback>
                   </Avatar>
-                  <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-amber-400 rounded-full flex items-center justify-center border border-white">
-                    <Crown className="w-2 h-2 text-amber-800" />
+                  <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-amber-400 rounded-full flex items-center justify-center border-2 border-white">
+                    <Crown className="w-3 h-3 text-amber-800" />
                   </div>
                 </div>
                 
                 <div className="flex-1">
-                  <h2 className="text-lg font-bold">{user?.name || 'Trexo User'}</h2>
-                  <p className="text-emerald-100 text-xs">ID: {user?.id}</p>
-                  <p className="text-emerald-200 text-xs">{user?.phone}</p>
+                  <h2 className="text-xl font-bold mb-1">{user?.name || 'Trexo User'}</h2>
+                  <p className="text-emerald-100 text-sm mb-1">ID: {user?.id}</p>
+                  <p className="text-emerald-200 text-sm">{user?.phone}</p>
                 </div>
 
-                <Button size="sm" variant="outline" className="bg-white/20 border-white/30 text-white hover:bg-white/30 h-8 w-8 p-0">
-                  <Bell className="w-3 h-3" />
+                <Button size="sm" variant="outline" className="bg-white/20 border-white/30 text-white hover:bg-white/30 h-10 w-10 p-0">
+                  <Bell className="w-4 h-4" />
                 </Button>
               </div>
             </CardContent>
           </Card>
 
           {/* Balance Cards */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-4">
             <Card className="bg-white/90 backdrop-blur-sm border border-gray-200/50 shadow-lg">
-              <CardContent className="p-3">
-                <div className="flex items-center justify-between mb-2">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 bg-gradient-to-r from-emerald-500 to-green-600 rounded-lg flex items-center justify-center">
-                      <Wallet className="w-3 h-3 text-white" />
+                    <div className="w-8 h-8 bg-gradient-to-r from-emerald-500 to-green-600 rounded-lg flex items-center justify-center">
+                      <Wallet className="w-4 h-4 text-white" />
                     </div>
-                    <span className="text-xs text-gray-600 font-medium">Balance</span>
+                    <span className="text-sm text-gray-600 font-medium">Balance</span>
                   </div>
                   <button onClick={() => setHideBalance(!hideBalance)} className="p-1">
-                    {hideBalance ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
+                    {hideBalance ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
                 </div>
-                <p className="text-lg font-bold text-gray-900">
+                <p className="text-xl font-bold text-gray-900 mb-2">
                   {hideBalance ? "••••••" : `₹${parseFloat(depositBalance.toString()).toLocaleString()}`}
                 </p>
-                <div className="flex items-center text-emerald-600 mt-1">
-                  <TrendingUp className="w-2 h-2 mr-1" />
-                  <span className="text-xs font-semibold">Available</span>
+                <div className="flex items-center text-emerald-600">
+                  <TrendingUp className="w-3 h-3 mr-1" />
+                  <span className="text-sm font-semibold">Available</span>
                 </div>
               </CardContent>
             </Card>
 
             <Card className="bg-white/90 backdrop-blur-sm border border-gray-200/50 shadow-lg">
-              <CardContent className="p-3">
-                <div className="flex items-center justify-between mb-2">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
-                      <DollarSign className="w-3 h-3 text-white" />
+                    <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
+                      <DollarSign className="w-4 h-4 text-white" />
                     </div>
-                    <span className="text-xs text-gray-600 font-medium">Profit</span>
+                    <span className="text-sm text-gray-600 font-medium">Profit</span>
                   </div>
                   <button onClick={() => setHideRevenue(!hideRevenue)} className="p-1">
-                    {hideRevenue ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
+                    {hideRevenue ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
                 </div>
-                <p className="text-lg font-bold text-gray-900">
+                <p className="text-xl font-bold text-gray-900 mb-2">
                   {hideRevenue ? "••••••" : `₹${totalIncome.toLocaleString()}`}
                 </p>
-                <div className="flex items-center text-blue-600 mt-1">
-                  <ArrowUpRight className="w-2 h-2 mr-1" />
-                  <span className="text-xs font-semibold">Today: ₹{todayIncome}</span>
+                <div className="flex items-center text-blue-600">
+                  <ArrowUpRight className="w-3 h-3 mr-1" />
+                  <span className="text-sm font-semibold">Today: ₹{todayIncome}</span>
                 </div>
               </CardContent>
             </Card>
@@ -189,27 +189,27 @@ const ProfilePage = () => {
 
           {/* Quick Actions */}
           <Card className="bg-white/90 backdrop-blur-sm border border-gray-200/50 shadow-lg">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm flex items-center gap-2">
-                <Zap className="w-4 h-4 text-emerald-600" />
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base flex items-center gap-2">
+                <Zap className="w-5 h-5 text-emerald-600" />
                 Quick Actions
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-4 gap-2">
+              <div className="grid grid-cols-4 gap-3">
                 {quickActions.map((action, idx) => (
                   <button
                     key={idx}
                     onClick={() => navigate(action.link)}
-                    className="group p-2 rounded-lg bg-gradient-to-br from-gray-50 to-white hover:from-gray-100 hover:to-gray-50 transition-all duration-300 hover:scale-105 hover:shadow-md border border-gray-200/50"
+                    className="group p-3 rounded-xl bg-gradient-to-br from-gray-50 to-white hover:from-gray-100 hover:to-gray-50 transition-all duration-300 hover:scale-105 hover:shadow-md border border-gray-200/50"
                   >
                     <div className={cn(
-                      "w-8 h-8 rounded-lg flex items-center justify-center mb-1 mx-auto bg-gradient-to-r transition-all duration-300 group-hover:scale-110",
+                      "w-10 h-10 rounded-xl flex items-center justify-center mb-2 mx-auto bg-gradient-to-r transition-all duration-300 group-hover:scale-110",
                       action.gradient
                     )}>
-                      <action.icon className="w-4 h-4 text-white" />
+                      <action.icon className="w-5 h-5 text-white" />
                     </div>
-                    <span className="text-xs font-medium text-gray-700 group-hover:text-gray-900 transition-colors block text-center">
+                    <span className="text-sm font-medium text-gray-700 group-hover:text-gray-900 transition-colors block text-center">
                       {action.label}
                     </span>
                   </button>
@@ -221,27 +221,27 @@ const ProfilePage = () => {
           {/* Menu Items */}
           {profileMenuItems.map((category, categoryIdx) => (
             <Card key={categoryIdx} className="bg-white/90 backdrop-blur-sm border border-gray-200/50 shadow-lg">
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm text-gray-700">{category.category}</CardTitle>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base text-gray-700">{category.category}</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-1">
+                <div className="space-y-2">
                   {category.items.map((item, idx) => (
                     <button
                       key={idx}
                       onClick={() => navigate(item.link)}
-                      className="w-full flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 transition-all duration-300 hover:shadow-sm border border-transparent hover:border-gray-200 group"
+                      className="w-full flex items-center gap-4 p-3 rounded-xl hover:bg-gray-50 transition-all duration-300 hover:shadow-sm border border-transparent hover:border-gray-200 group"
                     >
                       <div className={cn(
-                        "w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-300 group-hover:scale-110",
+                        "w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-300 group-hover:scale-110",
                         getColorClasses(item.color)
                       )}>
-                        <item.icon className="w-4 h-4" />
+                        <item.icon className="w-5 h-5" />
                       </div>
-                      <span className="font-medium text-gray-700 group-hover:text-gray-900 transition-colors flex-1 text-left text-sm">
+                      <span className="font-medium text-gray-700 group-hover:text-gray-900 transition-colors flex-1 text-left text-base">
                         {item.label}
                       </span>
-                      <ArrowUpRight className="w-3 h-3 text-gray-400 group-hover:text-gray-600 transition-colors" />
+                      <ArrowUpRight className="w-4 h-4 text-gray-400 group-hover:text-gray-600 transition-colors" />
                     </button>
                   ))}
                 </div>
@@ -251,13 +251,13 @@ const ProfilePage = () => {
 
           {/* Logout Button */}
           <Card className="bg-red-50/80 backdrop-blur-sm border border-red-200/50 shadow-lg">
-            <CardContent className="p-3">
+            <CardContent className="p-4">
               <button
                 onClick={handleLogout}
-                className="w-full flex items-center justify-center gap-2 p-2 rounded-lg bg-gradient-to-r from-red-500 to-red-600 text-white hover:from-red-600 hover:to-red-700 transition-all duration-300 hover:shadow-lg"
+                className="w-full flex items-center justify-center gap-3 p-3 rounded-xl bg-gradient-to-r from-red-500 to-red-600 text-white hover:from-red-600 hover:to-red-700 transition-all duration-300 hover:shadow-lg"
               >
-                <LogOut className="w-4 h-4" />
-                <span className="font-semibold text-sm">Logout</span>
+                <LogOut className="w-5 h-5" />
+                <span className="font-semibold text-base">Logout</span>
               </button>
             </CardContent>
           </Card>
