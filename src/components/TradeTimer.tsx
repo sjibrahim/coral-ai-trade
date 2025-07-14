@@ -1,7 +1,8 @@
+
 import React, { useEffect, useState } from 'react';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { X, Check, IndianRupee } from 'lucide-react';
+import { X, Check, TrendingUp, TrendingDown, IndianRupee, Clock } from 'lucide-react';
 import { useAuth } from "@/contexts/AuthContext";
 
 interface TradeTimerProps {
@@ -17,6 +18,7 @@ interface TradeTimerProps {
     profit?: number;
     lost_amount?: number;
     new_balance?: number;
+    trade_amount?: number;
   } | null;
 }
 
@@ -41,18 +43,21 @@ const TradeTimer: React.FC<TradeTimerProps> = ({
   
   // Calculate the progress for the circular timer
   const progress = (duration - timeRemaining) / duration;
-  const circumference = 2 * Math.PI * 45; // 45 is the radius of the circle
+  const circumference = 2 * Math.PI * 50; // 50 is the radius of the circle
+  const strokeDashoffset = circumference * (1 - progress);
 
   useEffect(() => {
     if (!open) return;
     
-    // Don't reset state if we're showing the completed result
-    if (!isCompleted && timeRemaining === 0) {
+    // Reset state when modal opens
+    if (timeRemaining === 0 && !isCompleted) {
       setTimeRemaining(duration);
+      setIsCompleted(false);
+      setResult({ value: null, type: null });
     }
     
     // Only start the timer if not completed
-    if (!isCompleted) {
+    if (!isCompleted && timeRemaining > 0) {
       const interval = setInterval(() => {
         setTimeRemaining((prev) => {
           if (prev <= 1) {
@@ -78,12 +83,6 @@ const TradeTimer: React.FC<TradeTimerProps> = ({
                 console.log('Profile updated after trade completion');
               }).catch(error => {
                 console.error('Failed to update profile after trade:', error);
-              });
-              
-              console.log('Trade completed with result:', {
-                isProfit,
-                resultValue,
-                tradeApiResponse
               });
             } else {
               // Fallback to calculating from price difference
@@ -120,129 +119,199 @@ const TradeTimer: React.FC<TradeTimerProps> = ({
 
   const priceDifference = endPrice - startPrice;
   const percentageChange = startPrice > 0 ? (priceDifference / startPrice) * 100 : 0;
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
 
   if (!open) return null;
 
   if (isCompleted) {
-    // Trade Result Modal - Design 3
+    // Trade Result Modal - Mobile Optimized
     return (
       <Dialog open={open} onOpenChange={(open) => !open && handleClose()}>
-        <DialogContent className="bg-[#1E2032] border-none max-w-[300px] mx-auto rounded-2xl text-white">
-          <div className="flex flex-col items-center justify-center py-6 relative">
-            {/* Close button */}
-            <div className="absolute top-2 right-2">
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                className="rounded-full h-8 w-8 bg-gray-700/50 hover:bg-gray-600/50"
-                onClick={handleClose}
-              >
-                <X className="h-4 w-4" />
-              </Button>
-            </div>
+        <DialogContent className="w-[95vw] max-w-sm mx-auto bg-white border-none rounded-2xl text-gray-900 p-0">
+          <div className="relative overflow-hidden">
+            {/* Background gradient */}
+            <div className={`absolute inset-0 ${
+              result.type === 'Profit' 
+                ? 'bg-gradient-to-br from-green-50 to-emerald-100' 
+                : 'bg-gradient-to-br from-red-50 to-rose-100'
+            }`} />
             
-            {/* Result display with more details */}
-            <div className="w-full px-6 py-6">
-              {/* Profit/Loss indicator */}
-              <div className="flex justify-center mb-4">
-                <div className={`rounded-full p-2 ${
-                  result.type === 'Profit' ? 'bg-green-500/20' : 'bg-red-500/20'
+            {/* Content */}
+            <div className="relative p-6">
+              {/* Close button */}
+              <div className="absolute top-4 right-4">
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="rounded-full h-8 w-8 bg-white/80 hover:bg-white"
+                  onClick={handleClose}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+              
+              {/* Result display */}
+              <div className="text-center pt-4">
+                {/* Result icon */}
+                <div className={`w-20 h-20 rounded-full mx-auto mb-4 flex items-center justify-center ${
+                  result.type === 'Profit' ? 'bg-green-500' : 'bg-red-500'
                 }`}>
                   {result.type === 'Profit' ? (
-                    <Check className="h-5 w-5 text-green-500" />
+                    <TrendingUp className="h-10 w-10 text-white" />
                   ) : (
-                    <X className="h-5 w-5 text-red-500" />
+                    <TrendingDown className="h-10 w-10 text-white" />
                   )}
                 </div>
-              </div>
-              
-              {/* Amount with INR symbol */}
-              <div className="text-center">
-                <h2 className={`text-5xl font-bold flex items-center justify-center gap-1 ${
-                  result.type === 'Profit' ? 'text-green-500' : 'text-red-500'
+                
+                {/* Result text */}
+                <h2 className={`text-2xl font-bold mb-2 ${
+                  result.type === 'Profit' ? 'text-green-600' : 'text-red-600'
                 }`}>
-                  <IndianRupee className="h-7 w-7" />
-                  <span>{Math.floor(result.value || 0)}</span>
+                  {result.type === 'Profit' ? 'Trade Won!' : 'Trade Lost'}
                 </h2>
-                <p className="text-sm text-gray-400 mt-1">
-                  {result.type === 'Profit' ? 'Profit' : 'Loss'}
-                </p>
-              </div>
-              
-              {/* Price details */}
-              <div className="mt-4 pt-4 border-t border-gray-800/50">
-                <div className="flex justify-between text-sm mb-2">
-                  <span className="text-gray-400">Start Price:</span>
-                  <span className="text-gray-200">${startPrice.toFixed(2)}</span>
+                
+                {/* Amount */}
+                <div className="mb-6">
+                  <div className={`text-4xl font-bold flex items-center justify-center gap-1 ${
+                    result.type === 'Profit' ? 'text-green-600' : 'text-red-600'
+                  }`}>
+                    <IndianRupee className="h-8 w-8" />
+                    <span>{Math.floor(result.value || 0)}</span>
+                  </div>
+                  <p className="text-gray-600 mt-1">
+                    {result.type === 'Profit' ? 'Profit earned' : 'Amount lost'}
+                  </p>
                 </div>
-                <div className="flex justify-between text-sm mb-2">
-                  <span className="text-gray-400">End Price:</span>
-                  <span className="text-gray-200">${endPrice.toFixed(2)}</span>
+                
+                {/* Trade details */}
+                <div className="bg-white/70 rounded-xl p-4 mb-6 space-y-3">
+                  <h3 className="font-semibold text-gray-900 mb-3">Trade Details</h3>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Direction:</span>
+                      <span className={`font-medium ${
+                        direction === 'Call' ? 'text-green-600' : 'text-red-600'
+                      }`}>
+                        {direction}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Entry Price:</span>
+                      <span className="font-medium">${startPrice.toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Exit Price:</span>
+                      <span className="font-medium">${endPrice.toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Price Change:</span>
+                      <span className={`font-medium ${priceDifference >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                        {priceDifference >= 0 ? '+' : ''}{priceDifference.toFixed(2)} ({percentageChange.toFixed(2)}%)
+                      </span>
+                    </div>
+                    {tradeApiResponse?.trade_amount && (
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Investment:</span>
+                        <span className="font-medium">₹{tradeApiResponse.trade_amount}</span>
+                      </div>
+                    )}
+                  </div>
                 </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-400">Change:</span>
-                  <span className={`${priceDifference >= 0 ? 'text-green-500' : 'text-red-500'}`}>
-                    {priceDifference >= 0 ? '+' : ''}{priceDifference.toFixed(2)} ({percentageChange.toFixed(2)}%)
-                  </span>
-                </div>
+                
+                {/* Action button */}
+                <Button 
+                  className="w-full h-12 rounded-xl bg-gray-900 hover:bg-gray-800 text-white font-medium"
+                  onClick={handleClose}
+                >
+                  Continue Trading
+                </Button>
               </div>
             </div>
-            
-            {/* Home button - made smaller and more elegant */}
-            <Button 
-              className="w-[calc(100%-3rem)] mx-auto h-10 rounded-lg bg-white/10 hover:bg-white/20 border-white/20 text-white"
-              onClick={handleClose}
-            >
-              Go to Home
-            </Button>
           </div>
         </DialogContent>
       </Dialog>
     );
   }
 
-  // Trade Progress Modal - Design 2
+  // Trade Progress Modal - Mobile Optimized
   return (
     <Dialog open={open} onOpenChange={(open) => !open && handleClose()}>
-      <DialogContent className="bg-[#1E2032] border-none max-w-[300px] mx-auto rounded-2xl text-white">
-        <div className="flex flex-col items-center justify-center py-8">
-          <div className="relative w-36 h-36 mb-4">
-            <svg className="w-full h-full" viewBox="0 0 100 100">
+      <DialogContent className="w-[95vw] max-w-sm mx-auto bg-white border-none rounded-2xl text-gray-900 p-0">
+        <div className="p-6">
+          {/* Header */}
+          <div className="text-center mb-6">
+            <div className="flex items-center justify-center gap-2 mb-2">
+              <Clock className="h-5 w-5 text-blue-500" />
+              <h2 className="text-lg font-bold text-gray-900">Trade in Progress</h2>
+            </div>
+            <p className="text-gray-600 text-sm">
+              {direction} trade on {startPrice.toFixed(2)} USD
+            </p>
+          </div>
+
+          {/* Timer Circle */}
+          <div className="relative w-40 h-40 mx-auto mb-6">
+            <svg className="w-full h-full transform -rotate-90" viewBox="0 0 120 120">
               <circle 
-                cx="50" 
-                cy="50" 
-                r="45" 
+                cx="60" 
+                cy="60" 
+                r="50" 
                 fill="transparent" 
-                stroke="#2C2F3E" 
+                stroke="#f3f4f6" 
                 strokeWidth="8"
               />
               <circle 
-                cx="50" 
-                cy="50" 
-                r="45" 
+                cx="60" 
+                cy="60" 
+                r="50" 
                 fill="transparent" 
-                stroke="#0E6FFF" 
+                stroke="#3b82f6" 
                 strokeWidth="8" 
                 strokeDasharray={circumference} 
-                strokeDashoffset={circumference * (1 - progress)}
-                transform="rotate(-90 50 50)"
+                strokeDashoffset={strokeDashoffset}
+                className="transition-all duration-1000 ease-linear"
               />
             </svg>
-            <div className="absolute inset-0 flex items-center justify-center">
-              <span className="text-5xl font-bold">{timeRemaining}</span>
+            <div className="absolute inset-0 flex flex-col items-center justify-center">
+              <span className="text-3xl font-bold text-gray-900">{timeRemaining}</span>
+              <span className="text-sm text-gray-500">seconds</span>
             </div>
           </div>
-          <div className="text-center mt-2">
-            <p className="text-gray-400">Starting price: ${startPrice.toFixed(2)}</p>
-            <p className="text-gray-400">Current price: ${currentPrice.toFixed(2)}</p>
+
+          {/* Price Info */}
+          <div className="bg-gray-50 rounded-xl p-4 mb-6 space-y-3">
+            <div className="flex justify-between items-center">
+              <span className="text-gray-600 text-sm">Start Price</span>
+              <span className="font-medium">${startPrice.toFixed(2)}</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-gray-600 text-sm">Current Price</span>
+              <span className="font-medium">${currentPrice.toFixed(2)}</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-gray-600 text-sm">Change</span>
+              <span className={`font-medium ${
+                (currentPrice - startPrice) >= 0 ? 'text-green-600' : 'text-red-600'
+              }`}>
+                {(currentPrice - startPrice) >= 0 ? '+' : ''}{(currentPrice - startPrice).toFixed(2)}
+              </span>
+            </div>
           </div>
-          <Button 
-            variant="outline" 
-            className="mt-4 px-8 py-2 rounded-full text-gray-400 border-gray-700"
-            onClick={handleClose}
-          >
-            Go to home
-          </Button>
+
+          {/* Status indicator */}
+          <div className={`p-3 rounded-xl text-center ${
+            direction === 'Call' ? 'bg-green-50' : 'bg-red-50'
+          }`}>
+            <p className={`text-sm font-medium ${
+              direction === 'Call' ? 'text-green-700' : 'text-red-700'
+            }`}>
+              Waiting for {direction} trade to complete...
+            </p>
+          </div>
         </div>
       </DialogContent>
     </Dialog>
