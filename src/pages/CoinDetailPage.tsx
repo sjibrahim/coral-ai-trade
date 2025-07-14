@@ -187,6 +187,67 @@ const CoinDetailPage = () => {
     }
   }, [fetchBinanceData, simulatePriceUpdates, isLoading, crypto.binance_symbol]);
 
+  const handleBuyClick = () => {
+    setDirection('Call');
+    setIsBuyModalOpen(true);
+  };
+
+  const handleSellClick = () => {
+    setDirection('Put');
+    setIsSellModalOpen(true);
+  };
+
+  const handleConfirmTrade = async () => {
+    try {
+      const token = localStorage.getItem('auth_token');
+      if (!token) {
+        toast({
+          title: "Authentication Error",
+          description: "Please log in to place trades",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const timeInSeconds = selectedTimePeriod === '1min' ? 60 : selectedTimePeriod === '3min' ? 180 : 300;
+      
+      const tradeData = {
+        coin_id: crypto.id,
+        direction: direction.toLowerCase(),
+        amount: parseFloat(tradeAmount),
+        time: timeInSeconds,
+      };
+
+      const response = await placeTrade(token, tradeData);
+      
+      if (response.status) {
+        setTradeApiResponse(response);
+        setStartingTradePrice(livePrice);
+        setTradeTimer(timeInSeconds);
+        setIsTradeTimerOpen(true);
+        closeModal();
+        
+        toast({
+          title: "Trade Placed",
+          description: `${direction} trade of ₹${tradeAmount} placed successfully`,
+        });
+      } else {
+        toast({
+          title: "Trade Failed",
+          description: response.msg || "Failed to place trade",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error('Trade error:', error);
+      toast({
+        title: "Trade Error",
+        description: "An error occurred while placing the trade",
+        variant: "destructive",
+      });
+    }
+  };
+
   const predefinedAmounts = ['600', '1000', '2000', '3000', '5000', '10000'];
   
   const toggleFullscreen = () => {
