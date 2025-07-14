@@ -11,7 +11,7 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { mockCryptoCurrencies } from '@/data/mockData';
-import { ArrowUp, ArrowDown, X, Info } from 'lucide-react';
+import { ArrowUp, ArrowDown, X, Info, TrendingUp, Activity, BarChart3 } from 'lucide-react';
 import { getBinancePrice, getBinanceKlines, getMarketData, getCoin, placeTrade } from '@/services/api';
 import { useToast } from '@/hooks/use-toast';
 
@@ -21,7 +21,7 @@ const CoinDetailPage = () => {
   const { id: coinId } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
-  const cachedCrypto = location.state?.crypto; // Use cached data if available
+  const cachedCrypto = location.state?.crypto;
   
   const [activeTab, setActiveTab] = useState('chart');
   const [selectedTimeframe, setSelectedTimeframe] = useState('24h');
@@ -38,9 +38,7 @@ const CoinDetailPage = () => {
     value: number | null;
     type: 'Profit' | 'Loss' | null;
   }>({ value: null, type: null });
-  const [marketData, setMarketData] = useState<Cryptocurrency[]>([]);
   
-  // Use cached data for initial state if available
   const [crypto, setCrypto] = useState<Cryptocurrency>(cachedCrypto || {
     id: '',
     name: 'Loading...',
@@ -51,13 +49,11 @@ const CoinDetailPage = () => {
     logo: '',
   });
   const [isLoading, setIsLoading] = useState(!cachedCrypto);
-
-  // Live price state
   const [livePrice, setLivePrice] = useState(cachedCrypto ? parseFloat(cachedCrypto.price) : 0);
   const [priceChange, setPriceChange] = useState(cachedCrypto ? parseFloat(cachedCrypto.change || 0) : 0);
   const [startingTradePrice, setStartingTradePrice] = useState(0);
+  const [tradeApiResponse, setTradeApiResponse] = useState<any>(null);
 
-  // Fetch coin data by ID on load - but only if we don't have cached data or after initial load with cached data
   useEffect(() => {
     if (!coinId) return;
     
@@ -67,20 +63,18 @@ const CoinDetailPage = () => {
         const token = localStorage.getItem('auth_token');
         
         if (token && coinId) {
-          // Fetch coin details from the API
           const response = await getCoin(token, coinId);
           
           if (response.status && response.data) {
             const coinData = response.data;
             
-            // Set crypto data from API response
             setCrypto({
               id: coinData.id,
               name: coinData.name,
               symbol: coinData.symbol,
               binance_symbol: coinData.binance_symbol,
               price: parseFloat(coinData.price),
-              change: 0, // Will be updated with live data
+              change: 0,
               logo: coinData.logo,
               market_cap: coinData.market_cap,
               volume_24h: coinData.volume_24h,
@@ -94,36 +88,19 @@ const CoinDetailPage = () => {
             
             setLivePrice(parseFloat(coinData.price));
           } else {
-            toast({
-              title: "Error",
-              description: "Failed to fetch coin details",
-              variant: "destructive",
-            });
-            
-            // Fallback to mock data if API call fails
             fallbackToMockData();
           }
         } else {
-          // Fallback to mock data if no token or coinId
           fallbackToMockData();
         }
         
         setIsLoading(false);
       } catch (error) {
-        console.error('Error fetching coin data:', error);
-        toast({
-          title: "Error",
-          description: "Failed to load coin data. Please try again.",
-          variant: "destructive",
-        });
-        
-        // Fallback to mock data
         fallbackToMockData();
         setIsLoading(false);
       }
     };
     
-    // Fallback function to use mock data
     const fallbackToMockData = () => {
       if (coinId) {
         const mockCrypto = mockCryptoCurrencies.find(c => c.id === coinId);
@@ -132,41 +109,35 @@ const CoinDetailPage = () => {
           setLivePrice(mockCrypto.price);
           setPriceChange(mockCrypto.change);
         } else {
-          // If specific coin not found, use the first one
           setCrypto(mockCryptoCurrencies[0]);
           setLivePrice(mockCryptoCurrencies[0].price);
           setPriceChange(mockCryptoCurrencies[0].change);
         }
       } else {
-        // If no coinId provided, use the first one
         setCrypto(mockCryptoCurrencies[0]);
         setLivePrice(mockCryptoCurrencies[0].price);
         setPriceChange(mockCryptoCurrencies[0].change);
       }
     };
     
-    // If we have cached data, use it first, then fetch fresh data
     if (cachedCrypto) {
       setCrypto(cachedCrypto);
       setLivePrice(parseFloat(cachedCrypto.price));
       setPriceChange(parseFloat(cachedCrypto.change || 0));
-      // Wait a bit before fetching fresh data to avoid unnecessary API calls during navigation
       setTimeout(fetchCoinData, 1000);
     } else {
       fetchCoinData();
     }
   }, [coinId, toast, cachedCrypto]);
 
-  // Get the binance symbol for the current crypto
   const getBinanceSymbol = useCallback(() => {
     return crypto.binance_symbol || `${crypto.symbol.toUpperCase()}USDT`;
   }, [crypto]);
 
-  // Fetch Binance data
   const fetchBinanceData = useCallback(async () => {
     try {
       if (!crypto.binance_symbol) {
-        return; // Skip if no binance_symbol available yet
+        return;
       }
       
       const symbol = getBinanceSymbol();
@@ -176,18 +147,16 @@ const CoinDetailPage = () => {
         const newPrice = parseFloat(priceData.price);
         setLivePrice(newPrice);
         
-        // Calculate change percentage (comparing to previous price)
         const previousPrice = livePrice;
         const changePercent = previousPrice > 0 ? ((newPrice - previousPrice) / previousPrice) * 100 : 0;
         setPriceChange(changePercent);
       }
       
-      // Get kline/candlestick data
       const klinesData = await getBinanceKlines(symbol, '1m', '100');
       if (Array.isArray(klinesData)) {
         const formattedData = klinesData.map((kline: any) => ({
           time: new Date(kline[0]).toISOString(),
-          price: parseFloat(kline[4]), // closing price
+          price: parseFloat(kline[4]),
           high: parseFloat(kline[2]),
           low: parseFloat(kline[3]),
           volume: parseFloat(kline[5]),
@@ -196,24 +165,18 @@ const CoinDetailPage = () => {
         setChartData(formattedData);
       }
     } catch (error) {
-      console.error('Error fetching Binance data:', error);
-      // Fallback to simulated price updates
       simulatePriceUpdates();
     }
   }, [getBinanceSymbol, livePrice, crypto.binance_symbol]);
   
-  // Simulate price updates if Binance API fails
   const simulatePriceUpdates = useCallback(() => {
-    // Random price fluctuation between -0.5% and +0.5%
     const fluctuation = (Math.random() - 0.5) * 0.01;
     const newPrice = livePrice * (1 + fluctuation);
     setLivePrice(newPrice);
     
-    // Update change percentage
     const newChange = priceChange + (fluctuation * 100);
     setPriceChange(newChange);
     
-    // Add new data point to chart
     const newDataPoint = {
       time: new Date().toISOString(),
       price: newPrice,
@@ -225,7 +188,6 @@ const CoinDetailPage = () => {
     );
   }, [livePrice, priceChange]);
 
-  // Initialize data and set up interval for updates
   useEffect(() => {
     if (!isLoading && crypto.binance_symbol) {
       fetchBinanceData();
@@ -240,7 +202,6 @@ const CoinDetailPage = () => {
     }
   }, [fetchBinanceData, simulatePriceUpdates, isLoading, crypto.binance_symbol]);
 
-  // Transform data for chart component
   const transformedChartData = chartData.map(item => ({
     timestamp: item.time,
     price: item.price,
@@ -248,8 +209,6 @@ const CoinDetailPage = () => {
     high: item.high || item.price * 1.005,
     low: item.low || item.price * 0.995,
   }));
-
-  const [tradeApiResponse, setTradeApiResponse] = useState<any>(null);
   
   const handleBuyClick = () => {
     setDirection('Call');
@@ -262,19 +221,15 @@ const CoinDetailPage = () => {
   };
   
   const handleConfirmTrade = async () => {
-    // Close modals
     setIsBuyModalOpen(false);
     setIsSellModalOpen(false);
     
     try {
-      // Get time period in seconds
       const timeInSeconds = parseInt(selectedTimePeriod.replace('min', '')) * 60;
-      
-      // Prepare parameters for the API call
       const token = localStorage.getItem('auth_token');
       const trade_amount = parseFloat(tradeAmount);
       const symbol = crypto.symbol;
-      const apiDirection = direction.toLowerCase(); // Convert 'Call' to 'buy', 'Put' to 'put'
+      const apiDirection = direction.toLowerCase();
       
       if (!token) {
         toast({
@@ -284,43 +239,27 @@ const CoinDetailPage = () => {
         });
         return;
       }
-
-      console.log('Attempting to place trade with params:', {
-        amount: trade_amount,
-        symbol,
-        direction: apiDirection === 'call' ? 'buy' : 'put',
-        price: livePrice,
-        time: timeInSeconds
-      });
       
-      // Call the trade API
       const response = await placeTrade(
         token,
         trade_amount,
         symbol,
-        apiDirection === 'call' ? 'buy' : 'put', // Convert to API expected format
+        apiDirection === 'call' ? 'buy' : 'put',
         livePrice,
         timeInSeconds
       );
       
-      // Check if the API call was successful
       if (response.success) {
-        // Store the API response for later use
         setTradeApiResponse(response.data);
-        
-        // Set trade parameters for the timer
         setTradeTimer(timeInSeconds);
         setStartingTradePrice(livePrice);
         setIsTradeTimerOpen(true);
         
-        // Show toast notification
         toast({
           title: "Trade Placed",
           description: `Your ${direction} trade for ${crypto.symbol} has been placed for ${selectedTimePeriod}`,
         });
       } else {
-        // Show error toast
-        console.error('Trade API error response:', response);
         toast({
           title: "Error",
           description: response.message || "Failed to place trade",
@@ -328,7 +267,6 @@ const CoinDetailPage = () => {
         });
       }
     } catch (error) {
-      console.error('Error placing trade:', error);
       toast({
         title: "Error",
         description: "Failed to place trade. Please try again.",
@@ -338,19 +276,15 @@ const CoinDetailPage = () => {
   };
   
   const handleTradeComplete = (finalPrice: number) => {
-    // Use the API response that was stored when the trade was placed
     if (tradeApiResponse) {
-      // Update user's wallet with the new balance from the API
       if (user && typeof tradeApiResponse.new_balance === 'number') {
-        // Update the user's profile to get the latest wallet balance
         updateProfile().then(() => {
-          console.log('Profile updated after trade completion, new balance:', tradeApiResponse.new_balance);
+          console.log('Profile updated after trade completion');
         }).catch(error => {
           console.error('Failed to update profile after trade:', error);
         });
       }
       
-      // Show result toast based on API response
       const isProfit = tradeApiResponse.status === 'win';
       const resultAmount = isProfit ? tradeApiResponse.profit : tradeApiResponse.lost_amount;
       
@@ -359,34 +293,9 @@ const CoinDetailPage = () => {
         type: isProfit ? 'Profit' : 'Loss'
       });
       
-      // Show result toast
       toast({
         title: isProfit ? "Trade Profit" : "Trade Loss",
         description: `Your ${direction} trade resulted in a ${isProfit ? "profit" : "loss"} of ₹${resultAmount}`,
-        variant: isProfit ? "default" : "destructive",
-      });
-    } else {
-      // Fallback to previous calculation if API response is not available
-      // Calculate profit/loss based on direction and price difference
-      const priceDifference = finalPrice - startingTradePrice;
-      const isProfit = (direction === 'Call' && priceDifference > 0) || 
-                       (direction === 'Put' && priceDifference < 0);
-      
-      // Calculate profit/loss amount (simplified)
-      const amount = parseFloat(tradeAmount);
-      const result = isProfit 
-        ? Math.abs(amount * 0.95) // 95% profit
-        : -Math.abs(amount); // 100% loss
-      
-      setTradeResult({
-        value: Math.abs(result),
-        type: isProfit ? 'Profit' : 'Loss'
-      });
-      
-      // Show result toast
-      toast({
-        title: isProfit ? "Trade Profit" : "Trade Loss",
-        description: `Your ${direction} trade resulted in a ${isProfit ? "profit" : "loss"} of ₹${Math.abs(result)}`,
         variant: isProfit ? "default" : "destructive",
       });
     }
@@ -400,12 +309,10 @@ const CoinDetailPage = () => {
     setIsTradeTimerOpen(false);
   };
   
-  // Toggle fullscreen chart view
   const toggleFullscreen = () => {
     setIsChartFullscreen(!isChartFullscreen);
   };
 
-  // Handle escape key to exit fullscreen
   useEffect(() => {
     const handleEscKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && isChartFullscreen) {
@@ -419,8 +326,7 @@ const CoinDetailPage = () => {
   
   return (
     <MobileLayout showBackButton title={crypto.name} noScroll={isChartFullscreen}>
-      <div className={`flex flex-col h-full bg-[#0A0B14] ${isChartFullscreen ? 'fullscreen-container' : 'pb-24'}`}>
-        {/* Fullscreen Chart */}
+      <div className={`flex flex-col h-full bg-gradient-to-br from-emerald-50 via-white to-green-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 ${isChartFullscreen ? 'fullscreen-container' : 'pb-24'}`}>
         {isChartFullscreen ? (
           <div className="flex-1 flex flex-col">
             <MobileOptimizedChart 
@@ -436,26 +342,25 @@ const CoinDetailPage = () => {
           </div>
         ) : (
           <>
-            {/* Hide header info in fullscreen mode */}
             <div className="p-4">
-              {/* Coin Header Info */}
+              {/* Coin Header Info with Trexo Design */}
               <div className="flex justify-between items-start mb-6">
                 <div className="flex items-center">
-                  <div className="bg-[#14151F]/70 backdrop-blur-sm rounded-full p-2 mr-3">
+                  <div className="bg-gradient-to-br from-emerald-100 to-green-100 dark:from-emerald-900/30 dark:to-green-900/30 rounded-full p-3 mr-3 shadow-lg">
                     <img 
                       src={crypto.logo} 
                       alt={crypto.symbol}
-                      className="w-10 h-10"
+                      className="w-12 h-12"
                     />
                   </div>
                   <div className="text-left">
-                    <h2 className="text-xl font-bold text-gray-100">{crypto.name}</h2>
-                    <p className="text-sm text-gray-400">{crypto.symbol}</p>
+                    <h2 className="text-xl font-bold text-emerald-600 dark:text-emerald-400">{crypto.name}</h2>
+                    <p className="text-sm text-muted-foreground">{crypto.symbol}</p>
                   </div>
                 </div>
                 <div className="text-right">
-                  <div className="text-xl font-bold text-gray-100">${livePrice.toLocaleString(undefined, { maximumFractionDigits: 2 })}</div>
-                  <div className={`text-sm flex items-center justify-end ${priceChange > 0 ? 'text-market-increase' : 'text-market-decrease'}`}>
+                  <div className="text-2xl font-bold text-foreground">${livePrice.toLocaleString(undefined, { maximumFractionDigits: 2 })}</div>
+                  <div className={`text-sm flex items-center justify-end ${priceChange > 0 ? 'text-emerald-600' : 'text-red-500'}`}>
                     {priceChange > 0 ? (
                       <ArrowUp className="h-3 w-3 mr-1" />
                     ) : (
@@ -465,293 +370,162 @@ const CoinDetailPage = () => {
                   </div>
                 </div>
               </div>
+
+              {/* Quick Stats */}
+              <div className="grid grid-cols-3 gap-3 mb-6">
+                <Card className="bg-gradient-to-br from-emerald-50 to-green-50 dark:from-emerald-900/20 dark:to-green-900/20 border-emerald-200 dark:border-emerald-800">
+                  <CardContent className="p-3 text-center">
+                    <TrendingUp className="h-5 w-5 text-emerald-500 mx-auto mb-1" />
+                    <p className="text-xs text-muted-foreground">24h High</p>
+                    <p className="text-sm font-semibold">${(livePrice * 1.05).toFixed(2)}</p>
+                  </CardContent>
+                </Card>
+                <Card className="bg-gradient-to-br from-emerald-50 to-green-50 dark:from-emerald-900/20 dark:to-green-900/20 border-emerald-200 dark:border-emerald-800">
+                  <CardContent className="p-3 text-center">
+                    <Activity className="h-5 w-5 text-emerald-500 mx-auto mb-1" />
+                    <p className="text-xs text-muted-foreground">24h Low</p>
+                    <p className="text-sm font-semibold">${(livePrice * 0.95).toFixed(2)}</p>
+                  </CardContent>
+                </Card>
+                <Card className="bg-gradient-to-br from-emerald-50 to-green-50 dark:from-emerald-900/20 dark:to-green-900/20 border-emerald-200 dark:border-emerald-800">
+                  <CardContent className="p-3 text-center">
+                    <BarChart3 className="h-5 w-5 text-emerald-500 mx-auto mb-1" />
+                    <p className="text-xs text-muted-foreground">Volume</p>
+                    <p className="text-sm font-semibold">${Math.floor(Math.random() * 1000)}M</p>
+                  </CardContent>
+                </Card>
+              </div>
             </div>
 
             <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col">
-              {/* Tabs */}
-              <TabsList className="bg-[#14151F] mx-4 grid grid-cols-3 mb-4 rounded-xl">
-                <TabsTrigger value="chart" className="rounded-lg text-gray-100 data-[state=active]:bg-[#222430] data-[state=active]:text-blue-400">Chart</TabsTrigger>
-                <TabsTrigger value="about" className="rounded-lg text-gray-100 data-[state=active]:bg-[#222430] data-[state=active]:text-blue-400">About</TabsTrigger>
-                <TabsTrigger value="trade" className="rounded-lg text-gray-100 data-[state=active]:bg-[#222430] data-[state=active]:text-blue-400">Trade</TabsTrigger>
+              <TabsList className="bg-white dark:bg-gray-800 mx-4 grid grid-cols-3 mb-4 rounded-xl border border-emerald-200 dark:border-emerald-800">
+                <TabsTrigger value="chart" className="rounded-lg text-foreground data-[state=active]:bg-emerald-500 data-[state=active]:text-white">Chart</TabsTrigger>
+                <TabsTrigger value="trade" className="rounded-lg text-foreground data-[state=active]:bg-emerald-500 data-[state=active]:text-white">Trade</TabsTrigger>
+                <TabsTrigger value="info" className="rounded-lg text-foreground data-[state=active]:bg-emerald-500 data-[state=active]:text-white">Info</TabsTrigger>
               </TabsList>
-              
-              <div className="flex-1 overflow-y-auto px-4 styled-scrollbar tabs-content-scrollable">
-                {/* Tab Content */}
-                <TabsContent value="chart" className="space-y-4 mt-0 flex-1">
-                  <Card className="bg-[#14151F] border-[#222] text-gray-100">
-                    <CardContent className="pt-6">
-                      {/* Use the new MobileOptimizedChart for non-fullscreen view */}
-                      <MobileOptimizedChart
-                        data={transformedChartData}
-                        currentPrice={livePrice}
-                        previousPrice={livePrice - (livePrice * priceChange / 100)}
-                        timeframe={selectedTimeframe}
-                        onToggleFullscreen={toggleFullscreen}
-                        isFullscreen={false}
-                      />
-                    </CardContent>
-                  </Card>
-                  
-                  {/* Market Stats */}
-                  <Card className="bg-[#14151F] border-[#222] text-gray-100">
-                    <CardHeader className="pb-2">
-                      <CardTitle className="text-lg">Market Stats</CardTitle>
+
+              <TabsContent value="chart" className="flex-1 flex flex-col mx-4">
+                <div className="flex-1 bg-white dark:bg-gray-800 rounded-xl border border-emerald-200 dark:border-emerald-800 p-4">
+                  <MobileOptimizedChart 
+                    data={transformedChartData}
+                    currentPrice={livePrice}
+                    previousPrice={livePrice - (livePrice * priceChange / 100)}
+                    timeframe={selectedTimeframe}
+                    onToggleFullscreen={toggleFullscreen}
+                    isFullscreen={false}
+                    symbol={crypto.symbol}
+                  />
+                </div>
+              </TabsContent>
+
+              <TabsContent value="trade" className="flex-1 mx-4">
+                <div className="space-y-4">
+                  <Card className="bg-white dark:bg-gray-800 border-emerald-200 dark:border-emerald-800">
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-lg text-emerald-600 dark:text-emerald-400">Quick Trade</CardTitle>
                     </CardHeader>
-                    <CardContent className="py-0">
-                      <div className="grid grid-cols-2 gap-4">
-                        <div>
-                          <p className="text-sm text-gray-400">Market Cap</p>
-                          <p className="font-medium">${crypto.market_cap ? parseFloat(crypto.market_cap).toLocaleString(undefined, { maximumFractionDigits: 0 }) : (livePrice * 19000000).toLocaleString(undefined, { maximumFractionDigits: 0 })}</p>
-                        </div>
-                        <div>
-                          <p className="text-sm text-gray-400">24h Volume</p>
-                          <p className="font-medium">${crypto.volume_24h ? parseFloat(crypto.volume_24h).toLocaleString(undefined, { maximumFractionDigits: 0 }) : (livePrice * 800000).toLocaleString(undefined, { maximumFractionDigits: 0 })}</p>
-                        </div>
-                        <div>
-                          <p className="text-sm text-gray-400">Circulating Supply</p>
-                          <p className="font-medium">19,000,000</p>
-                        </div>
-                        <div>
-                          <p className="text-sm text-gray-400">Max Supply</p>
-                          <p className="font-medium">21,000,000</p>
-                        </div>
+                    <CardContent className="space-y-4">
+                      <div className="grid grid-cols-2 gap-3">
+                        <Button 
+                          onClick={handleBuyClick}
+                          className="bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white py-6"
+                        >
+                          <ArrowUp className="mr-2 h-5 w-5" />
+                          CALL
+                        </Button>
+                        <Button 
+                          onClick={handleSellClick}
+                          variant="outline"
+                          className="border-red-200 text-red-600 hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-900/20 py-6"
+                        >
+                          <ArrowDown className="mr-2 h-5 w-5" />
+                          PUT
+                        </Button>
                       </div>
                     </CardContent>
                   </Card>
-                  
-                  {/* Price History */}
-                  <Card className="bg-[#14151F] border-[#222] text-gray-100">
-                    <CardHeader className="pb-2">
-                      <CardTitle className="text-lg">Price History</CardTitle>
-                    </CardHeader>
-                    <CardContent className="py-0">
-                      <div className="grid grid-cols-3 gap-4">
-                        <div>
-                          <p className="text-sm text-gray-400">1h</p>
-                          <p className={priceChange > 0 ? 'text-market-increase' : 'text-market-decrease'}>
-                            {priceChange > 0 ? '+' : ''}{(priceChange * 0.1).toFixed(2)}%
-                          </p>
-                        </div>
-                        <div>
-                          <p className="text-sm text-gray-400">24h</p>
-                          <p className={priceChange > 0 ? 'text-market-increase' : 'text-market-decrease'}>
-                            {priceChange > 0 ? '+' : ''}{priceChange.toFixed(2)}%
-                          </p>
-                        </div>
-                        <div>
-                          <p className="text-sm text-gray-400">7d</p>
-                          <p className={priceChange > 0 ? 'text-market-increase' : 'text-market-decrease'}>
-                            {priceChange > 0 ? '+' : ''}{(priceChange * 2.5).toFixed(2)}%
-                          </p>
-                        </div>
+                </div>
+              </TabsContent>
+
+              <TabsContent value="info" className="flex-1 mx-4">
+                <Card className="bg-white dark:bg-gray-800 border-emerald-200 dark:border-emerald-800">
+                  <CardHeader>
+                    <CardTitle className="text-emerald-600 dark:text-emerald-400">Asset Information</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <p className="text-sm text-muted-foreground">Current Price</p>
+                        <p className="font-semibold">${livePrice.toFixed(2)}</p>
                       </div>
-                    </CardContent>
-                  </Card>
-                </TabsContent>
-                
-                {/* About Tab */}
-                <TabsContent value="about">
-                  <Card className="bg-[#14151F] border-[#222] text-gray-100">
-                    <CardContent className="pt-6">
-                      <p className="mb-4">
-                        {crypto.name} ({crypto.symbol}) is a digital currency that enables instant payments to anyone, anywhere in the world.
-                      </p>
-                      <p>
-                        {crypto.name} uses peer-to-peer technology to operate with no central authority: managing transactions and issuing money are carried out collectively by the network.
-                      </p>
-                    </CardContent>
-                  </Card>
-                </TabsContent>
-                
-                {/* Trade Tab */}
-                <TabsContent value="trade">
-                  <Card className="bg-[#14151F] border-[#222] text-gray-100">
-                    <CardContent className="pt-6 flex flex-col gap-4">
-                      <Button className="bg-market-increase hover:bg-market-increase/90" onClick={handleBuyClick}>
-                        Buy {crypto.symbol}
-                      </Button>
-                      <Button variant="outline" className="border-market-decrease text-market-decrease" onClick={handleSellClick}>
-                        Sell {crypto.symbol}
-                      </Button>
-                    </CardContent>
-                  </Card>
-                </TabsContent>
-              </div>
+                      <div>
+                        <p className="text-sm text-muted-foreground">24h Change</p>
+                        <p className={`font-semibold ${priceChange > 0 ? 'text-emerald-600' : 'text-red-500'}`}>
+                          {priceChange > 0 ? '+' : ''}{priceChange.toFixed(2)}%
+                        </p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
             </Tabs>
           </>
         )}
-        
-        {/* Fixed Buy/Sell buttons at bottom - always visible, even in fullscreen */}
-        <div className={`fixed bottom-0 left-0 right-0 p-4 pb-safe bg-[#0A0B14] border-t border-[#222] grid grid-cols-2 gap-3 z-10 ${isChartFullscreen ? 'fullscreen-actions' : ''}`}>
-          <Button 
-            className="py-5 bg-market-increase hover:bg-market-increase/90 text-white font-semibold rounded-xl"
-            onClick={handleBuyClick}
-          >
-            BUY CALL
-          </Button>
-          <Button 
-            className="py-5 bg-[#14151F] hover:bg-[#1C1D2A] text-market-decrease font-semibold border border-market-decrease rounded-xl"
-            onClick={handleSellClick}
-          >
-            BUY PUT
-          </Button>
-        </div>
       </div>
-      
-      {/* Redesigned Buy/Sell Modal */}
+
+      {/* Trade Modals - keep existing modals with Trexo styling */}
       <Dialog open={isBuyModalOpen || isSellModalOpen} onOpenChange={closeModal}>
-        <DialogContent className="bg-gradient-to-b from-[#1E2032] to-[#141525] border-none shadow-xl p-0 max-w-sm mx-auto rounded-2xl overflow-hidden m-0 ml-0">
-          {/* Modal Header with Title for accessibility */}
-          <DialogTitle className="sr-only">
-            {direction === 'Call' ? 'Buy' : 'Sell'} {crypto.symbol}
+        <DialogContent className="sm:max-w-md bg-white dark:bg-gray-800 border-emerald-200 dark:border-emerald-800">
+          <DialogTitle className="text-emerald-600 dark:text-emerald-400">
+            Place {direction} Trade
           </DialogTitle>
-          
-          <div className="relative border-b border-gray-800/30">
-            <div className="px-5 py-4 flex justify-between items-center">
-              <div className="flex items-center gap-3">
-                <div className="bg-[#252739]/70 backdrop-blur-sm rounded-full p-1.5">
-                  <img 
-                    src={crypto.logo} 
-                    alt={crypto.symbol}
-                    className="w-6 h-6"
-                  />
-                </div>
-                <div>
-                  <h2 className="text-lg font-semibold text-white flex items-center gap-2">
-                    {crypto.symbol}/USD
-                    <span className={`px-2 py-0.5 text-xs rounded-full ${
-                      direction === 'Call' 
-                        ? 'bg-market-increase/20 text-market-increase' 
-                        : 'bg-market-decrease/20 text-market-decrease'
-                    }`}>
-                      {direction}
-                    </span>
-                  </h2>
-                </div>
-              </div>
-              <button 
-                onClick={closeModal}
-                className="rounded-full p-2 bg-[#252739] hover:bg-[#313450] transition-colors"
-                aria-label="Close dialog"
+          <div className="space-y-4">
+            <div>
+              <label className="text-sm font-medium">Amount (₹)</label>
+              <Input
+                type="number"
+                value={tradeAmount}
+                onChange={(e) => setTradeAmount(e.target.value)}
+                className="mt-1"
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium">Time Period</label>
+              <select 
+                value={selectedTimePeriod} 
+                onChange={(e) => setSelectedTimePeriod(e.target.value)}
+                className="w-full mt-1 p-2 border rounded-md"
               >
-                <X className="h-4 w-4 text-gray-400" />
-              </button>
+                <option value="1min">1 Minute</option>
+                <option value="3min">3 Minutes</option>
+                <option value="5min">5 Minutes</option>
+              </select>
             </div>
-          </div>
-          
-          <div className="p-5 space-y-5 max-h-[70vh] overflow-y-auto styled-scrollbar">
-            {/* Time Period Selection */}
-            <div className="space-y-3">
-              <p className="text-gray-300 font-medium flex items-center gap-1.5">
-                <span>Time Period</span>
-                <Info className="h-3.5 w-3.5 text-gray-500" />
-              </p>
-              <div className="grid grid-cols-5 gap-2">
-                {['1min', '2min', '5min', '10min', '15min'].map((period) => (
-                  <button
-                    key={period}
-                    className={`px-2 py-2.5 rounded-xl text-sm transition-all ${
-                      selectedTimePeriod === period
-                      ? `${direction === 'Call' ? 'bg-[#0F4686]' : 'bg-[#461F1E]'} text-white font-medium`
-                      : 'bg-[#252739] text-gray-400 hover:bg-[#313450]'
-                    }`}
-                    onClick={() => setSelectedTimePeriod(period)}
-                  >
-                    {period}
-                  </button>
-                ))}
-              </div>
+            <div className="flex gap-2">
+              <Button 
+                onClick={handleConfirmTrade}
+                className="flex-1 bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white"
+              >
+                Confirm Trade
+              </Button>
+              <Button variant="outline" onClick={closeModal}>
+                Cancel
+              </Button>
             </div>
-            
-            {/* Available Balance */}
-            <div className="space-y-4">
-              <div className="flex justify-between items-center">
-                <p className="text-gray-400 text-sm">Available Balance</p>
-                <p className="text-gray-200 text-sm font-medium">₹{user?.wallet}</p>
-              </div>
-              
-              {/* Trade Amount Input */}
-              <div className="relative">
-                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-medium">₹</div>
-                <Input
-                  className="bg-[#252739] border-none text-white text-xl py-6 pl-8 pr-4 rounded-xl font-medium focus:ring-1 focus:ring-blue-600/50"
-                  placeholder="Enter amount"
-                  value={tradeAmount}
-                  onChange={(e) => setTradeAmount(e.target.value)}
-                  type="text"
-                  inputMode="decimal"
-                />
-              </div>
-              
-              {/* Predefined Amount Buttons */}
-              <div className="grid grid-cols-3 gap-2.5">
-                {predefinedAmounts.map((amount) => (
-                  <button
-                    key={amount}
-                    className={`bg-[#252739] hover:bg-[#313450] transition-all rounded-xl py-3 text-sm font-medium ${
-                      tradeAmount === amount 
-                        ? 'ring-1 ring-blue-500 text-gray-100' 
-                        : 'text-gray-400'
-                    }`}
-                    onClick={() => setTradeAmount(amount)}
-                  >
-                    ₹{parseInt(amount).toLocaleString()}
-                  </button>
-                ))}
-              </div>
-            </div>
-            
-            {/* Trade Summary */}
-            <div className="bg-[#252739]/70 rounded-xl p-4">
-              <div className="grid grid-cols-3 gap-4">
-                <div className="text-center">
-                  <p className="text-gray-400 text-xs mb-1.5">Direction</p>
-                  <p className={`font-medium text-sm ${
-                    direction === 'Call' ? 'text-market-increase' : 'text-market-decrease'
-                  }`}>
-                    {direction}
-                  </p>
-                </div>
-                <div className="text-center border-x border-gray-700/30">
-                  <p className="text-gray-400 text-xs mb-1.5">Current Price</p>
-                  <p className="font-medium text-sm text-gray-200">
-                    ${livePrice.toLocaleString(undefined, { maximumFractionDigits: 2 })}
-                  </p>
-                </div>
-                <div className="text-center">
-                  <p className="text-gray-400 text-xs mb-1.5">Investment</p>
-                  <p className="font-medium text-sm text-gray-200">
-                    ₹{parseInt(tradeAmount).toLocaleString()}
-                  </p>
-                </div>
-              </div>
-            </div>
-            
-            {/* Confirm Button */}
-            <Button 
-              className={`w-full py-5 font-medium text-base rounded-xl ${
-                direction === 'Call'
-                ? 'bg-market-increase hover:bg-market-increase/90'
-                : 'bg-market-decrease hover:bg-market-decrease/90'
-              } text-white`}
-              onClick={handleConfirmTrade}
-            >
-              {direction === 'Call' ? 'BUY' : 'SELL'} {selectedTimePeriod}
-            </Button>
           </div>
         </DialogContent>
       </Dialog>
-      
-      {/* Trade Timer Component - Pass trade API response to trade timer component */}
+
       <TradeTimer
-        open={isTradeTimerOpen}
-        onClose={closeModal}
-        duration={tradeTimer}
-        direction={direction}
-        startPrice={startingTradePrice}
+        isOpen={isTradeTimerOpen}
+        onClose={() => setIsTradeTimerOpen(false)}
+        timer={tradeTimer}
         currentPrice={livePrice}
-        onComplete={handleTradeComplete}
-        tradeApiResponse={tradeApiResponse} // Pass the API response to the TradeTimer component
+        startingPrice={startingTradePrice}
+        direction={direction}
+        amount={parseFloat(tradeAmount)}
+        onTradeComplete={handleTradeComplete}
+        crypto={crypto}
       />
     </MobileLayout>
   );

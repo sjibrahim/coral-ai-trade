@@ -97,70 +97,73 @@ const TeamPage = () => {
               </CardContent>
             </Card>
             
-            {/* Team Tabs */}
-            <Tabs defaultValue="level1" className="mb-6">
-              <TabsList className="grid grid-cols-3 mb-4 bg-[#1A1F2C]">
-                <TabsTrigger value="level1" className="data-[state=active]:bg-blue-500">Level 1</TabsTrigger>
-                <TabsTrigger value="level2" className="data-[state=active]:bg-blue-500">Level 2</TabsTrigger>
-                <TabsTrigger value="level3" className="data-[state=active]:bg-blue-500">Level 3</TabsTrigger>
-              </TabsList>
+              {/* Team Tabs */}
+              <Tabs defaultValue="level1" className="mb-6">
+                <TabsList className="grid grid-cols-3 mb-4 bg-white dark:bg-gray-800 border border-emerald-200 dark:border-emerald-800">
+                  <TabsTrigger value="level1" className="data-[state=active]:bg-emerald-500 data-[state=active]:text-white">Level 1</TabsTrigger>
+                  <TabsTrigger value="level2" className="data-[state=active]:bg-emerald-500 data-[state=active]:text-white">Level 2</TabsTrigger>
+                  <TabsTrigger value="level3" className="data-[state=active]:bg-emerald-500 data-[state=active]:text-white">Level 3</TabsTrigger>
+                </TabsList>
               
-              <TabsContent value="level1">
-                <Card className="mb-4 bg-[#1A1F2C] border-none">
-                  <CardContent className="p-4 flex items-center justify-between">
-                    <div>
-                      <h3 className="text-lg font-semibold">Level 1</h3>
-                      <p className="text-sm text-muted-foreground">{generalSettings?.level_1_commission || '10'}% Commission</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-sm text-muted-foreground">Members</p>
-                      <p className="text-lg font-semibold">
-                        <span className="text-blue-400">{activeLevel1}</span>/{level1Members.length}
-                      </p>
-                    </div>
-                  </CardContent>
-                </Card>
+                <TabsContent value="level1">
+                  <Card className="mb-4 bg-white dark:bg-gray-800 border border-emerald-200 dark:border-emerald-800">
+                    <CardContent className="p-4 flex items-center justify-between">
+                      <div>
+                        <h3 className="text-lg font-semibold text-emerald-600 dark:text-emerald-400">Level 1 Direct</h3>
+                        <p className="text-sm text-muted-foreground">{generalSettings?.level_1_commission || '10'}% Commission Rate</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-sm text-muted-foreground">Active Members</p>
+                        <p className="text-lg font-semibold">
+                          <span className="text-emerald-600 dark:text-emerald-400">{activeLevel1}</span>/{level1Members.length}
+                        </p>
+                      </div>
+                    </CardContent>
+                  </Card>
                 
-                {level1Members.length === 0 ? (
-                  <div className="text-center py-10 px-4">
-                    <div className="w-16 h-16 rounded-full bg-blue-500/10 flex items-center justify-center mx-auto mb-4">
-                      <Users className="h-8 w-8 text-blue-400/70" />
+                  {level1Members.length === 0 ? (
+                    <div className="text-center py-10 px-4">
+                      <div className="w-20 h-20 rounded-full bg-gradient-to-br from-emerald-100 to-green-100 dark:from-emerald-900/30 dark:to-green-900/30 flex items-center justify-center mx-auto mb-4">
+                        <Users className="h-10 w-10 text-emerald-500" />
+                      </div>
+                      <h3 className="text-lg font-medium mb-2">Start Building Your Network</h3>
+                      <p className="text-sm text-muted-foreground mb-6">Invite friends to join Trexo and earn commissions</p>
+                      <Button 
+                        onClick={() => setInvitePopupOpen(true)}
+                        className="bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white"
+                      >
+                        <Share2 className="mr-2 h-4 w-4" /> Invite to Trexo
+                      </Button>
                     </div>
-                    <h3 className="text-lg font-medium mb-2">No members yet</h3>
-                    <p className="text-sm text-muted-foreground mb-6">Invite friends to build your team</p>
-                    <Button onClick={() => setInvitePopupOpen(true)}>
-                      <Share2 className="mr-2 h-4 w-4" /> Invite Friends
-                    </Button>
-                  </div>
-                ) : (
-                  <>
-                    {level1Members.map(renderMemberCard)}
-                    <Button 
-                      variant="outline" 
-                      className="w-full mt-2" 
-                      onClick={() => setInvitePopupOpen(true)}
-                    >
-                      <Share2 className="mr-2 h-4 w-4" /> Invite More Friends
-                    </Button>
-                  </>
-                )}
+                  ) : (
+                    <>
+                      {level1Members.map(renderMemberCard)}
+                      <Button 
+                        variant="outline" 
+                        className="w-full mt-4 border-emerald-200 text-emerald-600 hover:bg-emerald-50 dark:border-emerald-800 dark:text-emerald-400 dark:hover:bg-emerald-900/20" 
+                        onClick={() => setInvitePopupOpen(true)}
+                      >
+                        <Share2 className="mr-2 h-4 w-4" /> Invite More to Trexo
+                      </Button>
+                    </>
+                  )}
               </TabsContent>
               
-              <TabsContent value="level2">
-                <Card className="mb-4 bg-[#1A1F2C] border-none">
-                  <CardContent className="p-4 flex items-center justify-between">
-                    <div>
-                      <h3 className="text-lg font-semibold">Level 2</h3>
-                      <p className="text-sm text-muted-foreground">{generalSettings?.level_2_commission || '5'}% Commission</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-sm text-muted-foreground">Members</p>
-                      <p className="text-lg font-semibold">
-                        <span className="text-blue-400">{activeLevel2}</span>/{level2Members.length}
-                      </p>
-                    </div>
-                  </CardContent>
-                </Card>
+                <TabsContent value="level2">
+                  <Card className="mb-4 bg-white dark:bg-gray-800 border border-emerald-200 dark:border-emerald-800">
+                    <CardContent className="p-4 flex items-center justify-between">
+                      <div>
+                        <h3 className="text-lg font-semibold text-emerald-600 dark:text-emerald-400">Level 2 Network</h3>
+                        <p className="text-sm text-muted-foreground">{generalSettings?.level_2_commission || '5'}% Commission Rate</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-sm text-muted-foreground">Active Members</p>
+                        <p className="text-lg font-semibold">
+                          <span className="text-emerald-600 dark:text-emerald-400">{activeLevel2}</span>/{level2Members.length}
+                        </p>
+                      </div>
+                    </CardContent>
+                  </Card>
                 
                 {level2Members.length === 0 ? (
                   <div className="text-center py-10 px-4">
@@ -177,21 +180,21 @@ const TeamPage = () => {
                 )}
               </TabsContent>
               
-              <TabsContent value="level3">
-                <Card className="mb-4 bg-[#1A1F2C] border-none">
-                  <CardContent className="p-4 flex items-center justify-between">
-                    <div>
-                      <h3 className="text-lg font-semibold">Level 3</h3>
-                      <p className="text-sm text-muted-foreground">{generalSettings?.level_3_commission || '2'}% Commission</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-sm text-muted-foreground">Members</p>
-                      <p className="text-lg font-semibold">
-                        <span className="text-blue-400">{activeLevel3}</span>/{level3Members.length}
-                      </p>
-                    </div>
-                  </CardContent>
-                </Card>
+                <TabsContent value="level3">
+                  <Card className="mb-4 bg-white dark:bg-gray-800 border border-emerald-200 dark:border-emerald-800">
+                    <CardContent className="p-4 flex items-center justify-between">
+                      <div>
+                        <h3 className="text-lg font-semibold text-emerald-600 dark:text-emerald-400">Level 3 Extended</h3>
+                        <p className="text-sm text-muted-foreground">{generalSettings?.level_3_commission || '2'}% Commission Rate</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-sm text-muted-foreground">Active Members</p>
+                        <p className="text-lg font-semibold">
+                          <span className="text-emerald-600 dark:text-emerald-400">{activeLevel3}</span>/{level3Members.length}
+                        </p>
+                      </div>
+                    </CardContent>
+                  </Card>
                 
                 {level3Members.length === 0 ? (
                   <div className="text-center py-10 px-4">
@@ -209,36 +212,50 @@ const TeamPage = () => {
               </TabsContent>
             </Tabs>
             
-            {/* Referral Info */}
-            <Card className="bg-[#1A1F2C] border-none shadow-lg mb-6">
-              <CardContent className="p-4">
-                <h3 className="font-semibold mb-3">Referral Code</h3>
-                <div className="flex items-center justify-between p-3 bg-black/20 rounded-md mb-4">
-                  <p className="font-medium">{user?.referral_code || 'INVITE123'}</p>
-                  <Button variant="ghost" size="sm" onClick={() => setInvitePopupOpen(true)}>
-                    <Share2 className="h-4 w-4" />
-                  </Button>
-                </div>
-                
-                <div className="text-xs text-muted-foreground space-y-2 mt-4">
-                  <p>• {generalSettings?.level_1_commission || '10'}% commission on level 1 referrals</p>
-                  <p>• {generalSettings?.level_2_commission || '5'}% commission on level 2 referrals</p>
-                  <p>• {generalSettings?.level_3_commission || '2'}% commission on level 3 referrals</p>
-                </div>
-              </CardContent>
-            </Card>
-            
-            {/* Invite Button */}
-            <Button 
-              variant="default" 
-              size="lg" 
-              className="w-full mb-6"
-              onClick={() => setInvitePopupOpen(true)}
-            >
-              <Share2 className="mr-2 h-4 w-4" /> Invite Friends
-            </Button>
-          </>
-        )}
+              {/* Referral Info */}
+              <Card className="bg-gradient-to-br from-emerald-50 to-green-50 dark:from-emerald-900/20 dark:to-green-900/20 border border-emerald-200 dark:border-emerald-800 shadow-lg mb-6">
+                <CardContent className="p-6">
+                  <h3 className="font-semibold mb-3 text-emerald-600 dark:text-emerald-400">Your Trexo Referral Code</h3>
+                  <div className="flex items-center justify-between p-4 bg-white dark:bg-gray-800 rounded-lg border border-emerald-200 dark:border-emerald-700 mb-4">
+                    <p className="font-bold text-lg text-emerald-600 dark:text-emerald-400">{user?.referral_code || 'TREXO123'}</p>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      onClick={() => setInvitePopupOpen(true)}
+                      className="text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 dark:text-emerald-400 dark:hover:bg-emerald-900/20"
+                    >
+                      <Share2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                  
+                  <div className="text-sm text-muted-foreground space-y-2 mt-4">
+                    <p className="flex items-center">
+                      <span className="w-2 h-2 bg-emerald-500 rounded-full mr-2"></span>
+                      Level 1: {generalSettings?.level_1_commission || '10'}% commission on direct referrals
+                    </p>
+                    <p className="flex items-center">
+                      <span className="w-2 h-2 bg-emerald-400 rounded-full mr-2"></span>
+                      Level 2: {generalSettings?.level_2_commission || '5'}% commission on network referrals
+                    </p>
+                    <p className="flex items-center">
+                      <span className="w-2 h-2 bg-emerald-300 rounded-full mr-2"></span>
+                      Level 3: {generalSettings?.level_3_commission || '2'}% commission on extended network
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              {/* Invite Button */}
+              <Button 
+                size="lg" 
+                className="w-full mb-6 bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white shadow-lg"
+                onClick={() => setInvitePopupOpen(true)}
+              >
+                <Share2 className="mr-2 h-4 w-4" /> Grow Your Trexo Network
+              </Button>
+            </>
+          )}
+        </div>
       </div>
       
       <InvitePopup isOpen={invitePopupOpen} onClose={() => setInvitePopupOpen(false)} />

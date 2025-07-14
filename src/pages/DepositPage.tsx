@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
-import { Bell, Clock } from "lucide-react";
+import { Clock } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
 import { useAuth } from "@/contexts/AuthContext";
 import { createTopupOrder } from "@/services/api";
 import { toast } from "@/components/ui/use-toast";
@@ -65,22 +66,20 @@ const DepositPage = () => {
   return (
     <MobileLayout 
       showBackButton 
-      title="Deposit"
-      rightActions={(
-        <div className="flex items-center space-x-2">
-          <button className="p-1.5 rounded-full hover:bg-accent/50 transition-colors flex items-center justify-center relative">
-            <Bell className="h-5 w-5" />
-            <span className="absolute top-0.5 right-0.5 w-1.5 h-1.5 bg-red-500 rounded-full"></span>
-          </button>
-        </div>
-      )}
+      title="Trexo Deposit"
     >
-      <div className="flex flex-col h-full bg-background">
-        <div className="p-4 pb-5">
-          <div className="flex justify-end mb-2">
-            <div className="flex items-center gap-1 text-sm text-gray-400 bg-[#1a1c25]/50 px-3 py-1.5 rounded-full">
+      <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-green-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+        <div className="p-4">
+          {/* Header */}
+          <div className="text-center mb-6">
+            <h1 className="text-2xl font-bold text-emerald-600 dark:text-emerald-400 mb-2">Add Funds</h1>
+            <p className="text-muted-foreground">Deposit to start trading on Trexo</p>
+          </div>
+
+          <div className="flex justify-center mb-6">
+            <div className="flex items-center gap-2 text-sm text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 px-4 py-2 rounded-full border border-emerald-200 dark:border-emerald-800">
               <Clock className="h-4 w-4" />
-              <span>Min ₹{minDepositAmount}</span>
+              <span>Minimum ₹{minDepositAmount}</span>
             </div>
           </div>
           
@@ -92,71 +91,77 @@ const DepositPage = () => {
             quickAmounts={["1000", "2000", "3000", "5000"]}
           />
           
-          {/* Card with fancy background */}
-          <div className="mt-6 bg-gradient-to-br from-blue-900/30 to-purple-900/30 rounded-2xl p-5 border border-blue-500/20">
-            <div className="flex items-center justify-between">
-              <h3 className="text-lg font-medium text-white">Payment Options</h3>
-            </div>
-            
-            <div className="mt-4">
-              <PaymentMethodSelector
-                methods={paymentMethods}
-                selectedMethod={selectedChannel}
-                onSelect={setSelectedChannel}
-              />
-            </div>
-            
-            <div className="mt-6">
-              <ConfirmButton
-                onClick={handleConfirm}
-                disabled={!isValidAmount}
-                isLoading={isLoading}
-                text="CONFIRM DEPOSIT"
-              />
-            </div>
-            
-            <div className="mt-3 text-center">
-              <p className="text-xs text-gray-500">
-                By proceeding, you agree to our terms and conditions for online payments
-              </p>
-            </div>
-          </div>
+          {/* Payment Options Card */}
+          <Card className="mt-6 bg-gradient-to-br from-emerald-50 to-green-50 dark:from-emerald-900/20 dark:to-green-900/20 border border-emerald-200 dark:border-emerald-800 shadow-lg">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold text-emerald-600 dark:text-emerald-400">Payment Gateway</h3>
+                <div className="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
+                  <span className="text-emerald-600 dark:text-emerald-400 text-sm font-bold">₹</span>
+                </div>
+              </div>
+              
+              <div className="space-y-4">
+                <PaymentMethodSelector
+                  methods={paymentMethods}
+                  selectedMethod={selectedChannel}
+                  onSelect={setSelectedChannel}
+                />
+                
+                <ConfirmButton
+                  onClick={handleConfirm}
+                  disabled={!isValidAmount}
+                  isLoading={isLoading}
+                  text="PROCEED TO PAYMENT"
+                  className="bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700"
+                />
+                
+                <div className="text-center">
+                  <p className="text-xs text-muted-foreground">
+                    Secure payment processing by Trexo
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
           
-          {/* Additional information card */}
-          <div className="mt-6 bg-[#1a1c25] rounded-2xl p-4">
-            <h3 className="text-sm font-medium text-gray-300 mb-3">Why deposit with us?</h3>
-            <div className="space-y-3">
-              <div className="flex items-start">
-                <div className="w-8 h-8 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-400 mr-3">
-                  <span className="text-lg">✓</span>
+          {/* Why Choose Trexo */}
+          <Card className="mt-6 bg-white dark:bg-gray-800 border border-emerald-200 dark:border-emerald-800">
+            <CardContent className="p-6">
+              <h3 className="text-lg font-semibold text-emerald-600 dark:text-emerald-400 mb-4">Why Choose Trexo?</h3>
+              <div className="space-y-4">
+                <div className="flex items-start">
+                  <div className="w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400 mr-3">
+                    <span className="text-lg font-bold">⚡</span>
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-semibold text-foreground">Instant Processing</h4>
+                    <p className="text-xs text-muted-foreground">Deposits credited immediately after confirmation</p>
+                  </div>
                 </div>
-                <div>
-                  <h4 className="text-sm font-medium text-white">Instant Processing</h4>
-                  <p className="text-xs text-gray-400">Deposits are processed immediately after confirmation</p>
+                
+                <div className="flex items-start">
+                  <div className="w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400 mr-3">
+                    <span className="text-lg font-bold">🔒</span>
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-semibold text-foreground">Bank-Grade Security</h4>
+                    <p className="text-xs text-muted-foreground">Your funds are protected with advanced encryption</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-start">
+                  <div className="w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400 mr-3">
+                    <span className="text-lg font-bold">📞</span>
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-semibold text-foreground">24/7 Support</h4>
+                    <p className="text-xs text-muted-foreground">Our team is always here to help you</p>
+                  </div>
                 </div>
               </div>
-              
-              <div className="flex items-start">
-                <div className="w-8 h-8 rounded-full bg-purple-500/10 flex items-center justify-center text-purple-400 mr-3">
-                  <span className="text-lg">✓</span>
-                </div>
-                <div>
-                  <h4 className="text-sm font-medium text-white">Secure Transactions</h4>
-                  <p className="text-xs text-gray-400">All deposits are secured with industry-standard encryption</p>
-                </div>
-              </div>
-              
-              <div className="flex items-start">
-                <div className="w-8 h-8 rounded-full bg-green-500/10 flex items-center justify-center text-green-400 mr-3">
-                  <span className="text-lg">✓</span>
-                </div>
-                <div>
-                  <h4 className="text-sm font-medium text-white">24/7 Support</h4>
-                  <p className="text-xs text-gray-400">Our support team is available around the clock</p>
-                </div>
-              </div>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </MobileLayout>
