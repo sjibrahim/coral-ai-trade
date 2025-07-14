@@ -517,15 +517,13 @@ const CoinDetailPage = () => {
       </Dialog>
 
       <TradeTimer
-        isOpen={isTradeTimerOpen}
+        open={isTradeTimerOpen}
         onClose={() => setIsTradeTimerOpen(false)}
-        timer={tradeTimer}
         currentPrice={livePrice}
-        startingPrice={startingTradePrice}
+        startPrice={startingTradePrice}
         direction={direction}
-        amount={parseFloat(tradeAmount)}
-        onTradeComplete={handleTradeComplete}
-        crypto={crypto}
+        duration={tradeTimer}
+        onComplete={handleTradeComplete}
       />
     </MobileLayout>
   );

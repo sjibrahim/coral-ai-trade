@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
 import { Card, CardContent } from "@/components/ui/card";
@@ -32,24 +31,30 @@ const TeamPage = () => {
   // Function to render team member card
   const renderMemberCard = (member: any) => {
     return (
-      <Card key={member.id} className="mb-3 bg-[#1A1F2C] border-none">
+      <Card key={member.id} className="mb-3 bg-gradient-to-r from-emerald-50/10 to-green-50/10 border border-emerald-500/20 rounded-xl overflow-hidden shadow-sm">
         <CardContent className="p-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center">
-              <div className="h-10 w-10 rounded-full bg-blue-500/20 flex items-center justify-center mr-3">
-                <Users className="h-5 w-5 text-blue-400" />
+              <div className="h-12 w-12 rounded-full bg-gradient-to-br from-emerald-500 to-green-600 flex items-center justify-center mr-3 shadow-lg">
+                <Users className="h-6 w-6 text-white" />
               </div>
               <div>
-                <p className="font-medium text-base">{member.phone}</p>
+                <p className="font-semibold text-foreground text-base">{member.phone}</p>
                 <p className="text-xs text-muted-foreground">
-                  {member.active_member === "1" ? "Active" : "Inactive"} member
+                  <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
+                    member.active_member === "1" 
+                      ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400" 
+                      : "bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400"
+                  }`}>
+                    {member.active_member === "1" ? "Active" : "Inactive"}
+                  </span>
                 </p>
               </div>
             </div>
             
             <div className="text-right">
-              <p className="text-xs text-muted-foreground">Contribution</p>
-              <p className="font-medium">₹{parseFloat(member.total_deposit).toLocaleString()}</p>
+              <p className="text-xs text-muted-foreground mb-1">Contribution</p>
+              <p className="font-bold text-emerald-600 dark:text-emerald-400">₹{parseFloat(member.total_deposit).toLocaleString()}</p>
             </div>
           </div>
         </CardContent>
@@ -58,45 +63,60 @@ const TeamPage = () => {
   };
   
   return (
-    <MobileLayout title="Team">
-      <div className="p-4 animate-fade-in pb-safe">
-        {isLoading ? (
-          <div className="flex justify-center items-center py-20">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+    <MobileLayout title="Team" showBackButton>
+      <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-green-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+        <div className="p-4 animate-fade-in">
+          {/* Header */}
+          <div className="text-center mb-6">
+            <h1 className="text-2xl font-bold text-emerald-600 dark:text-emerald-400 mb-2">Trexo Team</h1>
+            <p className="text-muted-foreground">Build and grow your trading network</p>
           </div>
-        ) : (
-          <>
-            {/* Team Overview Card */}
-            <Card className="mb-6 bg-[#1A1F2C] border-none shadow-lg overflow-hidden">
-              <CardContent className="p-4">
-                <h2 className="text-xl font-bold mb-1">Team Overview</h2>
-                <p className="text-sm text-muted-foreground mb-4">Track your team growth</p>
-                
-                <div className="grid grid-cols-3 gap-1 mt-4">
-                  <div className="text-center p-3 border-r border-white/10">
-                    <p className="text-sm text-muted-foreground mb-2">L1</p>
-                    <p className="text-xl font-bold">
-                      <span className="text-blue-400">{activeLevel1}</span>/{level1Members.length}
-                    </p>
+          
+          {isLoading ? (
+            <div className="flex justify-center items-center py-20">
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-emerald-500"></div>
+            </div>
+          ) : (
+            <>
+              {/* Team Overview Card */}
+              <Card className="mb-6 bg-gradient-to-br from-emerald-500 to-green-600 border-none shadow-xl overflow-hidden">
+                <CardContent className="p-6">
+                  <div className="text-center text-white">
+                    <h2 className="text-xl font-bold mb-1">Team Overview</h2>
+                    <p className="text-emerald-100 text-sm mb-6">Your Trexo Network Growth</p>
+                    
+                    <div className="grid grid-cols-3 gap-4">
+                      <div className="text-center">
+                        <div className="bg-white/20 rounded-lg p-3 mb-2">
+                          <p className="text-emerald-100 text-xs mb-1">Level 1</p>
+                          <p className="text-2xl font-bold text-white">
+                            <span className="text-yellow-300">{activeLevel1}</span>/{level1Members.length}
+                          </p>
+                        </div>
+                      </div>
+                      
+                      <div className="text-center">
+                        <div className="bg-white/20 rounded-lg p-3 mb-2">
+                          <p className="text-emerald-100 text-xs mb-1">Level 2</p>
+                          <p className="text-2xl font-bold text-white">
+                            <span className="text-yellow-300">{activeLevel2}</span>/{level2Members.length}
+                          </p>
+                        </div>
+                      </div>
+                      
+                      <div className="text-center">
+                        <div className="bg-white/20 rounded-lg p-3 mb-2">
+                          <p className="text-emerald-100 text-xs mb-1">Level 3</p>
+                          <p className="text-2xl font-bold text-white">
+                            <span className="text-yellow-300">{activeLevel3}</span>/{level3Members.length}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  
-                  <div className="text-center p-3 border-r border-white/10">
-                    <p className="text-sm text-muted-foreground mb-2">L2</p>
-                    <p className="text-xl font-bold">
-                      <span className="text-blue-400">{activeLevel2}</span>/{level2Members.length}
-                    </p>
-                  </div>
-                  
-                  <div className="text-center p-3">
-                    <p className="text-sm text-muted-foreground mb-2">L3</p>
-                    <p className="text-xl font-bold">
-                      <span className="text-blue-400">{activeLevel3}</span>/{level3Members.length}
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-            
+                </CardContent>
+              </Card>
+              
               {/* Team Tabs */}
               <Tabs defaultValue="level1" className="mb-6">
                 <TabsList className="grid grid-cols-3 mb-4 bg-white dark:bg-gray-800 border border-emerald-200 dark:border-emerald-800">
@@ -104,7 +124,7 @@ const TeamPage = () => {
                   <TabsTrigger value="level2" className="data-[state=active]:bg-emerald-500 data-[state=active]:text-white">Level 2</TabsTrigger>
                   <TabsTrigger value="level3" className="data-[state=active]:bg-emerald-500 data-[state=active]:text-white">Level 3</TabsTrigger>
                 </TabsList>
-              
+                
                 <TabsContent value="level1">
                   <Card className="mb-4 bg-white dark:bg-gray-800 border border-emerald-200 dark:border-emerald-800">
                     <CardContent className="p-4 flex items-center justify-between">
@@ -120,7 +140,7 @@ const TeamPage = () => {
                       </div>
                     </CardContent>
                   </Card>
-                
+                  
                   {level1Members.length === 0 ? (
                     <div className="text-center py-10 px-4">
                       <div className="w-20 h-20 rounded-full bg-gradient-to-br from-emerald-100 to-green-100 dark:from-emerald-900/30 dark:to-green-900/30 flex items-center justify-center mx-auto mb-4">
@@ -147,8 +167,8 @@ const TeamPage = () => {
                       </Button>
                     </>
                   )}
-              </TabsContent>
-              
+                </TabsContent>
+                
                 <TabsContent value="level2">
                   <Card className="mb-4 bg-white dark:bg-gray-800 border border-emerald-200 dark:border-emerald-800">
                     <CardContent className="p-4 flex items-center justify-between">
@@ -164,22 +184,22 @@ const TeamPage = () => {
                       </div>
                     </CardContent>
                   </Card>
-                
-                {level2Members.length === 0 ? (
-                  <div className="text-center py-10 px-4">
-                    <div className="w-16 h-16 rounded-full bg-blue-500/10 flex items-center justify-center mx-auto mb-4">
-                      <Users className="h-8 w-8 text-blue-400/70" />
+                  
+                  {level2Members.length === 0 ? (
+                    <div className="text-center py-10 px-4">
+                      <div className="w-20 h-20 rounded-full bg-gradient-to-br from-emerald-100 to-green-100 dark:from-emerald-900/30 dark:to-green-900/30 flex items-center justify-center mx-auto mb-4">
+                        <Users className="h-10 w-10 text-emerald-500" />
+                      </div>
+                      <h3 className="text-lg font-medium mb-2">No level 2 members yet</h3>
+                      <p className="text-sm text-muted-foreground mb-6">When your direct referrals invite others, they'll appear here</p>
                     </div>
-                    <h3 className="text-lg font-medium mb-2">No level 2 members yet</h3>
-                    <p className="text-sm text-muted-foreground mb-6">When your direct referrals invite others, they'll appear here</p>
-                  </div>
-                ) : (
-                  <>
-                    {level2Members.map(renderMemberCard)}
-                  </>
-                )}
-              </TabsContent>
-              
+                  ) : (
+                    <>
+                      {level2Members.map(renderMemberCard)}
+                    </>
+                  )}
+                </TabsContent>
+                
                 <TabsContent value="level3">
                   <Card className="mb-4 bg-white dark:bg-gray-800 border border-emerald-200 dark:border-emerald-800">
                     <CardContent className="p-4 flex items-center justify-between">
@@ -195,23 +215,23 @@ const TeamPage = () => {
                       </div>
                     </CardContent>
                   </Card>
-                
-                {level3Members.length === 0 ? (
-                  <div className="text-center py-10 px-4">
-                    <div className="w-16 h-16 rounded-full bg-blue-500/10 flex items-center justify-center mx-auto mb-4">
-                      <Users className="h-8 w-8 text-blue-400/70" />
+                  
+                  {level3Members.length === 0 ? (
+                    <div className="text-center py-10 px-4">
+                      <div className="w-20 h-20 rounded-full bg-gradient-to-br from-emerald-100 to-green-100 dark:from-emerald-900/30 dark:to-green-900/30 flex items-center justify-center mx-auto mb-4">
+                        <Users className="h-10 w-10 text-emerald-500" />
+                      </div>
+                      <h3 className="text-lg font-medium mb-2">No level 3 members yet</h3>
+                      <p className="text-sm text-muted-foreground">These are members invited by your level 2 referrals</p>
                     </div>
-                    <h3 className="text-lg font-medium mb-2">No level 3 members yet</h3>
-                    <p className="text-sm text-muted-foreground">These are members invited by your level 2 referrals</p>
-                  </div>
-                ) : (
-                  <>
-                    {level3Members.map(renderMemberCard)}
-                  </>
-                )}
-              </TabsContent>
-            </Tabs>
-            
+                  ) : (
+                    <>
+                      {level3Members.map(renderMemberCard)}
+                    </>
+                  )}
+                </TabsContent>
+              </Tabs>
+              
               {/* Referral Info */}
               <Card className="bg-gradient-to-br from-emerald-50 to-green-50 dark:from-emerald-900/20 dark:to-green-900/20 border border-emerald-200 dark:border-emerald-800 shadow-lg mb-6">
                 <CardContent className="p-6">

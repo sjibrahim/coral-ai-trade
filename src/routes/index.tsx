@@ -10,7 +10,7 @@ import ProfilePage from '@/pages/ProfilePage';
 import CoinDetailPage from '@/pages/CoinDetailPage';
 import DepositPage from '@/pages/DepositPage';
 import WithdrawPage from '@/pages/WithdrawPage';
-import UsdtWithdrawalPage from '@/pages/UsdtWithdrawalPage';
+
 import InvitePage from '@/pages/InvitePage';
 import BankDetailsPage from '@/pages/BankDetailsPage';
 import ChangePasswordPage from '@/pages/ChangePasswordPage';
@@ -49,7 +49,7 @@ const AppRoutes = () => {
       <Route path="/coin/:id" element={<ProtectedRoute><CoinDetailPage /></ProtectedRoute>} />
       <Route path="/deposit" element={<ProtectedRoute><DepositPage /></ProtectedRoute>} />
       <Route path="/withdraw" element={<ProtectedRoute><WithdrawPage /></ProtectedRoute>} />
-      <Route path="/usdt-withdraw" element={<ProtectedRoute><UsdtWithdrawalPage /></ProtectedRoute>} />
+      
       <Route path="/invite" element={<ProtectedRoute><InvitePage /></ProtectedRoute>} />
       <Route path="/vip" element={<ProtectedRoute><VipPage /></ProtectedRoute>} />
       <Route path="/bank" element={<ProtectedRoute><BankDetailsPage /></ProtectedRoute>} />
