@@ -211,16 +211,16 @@ const CoinDetailPage = () => {
 
       const timeInSeconds = selectedTimePeriod === '1min' ? 60 : selectedTimePeriod === '3min' ? 180 : 300;
       
-      const tradeData = {
-        coin_id: crypto.id,
-        direction: direction.toLowerCase(),
-        amount: parseFloat(tradeAmount),
-        time: timeInSeconds,
-      };
-
-      const response = await placeTrade(token, tradeData);
+      const response = await placeTrade(
+        token,
+        parseFloat(tradeAmount),
+        crypto.binance_symbol || crypto.symbol.toUpperCase(),
+        direction.toLowerCase(),
+        livePrice,
+        timeInSeconds
+      );
       
-      if (response.status) {
+      if (response.success) {
         setTradeApiResponse(response);
         setStartingTradePrice(livePrice);
         setTradeTimer(timeInSeconds);
@@ -234,7 +234,7 @@ const CoinDetailPage = () => {
       } else {
         toast({
           title: "Trade Failed",
-          description: response.msg || "Failed to place trade",
+          description: response.message || "Failed to place trade",
           variant: "destructive",
         });
       }
