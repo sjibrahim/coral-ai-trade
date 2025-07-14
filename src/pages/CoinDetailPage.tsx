@@ -432,7 +432,7 @@ const CoinDetailPage = () => {
             {/* Available Balance */}
             <div className="flex justify-between items-center">
               <span className="text-gray-600">Available Balance</span>
-              <span className="font-bold">₹{user?.balance || '100.00'}</span>
+              <span className="font-bold">₹{user?.wallet || '100.00'}</span>
             </div>
 
             {/* Amount Input */}
