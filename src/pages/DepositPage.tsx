@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
-import { Clock } from "lucide-react";
+import { Clock, Zap, Shield, Sparkles, CreditCard, ArrowUp, CheckCircle, Gift } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useAuth } from "@/contexts/AuthContext";
 import { createTopupOrder } from "@/services/api";
@@ -41,7 +41,6 @@ const DepositPage = () => {
       const response = await createTopupOrder(user.token, Number(amount), selectedChannel);
       
       if (response.status && response.data?.redirect_url) {
-        // Direct redirect to payment page
         window.location.href = response.data.redirect_url;
         return;
       } else {
@@ -64,40 +63,81 @@ const DepositPage = () => {
   };
   
   return (
-    <MobileLayout 
-      showBackButton 
-      title="Trexo Deposit"
-    >
-      <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-green-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-        <div className="p-4">
-          {/* Header */}
-          <div className="text-center mb-6">
-            <h1 className="text-2xl font-bold text-emerald-600 dark:text-emerald-400 mb-2">Add Funds</h1>
-            <p className="text-muted-foreground">Deposit to start trading on Trexo</p>
+    <MobileLayout showBackButton title="Add Funds">
+      <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-cyan-50">
+        <div className="px-3 py-4">
+          {/* Hero Header */}
+          <div className="relative mb-4 overflow-hidden rounded-2xl bg-gradient-to-br from-indigo-600 via-purple-600 to-cyan-600 p-4 shadow-xl">
+            <div className="absolute inset-0 bg-black/10"></div>
+            <div className="absolute top-0 right-0 h-24 w-24 rounded-full bg-white/10 transform translate-x-8 -translate-y-8"></div>
+            <div className="absolute bottom-0 left-0 h-20 w-20 rounded-full bg-white/10 transform -translate-x-6 translate-y-6"></div>
+            
+            <div className="relative z-10 text-center text-white">
+              <div className="flex items-center justify-center mb-2">
+                <div className="h-8 w-8 rounded-full bg-white/20 flex items-center justify-center mr-2">
+                  <Sparkles className="h-4 w-4" />
+                </div>
+                <h1 className="text-lg font-bold">Fund Your Account</h1>
+              </div>
+              <p className="text-indigo-100 text-xs mb-3">Start your trading journey with Trexo</p>
+              
+              <div className="flex items-center justify-center space-x-1 text-xs">
+                <Clock className="h-3 w-3" />
+                <span className="text-white/90">Minimum ₹{minDepositAmount}</span>
+              </div>
+            </div>
           </div>
 
-          <div className="flex justify-center mb-6">
-            <div className="flex items-center gap-2 text-sm text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 px-4 py-2 rounded-full border border-emerald-200 dark:border-emerald-800">
-              <Clock className="h-4 w-4" />
-              <span>Minimum ₹{minDepositAmount}</span>
-            </div>
+          {/* Features Grid */}
+          <div className="grid grid-cols-3 gap-2 mb-4">
+            {[
+              { icon: Zap, title: "Instant", desc: "Credit", color: "from-yellow-400 to-orange-500" },
+              { icon: Shield, title: "Secure", desc: "Payment", color: "from-green-400 to-emerald-500" },
+              { icon: Gift, title: "Bonus", desc: "Rewards", color: "from-pink-400 to-rose-500" }
+            ].map((feature, idx) => (
+              <Card key={idx} className="bg-white/80 backdrop-blur-sm border-0 shadow-sm">
+                <CardContent className="p-3 text-center">
+                  <div className={`h-8 w-8 rounded-full bg-gradient-to-br ${feature.color} flex items-center justify-center mx-auto mb-1`}>
+                    <feature.icon className="h-4 w-4 text-white" />
+                  </div>
+                  <p className="text-xs font-medium text-gray-800">{feature.title}</p>
+                  <p className="text-xs text-gray-600">{feature.desc}</p>
+                </CardContent>
+              </Card>
+            ))}
           </div>
           
           {/* Amount Input */}
-          <AmountInput
-            amount={amount}
-            onChange={setAmount}
-            minAmount={minDepositAmount}
-            quickAmounts={["1000", "2000", "3000", "5000"]}
-          />
-          
-          {/* Payment Options Card */}
-          <Card className="mt-6 bg-gradient-to-br from-emerald-50 to-green-50 dark:from-emerald-900/20 dark:to-green-900/20 border border-emerald-200 dark:border-emerald-800 shadow-lg">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-emerald-600 dark:text-emerald-400">Payment Gateway</h3>
-                <div className="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
-                  <span className="text-emerald-600 dark:text-emerald-400 text-sm font-bold">₹</span>
+          <Card className="mb-4 bg-white/90 backdrop-blur-sm border-0 shadow-sm">
+            <CardContent className="p-4">
+              <div className="flex items-center mb-3">
+                <div className="h-6 w-6 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center mr-2">
+                  <ArrowUp className="h-3 w-3 text-white" />
+                </div>
+                <h3 className="font-semibold text-gray-800 text-sm">Deposit Amount</h3>
+              </div>
+              
+              <AmountInput
+                amount={amount}
+                onChange={setAmount}
+                minAmount={minDepositAmount}
+                quickAmounts={["1000", "2000", "3000", "5000"]}
+              />
+            </CardContent>
+          </Card>
+
+          {/* Payment Gateway */}
+          <Card className="mb-4 bg-gradient-to-br from-white via-indigo-50/30 to-purple-50/30 border-0 shadow-lg">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center">
+                  <div className="h-6 w-6 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center mr-2">
+                    <CreditCard className="h-3 w-3 text-white" />
+                  </div>
+                  <h3 className="font-semibold text-gray-800 text-sm">Payment Gateway</h3>
+                </div>
+                <div className="px-2 py-1 bg-green-100 rounded-full">
+                  <span className="text-xs font-medium text-green-700">Secure</span>
                 </div>
               </div>
               
@@ -113,52 +153,34 @@ const DepositPage = () => {
                   disabled={!isValidAmount}
                   isLoading={isLoading}
                   text="PROCEED TO PAYMENT"
-                  className="bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700"
+                  className="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-xs h-10"
                 />
-                
-                <div className="text-center">
-                  <p className="text-xs text-muted-foreground">
-                    Secure payment processing by Trexo
-                  </p>
-                </div>
               </div>
             </CardContent>
           </Card>
-          
-          {/* Why Choose Trexo */}
-          <Card className="mt-6 bg-white dark:bg-gray-800 border border-emerald-200 dark:border-emerald-800">
-            <CardContent className="p-6">
-              <h3 className="text-lg font-semibold text-emerald-600 dark:text-emerald-400 mb-4">Why Choose Trexo?</h3>
-              <div className="space-y-4">
-                <div className="flex items-start">
-                  <div className="w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400 mr-3">
-                    <span className="text-lg font-bold">⚡</span>
+
+          {/* Benefits */}
+          <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-sm">
+            <CardContent className="p-4">
+              <h3 className="font-semibold text-gray-800 text-sm mb-3">Why Choose Trexo Payments?</h3>
+              <div className="space-y-2">
+                {[
+                  { icon: "⚡", title: "Lightning Fast", desc: "Deposits credited within seconds" },
+                  { icon: "🔒", title: "Bank-Grade Security", desc: "Advanced encryption & fraud protection" },
+                  { icon: "📞", title: "24/7 Support", desc: "Round-the-clock assistance available" },
+                  { icon: "🎁", title: "Welcome Bonus", desc: "Extra rewards for new deposits" }
+                ].map((benefit, idx) => (
+                  <div key={idx} className="flex items-center space-x-3">
+                    <div className="h-8 w-8 rounded-full bg-gradient-to-br from-indigo-100 to-purple-100 flex items-center justify-center text-sm">
+                      {benefit.icon}
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-xs font-medium text-gray-800">{benefit.title}</p>
+                      <p className="text-xs text-gray-600">{benefit.desc}</p>
+                    </div>
+                    <CheckCircle className="h-4 w-4 text-green-500" />
                   </div>
-                  <div>
-                    <h4 className="text-sm font-semibold text-foreground">Instant Processing</h4>
-                    <p className="text-xs text-muted-foreground">Deposits credited immediately after confirmation</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start">
-                  <div className="w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400 mr-3">
-                    <span className="text-lg font-bold">🔒</span>
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-semibold text-foreground">Bank-Grade Security</h4>
-                    <p className="text-xs text-muted-foreground">Your funds are protected with advanced encryption</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start">
-                  <div className="w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400 mr-3">
-                    <span className="text-lg font-bold">📞</span>
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-semibold text-foreground">24/7 Support</h4>
-                    <p className="text-xs text-muted-foreground">Our team is always here to help you</p>
-                  </div>
-                </div>
+                ))}
               </div>
             </CardContent>
           </Card>
