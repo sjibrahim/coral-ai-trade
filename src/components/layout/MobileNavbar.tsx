@@ -1,14 +1,34 @@
 
 import { Link, useLocation } from 'react-router-dom';
-import { Home, LayoutDashboard, Users, UserCircle } from 'lucide-react';
+import { Home, LayoutDashboard, Users, UserCircle, ChevronLeft } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-const MobileNavbar = () => {
+interface MobileNavbarProps {
+  showBackButton?: boolean;
+  title?: string;
+}
+
+const MobileNavbar = ({ showBackButton = false, title = "Trexo" }: MobileNavbarProps) => {
   const location = useLocation();
   
   const isActive = (path: string) => {
     return location.pathname === path;
   };
+
+  if (showBackButton) {
+    // Show header with back button instead of bottom navigation
+    return (
+      <header className="bg-white border-b border-gray-200 px-4 py-3 flex items-center">
+        <button 
+          onClick={() => window.history.back()}
+          className="mr-3 p-1 rounded-full hover:bg-gray-100"
+        >
+          <ChevronLeft className="h-6 w-6 text-gray-600" />
+        </button>
+        <h1 className="text-lg font-semibold text-gray-900">{title}</h1>
+      </header>
+    );
+  }
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-xl border-t border-emerald-100/50">
