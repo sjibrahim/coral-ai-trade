@@ -9,25 +9,30 @@ import {
   EyeOff,
   ArrowUpRight,
   ArrowDownRight,
-  Plus,
-  Minus,
-  BarChart3,
-  Wallet,
   CreditCard,
   Send,
-  Download,
-  Star,
-  Bell,
-  Gift,
+  BarChart3,
   Users,
+  Bell,
+  Star,
+  Activity,
+  DollarSign,
+  Percent,
+  Clock,
+  Award,
+  Shield,
+  Zap,
   Target,
-  Zap
+  Globe,
+  Lock,
+  CheckCircle2
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getMarketData } from "@/services/api";
 import { useAuth } from "@/contexts/AuthContext";
 import { WelcomeInfoModal } from "@/components/WelcomeInfoModal";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface CryptoData {
   id: string | number;
@@ -81,7 +86,7 @@ const HomePage = () => {
             return rankA - rankB;
           });
           
-          setMarketData(sortedHomeData.length > 0 ? sortedHomeData.slice(0, 4) : activeCoins.slice(0, 4));
+          setMarketData(sortedHomeData.length > 0 ? sortedHomeData.slice(0, 6) : activeCoins.slice(0, 6));
         }
       } catch (error) {
         console.error("Error fetching market data:", error);
@@ -102,236 +107,262 @@ const HomePage = () => {
     { icon: CreditCard, label: "Deposit", color: "bg-green-500", link: "/deposit" },
     { icon: Send, label: "Withdraw", color: "bg-blue-500", link: "/withdraw" },
     { icon: BarChart3, label: "Trade", color: "bg-purple-500", link: "/market" },
-    { icon: Users, label: "Invite", color: "bg-orange-500", link: "/invite" }
+    { icon: Users, label: "Refer", color: "bg-orange-500", link: "/invite" }
   ];
 
-  const portfolioItems = [
-    { name: "Bitcoin", symbol: "BTC", amount: 0.0234, value: 1850, change: +5.2 },
-    { name: "Ethereum", symbol: "ETH", amount: 0.456, value: 1200, change: -2.1 },
-    { name: "Cardano", symbol: "ADA", amount: 234, value: 890, change: +8.7 }
+  const stats = [
+    { label: "24h Volume", value: "₹2.4B", change: "+12.5%", positive: true },
+    { label: "Active Traders", value: "125K+", change: "+8.2%", positive: true },
+    { label: "Markets", value: "150+", change: "New", positive: true },
+    { label: "Security", value: "100%", change: "Secured", positive: true }
+  ];
+
+  const features = [
+    { icon: Shield, title: "Bank-grade Security", desc: "Advanced encryption" },
+    { icon: Activity, title: "Real-time Trading", desc: "Lightning fast execution" },
+    { icon: Globe, title: "Global Markets", desc: "150+ cryptocurrencies" },
+    { icon: Award, title: "Trusted Platform", desc: "Used by millions" }
   ];
   
   return (
     <MobileLayout>
-      <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-green-50 relative overflow-hidden">
-        {/* Welcome Modal */}
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-green-50/30">
         <WelcomeInfoModal />
         
-        {/* Animated Background Elements */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-green-400/10 to-emerald-500/10 rounded-full blur-3xl animate-pulse"></div>
-          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-blue-400/10 to-green-400/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-green-300/5 to-emerald-300/5 rounded-full blur-3xl animate-pulse delay-500"></div>
-          
-          {/* Floating shapes */}
-          <div className="absolute top-20 left-10 w-4 h-4 bg-green-400/20 rounded-full animate-bounce delay-300"></div>
-          <div className="absolute top-32 right-16 w-3 h-3 bg-emerald-400/30 rounded-full animate-bounce delay-700"></div>
-          <div className="absolute bottom-40 left-20 w-5 h-5 bg-green-300/20 rounded-full animate-bounce delay-1000"></div>
-        </div>
-
-        {/* Content */}
-        <div className="relative z-10 px-4 py-6 space-y-6">
-          {/* Header Section */}
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-2">
-              Welcome Back
-            </h1>
-            <p className="text-muted-foreground">
-              Ready to trade today?
-            </p>
+        <div className="px-4 py-6 space-y-6">
+          {/* Professional Header */}
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">Portfolio</h1>
+              <p className="text-gray-600 text-sm">Professional Trading Dashboard</p>
+            </div>
+            <div className="flex items-center gap-2">
+              <Button variant="outline" size="sm" className="rounded-full">
+                <Bell className="w-4 h-4" />
+              </Button>
+            </div>
           </div>
 
-          {/* Balance Card */}
-          <div className="bg-white/90 backdrop-blur-xl rounded-3xl p-6 shadow-2xl border border-white/20">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-gray-700">Total Balance</h2>
-              <button 
-                onClick={() => setShowBalance(!showBalance)}
-                className="p-2 rounded-full hover:bg-gray-100 transition-colors"
-              >
-                {showBalance ? <Eye className="w-5 h-5 text-gray-600" /> : <EyeOff className="w-5 h-5 text-gray-600" />}
-              </button>
-            </div>
-            
-            <div className="text-center mb-6">
-              <div className="text-4xl font-bold text-gray-800 mb-2">
-                {showBalance ? `₹${totalBalance.toLocaleString()}` : "••••••"}
-              </div>
-              <div className="flex items-center justify-center text-green-600">
-                <ArrowUpRight className="w-4 h-4 mr-1" />
-                <span className="text-sm font-medium">+12.5% this month</span>
-              </div>
-            </div>
-
-            {/* Balance Breakdown */}
-            <div className="grid grid-cols-2 gap-4 mb-6">
-              <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl p-4 border border-green-100">
-                <div className="flex items-center mb-2">
-                  <Wallet className="w-4 h-4 text-green-600 mr-2" />
-                  <span className="text-sm font-medium text-gray-700">Wallet</span>
+          {/* Balance Overview */}
+          <Card className="bg-gradient-to-r from-green-600 to-emerald-600 text-white border-0">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <p className="text-green-100 text-sm font-medium">Total Portfolio Value</p>
+                  <div className="flex items-center gap-2 mt-1">
+                    <span className="text-3xl font-bold">
+                      {showBalance ? `₹${totalBalance.toLocaleString()}` : "••••••"}
+                    </span>
+                    <button 
+                      onClick={() => setShowBalance(!showBalance)}
+                      className="p-1 rounded-full hover:bg-white/10"
+                    >
+                      {showBalance ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+                    </button>
+                  </div>
                 </div>
-                <div className="text-xl font-bold text-gray-800">
-                  {showBalance ? `₹${walletAmount.toLocaleString()}` : "••••"}
+                <div className="text-right">
+                  <div className="flex items-center text-green-100">
+                    <ArrowUpRight className="w-4 h-4 mr-1" />
+                    <span className="text-sm font-medium">+12.5%</span>
+                  </div>
+                  <p className="text-xs text-green-200">Last 24h</p>
                 </div>
               </div>
               
-              <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-4 border border-blue-100">
-                <div className="flex items-center mb-2">
-                  <TrendingUp className="w-4 h-4 text-blue-600 mr-2" />
-                  <span className="text-sm font-medium text-gray-700">Profit</span>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-white/10 rounded-xl p-3">
+                  <div className="flex items-center gap-2 mb-1">
+                    <DollarSign className="w-4 h-4" />
+                    <span className="text-sm">Available</span>
+                  </div>
+                  <p className="font-semibold">
+                    {showBalance ? `₹${walletAmount.toLocaleString()}` : "••••"}
+                  </p>
                 </div>
-                <div className="text-xl font-bold text-gray-800">
-                  {showBalance ? `₹${incomeAmount.toLocaleString()}` : "••••"}
+                <div className="bg-white/10 rounded-xl p-3">
+                  <div className="flex items-center gap-2 mb-1">
+                    <TrendingUp className="w-4 h-4" />
+                    <span className="text-sm">P&L</span>
+                  </div>
+                  <p className="font-semibold">
+                    {showBalance ? `₹${incomeAmount.toLocaleString()}` : "••••"}
+                  </p>
                 </div>
               </div>
-            </div>
+            </CardContent>
+          </Card>
 
-            {/* Quick Actions */}
-            <div className="grid grid-cols-4 gap-3">
-              {quickActions.map((action, idx) => (
-                <Link 
-                  key={idx}
-                  to={action.link}
-                  className="flex flex-col items-center p-3 rounded-2xl bg-gray-50 hover:bg-gray-100 transition-all duration-300 hover:scale-105"
-                >
-                  <div className={cn("w-10 h-10 rounded-full flex items-center justify-center mb-2", action.color)}>
-                    <action.icon className="w-5 h-5 text-white" />
-                  </div>
-                  <span className="text-xs font-medium text-gray-700">{action.label}</span>
-                </Link>
-              ))}
-            </div>
-          </div>
-
-          {/* Market Overview */}
-          <div className="bg-white/90 backdrop-blur-xl rounded-3xl p-6 shadow-lg border border-white/20">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-gray-700">Market Overview</h2>
-              <Link to="/market" className="text-green-600 text-sm font-medium hover:text-green-700">
-                View All
-              </Link>
-            </div>
-            
-            {isLoading ? (
-              <div className="space-y-4">
-                {Array(3).fill(0).map((_, idx) => (
-                  <div key={idx} className="animate-pulse flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-gray-200 rounded-full"></div>
-                      <div>
-                        <div className="h-4 w-20 bg-gray-200 rounded mb-1"></div>
-                        <div className="h-3 w-12 bg-gray-200 rounded"></div>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <div className="h-4 w-16 bg-gray-200 rounded mb-1"></div>
-                      <div className="h-3 w-10 bg-gray-200 rounded"></div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="space-y-4">
-                {marketData.slice(0, 4).map((crypto, idx) => (
-                  <Link
-                    key={crypto.id}
-                    to={`/coin/${crypto.id}`}
-                    className="flex items-center justify-between p-3 rounded-2xl hover:bg-gray-50 transition-all duration-300"
+          {/* Quick Actions */}
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg">Quick Actions</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-4 gap-3">
+                {quickActions.map((action, idx) => (
+                  <Link 
+                    key={idx}
+                    to={action.link}
+                    className="flex flex-col items-center p-4 rounded-xl bg-gray-50 hover:bg-gray-100 transition-all duration-200 hover:scale-105"
                   >
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
-                        <img 
-                          src={crypto.logo} 
-                          alt={crypto.name} 
-                          className="w-6 h-6"
-                          onError={(e) => {
-                            const target = e.target as HTMLImageElement;
-                            target.src = `https://raw.githubusercontent.com/Pymmdrza/CryptoIconsCDN/mainx/PNG/${crypto.symbol.toUpperCase()}.png`;
-                          }}
-                        />
-                      </div>
-                      <div>
-                        <div className="font-semibold text-gray-800">{crypto.name}</div>
-                        <div className="text-sm text-gray-500">{crypto.symbol.toUpperCase()}</div>
-                      </div>
+                    <div className={cn("w-12 h-12 rounded-full flex items-center justify-center mb-2", action.color)}>
+                      <action.icon className="w-6 h-6 text-white" />
                     </div>
-                    <div className="text-right">
-                      <div className="font-semibold text-gray-800">
-                        ₹{crypto.price.toLocaleString()}
-                      </div>
-                      <div className={cn(
-                        "text-sm flex items-center justify-end",
-                        (crypto.change || 0) >= 0 ? "text-green-600" : "text-red-500"
-                      )}>
-                        {(crypto.change || 0) >= 0 ? (
-                          <ArrowUpRight className="w-3 h-3 mr-1" />
-                        ) : (
-                          <ArrowDownRight className="w-3 h-3 mr-1" />
-                        )}
-                        {(crypto.change || 0) >= 0 ? '+' : ''}{crypto.change || 0}%
-                      </div>
-                    </div>
+                    <span className="text-xs font-medium text-gray-700">{action.label}</span>
                   </Link>
                 ))}
               </div>
-            )}
-          </div>
+            </CardContent>
+          </Card>
 
-          {/* Portfolio Section */}
-          <div className="bg-white/90 backdrop-blur-xl rounded-3xl p-6 shadow-lg border border-white/20">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-gray-700">My Portfolio</h2>
-              <Link to="/portfolio" className="text-green-600 text-sm font-medium hover:text-green-700">
-                Manage
-              </Link>
-            </div>
-            
-            <div className="space-y-3">
-              {portfolioItems.map((item, idx) => (
-                <div key={idx} className="flex items-center justify-between p-3 rounded-2xl bg-gray-50">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
-                      <span className="text-xs font-bold text-gray-600">
-                        {item.symbol.charAt(0)}
-                      </span>
+          {/* Market Stats */}
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg">Market Overview</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 gap-4">
+                {stats.map((stat, idx) => (
+                  <div key={idx} className="bg-gray-50 rounded-xl p-4">
+                    <p className="text-xs text-gray-600 mb-1">{stat.label}</p>
+                    <p className="text-lg font-bold text-gray-900">{stat.value}</p>
+                    <div className={cn(
+                      "text-xs font-medium flex items-center gap-1",
+                      stat.positive ? "text-green-600" : "text-red-500"
+                    )}>
+                      {stat.positive ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
+                      {stat.change}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Top Cryptocurrencies */}
+          <Card>
+            <CardHeader className="pb-3">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-lg">Top Cryptocurrencies</CardTitle>
+                <Link to="/market" className="text-green-600 text-sm font-medium hover:text-green-700">
+                  View All
+                </Link>
+              </div>
+            </CardHeader>
+            <CardContent>
+              {isLoading ? (
+                <div className="space-y-4">
+                  {Array(4).fill(0).map((_, idx) => (
+                    <div key={idx} className="animate-pulse flex items-center justify-between p-3 bg-gray-50 rounded-xl">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-gray-200 rounded-full"></div>
+                        <div>
+                          <div className="h-4 w-20 bg-gray-200 rounded mb-1"></div>
+                          <div className="h-3 w-12 bg-gray-200 rounded"></div>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <div className="h-4 w-16 bg-gray-200 rounded mb-1"></div>
+                        <div className="h-3 w-10 bg-gray-200 rounded"></div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {marketData.slice(0, 6).map((crypto, idx) => (
+                    <Link
+                      key={crypto.id}
+                      to={`/coin/${crypto.id}`}
+                      className="flex items-center justify-between p-3 rounded-xl hover:bg-gray-50 transition-all duration-200"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
+                          <img 
+                            src={crypto.logo} 
+                            alt={crypto.name} 
+                            className="w-6 h-6"
+                            onError={(e) => {
+                              const target = e.target as HTMLImageElement;
+                              target.src = `https://raw.githubusercontent.com/Pymmdrza/CryptoIconsCDN/mainx/PNG/${crypto.symbol.toUpperCase()}.png`;
+                            }}
+                          />
+                        </div>
+                        <div>
+                          <div className="font-semibold text-gray-900">{crypto.name}</div>
+                          <div className="text-sm text-gray-500">{crypto.symbol.toUpperCase()}</div>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <div className="font-semibold text-gray-900">
+                          ₹{crypto.price.toLocaleString()}
+                        </div>
+                        <div className={cn(
+                          "text-sm flex items-center justify-end",
+                          (crypto.change || 0) >= 0 ? "text-green-600" : "text-red-500"
+                        )}>
+                          {(crypto.change || 0) >= 0 ? (
+                            <ArrowUpRight className="w-3 h-3 mr-1" />
+                          ) : (
+                            <ArrowDownRight className="w-3 h-3 mr-1" />
+                          )}
+                          {(crypto.change || 0) >= 0 ? '+' : ''}{crypto.change || 0}%
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Platform Features */}
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg">Why Choose Our Platform</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 gap-4">
+                {features.map((feature, idx) => (
+                  <div key={idx} className="flex items-start gap-3 p-3 bg-gray-50 rounded-xl">
+                    <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <feature.icon className="w-4 h-4 text-green-600" />
                     </div>
                     <div>
-                      <div className="font-medium text-gray-800">{item.name}</div>
-                      <div className="text-xs text-gray-500">{item.amount} {item.symbol}</div>
+                      <h4 className="font-semibold text-sm text-gray-900">{feature.title}</h4>
+                      <p className="text-xs text-gray-600">{feature.desc}</p>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <div className="font-semibold text-gray-800">₹{item.value.toLocaleString()}</div>
-                    <div className={cn(
-                      "text-xs",
-                      item.change >= 0 ? "text-green-600" : "text-red-500"
-                    )}>
-                      {item.change >= 0 ? '+' : ''}{item.change}%
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
 
           {/* Trading Tips */}
-          <div className="bg-gradient-to-r from-amber-50 to-orange-50 rounded-3xl p-6 shadow-lg border border-amber-100">
-            <div className="flex items-center mb-3">
-              <div className="w-8 h-8 bg-amber-500 rounded-full flex items-center justify-center mr-3">
-                <Star className="w-4 h-4 text-white" />
+          <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
+            <CardContent className="p-6">
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
+                  <Star className="w-5 h-5 text-white" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-semibold text-gray-900 mb-2">Pro Trading Tip</h3>
+                  <p className="text-sm text-gray-600 mb-4">
+                    Diversify your portfolio across different cryptocurrencies to manage risk effectively. 
+                    Set stop-loss orders to protect your investments.
+                  </p>
+                  <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-xl">
+                    <Target className="w-4 h-4 mr-2" />
+                    Learn Advanced Trading
+                  </Button>
+                </div>
               </div>
-              <h3 className="font-semibold text-gray-800">Today's Tip</h3>
-            </div>
-            <p className="text-sm text-gray-600 mb-4">
-              Diversify your portfolio across different cryptocurrencies to manage risk effectively. Never invest more than you can afford to lose.
-            </p>
-            <Button className="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white rounded-2xl">
-              Learn More About Trading
-            </Button>
-          </div>
+            </CardContent>
+          </Card>
 
           {/* Bottom spacing for navigation */}
-          <div className="h-20"></div>
+          <div className="h-4"></div>
         </div>
       </div>
     </MobileLayout>
