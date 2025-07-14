@@ -1,236 +1,176 @@
 
 import { useState, useEffect } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
-import { useAuth } from "@/contexts/AuthContext";
-import { getTransactions } from "@/services/api";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
-import { TrendingUp, TrendingDown, Activity, Wallet, Clock, Check, AlertTriangle, Loader2, Filter } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { getTransactionRecords } from "@/services/api";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useToast } from "@/components/ui/use-toast";
+import { ArrowUpRight, ArrowDownLeft, Wallet, TrendingUp, Calendar, Clock } from "lucide-react";
+import { motion } from "framer-motion";
 
-interface Transaction {
-  txnid: string;
-  txn_type: string;
-  amount: number;
-  charges: number;
-  net_amount: number;
-  created_at: string;
-  updated_at: string;
+interface TransactionRecord {
+  id: string;
+  type: string;
+  amount: string;
   status: string;
-  method?: string;
+  created_at: string;
+  description?: string;
 }
 
 const TransactionRecordsPage = () => {
   const { user } = useAuth();
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [records, setRecords] = useState<TransactionRecord[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState("all");
+  const { toast } = useToast();
 
   useEffect(() => {
-    const fetchData = async () => {
-      if (!user?.token) return;
-      
+    const fetchTransactionRecords = async () => {
       try {
         setIsLoading(true);
-        const response = await getTransactions(user.token);
-        
-        if (response.status) {
-          setTransactions(response.data);
-          setError(null);
-        } else {
-          setError(response.msg || "Failed to fetch transactions");
+        if (user?.token) {
+          const response = await getTransactionRecords(user.token);
+          if (response.status) {
+            setRecords(response.data || []);
+          } else {
+            toast({
+              title: "Error",
+              description: response.msg || "Failed to fetch transaction records",
+              variant: "destructive",
+            });
+          }
         }
-      } catch (err) {
-        setError("An error occurred while fetching transactions");
-        console.error(err);
+      } catch (error) {
+        console.error("Error fetching transaction records:", error);
+        toast({
+          title: "Error",
+          description: "An error occurred while fetching transaction records",
+          variant: "destructive",
+        });
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchData();
-  }, [user?.token]);
-
-  const filteredTransactions = transactions.filter(transaction => {
-    if (activeTab === "all") return true;
-    return transaction.txn_type.toLowerCase() === activeTab.toLowerCase();
-  });
-
-  const getStatusIcon = (status: string) => {
-    switch (status.toLowerCase()) {
-      case 'completed':
-        return <Check className="h-4 w-4 text-green-500" />;
-      case 'pending':
-        return <Clock className="h-4 w-4 text-amber-500" />;
-      case 'failed':
-        return <AlertTriangle className="h-4 w-4 text-red-500" />;
-      default:
-        return <Clock className="h-4 w-4 text-gray-400" />;
-    }
-  };
-
-  const getTypeIcon = (type: string) => {
-    const creditTypes = ["topup", "checkin", "mission", "invite reward", "team commission", "salary"];
-    const debitTypes = ["withdraw", "purchase", "trade"];
-    
-    const isCredit = creditTypes.some(t => type.toLowerCase().includes(t.toLowerCase()));
-    const isDebit = debitTypes.some(t => type.toLowerCase().includes(t.toLowerCase()));
-    
-    if (isCredit) {
-      return <TrendingUp className="h-5 w-5 text-green-500" />;
-    } else if (isDebit) {
-      return <TrendingDown className="h-5 w-5 text-red-500" />;
-    } else {
-      return <Activity className="h-5 w-5 text-blue-500" />;
-    }
-  };
-
-  const isDebitTransaction = (type: string) => {
-    const debitTypes = ["withdraw", "purchase", "trade"];
-    return debitTypes.some(t => type.toLowerCase().includes(t.toLowerCase()));
-  };
-
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return new Intl.DateTimeFormat('en-IN', { 
-      day: '2-digit',
-      month: 'short',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    }).format(date);
-  };
+    fetchTransactionRecords();
+  }, [user?.token, toast]);
 
   return (
-    <MobileLayout showBackButton title="Transaction History">
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-green-50/30">
-        <div className="p-4 space-y-4 pb-20">
-          {/* Header Stats */}
-          <div className="grid grid-cols-3 gap-3">
-            <Card className="bg-gradient-to-br from-green-500 to-emerald-600 text-white">
-              <CardContent className="p-4 text-center">
-                <Wallet className="h-6 w-6 mx-auto mb-2" />
-                <p className="text-lg font-bold">{transactions.length}</p>
-                <p className="text-xs opacity-90">Total</p>
-              </CardContent>
-            </Card>
-            <Card className="bg-gradient-to-br from-blue-500 to-indigo-600 text-white">
-              <CardContent className="p-4 text-center">
-                <TrendingUp className="h-6 w-6 mx-auto mb-2" />
-                <p className="text-lg font-bold">{transactions.filter(t => !isDebitTransaction(t.txn_type)).length}</p>
-                <p className="text-xs opacity-90">Credits</p>
-              </CardContent>
-            </Card>
-            <Card className="bg-gradient-to-br from-purple-500 to-pink-600 text-white">
-              <CardContent className="p-4 text-center">
-                <TrendingDown className="h-6 w-6 mx-auto mb-2" />
-                <p className="text-lg font-bold">{transactions.filter(t => isDebitTransaction(t.txn_type)).length}</p>
-                <p className="text-xs opacity-90">Debits</p>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Filter Tabs */}
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid grid-cols-3 w-full bg-white border border-gray-200">
-              <TabsTrigger value="all" className="data-[state=active]:bg-green-500 data-[state=active]:text-white">
-                All
-              </TabsTrigger>
-              <TabsTrigger value="topup" className="data-[state=active]:bg-green-500 data-[state=active]:text-white">
-                Deposits
-              </TabsTrigger>
-              <TabsTrigger value="withdraw" className="data-[state=active]:bg-green-500 data-[state=active]:text-white">
-                Withdrawals
-              </TabsTrigger>
-            </TabsList>
-
-            <TabsContent value={activeTab} className="mt-4">
-              {isLoading ? (
-                <div className="space-y-3">
-                  {[1, 2, 3].map((i) => (
-                    <Card key={i} className="animate-pulse">
-                      <CardContent className="p-4">
-                        <div className="flex items-center space-x-4">
-                          <div className="w-12 h-12 bg-gray-200 rounded-full"></div>
-                          <div className="flex-1 space-y-2">
-                            <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-                            <div className="h-3 bg-gray-200 rounded w-1/2"></div>
-                          </div>
-                          <div className="h-6 bg-gray-200 rounded w-16"></div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
+    <MobileLayout showBackButton title="Transaction Records">
+      <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-green-50 pb-20">
+        <div className="p-4 space-y-4">
+          {/* Header Card */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+          >
+            <Card className="bg-gradient-to-r from-emerald-600 to-green-600 text-white border-0 shadow-lg">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-center">
+                  <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center mr-3">
+                    <Wallet className="w-5 h-5 text-white" />
+                  </div>
+                  <div className="text-center">
+                    <h1 className="text-lg font-bold">Transaction History</h1>
+                    <p className="text-emerald-100 text-sm">Your account activity</p>
+                  </div>
                 </div>
-              ) : error ? (
-                <Card className="bg-red-50 border-red-200">
-                  <CardContent className="p-8 text-center">
-                    <AlertTriangle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-                    <h3 className="text-lg font-semibold text-red-800 mb-2">Error Loading Transactions</h3>
-                    <p className="text-red-600">{error}</p>
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          {isLoading ? (
+            // Loading skeletons
+            Array.from({ length: 5 }).map((_, index) => (
+              <Card key={index} className="bg-white/90">
+                <CardContent className="p-4 space-y-3">
+                  <div className="flex items-center gap-3">
+                    <Skeleton className="w-10 h-10 rounded-full" />
+                    <div className="flex-1">
+                      <Skeleton className="h-4 w-24 mb-2" />
+                      <Skeleton className="h-3 w-32" />
+                    </div>
+                    <Skeleton className="h-5 w-16" />
+                  </div>
+                </CardContent>
+              </Card>
+            ))
+          ) : records.length === 0 ? (
+            // Empty state
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+            >
+              <Card className="bg-white/90">
+                <CardContent className="p-8 text-center">
+                  <div className="w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center mb-4 mx-auto">
+                    <TrendingUp className="h-8 w-8 text-emerald-600" />
+                  </div>
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">No Transactions Yet</h3>
+                  <p className="text-gray-600 text-base">
+                    Your transaction history will appear here
+                  </p>
+                </CardContent>
+              </Card>
+            </motion.div>
+          ) : (
+            // Transaction records
+            records.map((record, index) => (
+              <motion.div
+                key={record.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+              >
+                <Card className="bg-white/90 hover:shadow-md transition-all duration-300">
+                  <CardContent className="p-4">
+                    <div className="flex items-center gap-3">
+                      <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                        record.type.toLowerCase().includes('deposit') || record.type.toLowerCase().includes('credit')
+                          ? 'bg-emerald-100' : 'bg-red-100'
+                      }`}>
+                        {record.type.toLowerCase().includes('deposit') || record.type.toLowerCase().includes('credit') ? (
+                          <ArrowDownLeft className="w-5 h-5 text-emerald-600" />
+                        ) : (
+                          <ArrowUpRight className="w-5 h-5 text-red-600" />
+                        )}
+                      </div>
+                      
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-medium text-gray-900 text-base truncate">
+                          {record.description || record.type}
+                        </h3>
+                        <div className="flex items-center text-gray-500 text-sm mt-1">
+                          <Calendar className="w-3 h-3 mr-1" />
+                          <span>{new Date(record.created_at).toLocaleDateString()}</span>
+                          <Clock className="w-3 h-3 ml-2 mr-1" />
+                          <span>{new Date(record.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                        </div>
+                      </div>
+                      
+                      <div className="text-right">
+                        <p className={`font-semibold text-base ${
+                          record.type.toLowerCase().includes('deposit') || record.type.toLowerCase().includes('credit')
+                            ? 'text-emerald-600' : 'text-red-600'
+                        }`}>
+                          {record.type.toLowerCase().includes('deposit') || record.type.toLowerCase().includes('credit') ? '+' : '-'}₹{record.amount}
+                        </p>
+                        <span className={`text-xs px-2 py-1 rounded-full ${
+                          record.status === 'completed' || record.status === 'success'
+                            ? 'bg-emerald-100 text-emerald-700'
+                            : record.status === 'pending'
+                            ? 'bg-yellow-100 text-yellow-700'
+                            : 'bg-red-100 text-red-700'
+                        }`}>
+                          {record.status}
+                        </span>
+                      </div>
+                    </div>
                   </CardContent>
                 </Card>
-              ) : filteredTransactions.length === 0 ? (
-                <Card className="bg-gray-50">
-                  <CardContent className="p-8 text-center">
-                    <Filter className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                    <h3 className="text-lg font-semibold text-gray-700 mb-2">No Transactions Found</h3>
-                    <p className="text-gray-500">No transactions match your current filter</p>
-                  </CardContent>
-                </Card>
-              ) : (
-                <div className="space-y-3">
-                  {filteredTransactions.map((transaction) => (
-                    <Card key={transaction.txnid} className="hover:shadow-lg transition-all duration-200 border-l-4 border-l-green-500">
-                      <CardContent className="p-4">
-                        <div className="flex items-center justify-between mb-3">
-                          <div className="flex items-center space-x-3">
-                            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-green-100 to-emerald-100 flex items-center justify-center">
-                              {getTypeIcon(transaction.txn_type)}
-                            </div>
-                            <div>
-                              <p className="font-semibold text-gray-900 capitalize">
-                                {transaction.txn_type.replace(/^\w/, c => c.toUpperCase())}
-                              </p>
-                              <p className="text-xs text-gray-500">#{transaction.txnid}</p>
-                            </div>
-                          </div>
-                          <div className="text-right">
-                            <p className={cn(
-                              "text-xl font-bold",
-                              isDebitTransaction(transaction.txn_type) ? "text-red-500" : "text-green-500"
-                            )}>
-                              {isDebitTransaction(transaction.txn_type) ? '-' : '+'}₹{transaction.amount.toLocaleString()}
-                            </p>
-                          </div>
-                        </div>
-                        
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center space-x-2">
-                            {getStatusIcon(transaction.status)}
-                            <span className={cn(
-                              "px-3 py-1 rounded-full text-xs font-medium",
-                              transaction.status.toLowerCase() === 'completed' 
-                                ? "bg-green-100 text-green-700"
-                                : transaction.status.toLowerCase() === 'pending'
-                                ? "bg-amber-100 text-amber-700"
-                                : "bg-red-100 text-red-700"
-                            )}>
-                              {transaction.status}
-                            </span>
-                          </div>
-                          <p className="text-sm text-gray-500">
-                            {formatDate(transaction.created_at)}
-                          </p>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              )}
-            </TabsContent>
-          </Tabs>
+              </motion.div>
+            ))
+          )}
         </div>
       </div>
     </MobileLayout>
