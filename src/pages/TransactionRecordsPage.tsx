@@ -6,7 +6,7 @@ import { getTransactions } from "@/services/api";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { ArrowUpRight, ArrowDownLeft, Calendar, CheckCircle, AlertCircle, Loader2, TrendingUp, TrendingDown, Activity, Clock, Filter } from "lucide-react";
+import { ArrowUpCircle, ArrowDownCircle, Calendar, Check, AlertTriangle, Loader2, TrendingUp, TrendingDown, Activity, Wallet, Receipt } from "lucide-react";
 
 interface Transaction {
   txnid: string;
@@ -60,13 +60,13 @@ const TransactionRecordsPage = () => {
   const getStatusIcon = (status: string) => {
     switch (status.toLowerCase()) {
       case 'completed':
-        return <CheckCircle className="h-5 w-5 text-green-500" />;
+        return <Check className="h-4 w-4 text-emerald-500" />;
       case 'pending':
-        return <Clock className="h-5 w-5 text-amber-500" />;
+        return <Loader2 className="h-4 w-4 text-amber-500 animate-spin" />;
       case 'failed':
-        return <AlertCircle className="h-5 w-5 text-red-500" />;
+        return <AlertTriangle className="h-4 w-4 text-red-500" />;
       default:
-        return <Clock className="h-5 w-5 text-gray-400" />;
+        return null;
     }
   };
 
@@ -78,11 +78,11 @@ const TransactionRecordsPage = () => {
     const isDebit = debitTypes.some(t => type.toLowerCase().includes(t.toLowerCase()));
     
     if (isCredit) {
-      return <ArrowDownLeft className="h-6 w-6 text-green-500" />;
+      return <TrendingUp className="h-5 w-5 text-emerald-500" />;
     } else if (isDebit) {
-      return <ArrowUpRight className="h-6 w-6 text-red-500" />;
+      return <TrendingDown className="h-5 w-5 text-red-500" />;
     } else {
-      return <Activity className="h-6 w-6 text-blue-500" />;
+      return <Activity className="h-5 w-5 text-blue-500" />;
     }
   };
 
@@ -96,130 +96,117 @@ const TransactionRecordsPage = () => {
     return new Intl.DateTimeFormat('en-IN', { 
       day: '2-digit',
       month: 'short',
+      year: 'numeric',
       hour: '2-digit',
       minute: '2-digit'
     }).format(date);
   };
 
   return (
-    <MobileLayout showBackButton title="Transactions">
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
-        {/* Header Section */}
-        <div className="bg-white border-b border-slate-200">
-          <div className="p-6">
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <h1 className="text-2xl font-bold text-slate-800">Transaction History</h1>
-                <p className="text-slate-600 mt-1">Track your financial activities</p>
-              </div>
-              <div className="p-3 bg-blue-100 rounded-full">
-                <Filter className="h-6 w-6 text-blue-600" />
-              </div>
-            </div>
-
-            {/* Filter Tabs */}
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-              <TabsList className="grid grid-cols-3 w-full bg-slate-100 p-1 rounded-xl">
-                <TabsTrigger 
-                  value="all" 
-                  className="rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm font-medium"
-                >
-                  All
-                </TabsTrigger>
-                <TabsTrigger 
-                  value="topup" 
-                  className="rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm font-medium"
-                >
-                  Credits
-                </TabsTrigger>
-                <TabsTrigger 
-                  value="withdraw" 
-                  className="rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm font-medium"
-                >
-                  Debits
-                </TabsTrigger>
-              </TabsList>
-            </Tabs>
-          </div>
-        </div>
-
-        {/* Content */}
+    <MobileLayout showBackButton title="Transaction History">
+      <div className="min-h-screen bg-gray-50">
         <div className="p-4">
-          <TabsContent value={activeTab} className="mt-0">
-            {isLoading ? (
-              <div className="space-y-4">
-                {Array(5).fill(0).map((_, idx) => (
-                  <div key={`skeleton-${idx}`} className="bg-white rounded-2xl p-4 animate-pulse border border-slate-200">
-                    <div className="flex items-center space-x-4">
-                      <div className="h-12 w-12 bg-slate-200 rounded-full"></div>
-                      <div className="flex-1 space-y-2">
-                        <div className="h-4 w-32 bg-slate-200 rounded"></div>
-                        <div className="h-3 w-24 bg-slate-200 rounded"></div>
-                      </div>
-                      <div className="h-6 w-20 bg-slate-200 rounded"></div>
-                    </div>
-                  </div>
-                ))}
+          {/* Header Card */}
+          <Card className="bg-gradient-to-r from-emerald-500 to-green-600 text-white border-0 shadow-lg mb-6">
+            <CardContent className="p-6 text-center">
+              <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                <Receipt className="w-6 h-6 text-white" />
               </div>
-            ) : error ? (
-              <div className="bg-white rounded-2xl p-8 text-center border border-red-200">
-                <AlertCircle className="h-16 w-16 text-red-500 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-slate-800 mb-2">Error Loading Transactions</h3>
-                <p className="text-red-600">{error}</p>
-              </div>
-            ) : filteredTransactions.length === 0 ? (
-              <div className="bg-white rounded-2xl p-12 text-center border border-slate-200">
-                <Calendar className="h-20 w-20 text-slate-300 mx-auto mb-4" />
-                <h3 className="text-xl font-semibold text-slate-800 mb-2">No Transactions</h3>
-                <p className="text-slate-600">Your transaction history will appear here</p>
-              </div>
-            ) : (
-              <div className="space-y-3 pb-6">
-                {filteredTransactions.map((transaction) => (
-                  <div 
-                    key={transaction.txnid} 
-                    className="bg-white rounded-2xl border border-slate-200 hover:shadow-lg transition-all duration-200"
-                  >
-                    <div className="p-5">
-                      <div className="flex items-center justify-between mb-4">
-                        <div className="flex items-center space-x-4">
-                          <div className="p-3 bg-slate-50 rounded-full">
-                            {getTypeIcon(transaction.txn_type)}
+              <h1 className="text-lg font-bold mb-1">Transaction History</h1>
+              <p className="text-emerald-100 text-sm">Track all your financial activities</p>
+            </CardContent>
+          </Card>
+
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <TabsList className="grid grid-cols-3 w-full mb-6 bg-white shadow-sm h-12">
+              <TabsTrigger value="all" className="data-[state=active]:bg-emerald-500 data-[state=active]:text-white text-sm font-medium">All</TabsTrigger>
+              <TabsTrigger value="topup" className="data-[state=active]:bg-emerald-500 data-[state=active]:text-white text-sm font-medium">Deposits</TabsTrigger>
+              <TabsTrigger value="withdraw" className="data-[state=active]:bg-emerald-500 data-[state=active]:text-white text-sm font-medium">Withdrawals</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value={activeTab} className="mt-0">
+              {isLoading ? (
+                <div className="space-y-4">
+                  {Array(5).fill(0).map((_, idx) => (
+                    <Card key={`skeleton-${idx}`} className="bg-white shadow-sm animate-pulse">
+                      <CardContent className="p-4 space-y-3">
+                        <div className="flex justify-between items-center">
+                          <div className="h-4 w-20 bg-gray-200 rounded"></div>
+                          <div className="h-4 w-16 bg-gray-200 rounded"></div>
+                        </div>
+                        <div className="h-6 w-24 bg-gray-200 rounded"></div>
+                        <div className="h-3 w-32 bg-gray-200 rounded"></div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              ) : error ? (
+                <Card className="bg-red-50 border-red-200">
+                  <CardContent className="flex flex-col items-center justify-center py-12">
+                    <AlertTriangle className="h-12 w-12 text-red-500 mb-4" />
+                    <p className="text-red-600 text-center">{error}</p>
+                  </CardContent>
+                </Card>
+              ) : filteredTransactions.length === 0 ? (
+                <Card className="bg-white shadow-sm">
+                  <CardContent className="flex flex-col items-center justify-center py-16">
+                    <Calendar className="h-16 w-16 text-gray-300 mb-4" />
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">No transactions yet</h3>
+                    <p className="text-gray-500 text-center">Start trading to see your transaction history</p>
+                  </CardContent>
+                </Card>
+              ) : (
+                <div className="space-y-3 pb-24">
+                  {filteredTransactions.map((transaction) => (
+                    <Card key={transaction.txnid} className="bg-white shadow-sm hover:shadow-md transition-shadow duration-200">
+                      <CardContent className="p-4">
+                        <div className="flex items-center justify-between mb-3">
+                          <div className="flex items-center">
+                            <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center mr-3">
+                              {getTypeIcon(transaction.txn_type)}
+                            </div>
+                            <div>
+                              <p className="font-semibold text-gray-900 text-base">
+                                {transaction.txn_type.replace(/^\w/, c => c.toUpperCase())}
+                              </p>
+                              <p className="text-sm text-gray-500">#{transaction.txnid}</p>
+                            </div>
                           </div>
-                          <div>
-                            <h3 className="font-semibold text-slate-800 text-lg">
-                              {transaction.txn_type.replace(/^\w/, c => c.toUpperCase())}
-                            </h3>
-                            <p className="text-slate-500 text-sm">#{transaction.txnid}</p>
+                          <div className="text-right">
+                            <p className={cn(
+                              "font-bold text-lg",
+                              isDebitTransaction(transaction.txn_type) ? "text-red-500" : "text-emerald-500"
+                            )}>
+                              {isDebitTransaction(transaction.txn_type) ? '-' : '+'}₹{transaction.amount.toLocaleString()}
+                            </p>
                           </div>
                         </div>
-                        <div className="text-right">
-                          <p className={cn(
-                            "text-xl font-bold",
-                            isDebitTransaction(transaction.txn_type) ? "text-red-500" : "text-green-500"
-                          )}>
-                            {isDebitTransaction(transaction.txn_type) ? '-' : '+'}₹{transaction.amount.toLocaleString()}
-                          </p>
+                        
+                        <div className="flex justify-between items-center">
+                          <div className="flex items-center">
+                            {getStatusIcon(transaction.status)}
+                            <span className={cn(
+                              "ml-2 px-3 py-1 rounded-full text-sm font-medium",
+                              transaction.status.toLowerCase() === 'completed' 
+                                ? "bg-emerald-100 text-emerald-700"
+                                : transaction.status.toLowerCase() === 'pending'
+                                ? "bg-amber-100 text-amber-700"
+                                : "bg-red-100 text-red-700"
+                            )}>
+                              {transaction.status}
+                            </span>
+                          </div>
+                          <div className="text-gray-500 text-sm">
+                            {formatDate(transaction.created_at)}
+                          </div>
                         </div>
-                      </div>
-                      
-                      <div className="flex items-center justify-between pt-4 border-t border-slate-100">
-                        <div className="flex items-center space-x-2">
-                          {getStatusIcon(transaction.status)}
-                          <span className="text-sm font-medium text-slate-700">
-                            {transaction.status.toUpperCase()}
-                          </span>
-                        </div>
-                        <span className="text-sm text-slate-500">
-                          {formatDate(transaction.created_at)}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </TabsContent>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              )}
+            </TabsContent>
+          </Tabs>
         </div>
       </div>
     </MobileLayout>
