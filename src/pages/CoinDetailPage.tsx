@@ -211,6 +211,13 @@ const CoinDetailPage = () => {
 
       const timeInSeconds = selectedTimePeriod === '1min' ? 60 : selectedTimePeriod === '3min' ? 180 : 300;
       
+      // Close the trade modal first
+      closeModal();
+      
+      // Set up the trade timer state BEFORE making the API call
+      setStartingTradePrice(livePrice);
+      setTradeTimer(timeInSeconds);
+      
       const response = await placeTrade(
         token,
         parseFloat(tradeAmount),
@@ -221,12 +228,13 @@ const CoinDetailPage = () => {
       );
       
       if (response.success) {
+        // Store the API response for later use
         setTradeApiResponse(response);
-        setStartingTradePrice(livePrice);
-        setTradeTimer(timeInSeconds);
-        setIsTradeTimerOpen(true);
-        closeModal();
         
+        // Show the trade timer modal
+        setIsTradeTimerOpen(true);
+        
+        // Show success toast
         toast({
           title: "Trade Placed",
           description: `${direction} trade of ₹${tradeAmount} placed successfully`,
@@ -279,7 +287,7 @@ const CoinDetailPage = () => {
   const closeModal = () => {
     setIsBuyModalOpen(false);
     setIsSellModalOpen(false);
-    setIsTradeTimerOpen(false);
+    // Don't close trade timer here, let it close naturally
   };
 
   // Listen for price updates from iframe
