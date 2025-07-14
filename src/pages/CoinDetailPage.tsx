@@ -308,8 +308,12 @@ const CoinDetailPage = () => {
                     alt={crypto.symbol}
                     className="w-8 h-8 rounded-full"
                     onError={(e) => {
-                      e.currentTarget.style.display = 'none';
-                      e.currentTarget.nextElementSibling!.style.display = 'flex';
+                      const target = e.currentTarget as HTMLImageElement;
+                      const fallback = target.nextElementSibling as HTMLElement;
+                      target.style.display = 'none';
+                      if (fallback) {
+                        fallback.style.display = 'flex';
+                      }
                     }}
                   />
                   <div className="w-8 h-8 bg-orange-500 rounded-full hidden items-center justify-center">
