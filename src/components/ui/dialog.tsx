@@ -1,4 +1,3 @@
-
 import * as React from "react"
 import * as DialogPrimitive from "@radix-ui/react-dialog"
 import { X } from "lucide-react"
@@ -44,16 +43,6 @@ const DialogContent = React.forwardRef<
     >
       {children}
       {/* Note: We removed the default close button since we're adding a custom one in each dialog */}
-      <style jsx global>{`
-        @keyframes spin {
-          from {
-            transform: rotate(0deg);
-          }
-          to {
-            transform: rotate(360deg);
-          }
-        }
-      `}</style>
     </DialogPrimitive.Content>
   </DialogPortal>
 ))
