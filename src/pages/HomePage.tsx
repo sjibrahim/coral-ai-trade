@@ -129,17 +129,23 @@ const HomePage = () => {
   
   return (
     <MobileLayout>
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-green-50/30 overflow-hidden">
+      <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-green-50 relative overflow-hidden">
         <WelcomeInfoModal />
         
         {/* Animated Background Elements */}
-        <div className="fixed inset-0 pointer-events-none">
-          <div className="absolute top-20 left-4 w-32 h-32 bg-gradient-to-r from-emerald-200/20 to-green-200/20 rounded-full blur-3xl animate-float"></div>
-          <div className="absolute top-40 right-8 w-24 h-24 bg-gradient-to-r from-blue-200/20 to-cyan-200/20 rounded-full blur-2xl animate-float" style={{animationDelay: '2s'}}></div>
-          <div className="absolute bottom-40 left-8 w-20 h-20 bg-gradient-to-r from-purple-200/20 to-pink-200/20 rounded-full blur-2xl animate-float" style={{animationDelay: '4s'}}></div>
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-green-400/20 to-emerald-500/20 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-blue-400/20 to-green-400/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-green-300/10 to-emerald-300/10 rounded-full blur-3xl animate-pulse delay-500"></div>
+          
+          {/* Floating shapes */}
+          <div className="absolute top-20 left-10 w-4 h-4 bg-green-400/30 rounded-full animate-bounce delay-300"></div>
+          <div className="absolute top-32 right-16 w-3 h-3 bg-emerald-400/40 rounded-full animate-bounce delay-700"></div>
+          <div className="absolute bottom-40 left-20 w-5 h-5 bg-green-300/30 rounded-full animate-bounce delay-1000"></div>
+          <div className="absolute bottom-64 right-12 w-2 h-2 bg-emerald-500/40 rounded-full animate-bounce delay-500"></div>
         </div>
         
-        <div className="px-4 py-6 space-y-6 relative z-10">
+        <div className="px-4 py-6 space-y-6 relative z-10 pb-24">
           {/* Premium Header */}
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center gap-3">

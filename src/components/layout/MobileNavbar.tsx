@@ -11,8 +11,8 @@ const MobileNavbar = () => {
   };
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-20 bg-white/95 backdrop-blur-lg border-t border-gray-200/50 shadow-lg">
-      <div className="flex justify-between items-center h-16 px-6 max-w-md mx-auto">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-xl border-t border-emerald-200/50 shadow-2xl">
+      <div className="flex justify-between items-center h-18 px-6 max-w-md mx-auto py-2">
         <NavItem 
           to="/home" 
           icon={<Home className="h-5 w-5" />} 
@@ -55,26 +55,26 @@ const NavItem = ({ to, icon, label, active }: NavItemProps) => {
     <Link 
       to={to} 
       className={cn(
-        "flex flex-col items-center justify-center transition-all duration-300 py-2 px-3 rounded-xl relative group",
+        "flex flex-col items-center justify-center transition-all duration-300 py-3 px-4 rounded-2xl relative group min-h-[60px]",
         active ? "scale-105" : "hover:scale-105"
       )}
     >
       <div className={cn(
-        "flex items-center justify-center rounded-full p-2 transition-all duration-300",
+        "flex items-center justify-center rounded-2xl p-3 transition-all duration-300 shadow-lg",
         active 
-          ? "text-white bg-gradient-to-r from-emerald-500 to-green-600 shadow-lg" 
-          : "text-gray-600 group-hover:text-emerald-600 group-hover:bg-emerald-50"
+          ? "text-white bg-gradient-to-r from-emerald-500 to-green-600 shadow-emerald-500/30" 
+          : "text-gray-600 bg-gray-100/50 group-hover:text-emerald-600 group-hover:bg-emerald-50 group-hover:shadow-emerald-200/50"
       )}>
         {icon}
       </div>
       <span className={cn(
-        "text-xs mt-1 font-medium transition-colors duration-300",
+        "text-xs mt-2 font-semibold transition-colors duration-300",
         active ? "text-emerald-600" : "text-gray-600 group-hover:text-emerald-600"
       )}>
         {label}
       </span>
       {active && (
-        <div className="absolute -bottom-1 w-1 h-1 rounded-full bg-emerald-500 animate-pulse"></div>
+        <div className="absolute -bottom-2 w-2 h-2 rounded-full bg-gradient-to-r from-emerald-500 to-green-600 animate-pulse shadow-lg"></div>
       )}
     </Link>
   );
