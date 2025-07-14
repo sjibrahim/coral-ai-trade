@@ -76,11 +76,16 @@ const MobileLayout = ({
       )}
 
       {/* Main Content */}
-      <main className={shouldHideNavbar ? "min-h-screen pb-4" : "pb-24 min-h-screen"}>
+      <main className={shouldHideNavbar ? "min-h-screen pb-4" : "pb-20 min-h-screen"}>
         {children}
       </main>
       
-      {!shouldHideNavbar && <MobileNavbar />}
+      {/* Fixed Footer */}
+      {!shouldHideNavbar && (
+        <div className="fixed bottom-0 left-0 right-0 z-50">
+          <MobileNavbar />
+        </div>
+      )}
     </div>
   );
 };
