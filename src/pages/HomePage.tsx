@@ -169,55 +169,55 @@ const HomePage = () => {
             </div>
           </div>
 
-          {/* Balance Card with Premium Design */}
+          {/* Compact Portfolio Card with Premium Design */}
           <Card className="bg-gradient-to-r from-emerald-600 via-emerald-700 to-green-600 text-white border-0 shadow-2xl overflow-hidden relative">
             <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent"></div>
-            <CardContent className="p-6 relative z-10">
-              <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
-                    <PieChart className="w-5 h-5" />
+            <CardContent className="p-4 relative z-10">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
+                    <PieChart className="w-4 h-4" />
                   </div>
                   <div>
-                    <p className="text-emerald-100 text-sm font-medium">Total Portfolio</p>
-                    <div className="flex items-center gap-2 mt-1">
-                      <span className="text-3xl font-bold">
+                    <p className="text-emerald-100 text-xs font-medium font-trading">Total Portfolio</p>
+                    <div className="flex items-center gap-2 mt-0.5">
+                      <span className="text-2xl font-bold font-trading">
                         {showBalance ? `₹${totalBalance.toLocaleString()}` : "••••••"}
                       </span>
                       <button 
                         onClick={() => setShowBalance(!showBalance)}
-                        className="p-1.5 rounded-full hover:bg-white/10 transition-colors"
+                        className="p-1 rounded-full hover:bg-white/10 transition-colors"
                       >
-                        {showBalance ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+                        {showBalance ? <Eye className="w-3 h-3" /> : <EyeOff className="w-3 h-3" />}
                       </button>
                     </div>
                   </div>
                 </div>
                 <div className="text-right">
                   <div className="flex items-center text-emerald-100 mb-1">
-                    <TrendingUp className="w-4 h-4 mr-1" />
-                    <span className="text-lg font-semibold">+12.5%</span>
+                    <TrendingUp className="w-3 h-3 mr-1" />
+                    <span className="text-sm font-semibold font-mono">+12.5%</span>
                   </div>
-                  <p className="text-xs text-emerald-200">24h Change</p>
+                  <p className="text-xs text-emerald-200">24h</p>
                 </div>
               </div>
               
-              <div className="grid grid-cols-2 gap-4">
-                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Wallet className="w-4 h-4 text-emerald-200" />
-                    <span className="text-sm text-emerald-200">Available Balance</span>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 border border-white/20">
+                  <div className="flex items-center gap-1 mb-1">
+                    <Wallet className="w-3 h-3 text-emerald-200" />
+                    <span className="text-xs text-emerald-200 font-trading">Available</span>
                   </div>
-                  <p className="text-xl font-bold">
+                  <p className="text-lg font-bold font-mono">
                     {showBalance ? `₹${walletAmount.toLocaleString()}` : "••••"}
                   </p>
                 </div>
-                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
-                  <div className="flex items-center gap-2 mb-2">
-                    <LineChart className="w-4 h-4 text-emerald-200" />
-                    <span className="text-sm text-emerald-200">Total Profit</span>
+                <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 border border-white/20">
+                  <div className="flex items-center gap-1 mb-1">
+                    <LineChart className="w-3 h-3 text-emerald-200" />
+                    <span className="text-xs text-emerald-200 font-trading">Profit</span>
                   </div>
-                  <p className="text-xl font-bold">
+                  <p className="text-lg font-bold font-mono">
                     {showBalance ? `₹${incomeAmount.toLocaleString()}` : "••••"}
                   </p>
                 </div>
@@ -225,29 +225,29 @@ const HomePage = () => {
             </CardContent>
           </Card>
 
-          {/* Quick Actions with Premium Icons */}
+          {/* Quick Actions - Single Row */}
           <Card className="bg-white/90 backdrop-blur-sm border border-gray-200/50 shadow-xl">
-            <CardHeader className="pb-4">
-              <CardTitle className="text-lg flex items-center gap-2">
-                <Zap className="w-5 h-5 text-emerald-600" />
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base flex items-center gap-2 font-trading">
+                <Zap className="w-4 h-4 text-emerald-600" />
                 Quick Actions
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="flex gap-3 overflow-x-auto pb-2">
                 {quickActions.map((action, idx) => (
                   <Link 
                     key={idx}
                     to={action.link}
-                    className="group p-4 rounded-xl bg-gradient-to-br from-gray-50 to-white hover:from-gray-100 hover:to-gray-50 transition-all duration-300 hover:scale-105 hover:shadow-lg border border-gray-200/50"
+                    className="group flex-shrink-0 p-3 rounded-xl bg-gradient-to-br from-gray-50 to-white hover:from-gray-100 hover:to-gray-50 transition-all duration-300 hover:scale-105 hover:shadow-lg border border-gray-200/50 min-w-[80px]"
                   >
                     <div className={cn(
-                      "w-12 h-12 rounded-xl flex items-center justify-center mb-3 bg-gradient-to-r transition-all duration-300 group-hover:scale-110",
+                      "w-10 h-10 rounded-xl flex items-center justify-center mb-2 mx-auto bg-gradient-to-r transition-all duration-300 group-hover:scale-110",
                       action.color
                     )}>
-                      <action.icon className="w-6 h-6 text-white" />
+                      <action.icon className="w-5 h-5 text-white" />
                     </div>
-                    <span className="text-sm font-semibold text-gray-700 group-hover:text-gray-900 transition-colors">
+                    <span className="text-xs font-semibold text-gray-700 group-hover:text-gray-900 transition-colors block text-center font-trading">
                       {action.label}
                     </span>
                   </Link>
