@@ -1,15 +1,16 @@
+
 import { useState, useEffect } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
 import { toast } from "@/components/ui/use-toast";
 import { updateBankDetails } from "@/services/api";
 import { useAuth } from "@/contexts/AuthContext";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2 } from "lucide-react";
+import { Loader2, CreditCard, Building, User, Hash, CheckCircle, Edit3, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Card, CardContent } from "@/components/ui/card";
+import { motion } from "framer-motion";
 
-// Interface for IFSC verification response
 interface IFSCResponse {
   BRANCH?: string;
   CENTRE?: string;
@@ -27,15 +28,13 @@ const BankDetailsPage = () => {
     account_holder_name: '',
     account_number: '',
     account_ifsc: '',
-    usdt_address: '',
-    bank_name: '' // Added bank_name field
+    bank_name: ''
   });
   
   const [isLoading, setIsLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState(accountDetails);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [activeTab, setActiveTab] = useState("bank");
   
   // IFSC verification states
   const [ifscVerifying, setIfscVerifying] = useState(false);
@@ -50,7 +49,6 @@ const BankDetailsPage = () => {
         account_holder_name: user.account_holder_name || '',
         account_number: user.account_number || '',
         account_ifsc: user.account_ifsc || '',
-        usdt_address: user.usdt_address || '',
         bank_name: (user as any).bank_name || ''
       });
       
@@ -58,7 +56,6 @@ const BankDetailsPage = () => {
         account_holder_name: user.account_holder_name || '',
         account_number: user.account_number || '',
         account_ifsc: user.account_ifsc || '',
-        usdt_address: user.usdt_address || '',
         bank_name: (user as any).bank_name || '' 
       });
       
@@ -156,30 +153,23 @@ const BankDetailsPage = () => {
     }
   };
   
-  const validateBankForm = () => {
-    if (activeTab === "bank") {
-      return (
-        formData.account_holder_name && 
-        formData.account_number && 
-        formData.account_ifsc && 
-        formData.bank_name && 
-        isIfscVerified
-      );
-    } else {
-      return true; // USDT address is optional
-    }
+  const validateForm = () => {
+    return (
+      formData.account_holder_name && 
+      formData.account_number && 
+      formData.account_ifsc && 
+      formData.bank_name && 
+      isIfscVerified
+    );
   };
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Validate form data based on active tab
-    if (!validateBankForm()) {
+    if (!validateForm()) {
       toast({
         title: "Validation Failed",
-        description: activeTab === "bank" 
-          ? "Please fill all bank details and verify your IFSC code" 
-          : "Please check your details",
+        description: "Please fill all bank details and verify your IFSC code",
         variant: "destructive",
         duration: 3000,
       });
@@ -210,10 +200,8 @@ const BankDetailsPage = () => {
         await updateProfile();
         
         toast({
-          title: activeTab === "bank" ? "Bank details updated" : "USDT address updated",
-          description: activeTab === "bank" ? 
-            "Your bank details have been updated successfully" :
-            "Your USDT address has been updated successfully",
+          title: "Bank details updated",
+          description: "Your bank details have been updated successfully",
           duration: 3000,
         });
       } else {
@@ -238,51 +226,106 @@ const BankDetailsPage = () => {
   };
   
   return (
-    <MobileLayout showBackButton title="Payment Details">
-      <div className="p-4 animate-fade-in">
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full mb-4">
-          <TabsList className="grid grid-cols-2 mb-4">
-            <TabsTrigger value="bank">Bank Details</TabsTrigger>
-            <TabsTrigger value="usdt">USDT Address</TabsTrigger>
-          </TabsList>
-          
-          <TabsContent value="bank">
-            {isLoading ? (
-              <div className="space-y-6">
-                <div className="bg-card rounded-xl p-5 space-y-4 animate-pulse">
-                  {[1, 2, 3, 4].map((_, idx) => (
-                    <div key={idx}>
-                      <div className="h-4 w-32 bg-secondary/40 rounded mb-2"></div>
-                      <div className="h-10 w-full bg-secondary/40 rounded"></div>
-                    </div>
-                  ))}
-                </div>
-                <div className="h-12 w-full bg-secondary/40 rounded-xl"></div>
+    <MobileLayout showBackButton title="Bank Details" hideNavbar>
+      <div className="min-h-screen bg-gradient-to-br from-indigo-950 via-purple-950 to-pink-950">
+        {/* Animated Background */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute top-0 right-0 w-72 h-72 bg-indigo-500/20 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute bottom-0 left-0 w-72 h-72 bg-purple-500/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
+        </div>
+
+        <div className="relative z-10 p-4 space-y-6">
+          {/* Hero Section */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center py-8"
+          >
+            <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-blue-400 to-purple-600 rounded-full flex items-center justify-center shadow-2xl">
+              <CreditCard className="w-10 h-10 text-white" />
+            </div>
+            <h1 className="text-3xl font-bold text-white mb-2">Bank Account</h1>
+            <p className="text-purple-200 text-sm">Secure your withdrawal destination</p>
+            
+            <div className="flex justify-center items-center mt-4 space-x-4 text-xs">
+              <div className="flex items-center text-green-300">
+                <Shield className="w-3 h-3 mr-1" />
+                <span>256-bit Encrypted</span>
               </div>
-            ) : isEditing ? (
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="bg-card rounded-xl p-5 space-y-4">
+              <div className="flex items-center text-blue-300">
+                <CheckCircle className="w-3 h-3 mr-1" />
+                <span>Bank Verified</span>
+              </div>
+            </div>
+          </motion.div>
+
+          {isLoading ? (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="flex justify-center items-center py-20"
+            >
+              <Loader2 className="w-8 h-8 animate-spin text-purple-400" />
+            </motion.div>
+          ) : isEditing ? (
+            <motion.form 
+              onSubmit={handleSubmit} 
+              className="space-y-6"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+            >
+              {/* Form Fields */}
+              <Card className="bg-white/10 backdrop-blur-xl border-0 shadow-2xl">
+                <CardContent className="p-6 space-y-6">
+                  {/* Account Holder Name */}
                   <div>
-                    <Label htmlFor="account_number">Account Number</Label>
+                    <Label htmlFor="account_holder_name" className="text-white mb-2 flex items-center">
+                      <User className="w-4 h-4 mr-2" />
+                      Account Holder Name
+                    </Label>
+                    <Input
+                      id="account_holder_name"
+                      name="account_holder_name"
+                      value={formData.account_holder_name}
+                      onChange={handleChange}
+                      className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
+                      required
+                    />
+                  </div>
+
+                  {/* Account Number */}
+                  <div>
+                    <Label htmlFor="account_number" className="text-white mb-2 flex items-center">
+                      <Hash className="w-4 h-4 mr-2" />
+                      Account Number
+                    </Label>
                     <Input
                       id="account_number"
                       name="account_number"
                       value={formData.account_number}
                       onChange={handleChange}
-                      className="mt-1"
+                      className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
                       required
                     />
                   </div>
                   
+                  {/* IFSC Code */}
                   <div>
                     <div className="flex items-center justify-between mb-2">
-                      <Label htmlFor="account_ifsc">IFSC Code</Label>
+                      <Label htmlFor="account_ifsc" className="text-white flex items-center">
+                        <Hash className="w-4 h-4 mr-2" />
+                        IFSC Code
+                      </Label>
                       <Button 
                         type="button"
                         onClick={verifyIFSC}
                         variant="outline"
                         size="sm"
-                        className="text-xs px-2 py-1 bg-primary/20 text-primary"
+                        className={`text-xs px-3 py-1 ${
+                          isIfscVerified 
+                            ? "bg-green-500/20 text-green-300 border-green-400/30" 
+                            : "bg-purple-500/20 text-purple-300 border-purple-400/30"
+                        }`}
                         disabled={ifscVerifying || !formData.account_ifsc}
                       >
                         {ifscVerifying ? (
@@ -298,188 +341,108 @@ const BankDetailsPage = () => {
                       name="account_ifsc"
                       value={formData.account_ifsc}
                       onChange={handleChange}
-                      className="mt-1"
+                      className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
                       required
                     />
                     
                     {/* IFSC Verification Results */}
                     {ifscError && (
-                      <div className="mt-2 p-2 border rounded text-sm text-red-600">
-                        {ifscError}
+                      <div className="mt-2 p-3 bg-red-500/20 border border-red-400/30 rounded-lg">
+                        <p className="text-red-300 text-sm">{ifscError}</p>
                       </div>
                     )}
-                    
                   </div>
                   
+                  {/* Bank Name */}
                   <div>
-                    <Label htmlFor="bank_name">Bank Name</Label>
+                    <Label htmlFor="bank_name" className="text-white mb-2 flex items-center">
+                      <Building className="w-4 h-4 mr-2" />
+                      Bank Name
+                    </Label>
                     <Input
                       id="bank_name"
                       name="bank_name"
                       value={formData.bank_name}
                       onChange={handleChange}
-                      className="mt-1"
+                      className="bg-white/5 border-white/20 text-gray-400"
                       required
                       readOnly
                       placeholder="Will be fetched automatically on IFSC verification"
                     />
                   </div>
-                  
-                  <div>
-                    <Label htmlFor="account_holder_name">Account Holder Name</Label>
-                    <Input
-                      id="account_holder_name"
-                      name="account_holder_name"
-                      value={formData.account_holder_name}
-                      onChange={handleChange}
-                      className="mt-1"
-                      required
-                    />
-                  </div>
-                </div>
-                
-                <div className="grid grid-cols-2 gap-4">
-                  <Button
-                    type="button"
-                    onClick={() => setIsEditing(false)}
-                    variant="outline"
-                    className="w-full"
-                    disabled={isSubmitting}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    type="submit"
-                    className="w-full"
-                    disabled={isSubmitting || !validateBankForm()}
-                  >
-                    {isSubmitting ? (
-                      <span className="flex items-center justify-center">
-                        <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></span>
-                        Saving...
-                      </span>
-                    ) : (
-                      "Save"
-                    )}
-                  </Button>
-                </div>
-              </form>
-            ) : (
-              <div className="space-y-6">
-                <div className="bg-card rounded-xl p-5 space-y-4">
-                  <div>
-                    <p className="text-muted-foreground mb-1">Account Number</p>
-                    <p className="text-xl">{accountDetails.account_number || 'Not set'}</p>
-                  </div>
-                  
-                  <div>
-                    <p className="text-muted-foreground mb-1">Bank Name</p>
-                    <p className="text-xl">{accountDetails.bank_name || 'Not set'}</p>
-                  </div>
-                  
-                  <div>
-                    <p className="text-muted-foreground mb-1">IFSC Code</p>
-                    <p className="text-xl">{accountDetails.account_ifsc || 'Not set'}</p>
-                  </div>
-                  
-                  <div>
-                    <p className="text-muted-foreground mb-1">Account Holder Name</p>
-                    <p className="text-xl">{accountDetails.account_holder_name || 'Not set'}</p>
-                  </div>
-                </div>
-                
+                </CardContent>
+              </Card>
+              
+              {/* Action Buttons */}
+              <div className="grid grid-cols-2 gap-4">
                 <Button
-                  onClick={() => setIsEditing(true)}
-                  className="w-full py-3 h-12 text-lg"
+                  type="button"
+                  onClick={() => setIsEditing(false)}
+                  variant="outline"
+                  className="bg-white/10 border-white/20 text-white hover:bg-white/20"
+                  disabled={isSubmitting}
                 >
-                  Edit Bank Details
+                  Cancel
                 </Button>
-              </div>
-            )}
-          </TabsContent>
-          
-          <TabsContent value="usdt">
-            {isLoading ? (
-              <div className="space-y-6">
-                <div className="bg-card rounded-xl p-5 space-y-4 animate-pulse">
-                  <div>
-                    <div className="h-4 w-32 bg-secondary/40 rounded mb-2"></div>
-                    <div className="h-10 w-full bg-secondary/40 rounded"></div>
-                  </div>
-                </div>
-                <div className="h-12 w-full bg-secondary/40 rounded-xl"></div>
-              </div>
-            ) : isEditing ? (
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="bg-card rounded-xl p-5 space-y-4">
-                  <div>
-                    <Label htmlFor="usdt_address">USDT Address (TRC20)</Label>
-                    <Input
-                      id="usdt_address"
-                      name="usdt_address"
-                      value={formData.usdt_address}
-                      onChange={handleChange}
-                      className="mt-1"
-                      placeholder="Enter your TRC20 USDT address"
-                    />
-                  </div>
-                  
-                  <div className="text-xs text-amber-500 mt-2">
-                    <p>Important: Only enter TRC20 network addresses. Using other networks may result in loss of funds.</p>
-                  </div>
-                </div>
-                
-                <div className="grid grid-cols-2 gap-4">
-                  <Button
-                    type="button"
-                    onClick={() => setIsEditing(false)}
-                    variant="outline"
-                    className="w-full"
-                    disabled={isSubmitting}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    type="submit"
-                    className="w-full"
-                    disabled={isSubmitting}
-                  >
-                    {isSubmitting ? (
-                      <span className="flex items-center justify-center">
-                        <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></span>
-                        Saving...
-                      </span>
-                    ) : (
-                      "Save"
-                    )}
-                  </Button>
-                </div>
-              </form>
-            ) : (
-              <div className="space-y-6">
-                <div className="bg-card rounded-xl p-5">
-                  <div>
-                    <p className="text-muted-foreground mb-1">USDT Address (TRC20)</p>
-                    <p className="text-lg break-all">{accountDetails.usdt_address || 'Not set'}</p>
-                  </div>
-                  
-                  {!accountDetails.usdt_address && (
-                    <div className="mt-4 text-xs text-amber-500">
-                      <p>No USDT address set. Please add your address to enable USDT withdrawals.</p>
-                    </div>
+                <Button
+                  type="submit"
+                  className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white border-0"
+                  disabled={isSubmitting || !validateForm()}
+                >
+                  {isSubmitting ? (
+                    <span className="flex items-center justify-center">
+                      <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                      Saving...
+                    </span>
+                  ) : (
+                    "Save Details"
                   )}
-                </div>
-                
-                <Button
-                  onClick={() => setIsEditing(true)}
-                  className="w-full py-3 h-12 text-lg"
-                >
-                  {accountDetails.usdt_address ? 'Edit USDT Address' : 'Add USDT Address'}
                 </Button>
               </div>
-            )}
-          </TabsContent>
-        </Tabs>
+            </motion.form>
+          ) : (
+            /* Display Mode */
+            <motion.div 
+              className="space-y-6"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+            >
+              <Card className="bg-white/10 backdrop-blur-xl border-0 shadow-2xl">
+                <CardContent className="p-6 space-y-6">
+                  {[
+                    { icon: User, label: "Account Holder", value: accountDetails.account_holder_name },
+                    { icon: Hash, label: "Account Number", value: accountDetails.account_number },
+                    { icon: Hash, label: "IFSC Code", value: accountDetails.account_ifsc },
+                    { icon: Building, label: "Bank Name", value: accountDetails.bank_name }
+                  ].map((detail, idx) => (
+                    <div key={idx} className="flex items-center justify-between p-4 bg-white/5 rounded-xl">
+                      <div className="flex items-center">
+                        <div className="w-10 h-10 bg-gradient-to-br from-purple-400 to-pink-600 rounded-lg flex items-center justify-center mr-4">
+                          <detail.icon className="w-5 h-5 text-white" />
+                        </div>
+                        <div>
+                          <p className="text-gray-300 text-sm">{detail.label}</p>
+                          <p className="text-white font-medium">{detail.value || 'Not set'}</p>
+                        </div>
+                      </div>
+                      {detail.value && (
+                        <CheckCircle className="w-5 h-5 text-green-400" />
+                      )}
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
+              
+              <Button
+                onClick={() => setIsEditing(true)}
+                className="w-full h-14 bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white font-bold rounded-2xl shadow-2xl border-0"
+              >
+                <Edit3 className="w-5 h-5 mr-2" />
+                {accountDetails.account_number ? 'Edit Bank Details' : 'Add Bank Details'}
+              </Button>
+            </motion.div>
+          )}
+        </div>
       </div>
     </MobileLayout>
   );

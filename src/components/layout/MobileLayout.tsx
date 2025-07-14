@@ -13,6 +13,7 @@ interface MobileLayoutProps {
   showBackButton?: boolean;
   rightActions?: ReactNode;
   noScroll?: boolean;
+  hideNavbar?: boolean;
 }
 
 const MobileLayout = ({ 
@@ -20,7 +21,8 @@ const MobileLayout = ({
   title,
   showBackButton = false,
   rightActions,
-  noScroll = false
+  noScroll = false,
+  hideNavbar = false
 }: MobileLayoutProps) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
@@ -32,19 +34,53 @@ const MobileLayout = ({
     navigate(-1);
   };
   
-  // Only show the navbar on main pages
-  const shouldShowNavbar = ['/home', '/market', '/team', '/profile', '/'].includes(location.pathname);
-
-  // Add withdrawal-related paths to display receipt icon instead of bell
-  const isWithdrawalPage = ['/withdraw', '/usdt-withdraw', '/withdrawals', '/all-withdrawals'].includes(location.pathname);
+  // Pages where navbar should be hidden
+  const hideNavbarPages = [
+    '/deposit', '/withdraw', '/bank', '/transactions', 
+    '/salary-record', '/contract-record', '/all-withdrawals',
+    '/withdrawals', '/deposit-records', '/withdrawal-records'
+  ];
+  
+  const shouldHideNavbar = hideNavbar || hideNavbarPages.includes(location.pathname);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-green-50 relative overflow-x-hidden">
+      {/* Header */}
+      {(title || showBackButton) && (
+        <div className="sticky top-0 z-40 bg-white/95 backdrop-blur-xl border-b border-emerald-100/50">
+          <div className="flex items-center justify-between px-4 h-16">
+            {showBackButton && (
+              <button 
+                onClick={goBack}
+                className="p-2 rounded-full bg-emerald-100 hover:bg-emerald-200 transition-colors"
+              >
+                <ChevronLeft className="h-5 w-5 text-emerald-700" />
+              </button>
+            )}
+            
+            {title && (
+              <h1 className="text-lg font-bold text-emerald-800 flex-1 text-center">
+                {title}
+              </h1>
+            )}
+            
+            {rightActions && (
+              <div className="flex items-center space-x-2">
+                {rightActions}
+              </div>
+            )}
+            
+            {!rightActions && showBackButton && <div className="w-10" />}
+          </div>
+        </div>
+      )}
+
       {/* Main Content */}
-      <main className="pb-20 min-h-screen">
+      <main className={shouldHideNavbar ? "min-h-screen" : "pb-20 min-h-screen"}>
         {children}
       </main>
-      <MobileNavbar />
+      
+      {!shouldHideNavbar && <MobileNavbar />}
     </div>
   );
 };
