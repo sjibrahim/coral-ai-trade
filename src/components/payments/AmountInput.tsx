@@ -21,15 +21,11 @@ const AmountInput = ({
   maxAmount,
   quickAmounts,
   className,
-  currencySymbol = <IndianRupee className="h-5 w-5 text-white/70" />
+  currencySymbol = <IndianRupee className="h-4 w-4 text-emerald-600" />
 }: AmountInputProps) => {
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // Only allow numbers and a single decimal point
     const newValue = e.target.value.replace(/[^0-9.]/g, '');
-    
-    // Handle decimal point (only one allowed)
     if (newValue.split('.').length > 2) return;
-    
     onChange(newValue);
   };
 
@@ -37,34 +33,37 @@ const AmountInput = ({
 
   const getStatusIcon = () => {
     if (!amount) return null;
-    if (isValidAmount) return <Check className="h-4 w-4 text-green-500" />;
-    return <Ban className="h-4 w-4 text-red-500" />;
+    if (isValidAmount) return <Check className="h-3 w-3 text-emerald-500" />;
+    return <Ban className="h-3 w-3 text-red-500" />;
   };
 
   return (
-    <div className={cn("bg-[#1a1c25] rounded-2xl p-5 shadow-lg", className)}>
-      <div className="relative mb-4">
+    <div className={cn("bg-white/90 backdrop-blur-sm rounded-xl p-4 border border-emerald-200/50", className)}>
+      <div className="relative mb-3">
         <div className="flex items-center justify-center">
-          <div className="flex items-center">
+          <div className="flex items-center bg-emerald-50 rounded-lg px-3 py-2">
             {currencySymbol}
             <Input
               type="text"
               inputMode="decimal"
               value={amount}
               onChange={handleAmountChange}
-              className="text-3xl font-bold text-white bg-transparent border-none p-0 h-auto w-36 text-center focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+              className="text-2xl font-bold text-gray-900 bg-transparent border-none p-0 h-auto w-32 text-center focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
               placeholder="0"
               maxLength={10}
             />
           </div>
         </div>
 
-        <div className="absolute right-0 top-0 flex items-center gap-2">
+        <div className="absolute right-0 top-0 flex items-center gap-1">
           {getStatusIcon()}
           {amount && (
-            isValidAmount ? 
-              <span className="text-xs text-green-500">Valid amount</span> : 
-              <span className="text-xs text-red-500">Invalid amount</span>
+            <span className={cn(
+              "text-xs font-medium",
+              isValidAmount ? "text-emerald-600" : "text-red-500"
+            )}>
+              {isValidAmount ? "Valid" : "Invalid"}
+            </span>
           )}
         </div>
       </div>
@@ -75,10 +74,10 @@ const AmountInput = ({
             key={quickAmount}
             onClick={() => onChange(quickAmount)}
             className={cn(
-              "py-1.5 rounded-full border text-center text-sm transition-all",
+              "py-1.5 rounded-lg text-center text-xs font-medium transition-all",
               amount === quickAmount
-                ? "border-blue-500 bg-blue-500/10 text-blue-400"
-                : "border-gray-700 text-gray-400 hover:border-gray-600"
+                ? "bg-emerald-500 text-white"
+                : "bg-gray-100 text-gray-700 hover:bg-emerald-100 hover:text-emerald-700"
             )}
           >
             ₹{quickAmount}

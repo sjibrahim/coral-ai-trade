@@ -3,9 +3,8 @@ import { useState, useEffect } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Link } from "react-router-dom";
-import { ArrowDownCircle, IndianRupee, Wallet, Receipt, Check, X, Clock } from "lucide-react";
+import { ArrowDownCircle, IndianRupee, Receipt, Check, X, Clock, Wallet, Target } from "lucide-react";
 import { getTransactions, getGeneralSettings } from "@/services/api";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
@@ -17,22 +16,15 @@ interface WithdrawalRecord {
   date: string;
   status: string;
   account: string;
-  type: "inr" | "usdt";
+  type: "inr";
   method?: string;
   charges?: string | number;
   net_amount?: string | number;
 }
 
-interface GeneralSettings {
-  usdt_price: string;
-  withdrawal_fee: string;
-}
-
 const AllWithdrawalsPage = () => {
   const [records, setRecords] = useState<WithdrawalRecord[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState("inr");
-  const [usdtPrice, setUsdtPrice] = useState(83);
   const [withdrawalFeePercentage, setWithdrawalFeePercentage] = useState(2);
   const { user } = useAuth(); 
   const { toast } = useToast();
@@ -43,10 +35,9 @@ const AllWithdrawalsPage = () => {
         const token = localStorage.getItem('auth_token');
         if (!token) return;
 
-        // Fetch general settings for USDT price
+        // Fetch general settings for withdrawal fee
         const settingsResponse = await getGeneralSettings(token);
         if (settingsResponse.status && settingsResponse.data) {
-          setUsdtPrice(parseFloat(settingsResponse.data.usdt_price) || 83);
           setWithdrawalFeePercentage(parseFloat(settingsResponse.data.withdrawal_fee) || 2);
         }
 
@@ -54,7 +45,6 @@ const AllWithdrawalsPage = () => {
         const response = await getTransactions(token);
         
         if (response.status && Array.isArray(response.data)) {
-          // Filter withdrawal transactions using the new format
           const withdrawals = response.data
             .filter((tx: any) => tx.txn_type === "WITHDRAW")
             .map((tx: any) => ({
@@ -63,8 +53,7 @@ const AllWithdrawalsPage = () => {
               date: tx.created_at || new Date().toISOString().split('T')[0],
               status: tx.status || "processing",
               account: tx.bank_number || "******6413",
-              // Determine the type based on the method field
-              type: tx.method === "USDT" ? "usdt" : "inr",
+              type: "inr",
               method: tx.method || "BANK",
               charges: tx.charges || "10",
               net_amount: tx.net_amount || tx.amount
@@ -103,15 +92,15 @@ const AllWithdrawalsPage = () => {
     switch(status.toLowerCase()) {
       case 'completed':
       case 'success':
-        return "bg-emerald-500/10 text-emerald-500 border-emerald-500/20";
+        return "bg-emerald-100 text-emerald-700";
       case 'processing':
       case 'pending':
-        return "bg-amber-500/10 text-amber-500 border-amber-500/20";
+        return "bg-amber-100 text-amber-700";
       case 'rejected':
       case 'failed':
-        return "bg-red-500/10 text-red-500 border-red-500/20";
+        return "bg-red-100 text-red-700";
       default:
-        return "bg-gray-500/10 text-gray-400 border-gray-500/20";
+        return "bg-gray-100 text-gray-700";
     }
   };
   
@@ -137,234 +126,142 @@ const AllWithdrawalsPage = () => {
     return date.toLocaleDateString() + " " + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
   };
 
-  // Convert INR to USD based on USDT price
-  const convertToUSD = (amountInr: number) => {
-    return (amountInr / usdtPrice).toFixed(2);
-  };
-
-  const inrRecords = records.filter(record => record.type === "inr" || record.method === "BANK");
-  const usdtRecords = records.filter(record => record.type === "usdt" || record.method === "USDT");
-
-  const WithdrawalCard = ({ record, isUsdt = false }: { record: WithdrawalRecord, isUsdt?: boolean }) => {
-    // Fix the type conversion issues by ensuring proper number types before calculations
-    const charges = typeof record.charges === 'string' ? parseFloat(record.charges) : record.charges || 0;
-    const amount = record.amount;
-    const netAmount = typeof record.net_amount === 'string' ? parseFloat(record.net_amount) : 
-                     (record.net_amount as number) || 0;
-    
-    return (
-      <Card className="mb-4 bg-gradient-to-br from-[#1c1e29] to-[#151722] border-[#2a2d3a] overflow-hidden">
-        <CardContent className="p-4">
-          {/* Header with ID and Status */}
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center space-x-2">
-              <Receipt className="h-4 w-4 text-blue-400" />
-              <span className="text-sm font-medium text-gray-200">{record.id}</span>
-            </div>
-            <div className={cn(
-              "px-2 py-0.5 rounded-full text-xs font-medium flex items-center space-x-1",
-              getStatusStyles(record.status)
-            )}>
-              {getStatusIcon(record.status)}
-              <span>{record.status.toUpperCase()}</span>
-            </div>
-          </div>
-          
-          {/* Main Content */}
-          <div className="space-y-3">
-            {/* Amount */}
-            {isUsdt ? (
-              <div>
-                <div className="flex items-center">
-                  <Wallet className="h-5 w-5 mr-2 text-amber-400" />
-                  <span className="text-2xl font-bold text-white">${convertToUSD(amount)}</span>
-                </div>
-                <span className="text-xs text-gray-400 pl-7">₹{amount.toLocaleString()} (INR)</span>
-              </div>
-            ) : (
-              <div className="flex items-center">
-                <IndianRupee className="h-5 w-5 mr-2 text-blue-400" />
-                <span className="text-2xl font-bold text-white">{amount.toLocaleString()}</span>
-              </div>
-            )}
-            
-            {/* Fee and Net Amount - now integrated directly */}
-            <div className="grid grid-cols-2 gap-2 text-sm">
-              <div>
-                <p className="text-gray-400">Fee ({withdrawalFeePercentage}%)</p>
-                {isUsdt ? (
-                  <p className="text-red-400">${(charges / usdtPrice).toFixed(2)}<span className="text-xs text-gray-500 ml-1">(₹{charges})</span></p>
-                ) : (
-                  <p className="text-red-400">₹{charges.toLocaleString()}</p>
-                )}
-              </div>
-              <div>
-                <p className="text-gray-400">Net Amount</p>
-                {isUsdt ? (
-                  <p className="text-emerald-400">${(netAmount / usdtPrice).toFixed(2)}<span className="text-xs text-gray-500 ml-1">(₹{netAmount})</span></p>
-                ) : (
-                  <p className="text-emerald-400">₹{netAmount.toLocaleString()}</p>
-                )}
-              </div>
-            </div>
-            
-            {/* Footer Details */}
-            <div className="flex justify-between text-xs text-gray-400 pt-2 border-t border-gray-700/50">
-              <div>
-                <p className="mb-1">
-                  {isUsdt ? "Wallet" : "Bank Account"}
-                </p>
-                <p>
-                  {isUsdt 
-                    ? maskValue(user?.usdt_address)
-                    : maskValue(user?.account_number)
-                  }
-                </p>
-              </div>
-              <div className="text-right">
-                <p className="mb-1">Date</p>
-                <p>{formatDate(record.date)}</p>
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-    );
-  };
-
   return (
-    <MobileLayout showBackButton title="Withdrawal Records">
-      <div className="p-4 space-y-4 pb-20 animate-fade-in">
-        {/* Tabs */}
-        <Tabs defaultValue="inr" className="w-full" onValueChange={setActiveTab}>
-          <TabsList className="grid grid-cols-2 mb-4 bg-[#1c1e29]">
-            <TabsTrigger value="inr" className="flex items-center gap-1 data-[state=active]:bg-blue-500">
-              <IndianRupee className="h-4 w-4" />
-              INR Withdrawals
-            </TabsTrigger>
-            <TabsTrigger value="usdt" className="flex items-center gap-1 data-[state=active]:bg-amber-500">
-              <Wallet className="h-4 w-4" />
-              USDT Withdrawals
-            </TabsTrigger>
-          </TabsList>
-          
-          {/* Create new withdrawal buttons */}
-          <div className="mb-4">
-            {activeTab === "inr" ? (
-              <Link to="/withdraw">
-                <Button className="w-full flex items-center gap-2 bg-gradient-to-r from-blue-600 to-blue-500">
-                  <ArrowDownCircle className="h-4 w-4" />
-                  New INR Withdrawal
-                </Button>
-              </Link>
-            ) : (
-              <Link to="/usdt-withdraw">
-                <Button className="w-full flex items-center gap-2 bg-gradient-to-r from-amber-600 to-amber-500">
-                  <ArrowDownCircle className="h-4 w-4" />
-                  New USDT Withdrawal
-                </Button>
-              </Link>
-            )}
-          </div>
-          
-          {/* INR Withdrawals Content */}
-          <TabsContent value="inr">
-            {isLoading ? (
-              // Loading skeletons
-              Array(3).fill(0).map((_, idx) => (
-                <Card key={`skeleton-${idx}`} className="mb-4 bg-[#1c1e29] border-[#2a2d3a] overflow-hidden animate-pulse">
+    <MobileLayout showBackButton title="Withdrawal History">
+      <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-green-50 relative overflow-hidden">
+        {/* Background Elements */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute -top-20 -right-20 w-40 h-40 bg-emerald-400/20 rounded-full blur-2xl animate-pulse"></div>
+          <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-green-400/20 rounded-full blur-2xl animate-pulse delay-1000"></div>
+        </div>
+
+        <div className="relative z-10 p-4 space-y-4 pb-24">
+          {/* Header Card */}
+          <Card className="bg-gradient-to-r from-emerald-600 to-green-600 text-white border-0 shadow-xl">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-center">
+                <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center mr-3">
+                  <ArrowDownCircle className="w-4 h-4 text-white" />
+                </div>
+                <div className="text-center">
+                  <h1 className="text-lg font-bold">Withdrawals</h1>
+                  <p className="text-emerald-100 text-xs">Track your withdrawal history</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* New Withdrawal Button */}
+          <Link to="/withdraw">
+            <Button className="w-full bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white text-sm h-10">
+              <ArrowDownCircle className="h-4 w-4 mr-2" />
+              New Withdrawal
+            </Button>
+          </Link>
+        
+          {isLoading ? (
+            // Loading skeletons
+            Array(3).fill(0).map((_, idx) => (
+              <Card key={`skeleton-${idx}`} className="bg-white/90 backdrop-blur-sm border border-gray-200/50 animate-pulse">
+                <CardContent className="p-4 space-y-3">
+                  <div className="flex justify-between items-center">
+                    <div className="h-4 w-20 bg-gray-200 rounded"></div>
+                    <div className="h-4 w-16 bg-gray-200 rounded"></div>
+                  </div>
+                  <div className="h-6 w-24 bg-gray-200 rounded"></div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="h-12 bg-gray-200 rounded"></div>
+                    <div className="h-12 bg-gray-200 rounded"></div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))
+          ) : records.length > 0 ? (
+            records.map((record) => {
+              const charges = typeof record.charges === 'string' ? parseFloat(record.charges) : record.charges || 0;
+              const amount = record.amount;
+              const netAmount = typeof record.net_amount === 'string' ? parseFloat(record.net_amount) : 
+                              (record.net_amount as number) || 0;
+              
+              return (
+                <Card 
+                  key={record.id}
+                  className="bg-white/90 backdrop-blur-sm border border-emerald-200/50 hover:shadow-lg transition-all duration-300"
+                >
                   <CardContent className="p-4">
-                    <div className="flex justify-between mb-4">
-                      <div className="h-5 w-24 bg-[#252836] rounded"></div>
-                      <div className="h-5 w-20 bg-[#252836] rounded"></div>
-                    </div>
-                    <div className="h-8 w-32 bg-[#252836] rounded mb-4"></div>
-                    <div className="grid grid-cols-2 gap-2 mb-4">
-                      <div className="bg-[#252836] h-12 rounded-md"></div>
-                      <div className="bg-[#252836] h-12 rounded-md"></div>
-                    </div>
-                    <div className="flex justify-between">
-                      <div>
-                        <div className="h-3 w-20 bg-[#252836] rounded mb-1"></div>
-                        <div className="h-3 w-24 bg-[#252836] rounded"></div>
+                    {/* Header */}
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center space-x-2">
+                        <Receipt className="h-4 w-4 text-emerald-600" />
+                        <span className="text-sm font-medium text-gray-700">{record.id}</span>
                       </div>
+                      <div className={cn(
+                        "px-2 py-1 rounded-full text-xs font-medium flex items-center space-x-1",
+                        getStatusStyles(record.status)
+                      )}>
+                        {getStatusIcon(record.status)}
+                        <span>{record.status.toUpperCase()}</span>
+                      </div>
+                    </div>
+                    
+                    {/* Amount */}
+                    <div className="mb-3">
+                      <div className="flex items-center">
+                        <IndianRupee className="h-5 w-5 mr-2 text-emerald-600" />
+                        <span className="text-2xl font-bold text-gray-900">{amount.toLocaleString()}</span>
+                      </div>
+                    </div>
+                    
+                    {/* Transaction Details */}
+                    <div className="grid grid-cols-2 gap-3 mb-3">
+                      <div className="bg-gray-50 rounded-lg p-3">
+                        <div className="flex items-center text-gray-600 text-xs mb-1">
+                          <Target className="w-3 h-3 mr-1" />
+                          <span>Fee ({withdrawalFeePercentage}%)</span>
+                        </div>
+                        <p className="text-sm font-medium text-red-600">₹{charges.toLocaleString()}</p>
+                      </div>
+                      <div className="bg-gray-50 rounded-lg p-3">
+                        <div className="flex items-center text-gray-600 text-xs mb-1">
+                          <Wallet className="w-3 h-3 mr-1" />
+                          <span>Net Amount</span>
+                        </div>
+                        <p className="text-sm font-medium text-emerald-600">₹{netAmount.toLocaleString()}</p>
+                      </div>
+                    </div>
+                    
+                    {/* Footer Details */}
+                    <div className="flex justify-between text-xs text-gray-500">
                       <div>
-                        <div className="h-3 w-10 bg-[#252836] rounded mb-1"></div>
-                        <div className="h-3 w-20 bg-[#252836] rounded"></div>
+                        <p className="mb-1">Bank Account</p>
+                        <p>{maskValue(user?.account_number)}</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="mb-1">Date</p>
+                        <p>{formatDate(record.date)}</p>
                       </div>
                     </div>
                   </CardContent>
                 </Card>
-              ))
-            ) : inrRecords.length > 0 ? (
-              inrRecords.map((record) => (
-                <WithdrawalCard key={record.id} record={record} />
-              ))
-            ) : (
-              <div className="bg-[#1c1e29] rounded-xl p-8 border border-[#2a2d3a] text-center">
-                <div className="bg-blue-500/10 rounded-full p-3 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                  <Receipt className="h-8 w-8 text-blue-400" />
+              );
+            })
+          ) : (
+            <Card className="bg-white/90 backdrop-blur-sm border border-emerald-200/50">
+              <CardContent className="p-8 text-center">
+                <div className="bg-emerald-100 rounded-full p-3 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                  <Receipt className="h-8 w-8 text-emerald-600" />
                 </div>
-                <h3 className="text-lg font-medium text-white mb-2">No Withdrawals Yet</h3>
-                <p className="text-gray-400 mb-4">Make your first INR withdrawal to see records here</p>
+                <h3 className="text-lg font-medium text-gray-900 mb-2">No Withdrawals Yet</h3>
+                <p className="text-gray-600 mb-4 text-sm">Make your first withdrawal to see records here</p>
                 <Link to="/withdraw">
-                  <Button className="bg-gradient-to-r from-blue-600 to-blue-500">
-                    Create Your First INR Withdrawal
+                  <Button className="bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-sm">
+                    Start Withdrawal
                   </Button>
                 </Link>
-              </div>
-            )}
-          </TabsContent>
-          
-          {/* USDT Withdrawals Content */}
-          <TabsContent value="usdt">
-            {isLoading ? (
-              // Loading skeletons (same as INR)
-              Array(3).fill(0).map((_, idx) => (
-                <Card key={`skeleton-${idx}`} className="mb-4 bg-[#1c1e29] border-[#2a2d3a] overflow-hidden animate-pulse">
-                  <CardContent className="p-4">
-                    <div className="flex justify-between mb-4">
-                      <div className="h-5 w-24 bg-[#252836] rounded"></div>
-                      <div className="h-5 w-20 bg-[#252836] rounded"></div>
-                    </div>
-                    <div className="h-8 w-32 bg-[#252836] rounded mb-4"></div>
-                    <div className="grid grid-cols-2 gap-2 mb-4">
-                      <div className="bg-[#252836] h-12 rounded-md"></div>
-                      <div className="bg-[#252836] h-12 rounded-md"></div>
-                    </div>
-                    <div className="flex justify-between">
-                      <div>
-                        <div className="h-3 w-20 bg-[#252836] rounded mb-1"></div>
-                        <div className="h-3 w-24 bg-[#252836] rounded"></div>
-                      </div>
-                      <div>
-                        <div className="h-3 w-10 bg-[#252836] rounded mb-1"></div>
-                        <div className="h-3 w-20 bg-[#252836] rounded"></div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))
-            ) : usdtRecords.length > 0 ? (
-              usdtRecords.map((record) => (
-                <WithdrawalCard key={record.id} record={record} isUsdt={true} />
-              ))
-            ) : (
-              <div className="bg-[#1c1e29] rounded-xl p-8 border border-[#2a2d3a] text-center">
-                <div className="bg-amber-500/10 rounded-full p-3 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                  <Wallet className="h-8 w-8 text-amber-400" />
-                </div>
-                <h3 className="text-lg font-medium text-white mb-2">No USDT Withdrawals</h3>
-                <p className="text-gray-400 mb-4">Make your first USDT withdrawal to see records here</p>
-                <Link to="/usdt-withdraw">
-                  <Button className="bg-gradient-to-r from-amber-600 to-amber-500">
-                    Create Your First USDT Withdrawal
-                  </Button>
-                </Link>
-              </div>
-            )}
-          </TabsContent>
-        </Tabs>
+              </CardContent>
+            </Card>
+          )}
+        </div>
       </div>
     </MobileLayout>
   );

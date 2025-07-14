@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Share2, Copy, Check, User, Users } from "lucide-react";
+import { Share2, Copy, Check, User, Users, Gift, Crown, Star, Zap, Target } from "lucide-react";
 import QRCode from "qrcode.react";
 import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
@@ -20,9 +20,8 @@ const InvitePopup = ({ isOpen, onClose }: InvitePopupProps) => {
   
   useEffect(() => {
     if (isOpen && user) {
-      // Create invite link based on user details
       const baseUrl = window.location.origin;
-      const referralCode = user.invite_code || user.referral_code || user.id || "NEXBIT";
+      const referralCode = user.invite_code || user.referral_code || user.id || "TREXO";
       setInviteLink(`${baseUrl}/register?referral=${referralCode}`);
     }
   }, [isOpen, user]);
@@ -31,8 +30,8 @@ const InvitePopup = ({ isOpen, onClose }: InvitePopupProps) => {
     navigator.clipboard.writeText(inviteLink);
     setCopied(true);
     toast({
-      title: "Copied to clipboard",
-      description: "Invite link has been copied to your clipboard",
+      title: "Copied!",
+      description: "Invite link copied to clipboard",
     });
     setTimeout(() => setCopied(false), 2000);
   };
@@ -41,129 +40,122 @@ const InvitePopup = ({ isOpen, onClose }: InvitePopupProps) => {
     if (navigator.share) {
       try {
         await navigator.share({
-          title: "Join Nexbit Trading Platform",
-          text: "Join Nexbit using my referral link and get exciting rewards!",
+          title: "Join Trexo Trading",
+          text: "Join Trexo and start earning with crypto trading!",
           url: inviteLink,
         });
       } catch (error) {
         console.log("Error sharing", error);
       }
     } else {
-      toast({
-        title: "Sharing not supported",
-        description: "Web Share API is not supported in your browser.",
-        variant: "destructive",
-      });
+      handleCopy();
     }
   };
   
-  const referralCode = user?.invite_code || user?.referral_code || "NEXBIT";
-  
-  // Get commission rates from general settings or use default values
+  const referralCode = user?.invite_code || user?.referral_code || "TREXO";
   const level1Commission = generalSettings?.level_1_commission || "10";
   const level2Commission = generalSettings?.level_2_commission || "5";
   const level3Commission = generalSettings?.level_3_commission || "2";
   
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md mx-auto my-auto w-[90%] bg-gradient-to-b from-background to-blue-900/10 backdrop-blur-sm border-blue-200/20 p-5 max-h-[90vh] rounded-xl overflow-auto">
-        <DialogHeader className="text-center">
-          <DialogTitle className="text-2xl font-bold text-gradient-primary flex items-center justify-center gap-2 mb-1">
-            <Users className="h-5 w-5" />
-            Invite Friends
-          </DialogTitle>
-          <p className="text-sm text-muted-foreground mb-4">
-            Share this link with your friends and earn rewards
-          </p>
-        </DialogHeader>
-        
-        {/* QR Code */}
-        <div className="flex justify-center mb-6">
-          <div className="p-3 bg-white rounded-xl">
-            <QRCode 
-              value={inviteLink} 
-              size={160} 
-              level="H"
-              includeMargin
-              renderAs="svg"
-              imageSettings={{
-                src: "https://ik.imagekit.io/spmcumfu9/nexbit_logo.jpeg",
-                height: 36,
-                width: 36,
-                excavate: true,
-              }}
-            />
-          </div>
-        </div>
-        
-        {/* Referral Info */}
-        <div className="space-y-4">
-          {/* User's Referral Code */}
-          <div className="flex items-center justify-between border border-blue-200/30 rounded-lg p-3 bg-blue-50/5">
-            <div className="flex items-center">
-              <User className="h-5 w-5 mr-2 text-primary" />
-              <span className="font-medium">Your Code:</span>
+      <DialogContent className="sm:max-w-md mx-auto w-[90%] bg-gradient-to-br from-emerald-600 via-green-600 to-teal-700 border-0 p-0 overflow-hidden rounded-2xl">
+        <div className="relative p-5">
+          <DialogHeader className="text-center mb-4">
+            <DialogTitle className="text-xl font-bold text-white flex items-center justify-center gap-2">
+              <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+                <Target className="h-4 w-4 text-white" />
+              </div>
+              Invite & Earn
+            </DialogTitle>
+            <p className="text-emerald-100 text-xs">
+              Build your Trexo network and earn commissions
+            </p>
+          </DialogHeader>
+          
+          {/* QR Code */}
+          <div className="flex justify-center mb-4">
+            <div className="p-3 bg-white rounded-xl">
+              <QRCode 
+                value={inviteLink} 
+                size={120} 
+                level="H"
+                includeMargin
+                renderAs="svg"
+              />
             </div>
-            <span className="font-bold text-primary">
-              {referralCode}
-            </span>
           </div>
           
-          {/* Referral Link */}
-          <div className="relative">
+          {/* Referral Code */}
+          <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 mb-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <User className="h-4 w-4 text-white mr-2" />
+                <span className="text-white text-sm font-medium">Your Code:</span>
+              </div>
+              <span className="font-bold text-white text-lg">{referralCode}</span>
+            </div>
+          </div>
+          
+          {/* Commission Rates */}
+          <div className="grid grid-cols-3 gap-2 mb-4">
+            {[
+              { level: "L1", rate: level1Commission, icon: Crown, color: "bg-yellow-400/20" },
+              { level: "L2", rate: level2Commission, icon: Star, color: "bg-blue-400/20" },
+              { level: "L3", rate: level3Commission, icon: Gift, color: "bg-purple-400/20" }
+            ].map((item, idx) => (
+              <div key={idx} className={`${item.color} rounded-lg p-2 text-center`}>
+                <div className="flex items-center justify-center mb-1">
+                  <item.icon className="h-3 w-3 text-white mr-1" />
+                  <span className="text-white text-xs">{item.level}</span>
+                </div>
+                <p className="text-white font-bold text-sm">{item.rate}%</p>
+              </div>
+            ))}
+          </div>
+          
+          {/* Invite Link */}
+          <div className="relative mb-4">
             <input
               type="text"
               value={inviteLink}
               readOnly
-              className="w-full bg-blue-50/5 border border-blue-200/30 rounded-lg py-3 pl-4 pr-12 text-sm"
+              className="w-full bg-white/10 border border-white/20 rounded-lg py-2 pl-3 pr-10 text-white text-xs placeholder-white/60"
             />
             <Button
               variant="ghost"
               size="icon"
-              className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 text-primary hover:text-primary/90"
+              className="absolute right-1 top-1/2 -translate-y-1/2 h-6 w-6 text-white hover:bg-white/10"
               onClick={handleCopy}
             >
-              {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+              {copied ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
             </Button>
           </div>
           
           {/* Action Buttons */}
-          <div className="grid grid-cols-2 gap-4 mt-4">
+          <div className="grid grid-cols-2 gap-3">
             <Button
-              className="w-full"
               variant="outline"
               onClick={handleCopy}
+              className="bg-white/10 border-white/20 text-white hover:bg-white/20 text-xs h-9"
             >
-              <Copy className="mr-2 h-4 w-4" />
+              <Copy className="mr-1 h-3 w-3" />
               Copy Link
             </Button>
             <Button
-              className="w-full"
               onClick={shareInvite}
+              className="bg-white text-emerald-700 hover:bg-gray-100 text-xs h-9"
             >
-              <Share2 className="mr-2 h-4 w-4" />
-              Share
+              <Share2 className="mr-1 h-3 w-3" />
+              Share Now
             </Button>
           </div>
           
-          {/* Reward Info */}
+          {/* Benefits */}
           <div className="mt-4 text-center">
-            <h3 className="font-medium text-sm bg-gradient-to-r from-primary to-blue-200 bg-clip-text text-transparent">
-              Earn commission from every friend's trade
-            </h3>
-            <div className="grid grid-cols-3 gap-2 mt-2">
-              <div className="bg-blue-50/5 rounded-lg p-2 border border-blue-200/20">
-                <p className="text-xs text-muted-foreground">Level 1</p>
-                <p className="text-lg font-bold text-primary">{level1Commission}%</p>
-              </div>
-              <div className="bg-blue-50/5 rounded-lg p-2 border border-blue-200/20">
-                <p className="text-xs text-muted-foreground">Level 2</p>
-                <p className="text-lg font-bold text-primary">{level2Commission}%</p>
-              </div>
-              <div className="bg-blue-50/5 rounded-lg p-2 border border-blue-200/20">
-                <p className="text-xs text-muted-foreground">Level 3</p>
-                <p className="text-lg font-bold text-primary">{level3Commission}%</p>
-              </div>
+            <div className="flex items-center justify-center text-white/90 text-xs">
+              <Zap className="h-3 w-3 mr-1" />
+              <span>Earn lifetime commissions from your network</span>
             </div>
           </div>
         </div>
@@ -173,4 +165,3 @@ const InvitePopup = ({ isOpen, onClose }: InvitePopupProps) => {
 };
 
 export default InvitePopup;
-
