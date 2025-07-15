@@ -1,8 +1,13 @@
+
 import React, { useEffect, useState } from 'react';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { X, TrendingUp, TrendingDown, IndianRupee } from 'lucide-react';
 import { useAuth } from "@/contexts/AuthContext";
+import NetworkAnimation from '@/components/trade/NetworkAnimation';
+import EnhancedTimerCircle from '@/components/trade/EnhancedTimerCircle';
+import SignalBars from '@/components/trade/SignalBars';
+import TradingStatusMessages from '@/components/trade/TradingStatusMessages';
 
 interface TradeTimerProps {
   open: boolean;
@@ -33,17 +38,59 @@ const TradeTimer: React.FC<TradeTimerProps> = ({
 }) => {
   const [timeRemaining, setTimeRemaining] = useState(duration);
   const [isCompleted, setIsCompleted] = useState(false);
+  const [isConnecting, setIsConnecting] = useState(true);
+  const [networkPhase, setNetworkPhase] = useState<'connecting' | 'trading' | 'analyzing'>('connecting');
+  const [signalStrength, setSignalStrength] = useState(0);
   const [result, setResult] = useState<{
     value: number | null;
     type: 'Profit' | 'Loss' | null;
   }>({ value: null, type: null });
   const [endPrice, setEndPrice] = useState(currentPrice);
   const { updateProfile } = useAuth();
-  
-  // Calculate the progress for the circular timer
-  const progress = (duration - timeRemaining) / duration;
-  const circumference = 2 * Math.PI * 45; // 45 is the radius of the circle
-  const strokeDashoffset = circumference * (1 - progress);
+
+  // Simulate connection phase
+  useEffect(() => {
+    if (!open) return;
+
+    if (timeRemaining === duration && !isCompleted) {
+      setIsConnecting(true);
+      setSignalStrength(0);
+      
+      // Connection simulation
+      const connectionTimer = setTimeout(() => {
+        setIsConnecting(false);
+        setSignalStrength(100);
+        setNetworkPhase('trading');
+      }, 3000);
+
+      return () => clearTimeout(connectionTimer);
+    }
+  }, [open, timeRemaining, duration, isCompleted]);
+
+  // Signal strength animation
+  useEffect(() => {
+    if (isConnecting) {
+      const interval = setInterval(() => {
+        setSignalStrength(prev => Math.min(prev + Math.random() * 20, 85));
+      }, 200);
+      return () => clearInterval(interval);
+    }
+  }, [isConnecting]);
+
+  // Network phase management
+  useEffect(() => {
+    if (!isConnecting && !isCompleted) {
+      const totalProgress = (duration - timeRemaining) / duration;
+      
+      if (totalProgress < 0.1) {
+        setNetworkPhase('connecting');
+      } else if (totalProgress < 0.9) {
+        setNetworkPhase('trading');
+      } else {
+        setNetworkPhase('analyzing');
+      }
+    }
+  }, [timeRemaining, duration, isConnecting, isCompleted]);
 
   useEffect(() => {
     if (!open) return;
@@ -52,11 +99,12 @@ const TradeTimer: React.FC<TradeTimerProps> = ({
     if (timeRemaining === 0 && !isCompleted) {
       setTimeRemaining(duration);
       setIsCompleted(false);
+      setIsConnecting(true);
       setResult({ value: null, type: null });
     }
     
-    // Only start the timer if not completed
-    if (!isCompleted && timeRemaining > 0) {
+    // Only start the timer if not completed and not connecting
+    if (!isCompleted && !isConnecting && timeRemaining > 0) {
       const interval = setInterval(() => {
         setTimeRemaining((prev) => {
           if (prev <= 1) {
@@ -104,7 +152,7 @@ const TradeTimer: React.FC<TradeTimerProps> = ({
 
       return () => clearInterval(interval);
     }
-  }, [open, duration, direction, currentPrice, startPrice, onComplete, isCompleted, timeRemaining, tradeApiResponse, updateProfile]);
+  }, [open, duration, direction, currentPrice, startPrice, onComplete, isCompleted, timeRemaining, tradeApiResponse, updateProfile, isConnecting]);
 
   // Reset state when modal is closed
   const handleClose = () => {
@@ -112,7 +160,10 @@ const TradeTimer: React.FC<TradeTimerProps> = ({
     setTimeout(() => {
       setIsCompleted(false);
       setTimeRemaining(duration);
+      setIsConnecting(true);
       setResult({ value: null, type: null });
+      setSignalStrength(0);
+      setNetworkPhase('connecting');
     }, 300);
   };
 
@@ -150,7 +201,7 @@ const TradeTimer: React.FC<TradeTimerProps> = ({
               
               {/* Result icon */}
               <div className={`w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center ${
-                result.type === 'Profit' ? 'bg-green-500' : 'bg-red-500'
+                result.type === 'Profit' ? 'bg-green-500 animate-bounce' : 'bg-red-500 animate-pulse'
               }`}>
                 {result.type === 'Profit' ? (
                   <TrendingUp className="h-8 w-8 text-white" />
@@ -214,64 +265,48 @@ const TradeTimer: React.FC<TradeTimerProps> = ({
     );
   }
 
-  // Trade Progress Modal - Compact Mobile Design
+  // Trade Progress Modal - Enhanced with Network Animations
   return (
     <Dialog open={open} onOpenChange={(open) => !open && handleClose()}>
       <DialogContent className="w-[90vw] max-w-sm mx-auto bg-white border-none rounded-3xl p-0 overflow-hidden">
-        <div className="p-6">
-          {/* Timer Circle */}
-          <div className="relative w-32 h-32 mx-auto mb-6">
-            <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
-              <circle 
-                cx="50" 
-                cy="50" 
-                r="45" 
-                fill="transparent" 
-                stroke="#f1f5f9" 
-                strokeWidth="6"
-              />
-              <circle 
-                cx="50" 
-                cy="50" 
-                r="45" 
-                fill="transparent" 
-                stroke="#10b981" 
-                strokeWidth="6" 
-                strokeDasharray={circumference} 
-                strokeDashoffset={strokeDashoffset}
-                className="transition-all duration-1000 ease-linear"
-                strokeLinecap="round"
-              />
-              {/* Animated dots */}
-              <circle 
-                cx="50" 
-                cy="5" 
-                r="2" 
-                fill="#10b981"
-                className="animate-pulse"
-                style={{
-                  transformOrigin: '50px 50px',
-                  animation: 'spin 2s linear infinite'
-                }}
-              />
-            </svg>
-            <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <span className="text-2xl font-bold text-gray-900">{timeRemaining}s</span>
-              <span className="text-xs text-gray-500">remaining</span>
+        <div className="relative p-6 network-container animate-breathing">
+          {/* Network Animation Overlay */}
+          <NetworkAnimation 
+            isActive={true} 
+            phase={networkPhase}
+          />
+
+          {/* Enhanced Timer Circle */}
+          <EnhancedTimerCircle
+            timeRemaining={timeRemaining}
+            duration={duration}
+            direction={direction}
+            isConnecting={isConnecting}
+          />
+
+          {/* Trading Status Messages */}
+          <TradingStatusMessages
+            timeRemaining={timeRemaining}
+            duration={duration}
+            direction={direction}
+          />
+
+          {/* Signal Strength and Status */}
+          <div className="flex items-center justify-center space-x-4 mb-6">
+            <div className="flex items-center space-x-2">
+              <SignalBars strength={signalStrength} isActive={!isConnecting} />
+              <span className="text-xs text-gray-500">
+                {Math.round(signalStrength)}%
+              </span>
             </div>
+            <div className={`w-2 h-2 rounded-full ${
+              isConnecting ? 'bg-yellow-400 animate-pulse' : 'bg-green-400 animate-pulse'
+            }`} />
           </div>
 
-          {/* Trade in progress text */}
-          <div className="text-center mb-6">
-            <h3 className="text-lg font-bold text-gray-900 mb-1">Trade in progress...</h3>
-            <p className="text-sm text-gray-500">
-              {direction} position active
-            </p>
-          </div>
-
-          {/* Price Info Grid */}
+          {/* Price Info Grid with Enhanced Effects */}
           <div className="grid grid-cols-2 gap-4 mb-6">
-            <div className="bg-gray-50 rounded-2xl p-4 text-center">
+            <div className="bg-gray-50/80 backdrop-blur-sm rounded-2xl p-4 text-center border border-gray-200/50 animate-fade-in-scale">
               <p className="text-xs text-gray-500 mb-1">Direction</p>
               <p className={`text-lg font-bold ${
                 direction === 'Call' ? 'text-green-600' : 'text-red-600'
@@ -279,7 +314,7 @@ const TradeTimer: React.FC<TradeTimerProps> = ({
                 {direction}
               </p>
             </div>
-            <div className="bg-gray-50 rounded-2xl p-4 text-center">
+            <div className="bg-gray-50/80 backdrop-blur-sm rounded-2xl p-4 text-center border border-gray-200/50 animate-fade-in-scale">
               <p className="text-xs text-gray-500 mb-1">Start Price</p>
               <p className="text-lg font-bold text-gray-900">
                 ${startPrice.toFixed(2)}
@@ -287,10 +322,10 @@ const TradeTimer: React.FC<TradeTimerProps> = ({
             </div>
           </div>
 
-          {/* Current Price */}
-          <div className="bg-blue-50 rounded-2xl p-4 mb-6 text-center">
+          {/* Current Price with Enhanced Animations */}
+          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-4 mb-6 text-center border border-blue-200/50 animate-breathing">
             <p className="text-xs text-blue-600 mb-1">Current Price</p>
-            <p className="text-xl font-bold text-blue-700">
+            <p className="text-xl font-bold text-blue-700 animate-pulse">
               ${currentPrice.toFixed(2)}
             </p>
             <p className={`text-sm font-medium mt-1 ${
@@ -303,7 +338,7 @@ const TradeTimer: React.FC<TradeTimerProps> = ({
           {/* Cancel button */}
           <Button 
             variant="outline"
-            className="w-full h-12 rounded-2xl border-2 border-green-500 text-green-600 hover:bg-green-50"
+            className="w-full h-12 rounded-2xl border-2 border-green-500 text-green-600 hover:bg-green-50 transition-all duration-200 transform active:scale-95"
             onClick={handleClose}
           >
             Cancel

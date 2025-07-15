@@ -157,6 +157,112 @@
     }
   }
 
+  /* Network Connection Animations */
+  @keyframes network-pulse {
+    0%, 100% { 
+      opacity: 0.4;
+      transform: scale(1);
+    }
+    50% { 
+      opacity: 1;
+      transform: scale(1.2);
+    }
+  }
+
+  @keyframes signal-wave {
+    0% {
+      transform: scale(0.8);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(2.5);
+      opacity: 0;
+    }
+  }
+
+  @keyframes orbit {
+    0% {
+      transform: rotate(0deg) translateX(50px) rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg) translateX(50px) rotate(-360deg);
+    }
+  }
+
+  @keyframes orbit-reverse {
+    0% {
+      transform: rotate(0deg) translateX(40px) rotate(0deg);
+    }
+    100% {
+      transform: rotate(-360deg) translateX(40px) rotate(360deg);
+    }
+  }
+
+  @keyframes data-stream {
+    0% {
+      transform: translateY(100px);
+      opacity: 0;
+    }
+    50% {
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(-100px);
+      opacity: 0;
+    }
+  }
+
+  @keyframes border-gradient {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+
+  @keyframes radar-sweep {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes connection-line {
+    0% {
+      stroke-dashoffset: 100;
+    }
+    100% {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  @keyframes breathing {
+    0%, 100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.05);
+    }
+  }
+
+  @keyframes signal-bars {
+    0%, 100% {
+      height: 20%;
+    }
+    33% {
+      height: 60%;
+    }
+    66% {
+      height: 100%;
+    }
+  }
+
   /* Custom scrollbar */
   ::-webkit-scrollbar {
     @apply w-1.5;
@@ -217,6 +323,48 @@
     animation: pulse-ring 2s infinite;
   }
 
+  /* Network Connection Animations */
+  .animate-network-pulse {
+    animation: network-pulse 2s ease-in-out infinite;
+  }
+
+  .animate-signal-wave {
+    animation: signal-wave 2s ease-out infinite;
+  }
+
+  .animate-orbit {
+    animation: orbit 8s linear infinite;
+  }
+
+  .animate-orbit-reverse {
+    animation: orbit-reverse 6s linear infinite;
+  }
+
+  .animate-data-stream {
+    animation: data-stream 3s ease-in-out infinite;
+  }
+
+  .animate-border-gradient {
+    animation: border-gradient 3s ease infinite;
+    background-size: 200% 200%;
+  }
+
+  .animate-radar-sweep {
+    animation: radar-sweep 4s linear infinite;
+  }
+
+  .animate-connection-line {
+    animation: connection-line 2s ease-in-out infinite;
+  }
+
+  .animate-breathing {
+    animation: breathing 3s ease-in-out infinite;
+  }
+
+  .animate-signal-bars {
+    animation: signal-bars 1.5s ease-in-out infinite;
+  }
+
   .shimmer {
     @apply relative overflow-hidden before:absolute before:inset-0 before:-translate-x-full before:animate-[shimmer_2s_infinite] before:bg-gradient-to-r before:from-transparent before:via-white/20 before:to-transparent;
   }
@@ -250,5 +398,22 @@
 
   .card-modern {
     @apply bg-white/90 backdrop-blur-sm border border-gray-200/50 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300;
+  }
+
+  /* Network Effects */
+  .network-container {
+    @apply relative overflow-hidden;
+  }
+
+  .signal-ring {
+    @apply absolute rounded-full border-2 border-green-400/30;
+  }
+
+  .orbital-node {
+    @apply absolute w-2 h-2 bg-green-400 rounded-full;
+  }
+
+  .data-particle {
+    @apply absolute w-1 h-1 bg-blue-400 rounded-full;
   }
 }
