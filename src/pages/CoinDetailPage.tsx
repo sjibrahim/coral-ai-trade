@@ -19,7 +19,7 @@ const CoinDetailPage = () => {
   const navigate = useNavigate();
   const cachedCrypto = location.state?.crypto;
   
-  const [selectedTimeframe, setSelectedTimeframe] = useState('1h');
+  const [selectedTimeframe, setSelectedTimeframe] = useState('1H');
   const [isBuyModalOpen, setIsBuyModalOpen] = useState(false);
   const [isSellModalOpen, setIsSellModalOpen] = useState(false);
   const [isFullscreenChart, setIsFullscreenChart] = useState(false);
@@ -309,9 +309,9 @@ const CoinDetailPage = () => {
   };
 
   const timeframes = [
-    { label: '1H', value: '1h', change: '+2.34' },
-    { label: '24H', value: '24h', change: priceChange.toFixed(2) },
-    { label: '7D', value: '7d', change: '-1.28' },
+    { label: '1H', value: '1H', change: '+2.34' },
+    { label: '24H', value: '24H', change: priceChange.toFixed(2) },
+    { label: '7D', value: '7D', change: '-1.28' },
   ];
 
   return (
@@ -324,32 +324,27 @@ const CoinDetailPage = () => {
                 <img 
                   src={crypto.logo} 
                   alt={crypto.symbol}
-                  className="w-10 h-10 rounded-full"
+                  className="w-12 h-12 rounded-full"
                   onError={(e) => {
                     const target = e.currentTarget as HTMLImageElement;
-                    target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Ccircle cx='20' cy='20' r='20' fill='%23059669'/%3E%3Ctext x='20' y='26' text-anchor='middle' fill='white' font-size='16' font-weight='bold'%3E" + crypto.symbol?.charAt(0) + "%3C/text%3E%3C/svg%3E";
+                    target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Ccircle cx='24' cy='24' r='24' fill='%23F59E0B'/%3E%3Ctext x='24' y='30' text-anchor='middle' fill='white' font-size='18' font-weight='bold'%3E" + crypto.symbol?.charAt(0) + "%3C/text%3E%3C/svg%3E";
                   }}
                 />
-                <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full animate-pulse"></div>
               </div>
               <div>
-                <h1 className="text-lg font-bold text-gray-900">{crypto.name}</h1>
+                <h1 className="text-xl font-bold text-gray-900">{crypto.symbol?.toUpperCase()}</h1>
                 <p className="text-sm text-gray-500">{crypto.symbol?.toUpperCase()}/USDT</p>
               </div>
             </div>
             <div className="text-right">
-              <div className="text-xl font-bold text-gray-900">
+              <div className="text-2xl font-bold text-gray-900">
                 {formatPrice(livePrice)}
               </div>
               <div className={`text-sm font-semibold flex items-center justify-end ${
                 priceChange >= 0 ? 'text-green-600' : 'text-red-600'
               }`}>
-                {priceChange >= 0 ? (
-                  <TrendingUp className="h-3 w-3 mr-1" />
-                ) : (
-                  <ArrowDown className="h-3 w-3 mr-1" />
-                )}
-                {Math.abs(priceChange).toFixed(2)}%
+                {priceChange >= 0 ? '~' : ''} {Math.abs(priceChange).toFixed(2)}%
               </div>
             </div>
           </div>
@@ -363,19 +358,19 @@ const CoinDetailPage = () => {
             frameBorder="0"
           />
           
-          <div className="absolute top-4 right-4 flex space-x-1 bg-white/90 backdrop-blur-sm rounded-lg p-1 shadow-sm">
+          <div className="absolute top-4 left-4 flex space-x-2">
             {timeframes.map((timeframe) => (
               <button
                 key={timeframe.value}
                 onClick={() => setSelectedTimeframe(timeframe.value)}
-                className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all ${
+                className={`px-3 py-2 rounded-lg text-sm font-semibold transition-all ${
                   selectedTimeframe === timeframe.value
-                    ? 'bg-green-500 text-white'
-                    : 'text-gray-600 hover:bg-gray-100'
+                    ? 'bg-green-500 text-white shadow-md'
+                    : 'bg-white/90 text-gray-700 hover:bg-white border border-gray-200'
                 }`}
               >
                 <div>{timeframe.label}</div>
-                <div className={`text-[10px] ${
+                <div className={`text-xs ${
                   selectedTimeframe === timeframe.value 
                     ? 'text-white/80' 
                     : timeframe.change.startsWith('-') ? 'text-red-500' : 'text-green-500'
@@ -388,26 +383,35 @@ const CoinDetailPage = () => {
 
           <button
             onClick={() => setIsFullscreenChart(true)}
-            className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm rounded-lg p-2 shadow-sm hover:bg-white transition-all"
+            className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm rounded-lg p-2 shadow-md hover:bg-white transition-all border border-gray-200"
           >
-            <Maximize2 className="h-4 w-4 text-gray-600" />
+            <Maximize2 className="h-5 w-5 text-gray-600" />
           </button>
+
+          <div className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/95 backdrop-blur-sm rounded-lg p-3 shadow-md border border-gray-200">
+            <div className="text-lg font-bold text-gray-900">
+              ${livePrice.toFixed(2)}
+            </div>
+            <div className={`text-sm ${priceChange >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+              {priceChange >= 0 ? '+' : ''}{priceChange.toFixed(2)}%
+            </div>
+          </div>
         </div>
 
         <div className="bg-white border-t border-gray-100 p-4">
           <div className="flex space-x-3">
             <Button 
               onClick={handleBuyClick}
-              className="flex-1 bg-green-500 hover:bg-green-600 text-white py-4 text-base font-bold rounded-xl transition-all duration-200 transform active:scale-95"
+              className="flex-1 bg-green-500 hover:bg-green-600 text-white py-4 text-lg font-bold rounded-xl transition-all duration-200 transform active:scale-95 shadow-lg"
             >
-              <TrendingUp className="mr-2 h-5 w-5" />
-              CALL
+              <TrendingUp className="mr-2 h-6 w-6" />
+              BUY
             </Button>
             <Button 
               onClick={handleSellClick}
-              className="flex-1 bg-red-500 hover:bg-red-600 text-white py-4 text-base font-bold rounded-xl transition-all duration-200 transform active:scale-95"
+              className="flex-1 bg-red-500 hover:bg-red-600 text-white py-4 text-lg font-bold rounded-xl transition-all duration-200 transform active:scale-95 shadow-lg"
             >
-              <ArrowDown className="mr-2 h-5 w-5" />
+              <ArrowDown className="mr-2 h-6 w-6" />
               PUT
             </Button>
           </div>
@@ -511,7 +515,7 @@ const CoinDetailPage = () => {
                 </div>
                 
                 <div className="grid grid-cols-3 gap-2">
-                  {predefinedAmounts.slice(0, 6).map((amount) => (
+                  {['600', '1000', '2000', '3000', '5000', '10000'].map((amount) => (
                     <button
                       key={amount}
                       onClick={() => setTradeAmount(amount)}
