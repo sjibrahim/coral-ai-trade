@@ -32,12 +32,17 @@ const TeamPage = () => {
   }, [fetchTeamDetails]);
   
   return (
-    <MobileLayout title="Team Network" hideFooter>
+    <MobileLayout title="Team Network" hideFooter hideNavbar>
       <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-green-50 relative overflow-hidden">
         {/* Background Elements */}
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute -top-40 -right-40 w-80 h-80 bg-emerald-400/20 rounded-full blur-3xl animate-pulse"></div>
           <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-green-400/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
+        </div>
+
+        {/* Custom Header */}
+        <div className="relative z-10 bg-white/80 backdrop-blur-md border-b border-emerald-200/50 p-4">
+          <h1 className="text-xl font-bold text-gray-800 text-center">Team Network</h1>
         </div>
 
         <div className="relative z-10 p-4 space-y-4 pb-24">
@@ -199,7 +204,7 @@ const TeamPage = () => {
           )}
         </div>
 
-        {/* Footer Navigation */}
+        {/* Footer Navigation - Single Footer */}
         <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-gray-200/50 shadow-2xl z-50">
           <div className="flex items-center justify-around py-2 px-4">
             {[
