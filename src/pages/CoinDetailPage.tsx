@@ -309,16 +309,22 @@ const CoinDetailPage = () => {
   };
 
   const handleZoom = (type: 'in' | 'out') => {
+    console.log('Sending zoom message:', type);
     const iframe = document.querySelector('iframe[title="Trading Chart"]') as HTMLIFrameElement;
     if (iframe && iframe.contentWindow) {
       iframe.contentWindow.postMessage({ type: 'ZOOM', direction: type }, '*');
+    } else {
+      console.log('Iframe not found or no contentWindow');
     }
   };
 
   const handleFullscreenZoom = (type: 'in' | 'out') => {
+    console.log('Sending fullscreen zoom message:', type);
     const iframe = document.querySelector('iframe[title="Trading Chart Fullscreen"]') as HTMLIFrameElement;
     if (iframe && iframe.contentWindow) {
       iframe.contentWindow.postMessage({ type: 'ZOOM', direction: type }, '*');
+    } else {
+      console.log('Fullscreen iframe not found or no contentWindow');
     }
   };
 

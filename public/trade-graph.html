@@ -147,7 +147,7 @@
       },
       xAxis: {
         show: true,
-        height: window.innerWidth < 480 ? 35 : 45,
+        height: window.innerWidth < 480 ? 30 : 40,
         axisLine: {
           show: true,
           color: '#e5e7eb'
@@ -155,7 +155,7 @@
         tickText: {
           show: true,
           color: '#6b7280',
-          size: window.innerWidth < 480 ? 8 : 9
+          size: window.innerWidth < 480 ? 8 : 10
         },
         tickLine: {
           show: false
@@ -163,7 +163,7 @@
       },
       yAxis: {
         show: true,
-        width: window.innerWidth < 480 ? 45 : 55,
+        width: window.innerWidth < 480 ? 50 : 60,
         position: 'right',
         type: 'normal',
         inside: false,
@@ -174,7 +174,7 @@
         tickText: {
           show: true,
           color: '#6b7280',
-          size: window.innerWidth < 480 ? 8 : 9
+          size: window.innerWidth < 480 ? 8 : 10
         },
         tickLine: {
           show: false
@@ -320,6 +320,50 @@
       };
     }
 
+    // Zoom functionality
+    function zoomChart(direction) {
+      try {
+        const dataList = chart.getDataList();
+        if (!dataList || dataList.length === 0) {
+          console.log('No data available for zoom');
+          return;
+        }
+
+        const visibleRange = chart.getVisibleRange();
+        console.log('Current visible range:', visibleRange);
+        
+        if (!visibleRange || typeof visibleRange.from === 'undefined' || typeof visibleRange.to === 'undefined') {
+          console.log('Invalid visible range');
+          return;
+        }
+        
+        const currentRange = visibleRange.to - visibleRange.from;
+        const dataLength = dataList.length;
+        
+        if (direction === 'in') {
+          // Zoom in - show fewer candles (minimum 20 candles)
+          const newRange = Math.max(20, Math.floor(currentRange * 0.7));
+          const center = Math.floor((visibleRange.from + visibleRange.to) / 2);
+          const newFrom = Math.max(0, center - Math.floor(newRange / 2));
+          const newTo = Math.min(dataLength - 1, newFrom + newRange);
+          
+          console.log('Zooming in:', { newFrom, newTo, newRange });
+          chart.setVisibleRange({ from: newFrom, to: newTo });
+        } else if (direction === 'out') {
+          // Zoom out - show more candles (maximum is all data)
+          const newRange = Math.min(dataLength, Math.floor(currentRange * 1.4));
+          const center = Math.floor((visibleRange.from + visibleRange.to) / 2);
+          const newFrom = Math.max(0, center - Math.floor(newRange / 2));
+          const newTo = Math.min(dataLength - 1, newFrom + newRange);
+          
+          console.log('Zooming out:', { newFrom, newTo, newRange });
+          chart.setVisibleRange({ from: newFrom, to: newTo });
+        }
+      } catch (error) {
+        console.error('Error during zoom:', error);
+      }
+    }
+
     // Handle window resize for mobile optimization
     window.addEventListener('resize', () => {
       chart.resize();
@@ -328,15 +372,15 @@
       const isMobile = window.innerWidth < 480;
       chart.setStyleOptions({
         xAxis: {
-          height: isMobile ? 35 : 45,
+          height: isMobile ? 30 : 40,
           tickText: {
-            size: isMobile ? 8 : 9
+            size: isMobile ? 8 : 10
           }
         },
         yAxis: {
-          width: isMobile ? 45 : 55,
+          width: isMobile ? 50 : 60,
           tickText: {
-            size: isMobile ? 8 : 9
+            size: isMobile ? 8 : 10
           }
         },
         crosshair: {
@@ -356,6 +400,8 @@
 
     // Listen for messages from parent window
     window.addEventListener('message', (event) => {
+      console.log('Received message:', event.data);
+      
       if (event.data.type === 'CHANGE_SYMBOL') {
         const newSymbol = event.data.symbol;
         if (newSymbol && newSymbol !== currentSymbol) {
@@ -369,29 +415,8 @@
           loadHistoryThenSubscribe();
         }
       } else if (event.data.type === 'ZOOM') {
-        // Handle zoom functionality
-        const dataList = chart.getDataList();
-        const visibleRange = chart.getVisibleRange();
-        
-        if (event.data.direction === 'in') {
-          // Zoom in - show fewer candles
-          const currentRange = visibleRange.to - visibleRange.from;
-          const newRange = Math.max(10, Math.floor(currentRange * 0.7));
-          const center = Math.floor((visibleRange.from + visibleRange.to) / 2);
-          const newFrom = Math.max(0, center - Math.floor(newRange / 2));
-          const newTo = Math.min(dataList.length - 1, newFrom + newRange);
-          
-          chart.setVisibleRange({ from: newFrom, to: newTo });
-        } else if (event.data.direction === 'out') {
-          // Zoom out - show more candles
-          const currentRange = visibleRange.to - visibleRange.from;
-          const newRange = Math.min(dataList.length, Math.floor(currentRange * 1.4));
-          const center = Math.floor((visibleRange.from + visibleRange.to) / 2);
-          const newFrom = Math.max(0, center - Math.floor(newRange / 2));
-          const newTo = Math.min(dataList.length - 1, newFrom + newRange);
-          
-          chart.setVisibleRange({ from: newFrom, to: newTo });
-        }
+        console.log('Zoom request:', event.data.direction);
+        zoomChart(event.data.direction);
       }
     });
 
