@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { mockCryptoCurrencies } from '@/data/mockData';
-import { ArrowUp, ArrowDown, TrendingUp, X, IndianRupee, Maximize2, Timer, Coins, Star } from 'lucide-react';
+import { ArrowUp, ArrowDown, TrendingUp, X, IndianRupee, Maximize2, Timer, Coins, ZoomIn, ZoomOut } from 'lucide-react';
 import { getBinancePrice, getBinanceKlines, getMarketData, getCoin, placeTrade } from '@/services/api';
 import { useToast } from '@/hooks/use-toast';
 
@@ -19,7 +19,6 @@ const CoinDetailPage = () => {
   const navigate = useNavigate();
   const cachedCrypto = location.state?.crypto;
   
-  const [selectedTimeframe, setSelectedTimeframe] = useState('1H');
   const [isBuyModalOpen, setIsBuyModalOpen] = useState(false);
   const [isSellModalOpen, setIsSellModalOpen] = useState(false);
   const [isFullscreenChart, setIsFullscreenChart] = useState(false);
@@ -32,6 +31,7 @@ const CoinDetailPage = () => {
     value: number | null;
     type: 'Profit' | 'Loss' | null;
   }>({ value: null, type: null });
+  const [chartZoom, setChartZoom] = useState(1);
   
   const [crypto, setCrypto] = useState<Cryptocurrency>(cachedCrypto || {
     id: '',
@@ -196,6 +196,24 @@ const CoinDetailPage = () => {
     setIsSellModalOpen(true);
   };
 
+  const handleZoomIn = () => {
+    setChartZoom(prev => Math.min(prev + 0.2, 3));
+    // Send zoom message to iframe
+    const iframe = document.querySelector('iframe');
+    if (iframe && iframe.contentWindow) {
+      iframe.contentWindow.postMessage({ type: 'ZOOM_IN' }, '*');
+    }
+  };
+
+  const handleZoomOut = () => {
+    setChartZoom(prev => Math.max(prev - 0.2, 0.5));
+    // Send zoom message to iframe
+    const iframe = document.querySelector('iframe');
+    if (iframe && iframe.contentWindow) {
+      iframe.contentWindow.postMessage({ type: 'ZOOM_OUT' }, '*');
+    }
+  };
+
   const handleConfirmTrade = async () => {
     try {
       const token = localStorage.getItem('auth_token');
@@ -308,33 +326,27 @@ const CoinDetailPage = () => {
     }
   };
 
-  const timeframes = [
-    { label: '1H', value: '1H', change: '+2.34' },
-    { label: '24H', value: '24H', change: priceChange.toFixed(2) },
-    { label: '7D', value: '7D', change: '-1.28' },
-  ];
-
   return (
     <MobileLayout showBackButton title="" noScroll={true} hideFooter={true}>
-      <div className="h-screen flex flex-col bg-white">
-        <div className="bg-white px-4 py-3 border-b border-gray-100">
+      <div className="h-screen flex flex-col bg-gradient-to-br from-green-50 to-white">
+        <div className="bg-white px-4 py-3 border-b border-gray-100 shadow-sm">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div className="relative">
                 <img 
                   src={crypto.logo} 
                   alt={crypto.symbol}
-                  className="w-12 h-12 rounded-full"
+                  className="w-12 h-12 rounded-full border-2 border-green-100"
                   onError={(e) => {
                     const target = e.currentTarget as HTMLImageElement;
                     target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Ccircle cx='24' cy='24' r='24' fill='%23F59E0B'/%3E%3Ctext x='24' y='30' text-anchor='middle' fill='white' font-size='18' font-weight='bold'%3E" + crypto.symbol?.charAt(0) + "%3C/text%3E%3C/svg%3E";
                   }}
                 />
-                <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full animate-pulse"></div>
+                <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full animate-pulse border-2 border-white"></div>
               </div>
               <div>
                 <h1 className="text-xl font-bold text-gray-900">{crypto.symbol?.toUpperCase()}</h1>
-                <p className="text-sm text-gray-500">{crypto.symbol?.toUpperCase()}/USDT</p>
+                <p className="text-sm text-gray-500">{crypto.name}</p>
               </div>
             </div>
             <div className="text-right">
@@ -344,7 +356,12 @@ const CoinDetailPage = () => {
               <div className={`text-sm font-semibold flex items-center justify-end ${
                 priceChange >= 0 ? 'text-green-600' : 'text-red-600'
               }`}>
-                {priceChange >= 0 ? '~' : ''} {Math.abs(priceChange).toFixed(2)}%
+                {priceChange >= 0 ? (
+                  <ArrowUp className="w-3 h-3 mr-1" />
+                ) : (
+                  <ArrowDown className="w-3 h-3 mr-1" />
+                )}
+                {Math.abs(priceChange).toFixed(2)}%
               </div>
             </div>
           </div>
@@ -352,41 +369,32 @@ const CoinDetailPage = () => {
 
         <div className="flex-1 relative bg-white">
           <iframe
-            src={`/trade-graph.html?symbol=${crypto.binance_symbol || crypto.symbol + 'usdt'}`}
+            src={`/trade-graph.html?symbol=${crypto.binance_symbol || crypto.symbol + 'usdt'}&zoom=${chartZoom}`}
             className="w-full h-full"
             title="Trading Chart"
             frameBorder="0"
           />
           
-          <div className="absolute top-4 left-4 flex space-x-2">
-            {timeframes.map((timeframe) => (
-              <button
-                key={timeframe.value}
-                onClick={() => setSelectedTimeframe(timeframe.value)}
-                className={`px-3 py-2 rounded-lg text-sm font-semibold transition-all ${
-                  selectedTimeframe === timeframe.value
-                    ? 'bg-green-500 text-white shadow-md'
-                    : 'bg-white/90 text-gray-700 hover:bg-white border border-gray-200'
-                }`}
-              >
-                <div>{timeframe.label}</div>
-                <div className={`text-xs ${
-                  selectedTimeframe === timeframe.value 
-                    ? 'text-white/80' 
-                    : timeframe.change.startsWith('-') ? 'text-red-500' : 'text-green-500'
-                }`}>
-                  {timeframe.change.startsWith('-') ? '' : '+'}{timeframe.change}%
-                </div>
-              </button>
-            ))}
+          <div className="absolute top-4 right-4 flex space-x-2">
+            <button
+              onClick={handleZoomIn}
+              className="bg-white/90 backdrop-blur-sm rounded-lg p-2 shadow-md hover:bg-white transition-all border border-gray-200"
+            >
+              <ZoomIn className="h-5 w-5 text-gray-600" />
+            </button>
+            <button
+              onClick={handleZoomOut}
+              className="bg-white/90 backdrop-blur-sm rounded-lg p-2 shadow-md hover:bg-white transition-all border border-gray-200"
+            >
+              <ZoomOut className="h-5 w-5 text-gray-600" />
+            </button>
+            <button
+              onClick={() => setIsFullscreenChart(true)}
+              className="bg-white/90 backdrop-blur-sm rounded-lg p-2 shadow-md hover:bg-white transition-all border border-gray-200"
+            >
+              <Maximize2 className="h-5 w-5 text-gray-600" />
+            </button>
           </div>
-
-          <button
-            onClick={() => setIsFullscreenChart(true)}
-            className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm rounded-lg p-2 shadow-md hover:bg-white transition-all border border-gray-200"
-          >
-            <Maximize2 className="h-5 w-5 text-gray-600" />
-          </button>
 
           <div className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/95 backdrop-blur-sm rounded-lg p-3 shadow-md border border-gray-200">
             <div className="text-lg font-bold text-gray-900">
@@ -398,7 +406,7 @@ const CoinDetailPage = () => {
           </div>
         </div>
 
-        <div className="bg-white border-t border-gray-100 p-4">
+        <div className="bg-white border-t border-gray-100 p-4 shadow-lg">
           <div className="flex space-x-3">
             <Button 
               onClick={handleBuyClick}
@@ -433,7 +441,7 @@ const CoinDetailPage = () => {
               </div>
               <div className="flex-1">
                 <iframe
-                  src={`/trade-graph.html?symbol=${crypto.binance_symbol || crypto.symbol + 'usdt'}`}
+                  src={`/trade-graph.html?symbol=${crypto.binance_symbol || crypto.symbol + 'usdt'}&zoom=${chartZoom}`}
                   className="w-full h-full"
                   title="Trading Chart Fullscreen"
                   frameBorder="0"
@@ -515,7 +523,7 @@ const CoinDetailPage = () => {
                 </div>
                 
                 <div className="grid grid-cols-3 gap-2">
-                  {['600', '1000', '2000', '3000', '5000', '10000'].map((amount) => (
+                  {predefinedAmounts.map((amount) => (
                     <button
                       key={amount}
                       onClick={() => setTradeAmount(amount)}
