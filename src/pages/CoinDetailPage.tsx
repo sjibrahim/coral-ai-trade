@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { mockCryptoCurrencies } from '@/data/mockData';
-import { ArrowUp, ArrowDown, TrendingUp, Activity, BarChart3, X, Info, Wallet, IndianRupee, Eye, EyeOff, ChevronLeft } from 'lucide-react';
+import { ArrowUp, ArrowDown, TrendingUp, Activity, BarChart3, X, Info, Wallet, IndianRupee, Eye, EyeOff, ChevronLeft, Maximize2, Minimize2, Zap, Target, Timer, Coins } from 'lucide-react';
 import { getBinancePrice, getBinanceKlines, getMarketData, getCoin, placeTrade } from '@/services/api';
 import { useToast } from '@/hooks/use-toast';
 
@@ -24,6 +24,7 @@ const CoinDetailPage = () => {
   const [activeTab, setActiveTab] = useState('chart');
   const [isBuyModalOpen, setIsBuyModalOpen] = useState(false);
   const [isSellModalOpen, setIsSellModalOpen] = useState(false);
+  const [isFullscreenChart, setIsFullscreenChart] = useState(false);
   const [selectedTimePeriod, setSelectedTimePeriod] = useState('1min');
   const [tradeAmount, setTradeAmount] = useState('1000');
   const [direction, setDirection] = useState<'Call' | 'Put'>('Call');
@@ -48,7 +49,6 @@ const CoinDetailPage = () => {
   const [priceChange, setPriceChange] = useState(cachedCrypto ? parseFloat(cachedCrypto.change || 0) : 0);
   const [startingTradePrice, setStartingTradePrice] = useState(0);
   const [tradeApiResponse, setTradeApiResponse] = useState<any>(null);
-  const [hideBalance, setHideBalance] = useState(false);
 
   useEffect(() => {
     if (!coinId) return;
@@ -308,18 +308,15 @@ const CoinDetailPage = () => {
     }
   };
 
-  const totalBalance = Number(user?.wallet || 0) + Number(user?.income || 0);
-  
   return (
     <MobileLayout showBackButton title={crypto.name} noScroll={false} hideFooter={true}>
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
-        <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-4 relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-600/80 to-indigo-600/80"></div>
-          <div className="relative z-10">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center space-x-3">
-                <div className="relative">
-                  <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center border border-white/30">
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white">
+        <div className="relative p-4 bg-gradient-to-r from-purple-600/20 to-blue-600/20 backdrop-blur-md border-b border-white/10">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center space-x-3">
+              <div className="relative group">
+                <div className="w-12 h-12 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 p-0.5 animate-pulse">
+                  <div className="w-full h-full rounded-full bg-slate-800 flex items-center justify-center">
                     <img 
                       src={crypto.logo} 
                       alt={crypto.symbol}
@@ -333,70 +330,66 @@ const CoinDetailPage = () => {
                         }
                       }}
                     />
-                    <div className="w-8 h-8 bg-white/20 rounded-full hidden items-center justify-center">
+                    <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full hidden items-center justify-center">
                       <span className="text-white text-xs font-bold">{crypto.symbol?.charAt(0)}</span>
                     </div>
                   </div>
-                  <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-white flex items-center justify-center animate-pulse">
-                    <div className="w-2 h-2 bg-white rounded-full"></div>
-                  </div>
                 </div>
-                <div>
-                  <h1 className="text-lg font-bold">{crypto.name}</h1>
-                  <p className="text-sm text-white/80">{crypto.symbol?.toUpperCase()}/USDT</p>
-                  {crypto.rank && (
-                    <p className="text-xs text-yellow-300 font-semibold">Rank #{crypto.rank}</p>
-                  )}
-                </div>
+                <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full animate-ping"></div>
+                <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full"></div>
               </div>
-              <div className="text-right">
-                <div className="text-xl font-bold mb-1">
-                  {formatPrice(livePrice)}
-                </div>
-                <div className={`text-sm font-semibold flex items-center justify-end px-2 py-1 rounded-full ${
-                  priceChange >= 0 
-                    ? 'text-green-300 bg-green-500/20' 
-                    : 'text-red-300 bg-red-500/20'
-                }`}>
-                  {priceChange >= 0 ? (
-                    <TrendingUp className="h-3 w-3 mr-1" />
-                  ) : (
-                    <ArrowDown className="h-3 w-3 mr-1" />
-                  )}
-                  {Math.abs(priceChange).toFixed(2)}%
-                </div>
+              <div>
+                <h1 className="text-lg font-bold bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">
+                  {crypto.name}
+                </h1>
+                <p className="text-sm text-purple-300">{crypto.symbol?.toUpperCase()}/USDT</p>
+                {crypto.rank && (
+                  <div className="flex items-center space-x-1">
+                    <div className="w-2 h-2 bg-yellow-500 rounded-full animate-pulse"></div>
+                    <p className="text-xs text-yellow-300 font-semibold">Rank #{crypto.rank}</p>
+                  </div>
+                )}
               </div>
             </div>
-
-            <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/20">
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-2">
-                  <Wallet className="h-4 w-4" />
-                  <span className="text-sm font-medium">Total Balance</span>
-                </div>
-                <button 
-                  onClick={() => setHideBalance(!hideBalance)} 
-                  className="p-1 rounded-full hover:bg-white/20 transition-colors"
-                >
-                  {hideBalance ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                </button>
+            <div className="text-right">
+              <div className="text-2xl font-bold mb-1 bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent">
+                {formatPrice(livePrice)}
               </div>
-              <div className="flex items-center gap-1 mb-2">
-                <IndianRupee className="h-5 w-5" />
-                <span className="text-xl font-bold">
-                  {hideBalance ? "******" : totalBalance.toLocaleString()}
-                </span>
-              </div>
-              <div className="flex justify-between text-sm opacity-90">
-                <span>Wallet: ₹{hideBalance ? "***" : Number(user?.wallet || 0).toLocaleString()}</span>
-                <span>Income: ₹{hideBalance ? "***" : Number(user?.income || 0).toLocaleString()}</span>
+              <div className={`text-sm font-semibold flex items-center justify-end px-3 py-1 rounded-full backdrop-blur-md ${
+                priceChange >= 0 
+                  ? 'text-green-300 bg-green-500/20 border border-green-500/30' 
+                  : 'text-red-300 bg-red-500/20 border border-red-500/30'
+              }`}>
+                {priceChange >= 0 ? (
+                  <TrendingUp className="h-3 w-3 mr-1 animate-bounce" />
+                ) : (
+                  <ArrowDown className="h-3 w-3 mr-1 animate-bounce" />
+                )}
+                {Math.abs(priceChange).toFixed(2)}%
               </div>
             </div>
           </div>
         </div>
 
         <div className="p-4">
-          <div className="bg-white rounded-xl shadow-lg overflow-hidden mb-4 border border-gray-100">
+          <div className="relative bg-slate-800/50 backdrop-blur-md rounded-2xl border border-purple-500/20 overflow-hidden mb-6">
+            <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-blue-500/5"></div>
+            
+            <div className="flex items-center justify-between p-4 border-b border-purple-500/20">
+              <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-2">
+                  <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                  <span className="text-sm font-medium text-green-400">Live Trading</span>
+                </div>
+              </div>
+              <button
+                onClick={() => setIsFullscreenChart(true)}
+                className="p-2 rounded-lg bg-purple-500/20 hover:bg-purple-500/30 transition-all duration-200 group"
+              >
+                <Maximize2 className="h-4 w-4 text-purple-300 group-hover:text-white transition-colors" />
+              </button>
+            </div>
+
             <div className="h-80 relative">
               <iframe
                 src={`/trade-graph.html?symbol=${crypto.binance_symbol || crypto.symbol + 'usdt'}`}
@@ -404,195 +397,250 @@ const CoinDetailPage = () => {
                 title="Trading Chart"
                 frameBorder="0"
               />
-              <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm rounded-lg px-3 py-2 text-gray-800 text-sm border shadow-sm">
+              <div className="absolute top-3 left-3 bg-slate-800/90 backdrop-blur-sm rounded-lg px-3 py-2 border border-purple-500/30">
                 <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                  <span className="font-medium">Live Market</span>
+                  <Activity className="w-4 h-4 text-purple-400 animate-pulse" />
+                  <span className="text-sm font-medium text-purple-200">Market Analysis</span>
                 </div>
+              </div>
+            </div>
+
+            <div className="p-4 border-t border-purple-500/20">
+              <div className="flex justify-center space-x-2">
+                {['1m', '5m', '15m', '1h', '4h', '1d'].map((timeframe) => (
+                  <button
+                    key={timeframe}
+                    className="px-3 py-1.5 text-xs font-medium rounded-lg bg-slate-700/50 hover:bg-purple-500/30 text-purple-200 hover:text-white transition-all duration-200"
+                  >
+                    {timeframe}
+                  </button>
+                ))}
               </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3 mb-4">
-            <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+          <div className="grid grid-cols-2 gap-4 mb-6">
+            <div className="bg-slate-800/50 backdrop-blur-md rounded-xl p-4 border border-green-500/20">
               <div className="flex items-center gap-2 mb-2">
-                <BarChart3 className="h-4 w-4 text-blue-600" />
-                <span className="text-sm font-medium text-gray-600">24h High</span>
+                <TrendingUp className="h-4 w-4 text-green-400 animate-pulse" />
+                <span className="text-sm font-medium text-green-300">24h High</span>
               </div>
-              <p className="text-lg font-bold text-green-600">
+              <p className="text-lg font-bold text-green-400">
                 {formatPrice(livePrice * 1.05)}
               </p>
             </div>
-            <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+            <div className="bg-slate-800/50 backdrop-blur-md rounded-xl p-4 border border-red-500/20">
               <div className="flex items-center gap-2 mb-2">
-                <Activity className="h-4 w-4 text-blue-600" />
-                <span className="text-sm font-medium text-gray-600">24h Low</span>
+                <ArrowDown className="h-4 w-4 text-red-400 animate-pulse" />
+                <span className="text-sm font-medium text-red-300">24h Low</span>
               </div>
-              <p className="text-lg font-bold text-red-600">
+              <p className="text-lg font-bold text-red-400">
                 {formatPrice(livePrice * 0.95)}
               </p>
             </div>
           </div>
 
-          <div className="grid grid-cols-3 gap-3 mb-20">
-            <div className="bg-white rounded-xl p-3 shadow-sm border border-gray-100 text-center">
-              <div className="text-xs text-gray-500 mb-1">1H</div>
-              <div className="text-sm font-bold text-green-600">+2.34%</div>
+          <div className="grid grid-cols-3 gap-3 mb-24">
+            <div className="bg-slate-800/30 backdrop-blur-md rounded-xl p-3 text-center border border-purple-500/20">
+              <div className="text-xs text-purple-300 mb-1 flex items-center justify-center">
+                <Timer className="w-3 h-3 mr-1" />
+                1H
+              </div>
+              <div className="text-sm font-bold text-green-400">+2.34%</div>
             </div>
-            <div className="bg-white rounded-xl p-3 shadow-sm border border-gray-100 text-center">
-              <div className="text-xs text-gray-500 mb-1">24H</div>
-              <div className={`text-sm font-bold ${priceChange >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+            <div className="bg-slate-800/30 backdrop-blur-md rounded-xl p-3 text-center border border-purple-500/20">
+              <div className="text-xs text-purple-300 mb-1 flex items-center justify-center">
+                <BarChart3 className="w-3 h-3 mr-1" />
+                24H
+              </div>
+              <div className={`text-sm font-bold ${priceChange >= 0 ? 'text-green-400' : 'text-red-400'}`}>
                 {priceChange >= 0 ? '+' : ''}{priceChange.toFixed(2)}%
               </div>
             </div>
-            <div className="bg-white rounded-xl p-3 shadow-sm border border-gray-100 text-center">
-              <div className="text-xs text-gray-500 mb-1">7D</div>
-              <div className="text-sm font-bold text-red-600">-5.67%</div>
+            <div className="bg-slate-800/30 backdrop-blur-md rounded-xl p-3 text-center border border-purple-500/20">
+              <div className="text-xs text-purple-300 mb-1 flex items-center justify-center">
+                <Target className="w-3 h-3 mr-1" />
+                7D
+              </div>
+              <div className="text-sm font-bold text-red-400">-5.67%</div>
             </div>
           </div>
         </div>
 
-        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 z-20 shadow-lg">
-          <div className="grid grid-cols-2 gap-3 mb-2">
+        <div className="fixed bottom-0 left-0 right-0 bg-slate-900/95 backdrop-blur-md border-t border-purple-500/20 p-4 z-20">
+          <div className="grid grid-cols-2 gap-4">
             <Button 
               onClick={handleBuyClick}
-              className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white py-3 text-base font-bold rounded-xl shadow-sm transition-all duration-200 transform hover:scale-105"
+              className="relative overflow-hidden bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white py-4 text-base font-bold rounded-xl border border-green-400/30 transition-all duration-200 transform hover:scale-105"
             >
-              <TrendingUp className="mr-2 h-4 w-4" />
-              CALL
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12 animate-pulse"></div>
+              <div className="flex items-center justify-center relative z-10">
+                <Zap className="mr-2 h-5 w-5" />
+                CALL
+              </div>
             </Button>
             <Button 
               onClick={handleSellClick}
-              className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white py-3 text-base font-bold rounded-xl shadow-sm transition-all duration-200 transform hover:scale-105"
+              className="relative overflow-hidden bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 text-white py-4 text-base font-bold rounded-xl border border-red-400/30 transition-all duration-200 transform hover:scale-105"
             >
-              <ArrowDown className="mr-2 h-4 w-4" />
-              PUT
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12 animate-pulse"></div>
+              <div className="flex items-center justify-center relative z-10">
+                <Target className="mr-2 h-5 w-5" />
+                PUT
+              </div>
             </Button>
           </div>
-          <p className="text-xs text-center text-gray-500">
-            Balance: ₹{hideBalance ? "******" : totalBalance.toLocaleString()}
-          </p>
         </div>
-      </div>
 
-      <Dialog open={isBuyModalOpen || isSellModalOpen} onOpenChange={closeModal}>
-        <DialogContent className="w-[95vw] max-w-sm mx-auto bg-white border-none rounded-2xl p-0 overflow-hidden shadow-xl">
-          <div className={`relative px-6 py-4 text-white ${
-            direction === 'Call' 
-              ? 'bg-gradient-to-r from-green-500 to-green-600' 
-              : 'bg-gradient-to-r from-red-500 to-red-600'
-          }`}>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
-                  {direction === 'Call' ? (
-                    <TrendingUp className="h-5 w-5" />
-                  ) : (
-                    <ArrowDown className="h-5 w-5" />
-                  )}
-                </div>
-                <div>
-                  <h3 className="font-bold text-lg">{direction} Trade</h3>
-                  <p className="text-sm opacity-90">{formatPrice(livePrice)}</p>
-                </div>
+        <Dialog open={isFullscreenChart} onOpenChange={setIsFullscreenChart}>
+          <DialogContent className="w-screen h-screen max-w-none max-h-none m-0 p-0 bg-slate-900 border-none">
+            <div className="h-full flex flex-col">
+              <div className="flex items-center justify-between p-4 border-b border-purple-500/20">
+                <h3 className="text-lg font-bold text-white">{crypto.name} Chart</h3>
+                <button
+                  onClick={() => setIsFullscreenChart(false)}
+                  className="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 transition-colors"
+                >
+                  <Minimize2 className="h-5 w-5 text-white" />
+                </button>
               </div>
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                onClick={closeModal} 
-                className="text-white hover:bg-white/20 rounded-full h-8 w-8 p-0"
-              >
-                <X className="h-4 w-4" />
-              </Button>
-            </div>
-            <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/20"></div>
-          </div>
-
-          <div className="p-6 space-y-5">
-            <div>
-              <label className="text-sm font-semibold text-gray-700 mb-3 block">Trading Duration</label>
-              <div className="grid grid-cols-3 gap-2">
-                {['1min', '3min', '5min'].map((period) => (
-                  <button
-                    key={period}
-                    onClick={() => setSelectedTimePeriod(period)}
-                    className={`py-3 px-3 rounded-xl text-sm font-semibold transition-all duration-200 ${
-                      selectedTimePeriod === period
-                        ? direction === 'Call' 
-                          ? 'bg-green-500 text-white shadow-lg' 
-                          : 'bg-red-500 text-white shadow-lg'
-                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                    }`}
-                  >
-                    {period}
-                  </button>
-                ))}
-              </div>
-            </div>
-            
-            <div>
-              <label className="text-sm font-semibold text-gray-700 mb-3 block">Investment Amount</label>
-              <div className="relative mb-3">
-                <IndianRupee className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                <Input
-                  type="number"
-                  value={tradeAmount}
-                  onChange={(e) => setTradeAmount(e.target.value)}
-                  className="pl-10 h-12 text-lg font-semibold bg-gray-50 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="1000"
+              <div className="flex-1">
+                <iframe
+                  src={`/trade-graph.html?symbol=${crypto.binance_symbol || crypto.symbol + 'usdt'}`}
+                  className="w-full h-full"
+                  title="Trading Chart Fullscreen"
+                  frameBorder="0"
                 />
               </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        <Dialog open={isBuyModalOpen || isSellModalOpen} onOpenChange={closeModal}>
+          <DialogContent className="w-[95vw] max-w-sm mx-auto bg-slate-900/95 backdrop-blur-md border border-purple-500/30 rounded-2xl p-0 overflow-hidden">
+            <div className={`relative px-6 py-4 text-white ${
+              direction === 'Call' 
+                ? 'bg-gradient-to-r from-green-500/20 to-emerald-600/20 border-b border-green-500/30' 
+                : 'bg-gradient-to-r from-red-500/20 to-rose-600/20 border-b border-red-500/30'
+            }`}>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center backdrop-blur-sm border ${
+                    direction === 'Call' 
+                      ? 'bg-green-500/20 border-green-500/30' 
+                      : 'bg-red-500/20 border-red-500/30'
+                  }`}>
+                    {direction === 'Call' ? (
+                      <Zap className="h-5 w-5 text-green-400" />
+                    ) : (
+                      <Target className="h-5 w-5 text-red-400" />
+                    )}
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-lg">{direction} Trade</h3>
+                    <p className="text-sm opacity-80">{formatPrice(livePrice)}</p>
+                  </div>
+                </div>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={closeModal} 
+                  className="text-white hover:bg-white/20 rounded-full h-8 w-8 p-0"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+
+            <div className="p-6 space-y-6">
+              <div>
+                <label className="text-sm font-semibold text-purple-200 mb-3 block flex items-center">
+                  <Timer className="w-4 h-4 mr-2" />
+                  Trading Duration
+                </label>
+                <div className="grid grid-cols-3 gap-2">
+                  {['1min', '3min', '5min'].map((period) => (
+                    <button
+                      key={period}
+                      onClick={() => setSelectedTimePeriod(period)}
+                      className={`py-3 px-3 rounded-xl text-sm font-semibold transition-all duration-200 border ${
+                        selectedTimePeriod === period
+                          ? direction === 'Call' 
+                            ? 'bg-green-500/20 text-green-300 border-green-500/50' 
+                            : 'bg-red-500/20 text-red-300 border-red-500/50'
+                          : 'bg-slate-800/50 text-slate-300 hover:bg-slate-700/50 border-slate-600/30'
+                      }`}
+                    >
+                      {period}
+                    </button>
+                  ))}
+                </div>
+              </div>
               
-              <div className="grid grid-cols-3 gap-2">
-                {predefinedAmounts.slice(0, 6).map((amount) => (
-                  <button
-                    key={amount}
-                    onClick={() => setTradeAmount(amount)}
-                    className={`py-2 px-3 rounded-lg text-sm font-medium transition-all duration-200 ${
-                      tradeAmount === amount
-                        ? direction === 'Call' 
-                          ? 'bg-green-100 text-green-700 border-2 border-green-500' 
-                          : 'bg-red-100 text-red-700 border-2 border-red-500'
-                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200 border-2 border-transparent'
-                    }`}
-                  >
-                    ₹{amount}
-                  </button>
-                ))}
+              <div>
+                <label className="text-sm font-semibold text-purple-200 mb-3 block flex items-center">
+                  <Coins className="w-4 h-4 mr-2" />
+                  Investment Amount
+                </label>
+                <div className="relative mb-3">
+                  <IndianRupee className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-purple-400" />
+                  <Input
+                    type="number"
+                    value={tradeAmount}
+                    onChange={(e) => setTradeAmount(e.target.value)}
+                    className="pl-10 h-12 text-lg font-semibold bg-slate-800/50 border-purple-500/30 rounded-xl text-white placeholder-slate-400 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    placeholder="1000"
+                  />
+                </div>
+                
+                <div className="grid grid-cols-3 gap-2">
+                  {predefinedAmounts.slice(0, 6).map((amount) => (
+                    <button
+                      key={amount}
+                      onClick={() => setTradeAmount(amount)}
+                      className={`py-2 px-3 rounded-lg text-sm font-medium transition-all duration-200 border ${
+                        tradeAmount === amount
+                          ? direction === 'Call' 
+                            ? 'bg-green-500/20 text-green-300 border-green-500/50' 
+                            : 'bg-red-500/20 text-red-300 border-red-500/50'
+                          : 'bg-slate-800/30 text-slate-300 hover:bg-slate-700/50 border-slate-600/30'
+                      }`}
+                    >
+                      ₹{amount}
+                    </button>
+                  ))}
+                </div>
               </div>
+
+              <Button 
+                onClick={handleConfirmTrade}
+                className={`w-full h-14 text-lg font-bold rounded-xl transition-all duration-200 transform hover:scale-105 relative overflow-hidden ${
+                  direction === 'Call' 
+                    ? 'bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 border border-green-400/30' 
+                    : 'bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 border border-red-400/30'
+                } text-white`}
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12 animate-pulse"></div>
+                <div className="flex items-center justify-center relative z-10">
+                  {direction === 'Call' ? <Zap className="mr-2 h-5 w-5" /> : <Target className="mr-2 h-5 w-5" />}
+                  Place {direction} Trade
+                </div>
+              </Button>
             </div>
+          </DialogContent>
+        </Dialog>
 
-            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-4 border border-blue-100">
-              <div className="flex justify-between items-center">
-                <span className="text-sm font-medium text-gray-600">Available Balance</span>
-                <span className="font-bold text-lg text-blue-600">₹{totalBalance.toLocaleString()}</span>
-              </div>
-            </div>
-
-            <Button 
-              onClick={handleConfirmTrade}
-              className={`w-full h-14 text-lg font-bold rounded-xl shadow-lg transition-all duration-200 transform hover:scale-105 ${
-                direction === 'Call' 
-                  ? 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700' 
-                  : 'bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700'
-              } text-white`}
-            >
-              Place {direction} Trade
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      <TradeTimer
-        open={isTradeTimerOpen}
-        onClose={() => setIsTradeTimerOpen(false)}
-        currentPrice={livePrice}
-        startPrice={startingTradePrice}
-        direction={direction}
-        duration={tradeTimer}
-        onComplete={handleTradeComplete}
-        tradeApiResponse={tradeApiResponse}
-      />
+        <TradeTimer
+          open={isTradeTimerOpen}
+          onClose={() => setIsTradeTimerOpen(false)}
+          currentPrice={livePrice}
+          startPrice={startingTradePrice}
+          direction={direction}
+          duration={tradeTimer}
+          onComplete={handleTradeComplete}
+          tradeApiResponse={tradeApiResponse}
+        />
+      </div>
     </MobileLayout>
   );
 };
