@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
 import { Card, CardContent } from "@/components/ui/card";
@@ -203,31 +204,29 @@ const TeamPage = () => {
           )}
         </div>
 
-        {/* Floating Action Bar */}
-        <div className="fixed bottom-6 left-4 right-4 z-50">
-          <div className="bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl border border-gray-200/30 p-3">
-            <div className="flex items-center justify-around">
-              {[
-                { icon: Home, label: "Home", path: "/" },
-                { icon: BarChart3, label: "Market", path: "/market" },
-                { icon: Wallet, label: "Wallet", path: "/deposit" },
-                { icon: Users, label: "Team", path: "/team", active: true },
-                { icon: User, label: "Profile", path: "/profile" }
-              ].map((item, idx) => (
-                <Link 
-                  key={idx}
-                  to={item.path}
-                  className={`flex flex-col items-center gap-1 p-2 rounded-xl transition-all duration-300 ${
-                    item.active 
-                      ? "bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-lg transform -translate-y-1" 
-                      : "text-gray-600 hover:text-emerald-600 hover:bg-emerald-50/80"
-                  }`}
-                >
-                  <item.icon className={`w-5 h-5 ${item.active ? "text-white" : ""}`} />
-                  <span className={`text-xs font-medium ${item.active ? "text-white" : ""}`}>{item.label}</span>
-                </Link>
-              ))}
-            </div>
+        {/* Floating Navigation Bar - Same as HomePage */}
+        <div className="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-gradient-to-r from-emerald-600 to-green-600 rounded-t-3xl shadow-2xl z-50">
+          <div className="flex items-center justify-around py-3 px-6">
+            {[
+              { icon: Home, label: "Home", path: "/" },
+              { icon: BarChart3, label: "Market", path: "/market" },
+              { icon: Wallet, label: "Wallet", path: "/deposit" },
+              { icon: Users, label: "Team", path: "/team", active: true },
+              { icon: User, label: "Profile", path: "/profile" }
+            ].map((item, idx) => (
+              <Link 
+                key={idx}
+                to={item.path}
+                className={`flex flex-col items-center gap-1 p-2 rounded-xl transition-all duration-300 ${
+                  item.active 
+                    ? "bg-white/20 backdrop-blur-sm text-white shadow-lg transform -translate-y-1" 
+                    : "text-white/80 hover:text-white hover:bg-white/10"
+                }`}
+              >
+                <item.icon className="w-5 h-5" />
+                <span className="text-xs font-medium">{item.label}</span>
+              </Link>
+            ))}
           </div>
         </div>
       </div>
