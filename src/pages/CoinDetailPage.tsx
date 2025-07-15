@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { mockCryptoCurrencies } from '@/data/mockData';
-import { ArrowUp, ArrowDown, TrendingUp, Activity, BarChart3, X, Info, Wallet, IndianRupee, Eye, EyeOff, ChevronLeft, Maximize2, Minimize2, Zap, Target, Timer, Coins } from 'lucide-react';
+import { ArrowUp, ArrowDown, TrendingUp, Activity, BarChart3, X, Info, Wallet, IndianRupee, Eye, EyeOff, ChevronLeft, Maximize2, Minimize2, Zap, Target, Timer, Coins, Play, Star, Sparkles } from 'lucide-react';
 import { getBinancePrice, getBinanceKlines, getMarketData, getCoin, placeTrade } from '@/services/api';
 import { useToast } from '@/hooks/use-toast';
 
@@ -297,30 +297,37 @@ const CoinDetailPage = () => {
   }, []);
 
   const formatPrice = (price: number) => {
-    if (price >= 1000000) {
-      return `$${(price / 1000000).toFixed(2)}M`;
+    if (price >= 1000000000) {
+      return `₹${(price / 1000000000).toFixed(2)}B`;
+    } else if (price >= 1000000) {
+      return `₹${(price / 1000000).toFixed(2)}M`;
     } else if (price >= 1000) {
-      return `$${(price / 1000).toFixed(2)}K`;
+      return `₹${(price / 1000).toFixed(2)}K`;
     } else if (price >= 1) {
-      return `$${price.toFixed(2)}`;
+      return `₹${price.toFixed(2)}`;
     } else {
-      return `$${price.toFixed(6)}`;
+      return `₹${price.toFixed(6)}`;
     }
   };
 
   return (
     <MobileLayout showBackButton title={crypto.name} noScroll={false} hideFooter={true}>
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white">
-        <div className="relative p-4 bg-gradient-to-r from-purple-600/20 to-blue-600/20 backdrop-blur-md border-b border-white/10">
+      <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-green-50 relative overflow-hidden">
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-green-400/20 to-emerald-500/20 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-blue-400/20 to-green-400/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
+        </div>
+
+        <div className="relative z-10 p-4 bg-white/80 backdrop-blur-md border-b border-green-200/50">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center space-x-3">
               <div className="relative group">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 p-0.5 animate-pulse">
-                  <div className="w-full h-full rounded-full bg-slate-800 flex items-center justify-center">
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-r from-emerald-500 to-green-600 p-0.5 animate-pulse-ring">
+                  <div className="w-full h-full rounded-2xl bg-white flex items-center justify-center">
                     <img 
                       src={crypto.logo} 
                       alt={crypto.symbol}
-                      className="w-8 h-8 rounded-full"
+                      className="w-10 h-10 rounded-xl"
                       onError={(e) => {
                         const target = e.currentTarget as HTMLImageElement;
                         const fallback = target.nextElementSibling as HTMLElement;
@@ -330,35 +337,37 @@ const CoinDetailPage = () => {
                         }
                       }}
                     />
-                    <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full hidden items-center justify-center">
-                      <span className="text-white text-xs font-bold">{crypto.symbol?.charAt(0)}</span>
+                    <div className="w-10 h-10 bg-gradient-to-r from-emerald-500 to-green-600 rounded-xl hidden items-center justify-center">
+                      <span className="text-white text-sm font-bold">{crypto.symbol?.charAt(0)}</span>
                     </div>
                   </div>
                 </div>
-                <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full animate-ping"></div>
-                <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full"></div>
+                <div className="absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full animate-ping"></div>
+                <div className="absolute -top-1 -right-1 w-5 h-5 bg-green-500 rounded-full flex items-center justify-center">
+                  <div className="w-2 h-2 bg-white rounded-full"></div>
+                </div>
               </div>
               <div>
-                <h1 className="text-lg font-bold bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">
+                <h1 className="text-xl font-bold text-gradient-trexo">
                   {crypto.name}
                 </h1>
-                <p className="text-sm text-purple-300">{crypto.symbol?.toUpperCase()}/USDT</p>
+                <p className="text-sm text-gray-600 font-medium">{crypto.symbol?.toUpperCase()}/USDT</p>
                 {crypto.rank && (
-                  <div className="flex items-center space-x-1">
-                    <div className="w-2 h-2 bg-yellow-500 rounded-full animate-pulse"></div>
-                    <p className="text-xs text-yellow-300 font-semibold">Rank #{crypto.rank}</p>
+                  <div className="flex items-center space-x-1 mt-1">
+                    <Star className="w-3 h-3 text-amber-500 animate-pulse" />
+                    <p className="text-xs text-amber-600 font-semibold">Rank #{crypto.rank}</p>
                   </div>
                 )}
               </div>
             </div>
             <div className="text-right">
-              <div className="text-2xl font-bold mb-1 bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent">
+              <div className="text-2xl font-bold mb-1 text-gradient-trexo">
                 {formatPrice(livePrice)}
               </div>
-              <div className={`text-sm font-semibold flex items-center justify-end px-3 py-1 rounded-full backdrop-blur-md ${
+              <div className={`text-sm font-semibold flex items-center justify-end px-3 py-1.5 rounded-full ${
                 priceChange >= 0 
-                  ? 'text-green-300 bg-green-500/20 border border-green-500/30' 
-                  : 'text-red-300 bg-red-500/20 border border-red-500/30'
+                  ? 'text-green-700 bg-green-100 border border-green-200' 
+                  : 'text-red-700 bg-red-100 border border-red-200'
               }`}>
                 {priceChange >= 0 ? (
                   <TrendingUp className="h-3 w-3 mr-1 animate-bounce" />
@@ -371,121 +380,142 @@ const CoinDetailPage = () => {
           </div>
         </div>
 
-        <div className="p-4">
-          <div className="relative bg-slate-800/50 backdrop-blur-md rounded-2xl border border-purple-500/20 overflow-hidden mb-6">
-            <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-blue-500/5"></div>
-            
-            <div className="flex items-center justify-between p-4 border-b border-purple-500/20">
-              <div className="flex items-center space-x-2">
+        <div className="relative z-10 p-4 space-y-6">
+          <Card className="bg-white/95 backdrop-blur-sm shadow-xl border border-green-200/50 overflow-hidden">
+            <CardHeader className="pb-3 bg-gradient-to-r from-green-50 to-emerald-50 border-b border-green-200/50">
+              <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2">
-                  <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-                  <span className="text-sm font-medium text-green-400">Live Trading</span>
+                  <div className="w-8 h-8 bg-gradient-to-r from-emerald-500 to-green-600 rounded-lg flex items-center justify-center">
+                    <BarChart3 className="w-4 h-4 text-white" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-lg text-gradient-trexo flex items-center gap-2">
+                      Live Trading Chart
+                      <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                    </CardTitle>
+                    <p className="text-xs text-gray-600">Real-time market data</p>
+                  </div>
+                </div>
+                <Button
+                  onClick={() => setIsFullscreenChart(true)}
+                  variant="outline"
+                  size="sm"
+                  className="rounded-full border-green-200 hover:bg-green-50 text-green-700 hover:text-green-800 transition-all duration-200 hover:scale-105"
+                >
+                  <Maximize2 className="h-4 w-4 mr-1" />
+                  Fullscreen
+                </Button>
+              </div>
+            </CardHeader>
+
+            <CardContent className="p-0">
+              <div className="h-96 relative bg-gradient-to-br from-green-50/50 to-emerald-50/50">
+                <iframe
+                  src={`/trade-graph.html?symbol=${crypto.binance_symbol || crypto.symbol + 'usdt'}`}
+                  className="w-full h-full rounded-b-xl"
+                  title="Trading Chart"
+                  frameBorder="0"
+                />
+                <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm rounded-lg px-3 py-2 border border-green-200/50 shadow-sm">
+                  <div className="flex items-center gap-2">
+                    <Activity className="w-4 h-4 text-green-600 animate-pulse" />
+                    <span className="text-sm font-medium text-green-700">Market Analysis</span>
+                  </div>
                 </div>
               </div>
-              <button
-                onClick={() => setIsFullscreenChart(true)}
-                className="p-2 rounded-lg bg-purple-500/20 hover:bg-purple-500/30 transition-all duration-200 group"
-              >
-                <Maximize2 className="h-4 w-4 text-purple-300 group-hover:text-white transition-colors" />
-              </button>
-            </div>
 
-            <div className="h-80 relative">
-              <iframe
-                src={`/trade-graph.html?symbol=${crypto.binance_symbol || crypto.symbol + 'usdt'}`}
-                className="w-full h-full"
-                title="Trading Chart"
-                frameBorder="0"
-              />
-              <div className="absolute top-3 left-3 bg-slate-800/90 backdrop-blur-sm rounded-lg px-3 py-2 border border-purple-500/30">
-                <div className="flex items-center gap-2">
-                  <Activity className="w-4 h-4 text-purple-400 animate-pulse" />
-                  <span className="text-sm font-medium text-purple-200">Market Analysis</span>
+              <div className="p-4 border-t border-green-200/50 bg-gradient-to-r from-green-50/50 to-emerald-50/50">
+                <div className="flex justify-center space-x-2 overflow-x-auto">
+                  {['1m', '5m', '15m', '1h', '4h', '1d'].map((timeframe) => (
+                    <button
+                      key={timeframe}
+                      className="px-4 py-2 text-sm font-medium rounded-lg bg-white hover:bg-green-50 text-green-700 hover:text-green-800 border border-green-200 hover:border-green-300 transition-all duration-200 hover:scale-105 whitespace-nowrap"
+                    >
+                      {timeframe}
+                    </button>
+                  ))}
                 </div>
               </div>
-            </div>
-
-            <div className="p-4 border-t border-purple-500/20">
-              <div className="flex justify-center space-x-2">
-                {['1m', '5m', '15m', '1h', '4h', '1d'].map((timeframe) => (
-                  <button
-                    key={timeframe}
-                    className="px-3 py-1.5 text-xs font-medium rounded-lg bg-slate-700/50 hover:bg-purple-500/30 text-purple-200 hover:text-white transition-all duration-200"
-                  >
-                    {timeframe}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
 
           <div className="grid grid-cols-2 gap-4 mb-6">
-            <div className="bg-slate-800/50 backdrop-blur-md rounded-xl p-4 border border-green-500/20">
-              <div className="flex items-center gap-2 mb-2">
-                <TrendingUp className="h-4 w-4 text-green-400 animate-pulse" />
-                <span className="text-sm font-medium text-green-300">24h High</span>
-              </div>
-              <p className="text-lg font-bold text-green-400">
-                {formatPrice(livePrice * 1.05)}
-              </p>
-            </div>
-            <div className="bg-slate-800/50 backdrop-blur-md rounded-xl p-4 border border-red-500/20">
-              <div className="flex items-center gap-2 mb-2">
-                <ArrowDown className="h-4 w-4 text-red-400 animate-pulse" />
-                <span className="text-sm font-medium text-red-300">24h Low</span>
-              </div>
-              <p className="text-lg font-bold text-red-400">
-                {formatPrice(livePrice * 0.95)}
-              </p>
-            </div>
+            <Card className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200/50 shadow-lg">
+              <CardContent className="p-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <TrendingUp className="h-4 w-4 text-green-600 animate-pulse" />
+                  <span className="text-sm font-medium text-green-700">24h High</span>
+                </div>
+                <p className="text-lg font-bold text-green-800">
+                  {formatPrice(livePrice * 1.05)}
+                </p>
+              </CardContent>
+            </Card>
+            <Card className="bg-gradient-to-r from-red-50 to-pink-50 border border-red-200/50 shadow-lg">
+              <CardContent className="p-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <ArrowDown className="h-4 w-4 text-red-600 animate-pulse" />
+                  <span className="text-sm font-medium text-red-700">24h Low</span>
+                </div>
+                <p className="text-lg font-bold text-red-800">
+                  {formatPrice(livePrice * 0.95)}
+                </p>
+              </CardContent>
+            </Card>
           </div>
 
           <div className="grid grid-cols-3 gap-3 mb-24">
-            <div className="bg-slate-800/30 backdrop-blur-md rounded-xl p-3 text-center border border-purple-500/20">
-              <div className="text-xs text-purple-300 mb-1 flex items-center justify-center">
-                <Timer className="w-3 h-3 mr-1" />
-                1H
-              </div>
-              <div className="text-sm font-bold text-green-400">+2.34%</div>
-            </div>
-            <div className="bg-slate-800/30 backdrop-blur-md rounded-xl p-3 text-center border border-purple-500/20">
-              <div className="text-xs text-purple-300 mb-1 flex items-center justify-center">
-                <BarChart3 className="w-3 h-3 mr-1" />
-                24H
-              </div>
-              <div className={`text-sm font-bold ${priceChange >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                {priceChange >= 0 ? '+' : ''}{priceChange.toFixed(2)}%
-              </div>
-            </div>
-            <div className="bg-slate-800/30 backdrop-blur-md rounded-xl p-3 text-center border border-purple-500/20">
-              <div className="text-xs text-purple-300 mb-1 flex items-center justify-center">
-                <Target className="w-3 h-3 mr-1" />
-                7D
-              </div>
-              <div className="text-sm font-bold text-red-400">-5.67%</div>
-            </div>
+            <Card className="bg-white/90 backdrop-blur-sm border border-green-200/50 shadow-sm">
+              <CardContent className="p-3 text-center">
+                <div className="text-xs text-gray-600 mb-1 flex items-center justify-center">
+                  <Timer className="w-3 h-3 mr-1" />
+                  1H
+                </div>
+                <div className="text-sm font-bold text-green-600">+2.34%</div>
+              </CardContent>
+            </Card>
+            <Card className="bg-white/90 backdrop-blur-sm border border-green-200/50 shadow-sm">
+              <CardContent className="p-3 text-center">
+                <div className="text-xs text-gray-600 mb-1 flex items-center justify-center">
+                  <BarChart3 className="w-3 h-3 mr-1" />
+                  24H
+                </div>
+                <div className={`text-sm font-bold ${priceChange >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                  {priceChange >= 0 ? '+' : ''}{priceChange.toFixed(2)}%
+                </div>
+              </CardContent>
+            </Card>
+            <Card className="bg-white/90 backdrop-blur-sm border border-green-200/50 shadow-sm">
+              <CardContent className="p-3 text-center">
+                <div className="text-xs text-gray-600 mb-1 flex items-center justify-center">
+                  <Target className="w-3 h-3 mr-1" />
+                  7D
+                </div>
+                <div className="text-sm font-bold text-red-600">-5.67%</div>
+              </CardContent>
+            </Card>
           </div>
         </div>
 
-        <div className="fixed bottom-0 left-0 right-0 bg-slate-900/95 backdrop-blur-md border-t border-purple-500/20 p-4 z-20">
+        <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-green-200/50 p-4 z-20 max-w-md mx-auto">
           <div className="grid grid-cols-2 gap-4">
             <Button 
               onClick={handleBuyClick}
-              className="relative overflow-hidden bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white py-4 text-base font-bold rounded-xl border border-green-400/30 transition-all duration-200 transform hover:scale-105"
+              className="relative overflow-hidden bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white py-4 text-base font-bold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12 animate-pulse"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12 animate-shimmer"></div>
               <div className="flex items-center justify-center relative z-10">
-                <Zap className="mr-2 h-5 w-5" />
+                <TrendingUp className="mr-2 h-5 w-5" />
                 CALL
               </div>
             </Button>
             <Button 
               onClick={handleSellClick}
-              className="relative overflow-hidden bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 text-white py-4 text-base font-bold rounded-xl border border-red-400/30 transition-all duration-200 transform hover:scale-105"
+              className="relative overflow-hidden bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 text-white py-4 text-base font-bold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12 animate-pulse"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12 animate-shimmer"></div>
               <div className="flex items-center justify-center relative z-10">
-                <Target className="mr-2 h-5 w-5" />
+                <ArrowDown className="mr-2 h-5 w-5" />
                 PUT
               </div>
             </Button>
@@ -493,16 +523,18 @@ const CoinDetailPage = () => {
         </div>
 
         <Dialog open={isFullscreenChart} onOpenChange={setIsFullscreenChart}>
-          <DialogContent className="w-screen h-screen max-w-none max-h-none m-0 p-0 bg-slate-900 border-none">
+          <DialogContent className="w-screen h-screen max-w-none max-h-none m-0 p-0 bg-gradient-to-br from-emerald-50 via-white to-green-50 border-none">
             <div className="h-full flex flex-col">
-              <div className="flex items-center justify-between p-4 border-b border-purple-500/20">
-                <h3 className="text-lg font-bold text-white">{crypto.name} Chart</h3>
-                <button
+              <div className="flex items-center justify-between p-4 border-b border-green-200/50 bg-white/80 backdrop-blur-md">
+                <h3 className="text-lg font-bold text-gradient-trexo">{crypto.name} Chart</h3>
+                <Button
                   onClick={() => setIsFullscreenChart(false)}
-                  className="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 transition-colors"
+                  variant="outline"
+                  size="sm"
+                  className="rounded-full border-green-200 hover:bg-green-50"
                 >
-                  <Minimize2 className="h-5 w-5 text-white" />
-                </button>
+                  <Minimize2 className="h-4 w-4" />
+                </Button>
               </div>
               <div className="flex-1">
                 <iframe
@@ -517,28 +549,24 @@ const CoinDetailPage = () => {
         </Dialog>
 
         <Dialog open={isBuyModalOpen || isSellModalOpen} onOpenChange={closeModal}>
-          <DialogContent className="w-[95vw] max-w-sm mx-auto bg-slate-900/95 backdrop-blur-md border border-purple-500/30 rounded-2xl p-0 overflow-hidden">
+          <DialogContent className="w-[95vw] max-w-sm mx-auto bg-white/95 backdrop-blur-md border border-green-200/50 rounded-2xl p-0 overflow-hidden shadow-2xl">
             <div className={`relative px-6 py-4 text-white ${
               direction === 'Call' 
-                ? 'bg-gradient-to-r from-green-500/20 to-emerald-600/20 border-b border-green-500/30' 
-                : 'bg-gradient-to-r from-red-500/20 to-rose-600/20 border-b border-red-500/30'
+                ? 'bg-gradient-to-r from-green-500 to-emerald-600' 
+                : 'bg-gradient-to-r from-red-500 to-rose-600'
             }`}>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center backdrop-blur-sm border ${
-                    direction === 'Call' 
-                      ? 'bg-green-500/20 border-green-500/30' 
-                      : 'bg-red-500/20 border-red-500/30'
-                  }`}>
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center bg-white/20 backdrop-blur-sm`}>
                     {direction === 'Call' ? (
-                      <Zap className="h-5 w-5 text-green-400" />
+                      <TrendingUp className="h-5 w-5 text-white" />
                     ) : (
-                      <Target className="h-5 w-5 text-red-400" />
+                      <ArrowDown className="h-5 w-5 text-white" />
                     )}
                   </div>
                   <div>
                     <h3 className="font-bold text-lg">{direction} Trade</h3>
-                    <p className="text-sm opacity-80">{formatPrice(livePrice)}</p>
+                    <p className="text-sm opacity-90">{formatPrice(livePrice)}</p>
                   </div>
                 </div>
                 <Button 
@@ -552,10 +580,10 @@ const CoinDetailPage = () => {
               </div>
             </div>
 
-            <div className="p-6 space-y-6">
+            <div className="p-6 space-y-6 bg-gradient-to-br from-green-50/50 to-emerald-50/50">
               <div>
-                <label className="text-sm font-semibold text-purple-200 mb-3 block flex items-center">
-                  <Timer className="w-4 h-4 mr-2" />
+                <label className="text-sm font-semibold text-gray-700 mb-3 block flex items-center">
+                  <Timer className="w-4 h-4 mr-2 text-green-600" />
                   Trading Duration
                 </label>
                 <div className="grid grid-cols-3 gap-2">
@@ -566,9 +594,9 @@ const CoinDetailPage = () => {
                       className={`py-3 px-3 rounded-xl text-sm font-semibold transition-all duration-200 border ${
                         selectedTimePeriod === period
                           ? direction === 'Call' 
-                            ? 'bg-green-500/20 text-green-300 border-green-500/50' 
-                            : 'bg-red-500/20 text-red-300 border-red-500/50'
-                          : 'bg-slate-800/50 text-slate-300 hover:bg-slate-700/50 border-slate-600/30'
+                            ? 'bg-green-100 text-green-700 border-green-300' 
+                            : 'bg-red-100 text-red-700 border-red-300'
+                          : 'bg-white text-gray-600 hover:bg-gray-50 border-gray-200'
                       }`}
                     >
                       {period}
@@ -578,17 +606,17 @@ const CoinDetailPage = () => {
               </div>
               
               <div>
-                <label className="text-sm font-semibold text-purple-200 mb-3 block flex items-center">
-                  <Coins className="w-4 h-4 mr-2" />
+                <label className="text-sm font-semibold text-gray-700 mb-3 block flex items-center">
+                  <Coins className="w-4 h-4 mr-2 text-green-600" />
                   Investment Amount
                 </label>
                 <div className="relative mb-3">
-                  <IndianRupee className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-purple-400" />
+                  <IndianRupee className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-green-600" />
                   <Input
                     type="number"
                     value={tradeAmount}
                     onChange={(e) => setTradeAmount(e.target.value)}
-                    className="pl-10 h-12 text-lg font-semibold bg-slate-800/50 border-purple-500/30 rounded-xl text-white placeholder-slate-400 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    className="pl-10 h-12 text-lg font-semibold bg-white border-green-200 rounded-xl text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-green-500 focus:border-transparent"
                     placeholder="1000"
                   />
                 </div>
@@ -601,9 +629,9 @@ const CoinDetailPage = () => {
                       className={`py-2 px-3 rounded-lg text-sm font-medium transition-all duration-200 border ${
                         tradeAmount === amount
                           ? direction === 'Call' 
-                            ? 'bg-green-500/20 text-green-300 border-green-500/50' 
-                            : 'bg-red-500/20 text-red-300 border-red-500/50'
-                          : 'bg-slate-800/30 text-slate-300 hover:bg-slate-700/50 border-slate-600/30'
+                            ? 'bg-green-100 text-green-700 border-green-300' 
+                            : 'bg-red-100 text-red-700 border-red-300'
+                          : 'bg-white text-gray-600 hover:bg-gray-50 border-gray-200'
                       }`}
                     >
                       ₹{amount}
@@ -614,15 +642,15 @@ const CoinDetailPage = () => {
 
               <Button 
                 onClick={handleConfirmTrade}
-                className={`w-full h-14 text-lg font-bold rounded-xl transition-all duration-200 transform hover:scale-105 relative overflow-hidden ${
+                className={`w-full h-14 text-lg font-bold rounded-xl transition-all duration-200 transform hover:scale-105 relative overflow-hidden shadow-lg hover:shadow-xl ${
                   direction === 'Call' 
-                    ? 'bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 border border-green-400/30' 
-                    : 'bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 border border-red-400/30'
+                    ? 'bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700' 
+                    : 'bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700'
                 } text-white`}
               >
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12 animate-pulse"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12 animate-shimmer"></div>
                 <div className="flex items-center justify-center relative z-10">
-                  {direction === 'Call' ? <Zap className="mr-2 h-5 w-5" /> : <Target className="mr-2 h-5 w-5" />}
+                  {direction === 'Call' ? <TrendingUp className="mr-2 h-5 w-5" /> : <ArrowDown className="mr-2 h-5 w-5" />}
                   Place {direction} Trade
                 </div>
               </Button>
