@@ -128,7 +128,7 @@ const WithdrawPage = () => {
   };
   
   return (
-    <MobileLayout showBackButton title="Withdraw Funds" hideNavbar>
+    <MobileLayout showBackButton title="Withdraw Funds">
       <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-green-50 relative overflow-hidden pb-20">
         {/* Background Elements */}
         <div className="absolute inset-0 overflow-hidden">

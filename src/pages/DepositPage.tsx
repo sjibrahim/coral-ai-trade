@@ -65,7 +65,7 @@ const DepositPage = () => {
   };
   
   return (
-    <MobileLayout showBackButton title="Fund Account" hideNavbar>
+    <MobileLayout showBackButton title="Fund Account">
       <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-green-50 relative overflow-hidden pb-20">
         {/* Background Elements */}
         <div className="absolute inset-0 overflow-hidden">
