@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Users, Share2, Target, Gift, Zap, TrendingUp, Award, Home, BarChart3, User, Wallet } from "lucide-react";
+import { Users, Share2, Target, Gift, Zap, TrendingUp, Award } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import InvitePopup from "@/components/InvitePopup";
 import { useTeam } from "@/hooks/use-team";
@@ -11,7 +11,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import TeamStatsCard from "@/components/team/TeamStatsCard";
 import CommissionCard from "@/components/team/CommissionCard";
 import MemberCard from "@/components/team/MemberCard";
-import { Link } from "react-router-dom";
 
 const TeamPage = () => {
   const [invitePopupOpen, setInvitePopupOpen] = useState(false);
@@ -32,7 +31,7 @@ const TeamPage = () => {
   }, [fetchTeamDetails]);
   
   return (
-    <MobileLayout title="Team Network" hideFooter hideNavbar>
+    <MobileLayout title="Team Network">
       <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-green-50 relative overflow-hidden">
         {/* Background Elements */}
         <div className="absolute inset-0 overflow-hidden">
@@ -40,12 +39,7 @@ const TeamPage = () => {
           <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-green-400/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
         </div>
 
-        {/* Custom Header */}
-        <div className="relative z-10 bg-white/80 backdrop-blur-md border-b border-emerald-200/50 p-4">
-          <h1 className="text-xl font-bold text-gray-800 text-center">Team Network</h1>
-        </div>
-
-        <div className="relative z-10 p-4 space-y-4 pb-32">
+        <div className="relative z-10 p-4 space-y-4">
           {/* Hero Stats */}
           <TeamStatsCard
             activeLevel1={activeLevel1}
@@ -202,32 +196,6 @@ const TeamPage = () => {
               </Card>
             </>
           )}
-        </div>
-
-        {/* Floating Navigation Bar - Same as HomePage */}
-        <div className="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-gradient-to-r from-emerald-600 to-green-600 rounded-t-3xl shadow-2xl z-50">
-          <div className="flex items-center justify-around py-3 px-6">
-            {[
-              { icon: Home, label: "Home", path: "/" },
-              { icon: BarChart3, label: "Market", path: "/market" },
-              { icon: Wallet, label: "Wallet", path: "/deposit" },
-              { icon: Users, label: "Team", path: "/team", active: true },
-              { icon: User, label: "Profile", path: "/profile" }
-            ].map((item, idx) => (
-              <Link 
-                key={idx}
-                to={item.path}
-                className={`flex flex-col items-center gap-1 p-2 rounded-xl transition-all duration-300 ${
-                  item.active 
-                    ? "bg-white/20 backdrop-blur-sm text-white shadow-lg transform -translate-y-1" 
-                    : "text-white/80 hover:text-white hover:bg-white/10"
-                }`}
-              >
-                <item.icon className="w-5 h-5" />
-                <span className="text-xs font-medium">{item.label}</span>
-              </Link>
-            ))}
-          </div>
         </div>
       </div>
       
