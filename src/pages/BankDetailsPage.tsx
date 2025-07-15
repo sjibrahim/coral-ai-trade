@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
 import { toast } from "@/components/ui/use-toast";
@@ -226,7 +225,7 @@ const BankDetailsPage = () => {
   };
   
   return (
-    <MobileLayout showBackButton title="Bank Details" hideNavbar>
+    <MobileLayout showBackButton title="Bank Details">
       <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-green-50 relative overflow-hidden">
         {/* Background Elements */}
         <div className="absolute inset-0 overflow-hidden">
