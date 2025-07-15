@@ -93,9 +93,10 @@
 
   <script src="https://cdn.jsdelivr.net/npm/klinecharts@7.3.0/dist/klinecharts.min.js"></script>
   <script>
-    // Parse symbol from URL parameters
+    // Parse symbol and interval from URL parameters
     const params = new URLSearchParams(window.location.search);
     const SYMBOL = (params.get('symbol') || 'btcusdt').toLowerCase();
+    let INTERVAL = params.get('interval') || '15m';
     
     // Initialize chart with mobile-optimized styling
     const chart = klinecharts.init('chart');
@@ -146,7 +147,7 @@
       },
       xAxis: {
         show: true,
-        height: window.innerWidth < 480 ? 40 : 50,
+        height: window.innerWidth < 480 ? 35 : 45,
         axisLine: {
           show: true,
           color: '#e5e7eb'
@@ -154,7 +155,7 @@
         tickText: {
           show: true,
           color: '#6b7280',
-          size: window.innerWidth < 480 ? 9 : 10
+          size: window.innerWidth < 480 ? 8 : 9
         },
         tickLine: {
           show: false
@@ -162,7 +163,7 @@
       },
       yAxis: {
         show: true,
-        width: window.innerWidth < 480 ? 50 : 60,
+        width: window.innerWidth < 480 ? 45 : 55,
         position: 'right',
         type: 'normal',
         inside: false,
@@ -173,7 +174,7 @@
         tickText: {
           show: true,
           color: '#6b7280',
-          size: window.innerWidth < 480 ? 9 : 10
+          size: window.innerWidth < 480 ? 8 : 9
         },
         tickLine: {
           show: false
@@ -197,7 +198,7 @@
           text: {
             show: true,
             color: '#ffffff',
-            size: window.innerWidth < 480 ? 9 : 10,
+            size: window.innerWidth < 480 ? 8 : 9,
             backgroundColor: '#3b82f6'
           }
         },
@@ -213,20 +214,22 @@
           text: {
             show: true,
             color: '#ffffff',
-            size: window.innerWidth < 480 ? 9 : 10,
+            size: window.innerWidth < 480 ? 8 : 9,
             backgroundColor: '#3b82f6'
           }
         }
       }
     });
 
-    // Add moving averages for mobile
+    // Add moving averages only for larger screens
     if (window.innerWidth >= 480) {
       chart.createTechnicalIndicator('MA', false, { id: 'candle_pane' });
     }
     
     let ws;
     let lastPrice = 0;
+    let currentSymbol = SYMBOL;
+    let currentInterval = INTERVAL;
     
     function updatePriceInfo(data) {
       if (!data || !data.close) return;
@@ -250,7 +253,11 @@
     }
 
     function loadHistoryThenSubscribe() {
-      const restUrl = `https://api.binance.com/api/v3/klines?symbol=${SYMBOL.toUpperCase()}&interval=15m&limit=300`;
+      if (ws) {
+        ws.close();
+      }
+      
+      const restUrl = `https://api.binance.com/api/v3/klines?symbol=${currentSymbol.toUpperCase()}&interval=${currentInterval}&limit=300`;
       
       fetch(restUrl)
         .then(response => response.json())
@@ -280,7 +287,7 @@
     }
 
     function subscribeLive() {
-      const stream = `${SYMBOL}@kline_15m`;
+      const stream = `${currentSymbol}@kline_${currentInterval}`;
       ws = new WebSocket(`wss://stream.binance.com:9443/ws/${stream}`);
       
       ws.onmessage = (event) => {
@@ -321,45 +328,69 @@
       const isMobile = window.innerWidth < 480;
       chart.setStyleOptions({
         xAxis: {
-          height: isMobile ? 40 : 50,
+          height: isMobile ? 35 : 45,
           tickText: {
-            size: isMobile ? 9 : 10
+            size: isMobile ? 8 : 9
           }
         },
         yAxis: {
-          width: isMobile ? 50 : 60,
+          width: isMobile ? 45 : 55,
           tickText: {
-            size: isMobile ? 9 : 10
+            size: isMobile ? 8 : 9
           }
         },
         crosshair: {
           horizontal: {
             text: {
-              size: isMobile ? 9 : 10
+              size: isMobile ? 8 : 9
             }
           },
           vertical: {
             text: {
-              size: isMobile ? 9 : 10
+              size: isMobile ? 8 : 9
             }
           }
         }
       });
     });
 
-    // Listen for messages from parent window for zoom functionality
+    // Listen for messages from parent window
     window.addEventListener('message', (event) => {
       if (event.data.type === 'CHANGE_SYMBOL') {
         const newSymbol = event.data.symbol;
-        if (newSymbol && newSymbol !== SYMBOL) {
-          window.location.search = `?symbol=${newSymbol}`;
+        if (newSymbol && newSymbol !== currentSymbol) {
+          currentSymbol = newSymbol;
+          loadHistoryThenSubscribe();
+        }
+      } else if (event.data.type === 'CHANGE_TIMEFRAME') {
+        const newInterval = event.data.timeframe;
+        if (newInterval && newInterval !== currentInterval) {
+          currentInterval = newInterval;
+          loadHistoryThenSubscribe();
         }
       } else if (event.data.type === 'ZOOM') {
         // Handle zoom functionality
+        const dataList = chart.getDataList();
+        const visibleRange = chart.getVisibleRange();
+        
         if (event.data.direction === 'in') {
-          chart.zoomAtDataIndex(1, chart.getDataList().length - 1);
+          // Zoom in - show fewer candles
+          const currentRange = visibleRange.to - visibleRange.from;
+          const newRange = Math.max(10, Math.floor(currentRange * 0.7));
+          const center = Math.floor((visibleRange.from + visibleRange.to) / 2);
+          const newFrom = Math.max(0, center - Math.floor(newRange / 2));
+          const newTo = Math.min(dataList.length - 1, newFrom + newRange);
+          
+          chart.setVisibleRange({ from: newFrom, to: newTo });
         } else if (event.data.direction === 'out') {
-          chart.zoomAtDataIndex(-1, chart.getDataList().length - 1);
+          // Zoom out - show more candles
+          const currentRange = visibleRange.to - visibleRange.from;
+          const newRange = Math.min(dataList.length, Math.floor(currentRange * 1.4));
+          const center = Math.floor((visibleRange.from + visibleRange.to) / 2);
+          const newFrom = Math.max(0, center - Math.floor(newRange / 2));
+          const newTo = Math.min(dataList.length - 1, newFrom + newRange);
+          
+          chart.setVisibleRange({ from: newFrom, to: newTo });
         }
       }
     });

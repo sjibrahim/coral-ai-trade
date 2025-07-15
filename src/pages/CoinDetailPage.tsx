@@ -19,7 +19,7 @@ const CoinDetailPage = () => {
   const navigate = useNavigate();
   const cachedCrypto = location.state?.crypto;
   
-  const [selectedTimeframe, setSelectedTimeframe] = useState('1h');
+  const [selectedTimeframe, setSelectedTimeframe] = useState('15m');
   const [isBuyModalOpen, setIsBuyModalOpen] = useState(false);
   const [isSellModalOpen, setIsSellModalOpen] = useState(false);
   const [isFullscreenChart, setIsFullscreenChart] = useState(false);
@@ -322,6 +322,23 @@ const CoinDetailPage = () => {
     }
   };
 
+  const handleTimeframeChange = (timeframe: string) => {
+    setSelectedTimeframe(timeframe);
+    
+    // Send timeframe change to both iframes
+    const iframe = document.querySelector('iframe[title="Trading Chart"]') as HTMLIFrameElement;
+    if (iframe && iframe.contentWindow) {
+      iframe.contentWindow.postMessage({ type: 'CHANGE_TIMEFRAME', timeframe }, '*');
+    }
+    
+    const fullscreenIframe = document.querySelector('iframe[title="Trading Chart Fullscreen"]') as HTMLIFrameElement;
+    if (fullscreenIframe && fullscreenIframe.contentWindow) {
+      fullscreenIframe.contentWindow.postMessage({ type: 'CHANGE_TIMEFRAME', timeframe }, '*');
+    }
+  };
+
+  const timeframes = ['1m', '5m', '15m', '30m', '1h'];
+
   return (
     <MobileLayout showBackButton title="" noScroll={true} hideFooter={true}>
       <div className="h-screen flex flex-col bg-white">
@@ -364,17 +381,36 @@ const CoinDetailPage = () => {
           </div>
         </div>
 
+        {/* Timeframe Selector */}
+        <div className="bg-white px-4 py-2 border-b border-gray-100 flex-shrink-0">
+          <div className="flex space-x-1 overflow-x-auto">
+            {timeframes.map((timeframe) => (
+              <button
+                key={timeframe}
+                onClick={() => handleTimeframeChange(timeframe)}
+                className={`px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all ${
+                  selectedTimeframe === timeframe
+                    ? 'bg-blue-500 text-white'
+                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                }`}
+              >
+                {timeframe}
+              </button>
+            ))}
+          </div>
+        </div>
+
         {/* Chart Container - Takes remaining space minus buttons */}
-        <div className="flex-1 relative bg-white" style={{ height: 'calc(100vh - 140px)' }}>
+        <div className="flex-1 relative bg-white" style={{ height: 'calc(100vh - 200px)' }}>
           <iframe
-            src={`/trade-graph.html?symbol=${crypto.binance_symbol || crypto.symbol + 'usdt'}`}
+            src={`/trade-graph.html?symbol=${crypto.binance_symbol || crypto.symbol + 'usdt'}&interval=${selectedTimeframe}`}
             className="w-full h-full"
             title="Trading Chart"
             frameBorder="0"
           />
           
           {/* Chart Controls - Top Right */}
-          <div className="absolute top-4 right-4 flex flex-col space-y-2">
+          <div className="absolute top-2 right-2 flex flex-col space-y-1">
             <button
               onClick={() => setIsFullscreenChart(true)}
               className="bg-white/90 backdrop-blur-sm rounded-lg p-2 shadow-sm hover:bg-white transition-all"
@@ -386,35 +422,35 @@ const CoinDetailPage = () => {
             <div className="flex flex-col space-y-1 bg-white/90 backdrop-blur-sm rounded-lg p-1 shadow-sm">
               <button
                 onClick={() => handleZoom('in')}
-                className="p-2 rounded-md hover:bg-gray-100 transition-all"
+                className="p-1.5 rounded-md hover:bg-gray-100 transition-all"
                 title="Zoom In"
               >
-                <ZoomIn className="h-4 w-4 text-gray-600" />
+                <ZoomIn className="h-3 w-3 text-gray-600" />
               </button>
               <button
                 onClick={() => handleZoom('out')}
-                className="p-2 rounded-md hover:bg-gray-100 transition-all"
+                className="p-1.5 rounded-md hover:bg-gray-100 transition-all"
                 title="Zoom Out"
               >
-                <ZoomOut className="h-4 w-4 text-gray-600" />
+                <ZoomOut className="h-3 w-3 text-gray-600" />
               </button>
             </div>
           </div>
         </div>
 
         {/* Fixed Buy/Put Buttons at Bottom */}
-        <div className="bg-white border-t border-gray-100 p-4 flex-shrink-0 fixed bottom-0 left-0 right-0 z-10">
+        <div className="bg-white border-t border-gray-100 p-3 flex-shrink-0 fixed bottom-0 left-0 right-0 z-50">
           <div className="flex space-x-3 max-w-md mx-auto">
             <Button 
               onClick={handleBuyClick}
-              className="flex-1 bg-green-500 hover:bg-green-600 text-white py-4 text-base font-bold rounded-xl transition-all duration-200 transform active:scale-95"
+              className="flex-1 bg-green-500 hover:bg-green-600 text-white py-3 text-base font-bold rounded-xl transition-all duration-200 transform active:scale-95"
             >
               <TrendingUp className="mr-2 h-5 w-5" />
               BUY
             </Button>
             <Button 
               onClick={handleSellClick}
-              className="flex-1 bg-red-500 hover:bg-red-600 text-white py-4 text-base font-bold rounded-xl transition-all duration-200 transform active:scale-95"
+              className="flex-1 bg-red-500 hover:bg-red-600 text-white py-3 text-base font-bold rounded-xl transition-all duration-200 transform active:scale-95"
             >
               <ArrowDown className="mr-2 h-5 w-5" />
               PUT
@@ -426,24 +462,41 @@ const CoinDetailPage = () => {
         <Dialog open={isFullscreenChart} onOpenChange={setIsFullscreenChart}>
           <DialogContent className="w-screen h-screen max-w-none max-h-none m-0 p-0 bg-white border-none">
             <div className="h-full flex flex-col">
-              <div className="flex items-center justify-between p-4 border-b border-gray-100 bg-white">
+              <div className="flex items-center justify-between p-3 border-b border-gray-100 bg-white">
                 <h3 className="text-lg font-bold text-gray-900">{crypto.name} Chart</h3>
                 <div className="flex items-center space-x-2">
+                  {/* Timeframe Controls for Fullscreen */}
+                  <div className="flex space-x-1 mr-2">
+                    {timeframes.slice(0, 3).map((timeframe) => (
+                      <button
+                        key={timeframe}
+                        onClick={() => handleTimeframeChange(timeframe)}
+                        className={`px-2 py-1 rounded text-xs font-medium transition-all ${
+                          selectedTimeframe === timeframe
+                            ? 'bg-blue-500 text-white'
+                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                        }`}
+                      >
+                        {timeframe}
+                      </button>
+                    ))}
+                  </div>
+                  
                   {/* Zoom Controls for Fullscreen */}
                   <div className="flex space-x-1 bg-gray-100 rounded-lg p-1">
                     <button
                       onClick={() => handleFullscreenZoom('in')}
-                      className="p-2 rounded-md hover:bg-white transition-all"
+                      className="p-1.5 rounded-md hover:bg-white transition-all"
                       title="Zoom In"
                     >
-                      <ZoomIn className="h-4 w-4 text-gray-600" />
+                      <ZoomIn className="h-3 w-3 text-gray-600" />
                     </button>
                     <button
                       onClick={() => handleFullscreenZoom('out')}
-                      className="p-2 rounded-md hover:bg-white transition-all"
+                      className="p-1.5 rounded-md hover:bg-white transition-all"
                       title="Zoom Out"
                     >
-                      <ZoomOut className="h-4 w-4 text-gray-600" />
+                      <ZoomOut className="h-3 w-3 text-gray-600" />
                     </button>
                   </div>
                   <Button
@@ -458,7 +511,7 @@ const CoinDetailPage = () => {
               </div>
               <div className="flex-1">
                 <iframe
-                  src={`/trade-graph.html?symbol=${crypto.binance_symbol || crypto.symbol + 'usdt'}`}
+                  src={`/trade-graph.html?symbol=${crypto.binance_symbol || crypto.symbol + 'usdt'}&interval=${selectedTimeframe}`}
                   className="w-full h-full"
                   title="Trading Chart Fullscreen"
                   frameBorder="0"
