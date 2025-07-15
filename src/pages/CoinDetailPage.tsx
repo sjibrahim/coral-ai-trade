@@ -319,16 +319,19 @@ const CoinDetailPage = () => {
   }, []);
 
   const formatPrice = (price: number) => {
-    if (price >= 1000000000) {
-      return `$${(price / 1000000000).toFixed(2)}B`;
-    } else if (price >= 1000000) {
-      return `$${(price / 1000000).toFixed(2)}M`;
-    } else if (price >= 100000) {
-      return `$${(price / 1000).toFixed(1)}K`;
-    } else if (price >= 1) {
-      return `$${price.toFixed(2)}`;
+    // Ensure price is a valid number
+    const numPrice = typeof price === 'number' && !isNaN(price) ? price : 0;
+    
+    if (numPrice >= 1000000000) {
+      return `$${(numPrice / 1000000000).toFixed(2)}B`;
+    } else if (numPrice >= 1000000) {
+      return `$${(numPrice / 1000000).toFixed(2)}M`;
+    } else if (numPrice >= 100000) {
+      return `$${(numPrice / 1000).toFixed(1)}K`;
+    } else if (numPrice >= 1) {
+      return `$${numPrice.toFixed(2)}`;
     } else {
-      return `$${price.toFixed(6)}`;
+      return `$${numPrice.toFixed(6)}`;
     }
   };
 
@@ -369,8 +372,8 @@ const CoinDetailPage = () => {
 
   const timeframes = ['1m', '5m', '15m', '30m', '1h'];
 
-  // Calculate available balance
-  const availableBalance = (user?.wallet || 0) + (user?.income || 0);
+  // Calculate available balance with proper type conversion
+  const availableBalance = Number(user?.wallet || 0) + Number(user?.income || 0);
 
   return (
     <MobileLayout showBackButton title={crypto.name || "Trading"} noScroll={true} hideFooter={true}>
