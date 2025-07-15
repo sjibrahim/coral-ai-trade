@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { mockCryptoCurrencies } from '@/data/mockData';
-import { ArrowUp, ArrowDown, TrendingUp, X, IndianRupee, Maximize2, Timer, Coins, Star } from 'lucide-react';
+import { ArrowUp, ArrowDown, TrendingUp, X, IndianRupee, Maximize2, Timer, Coins, Star, ZoomIn, ZoomOut } from 'lucide-react';
 import { getBinancePrice, getBinanceKlines, getMarketData, getCoin, placeTrade } from '@/services/api';
 import { useToast } from '@/hooks/use-toast';
 
@@ -308,16 +308,18 @@ const CoinDetailPage = () => {
     }
   };
 
-  const timeframes = [
-    { label: '1H', value: '1h', change: '+2.34' },
-    { label: '24H', value: '24h', change: priceChange.toFixed(2) },
-    { label: '7D', value: '7d', change: '-1.28' },
-  ];
+  const handleZoom = (type: 'in' | 'out') => {
+    const iframe = document.querySelector('iframe[title="Trading Chart"]') as HTMLIFrameElement;
+    if (iframe && iframe.contentWindow) {
+      iframe.contentWindow.postMessage({ type: 'ZOOM', direction: type }, '*');
+    }
+  };
 
   return (
     <MobileLayout showBackButton title="" noScroll={true} hideFooter={true}>
       <div className="h-screen flex flex-col bg-white">
-        <div className="bg-white px-4 py-3 border-b border-gray-100">
+        {/* Header */}
+        <div className="bg-white px-4 py-3 border-b border-gray-100 flex-shrink-0">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div className="relative">
@@ -355,6 +357,7 @@ const CoinDetailPage = () => {
           </div>
         </div>
 
+        {/* Chart Container - Takes remaining space */}
         <div className="flex-1 relative bg-white">
           <iframe
             src={`/trade-graph.html?symbol=${crypto.binance_symbol || crypto.symbol + 'usdt'}`}
@@ -363,45 +366,44 @@ const CoinDetailPage = () => {
             frameBorder="0"
           />
           
-          <div className="absolute top-4 right-4 flex space-x-1 bg-white/90 backdrop-blur-sm rounded-lg p-1 shadow-sm">
-            {timeframes.map((timeframe) => (
+          {/* Chart Controls - Top Right */}
+          <div className="absolute top-4 right-4 flex flex-col space-y-2">
+            <button
+              onClick={() => setIsFullscreenChart(true)}
+              className="bg-white/90 backdrop-blur-sm rounded-lg p-2 shadow-sm hover:bg-white transition-all"
+            >
+              <Maximize2 className="h-4 w-4 text-gray-600" />
+            </button>
+            
+            {/* Zoom Controls */}
+            <div className="flex flex-col space-y-1 bg-white/90 backdrop-blur-sm rounded-lg p-1 shadow-sm">
               <button
-                key={timeframe.value}
-                onClick={() => setSelectedTimeframe(timeframe.value)}
-                className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all ${
-                  selectedTimeframe === timeframe.value
-                    ? 'bg-green-500 text-white'
-                    : 'text-gray-600 hover:bg-gray-100'
-                }`}
+                onClick={() => handleZoom('in')}
+                className="p-2 rounded-md hover:bg-gray-100 transition-all"
+                title="Zoom In"
               >
-                <div>{timeframe.label}</div>
-                <div className={`text-[10px] ${
-                  selectedTimeframe === timeframe.value 
-                    ? 'text-white/80' 
-                    : timeframe.change.startsWith('-') ? 'text-red-500' : 'text-green-500'
-                }`}>
-                  {timeframe.change.startsWith('-') ? '' : '+'}{timeframe.change}%
-                </div>
+                <ZoomIn className="h-4 w-4 text-gray-600" />
               </button>
-            ))}
+              <button
+                onClick={() => handleZoom('out')}
+                className="p-2 rounded-md hover:bg-gray-100 transition-all"
+                title="Zoom Out"
+              >
+                <ZoomOut className="h-4 w-4 text-gray-600" />
+              </button>
+            </div>
           </div>
-
-          <button
-            onClick={() => setIsFullscreenChart(true)}
-            className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm rounded-lg p-2 shadow-sm hover:bg-white transition-all"
-          >
-            <Maximize2 className="h-4 w-4 text-gray-600" />
-          </button>
         </div>
 
-        <div className="bg-white border-t border-gray-100 p-4">
+        {/* Fixed Buy/Put Buttons at Bottom */}
+        <div className="bg-white border-t border-gray-100 p-4 flex-shrink-0">
           <div className="flex space-x-3">
             <Button 
               onClick={handleBuyClick}
               className="flex-1 bg-green-500 hover:bg-green-600 text-white py-4 text-base font-bold rounded-xl transition-all duration-200 transform active:scale-95"
             >
               <TrendingUp className="mr-2 h-5 w-5" />
-              CALL
+              BUY
             </Button>
             <Button 
               onClick={handleSellClick}
@@ -413,6 +415,7 @@ const CoinDetailPage = () => {
           </div>
         </div>
 
+        {/* Fullscreen Chart Modal */}
         <Dialog open={isFullscreenChart} onOpenChange={setIsFullscreenChart}>
           <DialogContent className="w-screen h-screen max-w-none max-h-none m-0 p-0 bg-white border-none">
             <div className="h-full flex flex-col">
@@ -439,6 +442,7 @@ const CoinDetailPage = () => {
           </DialogContent>
         </Dialog>
 
+        {/* Trade Modal */}
         <Dialog open={isBuyModalOpen || isSellModalOpen} onOpenChange={closeModal}>
           <DialogContent className="w-[95vw] max-w-sm mx-auto bg-white rounded-2xl p-0 overflow-hidden">
             <div className={`px-6 py-4 text-white ${
