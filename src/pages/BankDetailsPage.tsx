@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { CreditCard, Save, CheckCircle } from "lucide-react";
+import { CreditCard, Save, CheckCircle, Clock } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { updateBankDetails } from "@/services/api";
 import { useToast } from "@/hooks/use-toast";
@@ -42,7 +42,7 @@ const BankDetailsPage = () => {
 
       const response = await updateBankDetails(token, {
         account_number: accountNumber,
-        ifsc_code: ifscCode,
+        account_ifsc: ifscCode,
         account_holder_name: accountHolderName,
         bank_name: bankName,
       });

@@ -1,8 +1,10 @@
+
+import { useState } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
-import { Settings, Bell, Moon, Globe, Shield, User } from "lucide-react";
+import { Settings, Bell, Moon, Globe, Shield, User, Lock, HelpCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const SettingsPage = () => {
