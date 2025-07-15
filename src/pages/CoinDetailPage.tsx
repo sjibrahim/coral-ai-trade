@@ -222,11 +222,14 @@ const CoinDetailPage = () => {
         crypto.binance_symbol.replace(/USDT$/, '').replace(/usdt$/, '') : 
         crypto.symbol.toUpperCase();
       
+      // Map UI direction to API direction
+      const apiDirection = direction === 'Call' ? 'buy' : 'put';
+      
       const response = await placeTrade(
         token,
         parseFloat(tradeAmount),
         baseSymbol, // Send only base symbol like "BTC" instead of "BTCUSDT"
-        direction.toLowerCase(),
+        apiDirection, // Send "buy" instead of "call"
         livePrice,
         timeInSeconds
       );
