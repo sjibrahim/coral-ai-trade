@@ -1,9 +1,10 @@
+
 import { useState, useEffect } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useGeneralSettings } from "@/hooks/use-general-settings";
 import { useToast } from "@/hooks/use-toast";
-import { ExternalLink, Crown, Shield, TrendingUp, Users, Clock, Sparkles } from "lucide-react";
+import { ExternalLink, Crown, Users, TrendingUp, Wallet, ArrowDownToLine, ArrowUpFromLine } from "lucide-react";
 
 export function WelcomeInfoModal() {
   const [open, setOpen] = useState(false);
@@ -21,7 +22,6 @@ export function WelcomeInfoModal() {
   const openTelegramChannel = () => {
     window.open(settings.telegram_channel || "https://t.me/trexosupport", "_blank");
   };
-
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -48,11 +48,30 @@ export function WelcomeInfoModal() {
             </p>
           </div>
 
-          {/* Quick Info */}
-          <div className="bg-white/80 backdrop-blur-sm rounded-lg p-3 border border-emerald-200/50">
-            <div className="flex justify-between items-center text-xs">
-              <span className="text-gray-600">Daily Profit</span>
-              <span className="font-bold text-green-600">{settings.daily_profit || "1.5"}%</span>
+          {/* Financial Info Cards */}
+          <div className="grid grid-cols-3 gap-2">
+            <div className="bg-white/80 backdrop-blur-sm rounded-lg p-3 border border-emerald-200/50 text-center">
+              <div className="flex items-center justify-center mb-1">
+                <ArrowDownToLine className="w-3 h-3 text-emerald-600" />
+              </div>
+              <p className="text-xs text-gray-600 mb-1">Min Deposit</p>
+              <p className="font-bold text-emerald-600 text-sm">₹{settings.min_deposit || "300"}</p>
+            </div>
+            
+            <div className="bg-white/80 backdrop-blur-sm rounded-lg p-3 border border-blue-200/50 text-center">
+              <div className="flex items-center justify-center mb-1">
+                <ArrowUpFromLine className="w-3 h-3 text-blue-600" />
+              </div>
+              <p className="text-xs text-gray-600 mb-1">Min Withdraw</p>
+              <p className="font-bold text-blue-600 text-sm">₹{settings.min_withdrawal || "300"}</p>
+            </div>
+            
+            <div className="bg-white/80 backdrop-blur-sm rounded-lg p-3 border border-green-200/50 text-center">
+              <div className="flex items-center justify-center mb-1">
+                <TrendingUp className="w-3 h-3 text-green-600" />
+              </div>
+              <p className="text-xs text-gray-600 mb-1">Daily Profit</p>
+              <p className="font-bold text-green-600 text-sm">{settings.daily_profit || "1.5"}%</p>
             </div>
           </div>
           
