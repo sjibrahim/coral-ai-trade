@@ -2,15 +2,15 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import MobileLayout from "@/components/layout/MobileLayout";
-import { Check, Wallet, ArrowDown, CreditCard, Clock, Shield, Banknote, TrendingDown, Target, Zap } from "lucide-react";
+import { Check, Wallet, CreditCard, Info, AlertCircle, Banknote } from "lucide-react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { createWithdrawOrder, getGeneralSettings } from "@/services/api";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
-import AmountInput from "@/components/payments/AmountInput";
-import ConfirmButton from "@/components/payments/ConfirmButton";
 import { motion } from "framer-motion";
 import { useGeneralSettings } from "@/hooks/use-general-settings";
 
@@ -81,6 +81,19 @@ const WithdrawPage = () => {
   const withdrawalFeeAmount = amount ? (parseFloat(amount) * withdrawalFeePercentage / 100) : 0;
   const netAmount = amount ? parseFloat(amount) - withdrawalFeeAmount : 0;
   
+  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    if (value === "" || /^\d+$/.test(value)) {
+      setAmount(value);
+      setError("");
+    }
+  };
+
+  const setQuickAmount = (quickAmount: string) => {
+    setAmount(quickAmount);
+    setError("");
+  };
+  
   const handleConfirm = async () => {
     if (!isValidAmount) {
       setError(`Please enter a valid amount (minimum ₹${minWithdrawal} and not exceeding your balance)`);
@@ -129,219 +142,176 @@ const WithdrawPage = () => {
   
   return (
     <MobileLayout showBackButton title="Withdraw Funds">
-      <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-green-50 relative overflow-hidden pb-20">
-        {/* Background Elements */}
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-20 left-20 w-64 h-64 bg-emerald-400/20 rounded-full blur-3xl animate-pulse"></div>
-          <div className="absolute bottom-20 right-20 w-64 h-64 bg-green-400/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
-        </div>
+      <div className="min-h-screen bg-gray-50 p-4">
+        <div className="max-w-md mx-auto space-y-6">
+          
+          {/* Balance Card */}
+          <Card className="border-0 shadow-lg bg-white">
+            <CardHeader className="text-center pb-4">
+              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <Wallet className="w-8 h-8 text-blue-600" />
+              </div>
+              <CardTitle className="text-xl text-gray-800">Available Balance</CardTitle>
+              <div className="text-3xl font-bold text-blue-600">₹{availableBalance.toLocaleString()}</div>
+            </CardHeader>
+          </Card>
 
-        <div className="relative z-10 p-4 space-y-4">
-          {/* Balance Header */}
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="text-center py-4"
-          >
-            <Card className="bg-gradient-to-r from-emerald-600 via-emerald-700 to-green-600 text-white border-0 shadow-lg">
-              <CardContent className="p-4">
-                <div className="flex items-center justify-center mb-3">
-                  <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mr-3">
-                    <TrendingDown className="w-6 h-6 text-white" />
-                  </div>
-                  <div>
-                    <h1 className="text-lg font-bold">Withdraw Earnings</h1>
-                    <p className="text-sm text-emerald-100">Transfer your profits securely</p>
-                  </div>
+          {/* Withdrawal Form */}
+          <Card className="border-0 shadow-lg bg-white">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <Banknote className="w-5 h-5 text-green-600" />
+                Withdrawal Amount
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <Label htmlFor="amount" className="text-sm font-medium text-gray-700">
+                  Enter Amount (Min: ₹{minWithdrawal})
+                </Label>
+                <div className="relative mt-1">
+                  <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">₹</span>
+                  <Input
+                    id="amount"
+                    type="text"
+                    value={amount}
+                    onChange={handleAmountChange}
+                    placeholder="0"
+                    className="pl-8 h-12 text-lg border-gray-200 focus:border-blue-500"
+                  />
                 </div>
-                
-                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 border border-white/20">
-                  <div className="flex items-center justify-center mb-2">
-                    <Wallet className="w-5 h-5 text-emerald-200 mr-2" />
-                    <span className="text-sm text-emerald-200">Available Balance</span>
-                  </div>
-                  <p className="text-xl font-bold text-white">₹{availableBalance.toLocaleString()}</p>
-                  
-                  <div className="flex justify-center space-x-4 mt-3 text-sm">
-                    <div className="flex items-center text-green-200">
-                      <Target className="w-4 h-4 mr-2" />
-                      <span>Min: ₹{minWithdrawal}</span>
-                    </div>
-                    <div className="flex items-center text-orange-200">
-                      <Banknote className="w-4 h-4 mr-2" />
-                      <span>Fee: {withdrawalFeePercentage}%</span>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
+              </div>
 
-          {/* Error Display */}
-          {error && (
+              {/* Quick Amount Buttons */}
+              <div className="grid grid-cols-4 gap-2">
+                {["1000", "2500", "5000", "10000"].map((quickAmount) => (
+                  <Button
+                    key={quickAmount}
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setQuickAmount(quickAmount)}
+                    className="h-8 text-xs"
+                    disabled={parseInt(quickAmount) > availableBalance}
+                  >
+                    {quickAmount}
+                  </Button>
+                ))}
+              </div>
+
+              {/* Error Message */}
+              {error && (
+                <div className="flex items-center gap-2 p-3 bg-red-50 border border-red-200 rounded-lg">
+                  <AlertCircle className="w-4 h-4 text-red-500 flex-shrink-0" />
+                  <p className="text-sm text-red-600">{error}</p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Fee Breakdown */}
+          {amount && (
             <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
             >
-              <Card className="bg-red-50 border border-red-200">
-                <CardContent className="p-3">
-                  <p className="text-red-600 text-sm">{error}</p>
+              <Card className="border-0 shadow-lg bg-white">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-lg">
+                    <Info className="w-5 h-5 text-blue-600" />
+                    Fee Breakdown
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600">Withdrawal Amount</span>
+                    <span className="font-medium">₹{amount}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600">Processing Fee ({withdrawalFeePercentage}%)</span>
+                    <span className="font-medium text-red-600">-₹{withdrawalFeeAmount.toFixed(2)}</span>
+                  </div>
+                  <div className="border-t pt-3">
+                    <div className="flex justify-between items-center">
+                      <span className="font-semibold text-gray-800">Net Amount</span>
+                      <span className="font-bold text-green-600 text-lg">₹{netAmount.toFixed(2)}</span>
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
             </motion.div>
           )}
-          
-          {/* Amount Input */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-          >
-            <Card className="bg-white/90 backdrop-blur-sm border border-emerald-200/50 shadow-lg">
-              <CardContent className="p-4">
-                <div className="flex items-center mb-3">
-                  <div className="w-6 h-6 bg-gradient-to-br from-rose-500 to-pink-600 rounded-lg flex items-center justify-center mr-3">
-                    <ArrowDown className="w-4 h-4 text-white" />
-                  </div>
-                  <h3 className="text-base font-semibold text-gray-800">Withdrawal Amount</h3>
-                </div>
-                
-                <AmountInput
-                  amount={amount}
-                  onChange={setAmount}
-                  minAmount={minWithdrawal}
-                  maxAmount={availableBalance}
-                  quickAmounts={["1000", "2500", "5000", "10000"]}
-                />
-              </CardContent>
-            </Card>
-          </motion.div>
-          
-          {/* Transaction Summary */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-          >
-            <Card className="bg-white/90 backdrop-blur-sm border border-emerald-200/50 shadow-lg">
-              <CardContent className="p-4">
-                <h3 className="text-base font-semibold text-gray-800 mb-3">Transaction Summary</h3>
-                <div className="space-y-3">
-                  <div className="flex justify-between items-center text-sm">
-                    <span className="text-gray-600">Withdrawal Amount</span>
-                    <span className="text-gray-900 font-medium">₹{amount || '0'}</span>
-                  </div>
-                  <div className="flex justify-between items-center text-sm">
-                    <span className="text-gray-600">Processing Fee ({withdrawalFeePercentage}%)</span>
-                    <span className="text-red-600 font-medium">-₹{withdrawalFeeAmount.toFixed(2)}</span>
-                  </div>
-                  <div className="h-px bg-gray-200"></div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-900 font-semibold text-base">Net Amount</span>
-                    <span className="text-emerald-600 font-bold text-base">₹{netAmount.toFixed(2)}</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
 
           {/* Bank Details */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-          >
-            <Card className="bg-white/90 backdrop-blur-sm border border-emerald-200/50 shadow-lg">
-              <CardContent className="p-4">
-                <div className="flex items-center mb-3">
-                  <div className="w-6 h-6 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center mr-3">
-                    <CreditCard className="w-4 h-4 text-white" />
-                  </div>
-                  <h3 className="text-base font-semibold text-gray-800">Destination Bank</h3>
+          <Card className="border-0 shadow-lg bg-white">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <CreditCard className="w-5 h-5 text-purple-600" />
+                Bank Details
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-xs text-gray-500 uppercase tracking-wide">Account Holder</p>
+                  <p className="font-medium text-gray-800">{accountName}</p>
                 </div>
-                
-                <div className="bg-gray-50 rounded-lg p-3 space-y-2">
-                  {[
-                    { label: "Account Holder", value: accountName },
-                    { label: "Account Number", value: bankAccount },
-                    { label: "IFSC Code", value: ifscCode },
-                    { label: "Bank Name", value: bankName }
-                  ].map((detail, idx) => (
-                    <div key={idx} className="flex justify-between items-center text-sm">
-                      <span className="text-gray-600">{detail.label}</span>
-                      <span className="text-gray-900 font-medium">{detail.value}</span>
-                    </div>
-                  ))}
+                <div>
+                  <p className="text-xs text-gray-500 uppercase tracking-wide">Bank Name</p>
+                  <p className="font-medium text-gray-800">{bankName}</p>
                 </div>
-              </CardContent>
-            </Card>
-          </motion.div>
-        </div>
+                <div>
+                  <p className="text-xs text-gray-500 uppercase tracking-wide">Account Number</p>
+                  <p className="font-medium text-gray-800">{bankAccount}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-gray-500 uppercase tracking-wide">IFSC Code</p>
+                  <p className="font-medium text-gray-800">{ifscCode}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
 
-        {/* Fixed Bottom Button */}
-        <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-sm border-t border-emerald-200/50 p-4 z-50">
-          <button
+          {/* Submit Button */}
+          <Button
             onClick={handleConfirm}
             disabled={!isValidAmount || bankAccount === "Not set" || ifscCode === "Not set" || isProcessing}
-            className={`w-full h-12 rounded-xl font-bold text-base shadow-lg border-0 transition-all ${
+            className={`w-full h-12 text-base font-semibold ${
               isValidAmount && bankAccount !== "Not set" && ifscCode !== "Not set" && !isProcessing
-                ? "bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white"
+                ? "bg-blue-600 hover:bg-blue-700 text-white"
                 : "bg-gray-300 text-gray-500 cursor-not-allowed"
             }`}
           >
             {isProcessing ? (
-              <div className="flex items-center justify-center">
-                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+              <div className="flex items-center justify-center gap-2">
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
                 Processing...
               </div>
             ) : (
-              "PROCESS WITHDRAWAL"
+              "Confirm Withdrawal"
             )}
-          </button>
-          
-          <div className="flex items-center justify-center mt-2 text-sm text-gray-500">
-            <Clock className="w-4 h-4 mr-1" />
-            <span>Processed within 24 hours on business days</span>
-          </div>
+          </Button>
         </div>
       </div>
       
       {/* Success Modal */}
       <Dialog open={showSuccessModal} onOpenChange={setShowSuccessModal}>
-        <DialogContent className="sm:max-w-md bg-gradient-to-br from-emerald-600 to-green-600 border-0 shadow-2xl p-0 overflow-hidden">
-          <div className="relative p-6">
-            <div className="flex flex-col items-center text-white">
-              <motion.div 
-                initial={{ scale: 0.8, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ duration: 0.3 }}
-                className="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center mb-4"
-              >
-                <Check className="h-8 w-8 text-white" />
-              </motion.div>
-              <motion.h2 
-                initial={{ y: 10, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.1, duration: 0.3 }}
-                className="text-lg font-bold mb-2"
-              >
-                Withdrawal Submitted!
-              </motion.h2>
-              <motion.p 
-                initial={{ y: 10, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.2, duration: 0.3 }}
-                className="text-emerald-100 text-sm text-center mb-4"
-              >
-                Your withdrawal request for ₹{amount} has been submitted. You will receive ₹{netAmount.toFixed(2)} after processing fee deduction.
-              </motion.p>
-              <Button 
-                className="w-full bg-white text-emerald-700 hover:bg-gray-100 font-bold rounded-lg text-sm" 
-                onClick={() => setShowSuccessModal(false)}
-              >
-                Continue
-              </Button>
+        <DialogContent className="sm:max-w-md">
+          <div className="flex flex-col items-center text-center p-6">
+            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
+              <Check className="h-8 w-8 text-green-600" />
             </div>
+            <h2 className="text-xl font-bold text-gray-900 mb-2">
+              Withdrawal Submitted!
+            </h2>
+            <p className="text-gray-600 mb-4">
+              Your withdrawal request for ₹{amount} has been submitted. You will receive ₹{netAmount.toFixed(2)} after processing fee deduction.
+            </p>
+            <Button 
+              className="w-full bg-blue-600 hover:bg-blue-700" 
+              onClick={() => setShowSuccessModal(false)}
+            >
+              Continue
+            </Button>
           </div>
         </DialogContent>
       </Dialog>
