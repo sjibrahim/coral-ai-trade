@@ -208,7 +208,7 @@ const HomePage = () => {
                     <span className="text-xs text-emerald-200 font-trading">Available</span>
                   </div>
                   <p className="text-lg font-bold font-mono">
-                    {showBalance ? `₹${walletAmount.toLocaleString()}` : "••••"}
+                    {showBalance ? `₹${totalBalance.toLocaleString()}` : "••••"}
                   </p>
                 </div>
                 <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 border border-white/20">
