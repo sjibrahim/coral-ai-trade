@@ -50,10 +50,14 @@ const ProfilePage = () => {
     navigate('/login');
   };
 
-  const depositBalance = user?.wallet || 0;
   const totalIncome = user?.total_income || user?.income || 0;
   const todayIncome = user?.today_income || 0;
 
+  const walletAmount = user?.wallet ? parseFloat(user.wallet) : 0;
+  const incomeAmount = user?.income ? parseFloat(user.income) : 0;
+  const depositBalance = walletAmount + incomeAmount;
+
+  
   const quickActions = [
     { icon: Wallet, label: "Deposit", gradient: "from-emerald-500 to-green-600", link: "/deposit" },
     { icon: Send, label: "Withdraw", gradient: "from-blue-500 to-indigo-600", link: "/withdraw" },
