@@ -5,7 +5,7 @@ import { ExternalLink, MessageCircle } from "lucide-react";
 
 const SupportPage = () => {
   const openCustomerSupport = () => {
-    window.open("https://t.me/nexbitsupport", "_blank");
+    window.open("https://t.me/trexosupport", "_blank");
   };
 
   return (
@@ -34,7 +34,7 @@ const SupportPage = () => {
             
             <div className="bg-muted/50 rounded-lg p-4">
               <p className="text-sm text-muted-foreground mb-1">Contact us via</p>
-              <p className="font-medium text-lg">@nexbitsupport</p>
+              <p className="font-medium text-lg">@trexosupport</p>
             </div>
 
             <Button 

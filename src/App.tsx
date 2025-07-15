@@ -11,8 +11,8 @@ import AppRoutes from "./routes";
 // Create a new QueryClient outside of the component
 const queryClient = new QueryClient();
 
-// Set document title for Nexbit
-document.title = "Nexbit - Crypto Trading Platform";
+// Set document title for Trexo
+document.title = "Trexo - Crypto Trading Platform";
 
 const App = () => {
   return (

@@ -1,4 +1,3 @@
-
 import MobileLayout from "@/components/layout/MobileLayout";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
@@ -8,13 +7,13 @@ const PrivacyPage = () => {
       <ScrollArea className="h-[calc(100vh-60px)]">
         <div className="p-4 space-y-6 pb-20">
           <div className="space-y-4">
-            <h2 className="text-xl font-bold">Nexbit Privacy Policy</h2>
+            <h2 className="text-xl font-bold">Trexo Privacy Policy</h2>
             <p className="text-sm text-muted-foreground">Last updated: May 10, 2025</p>
             
             <section className="space-y-2">
               <h3 className="font-semibold text-lg">1. Introduction</h3>
               <p className="text-sm">
-                At Nexbit, we respect your privacy and are committed to protecting your personal data. This Privacy Policy explains how we collect, use, and safeguard your information when you use our services.
+                At Trexo, we respect your privacy and are committed to protecting your personal data. This Privacy Policy explains how we collect, use, and safeguard your information when you use our services.
               </p>
             </section>
             
@@ -98,7 +97,7 @@ const PrivacyPage = () => {
             <section className="space-y-2">
               <h3 className="font-semibold text-lg">8. Contact Us</h3>
               <p className="text-sm">
-                If you have any questions about this Privacy Policy, please contact us at privacy@nexbit.com.
+                If you have any questions about this Privacy Policy, please contact us at privacy@trexo.com.
               </p>
             </section>
           </div>
