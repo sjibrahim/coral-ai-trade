@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useCallback } from 'react';
 import { useParams, useLocation, Link, useNavigate } from 'react-router-dom';
 import MobileLayout from '@/components/layout/MobileLayout';
@@ -234,7 +235,7 @@ const CoinDetailPage = () => {
         timeInSeconds
       );
       
-      if (response.status) {
+      if (response.success) {
         // Store the complete response data for the timer
         setTradeApiResponse(response.data);
         
@@ -247,7 +248,7 @@ const CoinDetailPage = () => {
         setIsTradeTimerOpen(false);
         
         // Handle specific error messages
-        if (response.msg === "Only one trade is allowed per day.") {
+        if (response.message === "Only one trade is allowed per day.") {
           toast({
             title: "Daily Trade Limit",
             description: "You can only place one trade per day. Please try again tomorrow.",
@@ -256,7 +257,7 @@ const CoinDetailPage = () => {
         } else {
           toast({
             title: "Trade Failed",
-            description: response.msg || "Failed to place trade",
+            description: response.message || "Failed to place trade",
             variant: "destructive",
           });
         }
