@@ -234,8 +234,9 @@ const CoinDetailPage = () => {
         timeInSeconds
       );
       
-      if (response.success) {
-        setTradeApiResponse(response);
+      if (response.status) {
+        // Store the complete response data for the timer
+        setTradeApiResponse(response.data);
         
         toast({
           title: "Trade Placed",
@@ -245,11 +246,20 @@ const CoinDetailPage = () => {
         // Close the timer modal if trade failed
         setIsTradeTimerOpen(false);
         
-        toast({
-          title: "Trade Failed",
-          description: response.message || "Failed to place trade",
-          variant: "destructive",
-        });
+        // Handle specific error messages
+        if (response.msg === "Only one trade is allowed per day.") {
+          toast({
+            title: "Daily Trade Limit",
+            description: "You can only place one trade per day. Please try again tomorrow.",
+            variant: "destructive",
+          });
+        } else {
+          toast({
+            title: "Trade Failed",
+            description: response.msg || "Failed to place trade",
+            variant: "destructive",
+          });
+        }
       }
     } catch (error) {
       console.error('Trade error:', error);

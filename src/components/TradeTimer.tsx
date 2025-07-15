@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -22,7 +21,6 @@ interface TradeTimerProps {
     profit?: number;
     lost_amount?: number;
     new_balance?: number;
-    trade_amount?: number;
   } | null;
 }
 
