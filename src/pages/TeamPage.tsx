@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
 import { Card, CardContent } from "@/components/ui/card";
@@ -45,7 +44,7 @@ const TeamPage = () => {
           <h1 className="text-xl font-bold text-gray-800 text-center">Team Network</h1>
         </div>
 
-        <div className="relative z-10 p-4 space-y-4 pb-24">
+        <div className="relative z-10 p-4 space-y-4 pb-32">
           {/* Hero Stats */}
           <TeamStatsCard
             activeLevel1={activeLevel1}
@@ -204,29 +203,31 @@ const TeamPage = () => {
           )}
         </div>
 
-        {/* Footer Navigation - Same as HomePage */}
-        <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-gray-200/50 shadow-2xl z-50">
-          <div className="flex items-center justify-around py-2 px-4">
-            {[
-              { icon: Home, label: "Home", path: "/" },
-              { icon: BarChart3, label: "Market", path: "/market" },
-              { icon: Wallet, label: "Wallet", path: "/deposit" },
-              { icon: Users, label: "Team", path: "/team", active: true },
-              { icon: User, label: "Profile", path: "/profile" }
-            ].map((item, idx) => (
-              <Link 
-                key={idx}
-                to={item.path}
-                className={`flex flex-col items-center gap-1 p-2 rounded-lg transition-all duration-300 ${
-                  item.active 
-                    ? "bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-lg" 
-                    : "text-gray-600 hover:text-emerald-600 hover:bg-emerald-50"
-                }`}
-              >
-                <item.icon className={`w-5 h-5 ${item.active ? "text-white" : ""}`} />
-                <span className={`text-xs font-medium ${item.active ? "text-white" : ""}`}>{item.label}</span>
-              </Link>
-            ))}
+        {/* Floating Action Bar */}
+        <div className="fixed bottom-6 left-4 right-4 z-50">
+          <div className="bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl border border-gray-200/30 p-3">
+            <div className="flex items-center justify-around">
+              {[
+                { icon: Home, label: "Home", path: "/" },
+                { icon: BarChart3, label: "Market", path: "/market" },
+                { icon: Wallet, label: "Wallet", path: "/deposit" },
+                { icon: Users, label: "Team", path: "/team", active: true },
+                { icon: User, label: "Profile", path: "/profile" }
+              ].map((item, idx) => (
+                <Link 
+                  key={idx}
+                  to={item.path}
+                  className={`flex flex-col items-center gap-1 p-2 rounded-xl transition-all duration-300 ${
+                    item.active 
+                      ? "bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-lg transform -translate-y-1" 
+                      : "text-gray-600 hover:text-emerald-600 hover:bg-emerald-50/80"
+                  }`}
+                >
+                  <item.icon className={`w-5 h-5 ${item.active ? "text-white" : ""}`} />
+                  <span className={`text-xs font-medium ${item.active ? "text-white" : ""}`}>{item.label}</span>
+                </Link>
+              ))}
+            </div>
           </div>
         </div>
       </div>
