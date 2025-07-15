@@ -1,11 +1,13 @@
-
 import { useState, useEffect } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { ArrowUpCircle } from "lucide-react";
+import { ArrowUpCircle, IndianRupee, Wallet, Clock, Check, X, Receipt } from "lucide-react";
 import { Link } from "react-router-dom";
-import { getTransactions } from "@/services/api";
+import { getTransactions, getGeneralSettings } from "@/services/api";
+import { useToast } from "@/hooks/use-toast";
+import { Card, CardContent } from "@/components/ui/card";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface DepositRecord {
   id: string;
