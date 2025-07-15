@@ -1,3 +1,4 @@
+
 // API endpoints for our application
 const API_BASE = '/backend/restapi';
 const BINANCE_API = 'https://api.binance.com/api/v3';
@@ -250,12 +251,4 @@ export const placeTrade = async (
       data: null
     };
   }
-};
-
-export const changePassword = async (token: string, password: string, new_password: string) => {
-  return apiRequest(endpoints.updatePassword, 'POST', { token, password, new_password });
-};
-
-export const createDepositOrder = async (token: string, amount: number) => {
-  return apiRequest(endpoints.createTopupOrder, 'POST', { token, amount });
 };

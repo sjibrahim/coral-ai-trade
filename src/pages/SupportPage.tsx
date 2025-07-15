@@ -1,89 +1,74 @@
 
 import MobileLayout from "@/components/layout/MobileLayout";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { MessageCircle, Mail, Phone, HelpCircle, ExternalLink, Headphones } from "lucide-react";
+import { ExternalLink, MessageCircle } from "lucide-react";
 
 const SupportPage = () => {
-  // Sample support options data
-  const supportOptions = [
-    {
-      title: "Contact Support",
-      description: "Get in touch with our support team for assistance.",
-      icon: MessageCircle,
-      action: () => alert("Contacting support..."),
-    },
-    {
-      title: "Email Us",
-      description: "Send us an email with your questions or concerns.",
-      icon: Mail,
-      action: () => window.location.href = "mailto:support@example.com",
-    },
-    {
-      title: "Call Us",
-      description: "Speak to a representative over the phone.",
-      icon: Phone,
-      action: () => window.location.href = "tel:+18001234567",
-    },
-    {
-      title: "Help Center",
-      description: "Find answers to common questions in our help center.",
-      icon: HelpCircle,
-      action: () => window.open("https://example.com/help", "_blank"),
-    },
-    {
-      title: "Visit Our Website",
-      description: "Learn more about our services and features.",
-      icon: ExternalLink,
-      action: () => window.open("https://example.com", "_blank"),
-    },
-  ];
-  
-  return (
-    <MobileLayout showBackButton hideNavbar>
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-emerald-50/40">
-        <div className="px-3 py-4">
-          {/* Hero Header */}
-          <div className="relative mb-6 overflow-hidden rounded-2xl bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-600 p-6 shadow-xl">
-            <div className="absolute inset-0 bg-black/10"></div>
-            <div className="absolute top-0 right-0 h-20 w-20 rounded-full bg-white/10 transform translate-x-8 -translate-y-8"></div>
-            <div className="absolute bottom-0 left-0 h-16 w-16 rounded-full bg-white/10 transform -translate-x-4 translate-y-4"></div>
-            
-            <div className="relative z-10 text-center text-white">
-              <div className="flex items-center justify-center mb-3">
-                <div className="h-10 w-10 rounded-full bg-white/20 flex items-center justify-center mr-3">
-                  <Headphones className="h-5 w-5" />
-                </div>
-                <h1 className="text-xl font-bold">Support Center</h1>
-              </div>
-              <p className="text-blue-100 text-sm">We're here to help you 24/7</p>
-            </div>
-          </div>
+  const openCustomerSupport = () => {
+    window.open("https://t.me/nexbitsupport", "_blank");
+  };
 
-          {/* Support Options */}
+  return (
+    <MobileLayout showBackButton title="Customer Support">
+      <div className="p-4 space-y-6 animate-fade-in">
+        {/* Header Section */}
+        <div className="text-center space-y-4">
+          <div className="w-20 h-20 mx-auto bg-primary/20 rounded-full flex items-center justify-center">
+            <MessageCircle className="w-10 h-10 text-primary" />
+          </div>
+          <div>
+            <h2 className="text-2xl font-bold mb-2">Need Help?</h2>
+            <p className="text-muted-foreground">
+              Our customer support team is available 24/7 to assist you with any questions or issues.
+            </p>
+          </div>
+        </div>
+
+        {/* Support Card */}
+        <div className="bg-card rounded-xl p-6 border border-border/30">
+          <div className="text-center space-y-4">
+            <h3 className="text-xl font-semibold">Customer Support</h3>
+            <p className="text-muted-foreground">
+              Get instant help and support through our Telegram channel
+            </p>
+            
+            <div className="bg-muted/50 rounded-lg p-4">
+              <p className="text-sm text-muted-foreground mb-1">Contact us via</p>
+              <p className="font-medium text-lg">@nexbitsupport</p>
+            </div>
+
+            <Button 
+              onClick={openCustomerSupport}
+              className="w-full py-3 bg-[#0088cc] hover:bg-[#0077b5] text-white font-medium flex items-center justify-center gap-2"
+              size="lg"
+            >
+              <MessageCircle className="w-5 h-5" />
+              Open Telegram Support
+              <ExternalLink className="w-4 h-4" />
+            </Button>
+          </div>
+        </div>
+
+        {/* Support Features */}
+        <div className="bg-card rounded-xl p-5 border border-border/30">
+          <h4 className="font-semibold mb-4">What we can help with:</h4>
           <div className="space-y-3">
-            {supportOptions.map((option, index) => (
-              <Card key={index} className="bg-white/80 backdrop-blur-sm border-0 shadow-sm hover:shadow-md transition-all duration-300">
-                <CardContent className="flex flex-col space-y-3 p-4">
-                  <div className="flex items-center space-x-3">
-                    <div className="h-10 w-10 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center">
-                      <option.icon className="h-5 w-5 text-white" />
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="text-base font-semibold text-gray-800">{option.title}</h3>
-                      <p className="text-sm text-gray-600">{option.description}</p>
-                    </div>
-                  </div>
-                  <Button 
-                    variant="outline" 
-                    onClick={option.action}
-                    className="w-full border-blue-200 text-blue-600 hover:bg-blue-50"
-                  >
-                    Get Help
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
+            <div className="flex items-center gap-3">
+              <div className="w-2 h-2 bg-primary rounded-full"></div>
+              <span className="text-sm">Account Issues</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="w-2 h-2 bg-primary rounded-full"></div>
+              <span className="text-sm">Deposit & Withdrawal Problems</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="w-2 h-2 bg-primary rounded-full"></div>
+              <span className="text-sm">Trading Questions</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="w-2 h-2 bg-primary rounded-full"></div>
+              <span className="text-sm">Technical Support</span>
+            </div>
           </div>
         </div>
       </div>

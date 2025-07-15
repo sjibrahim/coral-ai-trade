@@ -1,126 +1,233 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { IndianRupee, CreditCard, Wallet, Zap } from "lucide-react";
+import { Wallet, TrendingUp, Shield, Zap, Gift, Star, CreditCard, ArrowRight, CheckCircle, Sparkles } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
 import { useAuth } from "@/contexts/AuthContext";
-import { createDepositOrder } from "@/services/api";
-import { useToast } from "@/hooks/use-toast";
+import { createTopupOrder } from "@/services/api";
+import { toast } from "@/components/ui/use-toast";
+import { useGeneralSettings } from "@/hooks/use-general-settings";
+import AmountInput from "@/components/payments/AmountInput";
+import PaymentMethodSelector from "@/components/payments/PaymentMethodSelector";
+import ConfirmButton from "@/components/payments/ConfirmButton";
+import { motion } from "framer-motion";
+
+interface PaymentMethod {
+  id: string;
+  name: string;
+}
+
+const paymentMethods: PaymentMethod[] = [
+  { id: "PAY1", name: "PAY-1" },
+  { id: "PAY2", name: "PAY-2" },
+  { id: "PAY3", name: "PAY-3" },
+  { id: "PAY4", name: "PAY-4" }
+];
 
 const DepositPage = () => {
-  const [amount, setAmount] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const { user } = useAuth();
-  const { toast } = useToast();
-
-  const handleDeposit = async () => {
-    if (!amount || parseFloat(amount) <= 0) {
-      toast({
-        title: "Invalid Amount",
-        description: "Please enter a valid amount",
-        variant: "destructive",
-      });
-      return;
-    }
-
+  const [amount, setAmount] = useState("");
+  const [selectedChannel, setSelectedChannel] = useState("PAY1");
+  const [isLoading, setIsLoading] = useState(false);
+  const { settings } = useGeneralSettings();
+  
+  const minDepositAmount = parseFloat(settings.min_deposit || "600");
+  const isValidAmount = Number(amount) >= minDepositAmount;
+  
+  const handleConfirm = async () => {
+    if (!isValidAmount || !user?.token) return;
+    
     setIsLoading(true);
+    
     try {
-      const token = localStorage.getItem('auth_token');
-      if (!token) return;
-
-      const response = await createDepositOrder(token, parseFloat(amount));
+      const response = await createTopupOrder(user.token, Number(amount), selectedChannel);
       
-      if (response.status) {
-        toast({
-          title: "Success",
-          description: "Deposit order created successfully",
-        });
-        setAmount("");
+      if (response.status && response.data?.redirect_url) {
+        window.location.href = response.data.redirect_url;
+        return;
       } else {
         toast({
-          title: "Error",
-          description: response.msg || "Failed to create deposit order",
+          title: "Payment Failed",
+          description: response.msg || "No active gateway available",
           variant: "destructive",
         });
       }
     } catch (error) {
+      console.error("Deposit error:", error);
       toast({
-        title: "Error",
-        description: "Something went wrong. Please try again.",
+        title: "Something went wrong",
+        description: "Please try again later",
         variant: "destructive",
       });
     } finally {
       setIsLoading(false);
     }
   };
-
+  
   return (
-    <MobileLayout showBackButton hideNavbar>
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-emerald-50/40">
-        <div className="px-3 py-4">
-          {/* Hero Header */}
-          <div className="relative mb-6 overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-600 via-teal-600 to-cyan-600 p-6 shadow-xl">
-            <div className="absolute inset-0 bg-black/10"></div>
-            <div className="absolute top-0 right-0 h-20 w-20 rounded-full bg-white/10 transform translate-x-8 -translate-y-8"></div>
-            <div className="absolute bottom-0 left-0 h-16 w-16 rounded-full bg-white/10 transform -translate-x-4 translate-y-4"></div>
-            
-            <div className="relative z-10 text-center text-white">
-              <div className="flex items-center justify-center mb-3">
-                <div className="h-10 w-10 rounded-full bg-white/20 flex items-center justify-center mr-3">
-                  <Wallet className="h-5 w-5" />
-                </div>
-                <h1 className="text-xl font-bold">Add Funds</h1>
-              </div>
-              <p className="text-emerald-100 text-sm">Deposit money to start trading</p>
-            </div>
-          </div>
+    <MobileLayout showBackButton title="Fund Account" hideNavbar>
+      <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-green-50 relative overflow-hidden pb-20">
+        {/* Background Elements */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute -top-40 -right-40 w-80 h-80 bg-emerald-400/20 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-green-400/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
+        </div>
 
-          {/* Deposit Form */}
-          <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-gray-800">
-                <CreditCard className="h-5 w-5 text-emerald-600" />
-                Deposit Amount
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="amount">Amount (₹)</Label>
-                <div className="relative">
-                  <IndianRupee className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-500" />
-                  <Input
-                    id="amount"
-                    type="number"
-                    placeholder="Enter amount"
-                    value={amount}
-                    onChange={(e) => setAmount(e.target.value)}
-                    className="pl-10"
-                  />
-                </div>
-              </div>
-              
-              <Button 
-                onClick={handleDeposit}
-                disabled={isLoading}
-                className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white"
-              >
-                {isLoading ? (
-                  <div className="flex items-center gap-2">
-                    <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white"></div>
-                    Processing...
+        <div className="relative z-10 p-4 space-y-4">
+          {/* Header Card */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center py-4"
+          >
+            <Card className="bg-gradient-to-r from-emerald-600 via-emerald-700 to-green-600 text-white border-0 shadow-lg">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-center mb-3">
+                  <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mr-3">
+                    <Wallet className="w-6 h-6 text-white" />
                   </div>
-                ) : (
-                  <>
-                    <Zap className="mr-2 h-4 w-4" />
-                    Deposit Now
-                  </>
-                )}
-              </Button>
-            </CardContent>
-          </Card>
+                  <div>
+                    <h1 className="text-lg font-bold">Fund Your Account</h1>
+                    <p className="text-sm text-emerald-100">Instant deposits, secure payments</p>
+                  </div>
+                </div>
+                
+                <div className="flex justify-center items-center gap-4 text-sm">
+                  <div className="flex items-center text-green-200">
+                    <Shield className="w-4 h-4 mr-2" />
+                    <span>Secure</span>
+                  </div>
+                  <div className="flex items-center text-emerald-200">
+                    <Zap className="w-4 h-4 mr-2" />
+                    <span>Instant</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          {/* Amount Selection */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+          >
+            <Card className="bg-white/90 backdrop-blur-sm border border-emerald-200/50 shadow-lg">
+              <CardContent className="p-4">
+                <div className="flex items-center mb-3">
+                  <div className="w-6 h-6 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center mr-3">
+                    <TrendingUp className="w-4 h-4 text-white" />
+                  </div>
+                  <h3 className="text-base font-semibold text-gray-800">Deposit Amount</h3>
+                </div>
+                
+                <AmountInput
+                  amount={amount}
+                  onChange={setAmount}
+                  minAmount={minDepositAmount}
+                  quickAmounts={["1000", "2500", "5000", "10000"]}
+                />
+                
+                <div className="mt-3 p-3 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-lg border border-yellow-200">
+                  <div className="flex items-center text-yellow-700 text-sm">
+                    <Star className="w-4 h-4 mr-2" />
+                    <span>Minimum deposit: ₹{minDepositAmount.toLocaleString()}</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          {/* Payment Gateway */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+          >
+            <Card className="bg-white/90 backdrop-blur-sm border border-emerald-200/50 shadow-lg">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center">
+                    <div className="w-6 h-6 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg flex items-center justify-center mr-3">
+                      <CreditCard className="w-4 h-4 text-white" />
+                    </div>
+                    <h3 className="text-base font-semibold text-gray-800">Payment Gateway</h3>
+                  </div>
+                  <div className="px-3 py-1 bg-green-100 rounded-full border border-green-200">
+                    <span className="text-green-700 text-sm font-medium">Secure</span>
+                  </div>
+                </div>
+                
+                <div className="space-y-3">
+                  <div className="grid grid-cols-2 gap-3">
+                    {paymentMethods.map(method => (
+                      <button
+                        key={method.id}
+                        onClick={() => setSelectedChannel(method.id)}
+                        className={`py-3 px-4 rounded-xl border-2 transition-all text-sm font-semibold ${
+                          selectedChannel === method.id
+                            ? "border-emerald-500 bg-emerald-50 text-emerald-700 shadow-md"
+                            : "border-gray-300 bg-white text-gray-600 hover:border-emerald-300 hover:bg-emerald-50/50"
+                        }`}
+                      >
+                        <div className="flex items-center justify-center">
+                          <CreditCard className="w-4 h-4 mr-2" />
+                          {method.name}
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          {/* Features Grid */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="grid grid-cols-2 gap-3"
+          >
+            {[
+              { icon: Zap, title: "Instant", desc: "Lightning fast", color: "from-yellow-400 to-orange-500" },
+              { icon: Shield, title: "Secure", desc: "256-bit encryption", color: "from-green-400 to-emerald-500" },
+              { icon: Gift, title: "Rewards", desc: "Earn bonus points", color: "from-purple-400 to-pink-500" },
+              { icon: Sparkles, title: "Premium", desc: "VIP treatment", color: "from-blue-400 to-cyan-500" }
+            ].map((feature, idx) => (
+              <Card key={idx} className="bg-white/80 backdrop-blur-sm border border-gray-200/50 shadow-sm">
+                <CardContent className="p-3 text-center">
+                  <div className={`w-8 h-8 mx-auto mb-2 bg-gradient-to-br ${feature.color} rounded-lg flex items-center justify-center`}>
+                    <feature.icon className="w-4 h-4 text-white" />
+                  </div>
+                  <h4 className="text-gray-900 font-medium text-sm">{feature.title}</h4>
+                  <p className="text-gray-600 text-sm">{feature.desc}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </motion.div>
+        </div>
+
+        {/* Fixed Bottom Button */}
+        <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-sm border-t border-emerald-200/50 p-4 z-50">
+          <button
+            onClick={handleConfirm}
+            disabled={!isValidAmount || isLoading}
+            className={`w-full h-12 rounded-xl font-bold text-base shadow-lg border-0 transition-all ${
+              isValidAmount && !isLoading
+                ? "bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white"
+                : "bg-gray-300 text-gray-500 cursor-not-allowed"
+            }`}
+          >
+            {isLoading ? (
+              <div className="flex items-center justify-center">
+                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                Processing...
+              </div>
+            ) : (
+              "FUND ACCOUNT NOW"
+            )}
+          </button>
         </div>
       </div>
     </MobileLayout>
