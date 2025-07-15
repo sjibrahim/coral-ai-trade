@@ -320,15 +320,15 @@ const CoinDetailPage = () => {
 
   const formatPrice = (price: number) => {
     if (price >= 1000000000) {
-      return `₹${(price / 1000000000).toFixed(2)}B`;
+      return `$${(price / 1000000000).toFixed(2)}B`;
     } else if (price >= 1000000) {
-      return `₹${(price / 1000000).toFixed(2)}M`;
+      return `$${(price / 1000000).toFixed(2)}M`;
     } else if (price >= 100000) {
-      return `₹${(price / 1000).toFixed(1)}K`;
+      return `$${(price / 1000).toFixed(1)}K`;
     } else if (price >= 1) {
-      return `₹${price.toFixed(2)}`;
+      return `$${price.toFixed(2)}`;
     } else {
-      return `₹${price.toFixed(6)}`;
+      return `$${price.toFixed(6)}`;
     }
   };
 
@@ -369,8 +369,11 @@ const CoinDetailPage = () => {
 
   const timeframes = ['1m', '5m', '15m', '30m', '1h'];
 
+  // Calculate available balance
+  const availableBalance = (user?.wallet || 0) + (user?.income || 0);
+
   return (
-    <MobileLayout showBackButton title="" noScroll={true} hideFooter={true}>
+    <MobileLayout showBackButton title={crypto.name || "Trading"} noScroll={true} hideFooter={true}>
       <div className="h-screen flex flex-col bg-white">
         {/* Header */}
         <div className="bg-white px-4 py-3 border-b border-gray-100 flex-shrink-0">
@@ -430,11 +433,12 @@ const CoinDetailPage = () => {
           </div>
         </div>
 
-        {/* Chart Container - Takes remaining space minus buttons */}
-        <div className="flex-1 relative bg-white" style={{ height: 'calc(100vh - 200px)' }}>
+        {/* Chart Container - Fixed dimensions */}
+        <div className="flex-1 relative bg-white" style={{ height: '400px', minHeight: '400px', maxHeight: '400px' }}>
           <iframe
             src={`/trade-graph.html?symbol=${crypto.binance_symbol || crypto.symbol + 'usdt'}&interval=${selectedTimeframe}`}
             className="w-full h-full"
+            style={{ width: '100%', height: '400px' }}
             title="Trading Chart"
             frameBorder="0"
           />
@@ -583,6 +587,17 @@ const CoinDetailPage = () => {
             </div>
 
             <div className="p-6 space-y-6">
+              {/* Available Balance */}
+              <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-4 border border-blue-200/50">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium text-blue-700">Available Balance</span>
+                  <span className="text-lg font-bold text-blue-800 flex items-center">
+                    <IndianRupee className="w-4 h-4 mr-1" />
+                    {availableBalance.toFixed(2)}
+                  </span>
+                </div>
+              </div>
+
               <div>
                 <label className="text-sm font-semibold text-gray-700 mb-3 block flex items-center">
                   <Timer className="w-4 h-4 mr-2 text-green-600" />
