@@ -109,7 +109,6 @@ const HomePage = () => {
   const quickActions = [
     { icon: Wallet, label: "Deposit", color: "from-emerald-500 to-emerald-600", link: "/deposit" },
     { icon: Send, label: "Withdraw", color: "from-blue-500 to-blue-600", link: "/withdraw" },
-    { icon: BarChart3, label: "Trade", color: "from-purple-500 to-purple-600", link: "/market" },
     { icon: Users, label: "Invite", color: "from-orange-500 to-orange-600", link: "/invite" }
   ];
 
