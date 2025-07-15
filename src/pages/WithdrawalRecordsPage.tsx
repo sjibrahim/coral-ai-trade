@@ -2,13 +2,12 @@
 import { useState, useEffect } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { ArrowDownCircle, IndianRupee, Wallet, Clock, Check, X, Receipt } from "lucide-react";
-import { Link } from "react-router-dom";
+import { ArrowDownCircle, IndianRupee, Calendar, TrendingDown, AlertCircle, CheckCircle, Clock, XCircle, Filter } from "lucide-react";
 import { getTransactions, getGeneralSettings } from "@/services/api";
 import { useToast } from "@/hooks/use-toast";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/contexts/AuthContext";
+import { Badge } from "@/components/ui/badge";
 
 interface WithdrawalRecord {
   id: string;
@@ -27,7 +26,7 @@ interface WithdrawalRecord {
 const WithdrawalRecordsPage = () => {
   const [records, setRecords] = useState<WithdrawalRecord[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [usdtPrice, setUsdtPrice] = useState(83); 
+  const [totalWithdrawn, setTotalWithdrawn] = useState(0);
   const [withdrawalFeePercentage, setWithdrawalFeePercentage] = useState(2);
   const { toast } = useToast();
   const { user } = useAuth();
@@ -38,17 +37,15 @@ const WithdrawalRecordsPage = () => {
         const token = localStorage.getItem('auth_token');
         if (!token) return;
 
-        // Fetch USDT price from general settings
+        // Fetch general settings for withdrawal fee
         const settingsResponse = await getGeneralSettings(token);
         if (settingsResponse.status && settingsResponse.data) {
-          setUsdtPrice(parseFloat(settingsResponse.data.usdt_price) || 83);
           setWithdrawalFeePercentage(parseFloat(settingsResponse.data.withdrawal_fee) || 2);
         }
 
         const response = await getTransactions(token);
         
         if (response.status && Array.isArray(response.data)) {
-          // Filter withdrawal transactions using the new format
           const withdrawals = response.data
             .filter((tx: any) => tx.txn_type === "WITHDRAW")
             .map((tx: any) => ({
@@ -66,6 +63,12 @@ const WithdrawalRecordsPage = () => {
             }));
           
           setRecords(withdrawals);
+          
+          // Calculate total withdrawn (only successful withdrawals)
+          const total = withdrawals
+            .filter((record: WithdrawalRecord) => record.status.toLowerCase() === 'completed' || record.status.toLowerCase() === 'success')
+            .reduce((sum: number, record: WithdrawalRecord) => sum + record.amount, 0);
+          setTotalWithdrawn(total);
         } else {
           toast({
             title: "Error",
@@ -88,24 +91,19 @@ const WithdrawalRecordsPage = () => {
     fetchData();
   }, [toast]);
   
-  // Convert INR to USD based on USDT price
-  const convertToUSD = (amountInr: number) => {
-    return (amountInr / usdtPrice).toFixed(2);
-  };
-  
-  const getStatusStyles = (status: string) => {
+  const getStatusColor = (status: string) => {
     switch(status.toLowerCase()) {
       case 'completed':
       case 'success':
-        return "bg-emerald-500/10 text-emerald-500 border-emerald-500/20";
+        return "text-green-600 bg-green-50 border-green-200";
       case 'processing':
       case 'pending':
-        return "bg-amber-500/10 text-amber-500 border-amber-500/20";
+        return "text-yellow-600 bg-yellow-50 border-yellow-200";
       case 'rejected':
       case 'failed':
-        return "bg-red-500/10 text-red-500 border-red-500/20";
+        return "text-red-600 bg-red-50 border-red-200";
       default:
-        return "bg-gray-500/10 text-gray-400 border-gray-500/20";
+        return "text-gray-600 bg-gray-50 border-gray-200";
     }
   };
   
@@ -113,222 +111,196 @@ const WithdrawalRecordsPage = () => {
     switch(status.toLowerCase()) {
       case 'completed':
       case 'success':
-        return <Check className="h-3 w-3" />;
+        return <CheckCircle className="h-4 w-4" />;
       case 'processing':
       case 'pending':
-        return <Clock className="h-3 w-3" />;
+        return <Clock className="h-4 w-4" />;
       case 'rejected':
       case 'failed':
-        return <X className="h-3 w-3" />;
+        return <XCircle className="h-4 w-4" />;
       default:
-        return <Clock className="h-3 w-3" />;
+        return <AlertCircle className="h-4 w-4" />;
     }
   };
   
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     if (isNaN(date.getTime())) return dateString;
-    return date.toLocaleDateString() + " " + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+    
+    if (date.toDateString() === today.toDateString()) {
+      return "Today, " + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    } else if (date.toDateString() === yesterday.toDateString()) {
+      return "Yesterday, " + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    } else {
+      return date.toLocaleDateString('en-GB', { 
+        day: '2-digit', 
+        month: 'short', 
+        year: 'numeric' 
+      }) + " at " + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    }
   };
 
-  const maskValue = (value: string | undefined, visibleCount: number = 5) => {
-    if (!value) return "";
-    return "***********" + value.slice(-visibleCount);
+  const maskBankAccount = (account: string | undefined) => {
+    if (!account) return "••••••••••";
+    return "••••••••" + account.slice(-4);
   };
 
-  const isUsdtWithdrawal = (record: WithdrawalRecord) => {
-    return record.type === "USDT" || record.method === "USDT";
+  const getRecordsByStatus = () => {
+    const completed = records.filter(r => r.status.toLowerCase() === 'completed' || r.status.toLowerCase() === 'success').length;
+    const pending = records.filter(r => r.status.toLowerCase() === 'processing' || r.status.toLowerCase() === 'pending').length;
+    const failed = records.filter(r => r.status.toLowerCase() === 'rejected' || r.status.toLowerCase() === 'failed').length;
+    
+    return { completed, pending, failed };
   };
+
+  const statusCounts = getRecordsByStatus();
 
   return (
-    <MobileLayout showBackButton title="Withdrawal Records">
-      <div className="p-4 space-y-4 pb-20 animate-fade-in">
-        {/* Create new withdrawal button */}
-        <div className="mb-6 grid grid-cols-2 gap-3">
-          <Link to="/withdraw">
-            <Button className="w-full flex items-center gap-2 bg-gradient-to-r from-blue-600 to-blue-500">
-              <ArrowDownCircle className="h-4 w-4" />
-              INR Withdrawal
-            </Button>
-          </Link>
-          <Link to="/usdt-withdraw">
-            <Button className="w-full flex items-center gap-2 bg-gradient-to-r from-amber-600 to-amber-500">
-              <Wallet className="h-4 w-4" />
-              USDT Withdrawal
-            </Button>
-          </Link>
-        </div>
+    <MobileLayout showBackButton title="Withdrawal History">
+      <div className="min-h-screen bg-gray-50 p-4 space-y-6">
         
-        {isLoading ? (
-          // Loading skeletons
-          Array(3).fill(0).map((_, idx) => (
-            <Card key={`skeleton-${idx}`} className="mb-4 bg-[#1c1e29] border-[#2a2d3a] overflow-hidden animate-pulse">
-              <CardContent className="p-0">
-                <div className="p-4 border-b border-[#2a2d3a] flex justify-between">
-                  <div className="h-5 w-24 bg-[#252836] rounded"></div>
-                  <div className="h-5 w-20 bg-[#252836] rounded"></div>
+        {/* Stats Overview */}
+        <Card className="bg-white shadow-sm">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-lg font-semibold flex items-center gap-2">
+              <TrendingDown className="h-5 w-5 text-blue-600" />
+              Withdrawal Summary
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex items-center justify-between p-4 bg-blue-50 rounded-lg">
+              <div>
+                <p className="text-sm text-gray-600">Total Withdrawn</p>
+                <div className="flex items-center gap-1">
+                  <IndianRupee className="h-5 w-5 text-blue-600" />
+                  <span className="text-2xl font-bold text-blue-600">
+                    {totalWithdrawn.toLocaleString()}
+                  </span>
                 </div>
-                <div className="p-4">
-                  <div className="h-8 w-32 bg-[#252836] rounded mb-4"></div>
-                  <div className="bg-[#14161f] p-4 mb-4 rounded-lg">
-                    <div className="h-4 w-28 bg-[#252836] rounded mb-3"></div>
-                    <div className="grid grid-cols-2 gap-3">
-                      <div className="bg-[#252836] h-16 rounded-md"></div>
-                      <div className="bg-[#252836] h-16 rounded-md"></div>
-                    </div>
-                  </div>
-                  <div className="flex justify-between">
-                    <div>
-                      <div className="h-3 w-20 bg-[#252836] rounded mb-1"></div>
-                      <div className="h-3 w-24 bg-[#252836] rounded"></div>
-                    </div>
-                    <div>
-                      <div className="h-3 w-10 bg-[#252836] rounded mb-1"></div>
-                      <div className="h-3 w-20 bg-[#252836] rounded"></div>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))
-        ) : records.length > 0 ? (
-          records.map((record) => {
-            const isUsdt = isUsdtWithdrawal(record);
-            // Fix type conversions by ensuring proper number types
-            const charges = typeof record.charges === 'string' ? parseFloat(record.charges) : record.charges || 0;
-            const amount = record.amount;
-            const netAmount = typeof record.net_amount === 'string' ? parseFloat(record.net_amount) : 
-                            (record.net_amount as number) || 0;
+              </div>
+              <div className="text-right">
+                <p className="text-sm text-gray-600">Total Records</p>
+                <p className="text-xl font-semibold">{records.length}</p>
+              </div>
+            </div>
             
-            return (
-              <Card 
-                key={record.id}
-                className="mb-4 bg-gradient-to-br from-[#1c1e29] to-[#151722] border-[#2a2d3a] overflow-hidden"
-              >
-                <CardContent className="p-0">
-                  {/* Header with ID and Status */}
-                  <div className="flex items-center justify-between p-4 border-b border-[#2a2d3a]">
-                    <div className="flex items-center space-x-2">
-                      <Receipt className="h-4 w-4 text-blue-400" />
-                      <span className="text-sm font-medium text-gray-200">{record.id}</span>
-                      {isUsdt && 
-                        <span className="px-1.5 py-0.5 bg-amber-900/30 rounded-full text-xs text-amber-400">
-                          USDT
-                        </span>
-                      }
-                    </div>
-                    <div className={cn(
-                      "px-2 py-0.5 rounded-full text-xs font-medium flex items-center space-x-1",
-                      getStatusStyles(record.status)
-                    )}>
-                      {getStatusIcon(record.status)}
-                      <span>{record.status.toUpperCase()}</span>
-                    </div>
-                  </div>
-                  
-                  {/* Main Content */}
-                  <div className="p-4">
-                    {/* Amount Section */}
-                    <div className="mb-4">
-                      {isUsdt ? (
-                        <>
-                          <div className="flex items-center mb-1">
-                            <Wallet className="h-5 w-5 mr-2 text-amber-400" />
-                            <span className="text-2xl font-bold text-white">${convertToUSD(amount)}</span>
-                          </div>
-                          <span className="text-xs text-gray-400">₹{amount.toLocaleString()} (INR)</span>
-                        </>
-                      ) : (
-                        <div className="flex items-center">
-                          <IndianRupee className="h-5 w-5 mr-2 text-blue-400" />
-                          <span className="text-2xl font-bold text-white">{amount.toLocaleString()}</span>
+            {/* Status breakdown */}
+            <div className="grid grid-cols-3 gap-3">
+              <div className="text-center p-3 bg-green-50 rounded-lg">
+                <p className="text-2xl font-bold text-green-600">{statusCounts.completed}</p>
+                <p className="text-xs text-gray-600">Completed</p>
+              </div>
+              <div className="text-center p-3 bg-yellow-50 rounded-lg">
+                <p className="text-2xl font-bold text-yellow-600">{statusCounts.pending}</p>
+                <p className="text-xs text-gray-600">Pending</p>
+              </div>
+              <div className="text-center p-3 bg-red-50 rounded-lg">
+                <p className="text-2xl font-bold text-red-600">{statusCounts.failed}</p>
+                <p className="text-xs text-gray-600">Failed</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Transactions List */}
+        <Card className="bg-white shadow-sm">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-lg font-semibold flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Calendar className="h-5 w-5 text-gray-600" />
+                Recent Withdrawals
+              </div>
+              <Filter className="h-4 w-4 text-gray-400" />
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-0">
+            {isLoading ? (
+              <div className="space-y-3 p-4">
+                {Array(4).fill(0).map((_, idx) => (
+                  <div key={`skeleton-${idx}`} className="animate-pulse">
+                    <div className="flex items-center justify-between p-4 border-b border-gray-100">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-10 h-10 bg-gray-200 rounded-full"></div>
+                        <div>
+                          <div className="h-4 w-24 bg-gray-200 rounded mb-1"></div>
+                          <div className="h-3 w-32 bg-gray-200 rounded"></div>
                         </div>
-                      )}
-                    </div>
-                    
-                    {/* Transaction Details Card */}
-                    <div className="rounded-lg bg-[#14161f] p-4 mb-4">
-                      <h4 className="text-sm font-medium text-gray-300 mb-3">Transaction Details</h4>
-                      
-                      {/* Fee and Net Amount */}
-                      <div className="grid grid-cols-2 gap-3">
-                        <div className="rounded-md bg-[#1c1e29] p-3">
-                          <p className="text-xs text-gray-500 mb-1">Fee ({withdrawalFeePercentage}%)</p>
-                          {isUsdt ? (
-                            <div>
-                              <p className="text-sm font-medium text-red-400">
-                                ${(charges / usdtPrice).toFixed(2)}
-                              </p>
-                              <p className="text-xs text-gray-500 mt-1">
-                                ₹{charges.toLocaleString()}
-                              </p>
-                            </div>
-                          ) : (
-                            <p className="text-sm font-medium text-red-400">
-                              ₹{charges.toLocaleString()}
-                            </p>
-                          )}
-                        </div>
-                        <div className="rounded-md bg-[#1c1e29] p-3">
-                          <p className="text-xs text-gray-500 mb-1">Net Amount</p>
-                          {isUsdt ? (
-                            <div>
-                              <p className="text-sm font-medium text-green-400">
-                                ${(netAmount / usdtPrice).toFixed(2)}
-                              </p>
-                              <p className="text-xs text-gray-500 mt-1">
-                                ₹{netAmount.toLocaleString()}
-                              </p>
-                            </div>
-                          ) : (
-                            <p className="text-sm font-medium text-green-400">
-                              ₹{netAmount.toLocaleString()}
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                    
-                    {/* Footer Details */}
-                    <div className="flex justify-between text-xs text-gray-400">
-                      <div>
-                        <p className="mb-1">
-                          {isUsdt ? "Wallet Address" : "Bank Account"}
-                        </p>
-                        <p>
-                          {isUsdt 
-                            ? maskValue(user?.usdt_address)
-                            : maskValue(user?.account_number)
-                          }
-                        </p>
                       </div>
                       <div className="text-right">
-                        <p className="mb-1">Date</p>
-                        <p>{formatDate(record.date)}</p>
+                        <div className="h-4 w-16 bg-gray-200 rounded mb-1"></div>
+                        <div className="h-3 w-12 bg-gray-200 rounded"></div>
                       </div>
                     </div>
                   </div>
-                </CardContent>
-              </Card>
-            );
-          })
-        ) : (
-          <div className="bg-[#1c1e29] rounded-xl p-8 border border-[#2a2d3a] text-center mt-8">
-            <div className="bg-blue-500/10 rounded-full p-3 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-              <Receipt className="h-8 w-8 text-blue-400" />
-            </div>
-            <h3 className="text-lg font-medium text-white mb-2">No Withdrawals Yet</h3>
-            <p className="text-gray-400 mb-4">Make your first withdrawal to see records here</p>
-            <div className="grid grid-cols-2 gap-3">
-              <Link to="/withdraw">
-                <Button variant="outline" className="w-full">INR Withdrawal</Button>
-              </Link>
-              <Link to="/usdt-withdraw">
-                <Button className="w-full bg-gradient-to-r from-blue-600 to-blue-500">USDT Withdrawal</Button>
-              </Link>
-            </div>
-          </div>
-        )}
+                ))}
+              </div>
+            ) : records.length > 0 ? (
+              <div className="divide-y divide-gray-100">
+                {records.map((record, index) => {
+                  const charges = typeof record.charges === 'string' ? parseFloat(record.charges) : record.charges || 0;
+                  const netAmount = typeof record.net_amount === 'string' ? parseFloat(record.net_amount) : 
+                                  (record.net_amount as number) || 0;
+                  
+                  return (
+                    <div key={record.id} className="p-4 hover:bg-gray-50 transition-colors">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-3">
+                          <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center">
+                            <ArrowDownCircle className="h-5 w-5 text-white" />
+                          </div>
+                          <div>
+                            <div className="flex items-center gap-2 mb-1">
+                              <p className="font-medium text-gray-900">₹{record.amount.toLocaleString()}</p>
+                              <Badge 
+                                variant="outline" 
+                                className={cn("text-xs border", getStatusColor(record.status))}
+                              >
+                                <div className="flex items-center gap-1">
+                                  {getStatusIcon(record.status)}
+                                  {record.status.charAt(0).toUpperCase() + record.status.slice(1)}
+                                </div>
+                              </Badge>
+                            </div>
+                            <div className="text-sm text-gray-500 space-y-1">
+                              <p>{formatDate(record.date)}</p>
+                              <p>To: {maskBankAccount(user?.account_number)}</p>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div className="text-right">
+                          <p className="text-sm font-medium text-gray-900">
+                            Net: ₹{netAmount.toLocaleString()}
+                          </p>
+                          <p className="text-xs text-red-500">
+                            Fee: ₹{charges.toLocaleString()}
+                          </p>
+                          <p className="text-xs text-gray-400 mt-1">
+                            ID: {record.id}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="text-center py-12 px-4">
+                <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <ArrowDownCircle className="h-8 w-8 text-gray-400" />
+                </div>
+                <h3 className="text-lg font-medium text-gray-900 mb-2">No Withdrawals Yet</h3>
+                <p className="text-gray-500">
+                  Your withdrawal history will appear here once you make your first withdrawal.
+                </p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
       </div>
     </MobileLayout>
   );
