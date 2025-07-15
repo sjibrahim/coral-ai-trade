@@ -303,7 +303,7 @@ const CoinDetailPage = () => {
     return () => window.removeEventListener('message', handleMessage);
   }, []);
 
-  const totalBalance = (user?.wallet || 0) + (user?.income || 0);
+  const totalBalance = Number(user?.wallet || 0) + Number(user?.income || 0);
   
   return (
     <MobileLayout showBackButton title={crypto.name} noScroll={false} hideFooter={true}>
@@ -416,8 +416,8 @@ const CoinDetailPage = () => {
                 </span>
               </div>
               <div className="flex justify-between text-sm opacity-90">
-                <span>Wallet: ₹{hideBalance ? "***" : (user?.wallet || 0).toLocaleString()}</span>
-                <span>Income: ₹{hideBalance ? "***" : (user?.income || 0).toLocaleString()}</span>
+                <span>Wallet: ₹{hideBalance ? "***" : Number(user?.wallet || 0).toLocaleString()}</span>
+                <span>Income: ₹{hideBalance ? "***" : Number(user?.income || 0).toLocaleString()}</span>
               </div>
             </div>
           </div>
