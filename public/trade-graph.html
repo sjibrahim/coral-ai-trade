@@ -20,45 +20,8 @@
       height: 100vh;
     }
     
-    #toolbar {
-      display: flex;
-      justify-content: center;
-      gap: 4px;
-      padding: 8px;
-      background: #f9fafb;
-      border-bottom: 1px solid #e5e7eb;
-      overflow-x: auto;
-      white-space: nowrap;
-    }
-    
-    .btn {
-      cursor: pointer;
-      padding: 6px 12px;
-      border-radius: 6px;
-      background: #ffffff;
-      color: #6b7280;
-      font-size: 11px;
-      font-weight: 500;
-      transition: all 0.2s ease;
-      border: 1px solid #e5e7eb;
-      outline: none;
-      flex-shrink: 0;
-      min-width: 40px;
-    }
-    
-    .btn:hover {
-      background: #f3f4f6;
-      color: #374151;
-    }
-    
-    .btn.active {
-      background: #3b82f6;
-      color: white;
-      border-color: #3b82f6;
-    }
-    
     #chart {
-      height: calc(100vh - 48px);
+      height: 100vh;
       width: 100%;
       background: #ffffff;
     }
@@ -75,7 +38,7 @@
     
     .price-info {
       position: absolute;
-      top: 60px;
+      top: 8px;
       left: 8px;
       background: rgba(255, 255, 255, 0.95);
       padding: 6px 10px;
@@ -105,21 +68,10 @@
     
     /* Mobile responsive adjustments */
     @media (max-width: 480px) {
-      #toolbar {
-        padding: 6px;
-        gap: 2px;
-      }
-      
-      .btn {
-        padding: 5px 8px;
-        font-size: 10px;
-        min-width: 35px;
-      }
-      
       .price-info {
         font-size: 10px;
         padding: 4px 8px;
-        top: 50px;
+        top: 4px;
         left: 4px;
       }
       
@@ -130,15 +82,6 @@
   </style>
 </head>
 <body>
-  <div id="toolbar">
-    <button class="btn" onclick="changeInterval('1m',this)">1m</button>
-    <button class="btn" onclick="changeInterval('5m',this)">5m</button>
-    <button class="btn active" onclick="changeInterval('15m',this)">15m</button>
-    <button class="btn" onclick="changeInterval('1h',this)">1h</button>
-    <button class="btn" onclick="changeInterval('4h',this)">4h</button>
-    <button class="btn" onclick="changeInterval('1d',this)">1d</button>
-  </div>
-
   <div id="chart">
     <div class="loading" id="loading">Loading chart data...</div>
   </div>
@@ -282,7 +225,6 @@
       chart.createTechnicalIndicator('MA', false, { id: 'candle_pane' });
     }
     
-    let currentInterval = '15m';
     let ws;
     let lastPrice = 0;
     
@@ -307,24 +249,8 @@
       priceInfo.style.display = 'block';
     }
 
-    function changeInterval(interval, el) {
-      document.querySelectorAll('.btn').forEach(b => b.classList.remove('active'));
-      el.classList.add('active');
-      currentInterval = interval;
-      
-      if (ws) {
-        ws.close();
-      }
-      
-      chart.clearData();
-      document.getElementById('loading').style.display = 'block';
-      document.getElementById('priceInfo').style.display = 'none';
-      
-      loadHistoryThenSubscribe();
-    }
-
     function loadHistoryThenSubscribe() {
-      const restUrl = `https://api.binance.com/api/v3/klines?symbol=${SYMBOL.toUpperCase()}&interval=${currentInterval}&limit=300`;
+      const restUrl = `https://api.binance.com/api/v3/klines?symbol=${SYMBOL.toUpperCase()}&interval=15m&limit=300`;
       
       fetch(restUrl)
         .then(response => response.json())
@@ -354,7 +280,7 @@
     }
 
     function subscribeLive() {
-      const stream = `${SYMBOL}@kline_${currentInterval}`;
+      const stream = `${SYMBOL}@kline_15m`;
       ws = new WebSocket(`wss://stream.binance.com:9443/ws/${stream}`);
       
       ws.onmessage = (event) => {
@@ -421,12 +347,19 @@
       });
     });
 
-    // Listen for messages from parent window
+    // Listen for messages from parent window for zoom functionality
     window.addEventListener('message', (event) => {
       if (event.data.type === 'CHANGE_SYMBOL') {
         const newSymbol = event.data.symbol;
         if (newSymbol && newSymbol !== SYMBOL) {
           window.location.search = `?symbol=${newSymbol}`;
+        }
+      } else if (event.data.type === 'ZOOM') {
+        // Handle zoom functionality
+        if (event.data.direction === 'in') {
+          chart.zoomAtDataIndex(1, chart.getDataList().length - 1);
+        } else if (event.data.direction === 'out') {
+          chart.zoomAtDataIndex(-1, chart.getDataList().length - 1);
         }
       }
     });

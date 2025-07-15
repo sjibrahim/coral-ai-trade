@@ -315,6 +315,13 @@ const CoinDetailPage = () => {
     }
   };
 
+  const handleFullscreenZoom = (type: 'in' | 'out') => {
+    const iframe = document.querySelector('iframe[title="Trading Chart Fullscreen"]') as HTMLIFrameElement;
+    if (iframe && iframe.contentWindow) {
+      iframe.contentWindow.postMessage({ type: 'ZOOM', direction: type }, '*');
+    }
+  };
+
   return (
     <MobileLayout showBackButton title="" noScroll={true} hideFooter={true}>
       <div className="h-screen flex flex-col bg-white">
@@ -357,8 +364,8 @@ const CoinDetailPage = () => {
           </div>
         </div>
 
-        {/* Chart Container - Takes remaining space */}
-        <div className="flex-1 relative bg-white">
+        {/* Chart Container - Takes remaining space minus buttons */}
+        <div className="flex-1 relative bg-white" style={{ height: 'calc(100vh - 140px)' }}>
           <iframe
             src={`/trade-graph.html?symbol=${crypto.binance_symbol || crypto.symbol + 'usdt'}`}
             className="w-full h-full"
@@ -396,8 +403,8 @@ const CoinDetailPage = () => {
         </div>
 
         {/* Fixed Buy/Put Buttons at Bottom */}
-        <div className="bg-white border-t border-gray-100 p-4 flex-shrink-0">
-          <div className="flex space-x-3">
+        <div className="bg-white border-t border-gray-100 p-4 flex-shrink-0 fixed bottom-0 left-0 right-0 z-10">
+          <div className="flex space-x-3 max-w-md mx-auto">
             <Button 
               onClick={handleBuyClick}
               className="flex-1 bg-green-500 hover:bg-green-600 text-white py-4 text-base font-bold rounded-xl transition-all duration-200 transform active:scale-95"
@@ -421,14 +428,33 @@ const CoinDetailPage = () => {
             <div className="h-full flex flex-col">
               <div className="flex items-center justify-between p-4 border-b border-gray-100 bg-white">
                 <h3 className="text-lg font-bold text-gray-900">{crypto.name} Chart</h3>
-                <Button
-                  onClick={() => setIsFullscreenChart(false)}
-                  variant="outline"
-                  size="sm"
-                  className="rounded-lg"
-                >
-                  <X className="h-4 w-4" />
-                </Button>
+                <div className="flex items-center space-x-2">
+                  {/* Zoom Controls for Fullscreen */}
+                  <div className="flex space-x-1 bg-gray-100 rounded-lg p-1">
+                    <button
+                      onClick={() => handleFullscreenZoom('in')}
+                      className="p-2 rounded-md hover:bg-white transition-all"
+                      title="Zoom In"
+                    >
+                      <ZoomIn className="h-4 w-4 text-gray-600" />
+                    </button>
+                    <button
+                      onClick={() => handleFullscreenZoom('out')}
+                      className="p-2 rounded-md hover:bg-white transition-all"
+                      title="Zoom Out"
+                    >
+                      <ZoomOut className="h-4 w-4 text-gray-600" />
+                    </button>
+                  </div>
+                  <Button
+                    onClick={() => setIsFullscreenChart(false)}
+                    variant="outline"
+                    size="sm"
+                    className="rounded-lg"
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
               </div>
               <div className="flex-1">
                 <iframe
