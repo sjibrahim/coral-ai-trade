@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
 import { useAuth } from "@/contexts/AuthContext";
@@ -103,22 +102,28 @@ const TransactionRecordsPage = () => {
   };
 
   return (
-    <MobileLayout showBackButton title="Transaction History">
-      <div className="min-h-screen bg-gray-50">
-        <div className="p-4">
-          {/* Header Card */}
-          <Card className="bg-gradient-to-r from-emerald-500 to-green-600 text-white border-0 shadow-lg mb-6">
-            <CardContent className="p-6 text-center">
-              <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3">
-                <Receipt className="w-6 h-6 text-white" />
+    <MobileLayout showBackButton hideNavbar>
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-emerald-50/40">
+        <div className="px-3 py-4">
+          {/* Hero Header */}
+          <div className="relative mb-6 overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-500 via-green-600 to-teal-600 p-6 shadow-xl">
+            <div className="absolute inset-0 bg-black/10"></div>
+            <div className="absolute top-0 right-0 h-20 w-20 rounded-full bg-white/10 transform translate-x-8 -translate-y-8"></div>
+            <div className="absolute bottom-0 left-0 h-16 w-16 rounded-full bg-white/10 transform -translate-x-4 translate-y-4"></div>
+            
+            <div className="relative z-10 text-center text-white">
+              <div className="flex items-center justify-center mb-3">
+                <div className="h-10 w-10 rounded-full bg-white/20 flex items-center justify-center mr-3">
+                  <Receipt className="h-5 w-5" />
+                </div>
+                <h1 className="text-xl font-bold">Transaction History</h1>
               </div>
-              <h1 className="text-lg font-bold mb-1">Transaction History</h1>
               <p className="text-emerald-100 text-sm">Track all your financial activities</p>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid grid-cols-3 w-full mb-6 bg-white shadow-sm h-12">
+            <TabsList className="grid grid-cols-3 w-full mb-6 bg-white/80 backdrop-blur-sm shadow-sm h-12 border-0">
               <TabsTrigger value="all" className="data-[state=active]:bg-emerald-500 data-[state=active]:text-white text-sm font-medium">All</TabsTrigger>
               <TabsTrigger value="topup" className="data-[state=active]:bg-emerald-500 data-[state=active]:text-white text-sm font-medium">Deposits</TabsTrigger>
               <TabsTrigger value="withdraw" className="data-[state=active]:bg-emerald-500 data-[state=active]:text-white text-sm font-medium">Withdrawals</TabsTrigger>
@@ -128,7 +133,7 @@ const TransactionRecordsPage = () => {
               {isLoading ? (
                 <div className="space-y-4">
                   {Array(5).fill(0).map((_, idx) => (
-                    <Card key={`skeleton-${idx}`} className="bg-white shadow-sm animate-pulse">
+                    <Card key={`skeleton-${idx}`} className="bg-white/80 backdrop-blur-sm shadow-sm animate-pulse border-0">
                       <CardContent className="p-4 space-y-3">
                         <div className="flex justify-between items-center">
                           <div className="h-4 w-20 bg-gray-200 rounded"></div>
@@ -141,14 +146,14 @@ const TransactionRecordsPage = () => {
                   ))}
                 </div>
               ) : error ? (
-                <Card className="bg-red-50 border-red-200">
+                <Card className="bg-red-50/80 backdrop-blur-sm border-red-200 border-0 shadow-sm">
                   <CardContent className="flex flex-col items-center justify-center py-12">
                     <AlertTriangle className="h-12 w-12 text-red-500 mb-4" />
                     <p className="text-red-600 text-center">{error}</p>
                   </CardContent>
                 </Card>
               ) : filteredTransactions.length === 0 ? (
-                <Card className="bg-white shadow-sm">
+                <Card className="bg-white/80 backdrop-blur-sm shadow-sm border-0">
                   <CardContent className="flex flex-col items-center justify-center py-16">
                     <Calendar className="h-16 w-16 text-gray-300 mb-4" />
                     <h3 className="text-lg font-semibold text-gray-900 mb-2">No transactions yet</h3>
@@ -158,7 +163,7 @@ const TransactionRecordsPage = () => {
               ) : (
                 <div className="space-y-3 pb-24">
                   {filteredTransactions.map((transaction) => (
-                    <Card key={transaction.txnid} className="bg-white shadow-sm hover:shadow-md transition-shadow duration-200">
+                    <Card key={transaction.txnid} className="bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md transition-shadow duration-200 border-0">
                       <CardContent className="p-4">
                         <div className="flex items-center justify-between mb-3">
                           <div className="flex items-center">
