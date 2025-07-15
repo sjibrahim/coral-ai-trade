@@ -212,14 +212,11 @@ const CoinDetailPage = () => {
 
       const timeInSeconds = selectedTimePeriod === '1min' ? 60 : selectedTimePeriod === '3min' ? 180 : 300;
       
-      // Close the trade modal first
       closeModal();
       
-      // Set up the trade timer state BEFORE making the API call
       setStartingTradePrice(livePrice);
       setTradeTimer(timeInSeconds);
       
-      // Show the trade timer modal immediately
       setIsTradeTimerOpen(true);
       
       const response = await placeTrade(
@@ -232,10 +229,8 @@ const CoinDetailPage = () => {
       );
       
       if (response.success) {
-        // Store the API response for later use
         setTradeApiResponse(response);
         
-        // Show success toast
         toast({
           title: "Trade Placed",
           description: `${direction} trade of ₹${tradeAmount} placed successfully`,
@@ -290,7 +285,6 @@ const CoinDetailPage = () => {
     setIsSellModalOpen(false);
   };
 
-  // Listen for price updates from iframe
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
       if (event.data.type === 'PRICE_UPDATE' && event.data.price) {
@@ -302,19 +296,30 @@ const CoinDetailPage = () => {
     return () => window.removeEventListener('message', handleMessage);
   }, []);
 
+  const formatPrice = (price: number) => {
+    if (price >= 1000000) {
+      return `$${(price / 1000000).toFixed(2)}M`;
+    } else if (price >= 1000) {
+      return `$${(price / 1000).toFixed(2)}K`;
+    } else if (price >= 1) {
+      return `$${price.toFixed(2)}`;
+    } else {
+      return `$${price.toFixed(6)}`;
+    }
+  };
+
   const totalBalance = Number(user?.wallet || 0) + Number(user?.income || 0);
   
   return (
     <MobileLayout showBackButton title={crypto.name} noScroll={false} hideFooter={true}>
-      <div className="flex flex-col min-h-screen bg-background">
-        {/* Trexo-styled Header */}
-        <div className="bg-card shadow-sm sticky top-0 z-10 border-b">
-          <div className="p-4">
-            {/* Coin Info Header */}
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+        <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-4 relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-600/80 to-indigo-600/80"></div>
+          <div className="relative z-10">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center space-x-3">
                 <div className="relative">
-                  <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                  <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center border border-white/30">
                     <img 
                       src={crypto.logo} 
                       alt={crypto.symbol}
@@ -328,33 +333,30 @@ const CoinDetailPage = () => {
                         }
                       }}
                     />
-                    <div className="w-8 h-8 bg-primary rounded-full hidden items-center justify-center">
-                      <span className="text-primary-foreground text-xs font-bold">{crypto.symbol?.charAt(0)}</span>
+                    <div className="w-8 h-8 bg-white/20 rounded-full hidden items-center justify-center">
+                      <span className="text-white text-xs font-bold">{crypto.symbol?.charAt(0)}</span>
                     </div>
                   </div>
-                  <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-primary rounded-full border-2 border-card flex items-center justify-center">
-                    <div className="w-1.5 h-1.5 bg-primary-foreground rounded-full animate-pulse"></div>
+                  <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-white flex items-center justify-center animate-pulse">
+                    <div className="w-2 h-2 bg-white rounded-full"></div>
                   </div>
                 </div>
                 <div>
-                  <h1 className="text-lg font-bold text-foreground">{crypto.name}</h1>
-                  <p className="text-sm text-muted-foreground font-medium">{crypto.symbol?.toUpperCase()}/USDT</p>
+                  <h1 className="text-lg font-bold">{crypto.name}</h1>
+                  <p className="text-sm text-white/80">{crypto.symbol?.toUpperCase()}/USDT</p>
                   {crypto.rank && (
-                    <p className="text-xs text-primary font-semibold">#{crypto.rank}</p>
+                    <p className="text-xs text-yellow-300 font-semibold">Rank #{crypto.rank}</p>
                   )}
                 </div>
               </div>
               <div className="text-right">
-                <div className="text-xl font-bold text-foreground mb-1">
-                  ${livePrice.toLocaleString(undefined, { 
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 6 
-                  })}
+                <div className="text-xl font-bold mb-1">
+                  {formatPrice(livePrice)}
                 </div>
                 <div className={`text-sm font-semibold flex items-center justify-end px-2 py-1 rounded-full ${
                   priceChange >= 0 
-                    ? 'text-market-increase bg-market-increase/10' 
-                    : 'text-market-decrease bg-market-decrease/10'
+                    ? 'text-green-300 bg-green-500/20' 
+                    : 'text-red-300 bg-red-500/20'
                 }`}>
                   {priceChange >= 0 ? (
                     <TrendingUp className="h-3 w-3 mr-1" />
@@ -366,44 +368,15 @@ const CoinDetailPage = () => {
               </div>
             </div>
 
-            {/* Market Stats Grid */}
-            <div className="grid grid-cols-4 gap-2 mb-4">
-              <div className="bg-muted/30 rounded-lg p-2 text-center border">
-                <p className="text-xs text-muted-foreground font-medium mb-1">24h High</p>
-                <p className="text-xs font-bold text-market-increase">
-                  ${(livePrice * 1.05).toFixed(2)}
-                </p>
-              </div>
-              <div className="bg-muted/30 rounded-lg p-2 text-center border">
-                <p className="text-xs text-muted-foreground font-medium mb-1">24h Low</p>
-                <p className="text-xs font-bold text-market-decrease">
-                  ${(livePrice * 0.95).toFixed(2)}
-                </p>
-              </div>
-              <div className="bg-muted/30 rounded-lg p-2 text-center border">
-                <p className="text-xs text-muted-foreground font-medium mb-1">Volume</p>
-                <p className="text-xs font-bold text-foreground">
-                  ${Math.floor(Math.random() * 1000)}M
-                </p>
-              </div>
-              <div className="bg-muted/30 rounded-lg p-2 text-center border">
-                <p className="text-xs text-muted-foreground font-medium mb-1">Cap</p>
-                <p className="text-xs font-bold text-foreground">
-                  ${Math.floor(Math.random() * 100)}B
-                </p>
-              </div>
-            </div>
-
-            {/* Balance Card - Trexo Style */}
-            <div className="bg-primary rounded-xl p-4 text-primary-foreground">
+            <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/20">
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
                   <Wallet className="h-4 w-4" />
-                  <span className="text-sm font-medium">Available Balance</span>
+                  <span className="text-sm font-medium">Total Balance</span>
                 </div>
                 <button 
                   onClick={() => setHideBalance(!hideBalance)} 
-                  className="p-1 rounded-full hover:bg-primary-foreground/20 transition-colors"
+                  className="p-1 rounded-full hover:bg-white/20 transition-colors"
                 >
                   {hideBalance ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
@@ -422,202 +395,187 @@ const CoinDetailPage = () => {
           </div>
         </div>
 
-        {/* Trading Chart */}
-        <div className="flex-1 p-4">
-          <Card className="mb-4 border-0 shadow-sm">
-            <div className="h-80 relative rounded-lg overflow-hidden">
+        <div className="p-4">
+          <div className="bg-white rounded-xl shadow-lg overflow-hidden mb-4 border border-gray-100">
+            <div className="h-80 relative">
               <iframe
                 src={`/trade-graph.html?symbol=${crypto.binance_symbol || crypto.symbol + 'usdt'}`}
                 className="w-full h-full"
                 title="Trading Chart"
                 frameBorder="0"
               />
-              <div className="absolute top-3 left-3 bg-background/90 backdrop-blur-sm rounded-lg px-3 py-2 text-foreground text-sm border">
+              <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm rounded-lg px-3 py-2 text-gray-800 text-sm border shadow-sm">
                 <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
+                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
                   <span className="font-medium">Live Market</span>
                 </div>
               </div>
             </div>
-          </Card>
+          </div>
 
-          {/* Market Analytics */}
-          <div className="space-y-4 mb-20">
-            <Card className="border-0 shadow-sm">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-base flex items-center gap-2 text-foreground">
-                  <BarChart3 className="h-4 w-4 text-primary" />
-                  Market Analytics
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="pt-0">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground text-sm">Market Cap</span>
-                      <span className="font-semibold text-sm text-foreground">${crypto.market_cap || 'N/A'}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground text-sm">24h Volume</span>
-                      <span className="font-semibold text-sm text-foreground">${crypto.volume_24h || 'N/A'}</span>
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground text-sm">Circulating</span>
-                      <span className="font-semibold text-sm text-foreground">21M</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground text-sm">Max Supply</span>
-                      <span className="font-semibold text-sm text-foreground">21M</span>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+          <div className="grid grid-cols-2 gap-3 mb-4">
+            <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+              <div className="flex items-center gap-2 mb-2">
+                <BarChart3 className="h-4 w-4 text-blue-600" />
+                <span className="text-sm font-medium text-gray-600">24h High</span>
+              </div>
+              <p className="text-lg font-bold text-green-600">
+                {formatPrice(livePrice * 1.05)}
+              </p>
+            </div>
+            <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+              <div className="flex items-center gap-2 mb-2">
+                <Activity className="h-4 w-4 text-blue-600" />
+                <span className="text-sm font-medium text-gray-600">24h Low</span>
+              </div>
+              <p className="text-lg font-bold text-red-600">
+                {formatPrice(livePrice * 0.95)}
+              </p>
+            </div>
+          </div>
 
-            <Card className="border-0 shadow-sm">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-base flex items-center gap-2 text-foreground">
-                  <Activity className="h-4 w-4 text-primary" />
-                  Performance
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="pt-0">
-                <div className="grid grid-cols-3 gap-4">
-                  <div className="text-center">
-                    <div className="text-xs text-muted-foreground mb-1">1H</div>
-                    <div className="text-sm font-semibold text-market-increase">+2.34%</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-xs text-muted-foreground mb-1">24H</div>
-                    <div className={`text-sm font-semibold ${priceChange >= 0 ? 'text-market-increase' : 'text-market-decrease'}`}>
-                      {priceChange >= 0 ? '+' : ''}{priceChange.toFixed(2)}%
-                    </div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-xs text-muted-foreground mb-1">7D</div>
-                    <div className="text-sm font-semibold text-market-decrease">-5.67%</div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+          <div className="grid grid-cols-3 gap-3 mb-20">
+            <div className="bg-white rounded-xl p-3 shadow-sm border border-gray-100 text-center">
+              <div className="text-xs text-gray-500 mb-1">1H</div>
+              <div className="text-sm font-bold text-green-600">+2.34%</div>
+            </div>
+            <div className="bg-white rounded-xl p-3 shadow-sm border border-gray-100 text-center">
+              <div className="text-xs text-gray-500 mb-1">24H</div>
+              <div className={`text-sm font-bold ${priceChange >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                {priceChange >= 0 ? '+' : ''}{priceChange.toFixed(2)}%
+              </div>
+            </div>
+            <div className="bg-white rounded-xl p-3 shadow-sm border border-gray-100 text-center">
+              <div className="text-xs text-gray-500 mb-1">7D</div>
+              <div className="text-sm font-bold text-red-600">-5.67%</div>
+            </div>
           </div>
         </div>
 
-        {/* Fixed Trading Panel - Trexo Style */}
-        <div className="fixed bottom-0 left-0 right-0 bg-card border-t p-4 z-20 shadow-lg">
+        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 z-20 shadow-lg">
           <div className="grid grid-cols-2 gap-3 mb-2">
             <Button 
               onClick={handleBuyClick}
-              className="bg-market-increase hover:bg-market-increase/90 text-white py-3 text-base font-bold rounded-lg shadow-sm"
+              className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white py-3 text-base font-bold rounded-xl shadow-sm transition-all duration-200 transform hover:scale-105"
             >
               <TrendingUp className="mr-2 h-4 w-4" />
               CALL
             </Button>
             <Button 
               onClick={handleSellClick}
-              className="bg-market-decrease hover:bg-market-decrease/90 text-white py-3 text-base font-bold rounded-lg shadow-sm"
+              className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white py-3 text-base font-bold rounded-xl shadow-sm transition-all duration-200 transform hover:scale-105"
             >
               <ArrowDown className="mr-2 h-4 w-4" />
               PUT
             </Button>
           </div>
-          <p className="text-xs text-center text-muted-foreground">
-            Total Balance: ₹{hideBalance ? "******" : totalBalance.toLocaleString()}
+          <p className="text-xs text-center text-gray-500">
+            Balance: ₹{hideBalance ? "******" : totalBalance.toLocaleString()}
           </p>
         </div>
       </div>
 
-      {/* Trexo-styled Trade Modal */}
       <Dialog open={isBuyModalOpen || isSellModalOpen} onOpenChange={closeModal}>
-        <DialogContent className="w-[95vw] max-w-sm mx-auto bg-card border rounded-2xl p-0 overflow-hidden">
-          {/* Modal Header */}
-          <div className={`flex items-center justify-between p-4 ${
-            direction === 'Call' ? 'bg-market-increase' : 'bg-market-decrease'
-          } text-white`}>
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
-                <span className="font-bold text-sm">{crypto.symbol?.charAt(0)}</span>
+        <DialogContent className="w-[95vw] max-w-sm mx-auto bg-white border-none rounded-2xl p-0 overflow-hidden shadow-xl">
+          <div className={`relative px-6 py-4 text-white ${
+            direction === 'Call' 
+              ? 'bg-gradient-to-r from-green-500 to-green-600' 
+              : 'bg-gradient-to-r from-red-500 to-red-600'
+          }`}>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
+                  {direction === 'Call' ? (
+                    <TrendingUp className="h-5 w-5" />
+                  ) : (
+                    <ArrowDown className="h-5 w-5" />
+                  )}
+                </div>
+                <div>
+                  <h3 className="font-bold text-lg">{direction} Trade</h3>
+                  <p className="text-sm opacity-90">{formatPrice(livePrice)}</p>
+                </div>
               </div>
-              <div>
-                <h3 className="font-bold">{direction} Trade</h3>
-                <p className="text-xs opacity-90">${livePrice.toFixed(2)}</p>
-              </div>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={closeModal} 
+                className="text-white hover:bg-white/20 rounded-full h-8 w-8 p-0"
+              >
+                <X className="h-4 w-4" />
+              </Button>
             </div>
-            <Button variant="ghost" size="sm" onClick={closeModal} className="text-white hover:bg-white/20 rounded-full h-8 w-8 p-0">
-              <X className="h-4 w-4" />
-            </Button>
+            <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/20"></div>
           </div>
 
-          <div className="p-4 space-y-4">
-            {/* Duration & Amount Selection */}
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="text-xs font-medium text-muted-foreground mb-2 block">Duration</label>
-                <div className="grid grid-cols-3 gap-1">
-                  {['1min', '3min', '5min'].map((period) => (
-                    <button
-                      key={period}
-                      onClick={() => setSelectedTimePeriod(period)}
-                      className={`py-2 px-2 rounded-lg text-xs font-medium transition-all ${
-                        selectedTimePeriod === period
-                          ? direction === 'Call' ? 'bg-market-increase text-white' : 'bg-market-decrease text-white'
-                          : 'bg-muted text-muted-foreground hover:bg-muted/80'
-                      }`}
-                    >
-                      {period}
-                    </button>
-                  ))}
-                </div>
-              </div>
-              
-              <div>
-                <label className="text-xs font-medium text-muted-foreground mb-2 block">Amount</label>
-                <div className="relative">
-                  <IndianRupee className="absolute left-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    type="number"
-                    value={tradeAmount}
-                    onChange={(e) => setTradeAmount(e.target.value)}
-                    className="pl-7 h-10 text-sm font-medium bg-background border-input"
-                    placeholder="1000"
-                  />
-                </div>
+          <div className="p-6 space-y-5">
+            <div>
+              <label className="text-sm font-semibold text-gray-700 mb-3 block">Trading Duration</label>
+              <div className="grid grid-cols-3 gap-2">
+                {['1min', '3min', '5min'].map((period) => (
+                  <button
+                    key={period}
+                    onClick={() => setSelectedTimePeriod(period)}
+                    className={`py-3 px-3 rounded-xl text-sm font-semibold transition-all duration-200 ${
+                      selectedTimePeriod === period
+                        ? direction === 'Call' 
+                          ? 'bg-green-500 text-white shadow-lg' 
+                          : 'bg-red-500 text-white shadow-lg'
+                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    }`}
+                  >
+                    {period}
+                  </button>
+                ))}
               </div>
             </div>
             
-            {/* Quick Amount Buttons */}
-            <div className="grid grid-cols-3 gap-2">
-              {predefinedAmounts.slice(0, 6).map((amount) => (
-                <button
-                  key={amount}
-                  onClick={() => setTradeAmount(amount)}
-                  className={`py-2 px-2 rounded-lg text-xs font-medium transition-all ${
-                    tradeAmount === amount
-                      ? direction === 'Call' ? 'bg-market-increase text-white' : 'bg-market-decrease text-white'
-                      : 'bg-muted text-muted-foreground hover:bg-muted/80'
-                  }`}
-                >
-                  ₹{amount}
-                </button>
-              ))}
+            <div>
+              <label className="text-sm font-semibold text-gray-700 mb-3 block">Investment Amount</label>
+              <div className="relative mb-3">
+                <IndianRupee className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                <Input
+                  type="number"
+                  value={tradeAmount}
+                  onChange={(e) => setTradeAmount(e.target.value)}
+                  className="pl-10 h-12 text-lg font-semibold bg-gray-50 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="1000"
+                />
+              </div>
+              
+              <div className="grid grid-cols-3 gap-2">
+                {predefinedAmounts.slice(0, 6).map((amount) => (
+                  <button
+                    key={amount}
+                    onClick={() => setTradeAmount(amount)}
+                    className={`py-2 px-3 rounded-lg text-sm font-medium transition-all duration-200 ${
+                      tradeAmount === amount
+                        ? direction === 'Call' 
+                          ? 'bg-green-100 text-green-700 border-2 border-green-500' 
+                          : 'bg-red-100 text-red-700 border-2 border-red-500'
+                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200 border-2 border-transparent'
+                    }`}
+                  >
+                    ₹{amount}
+                  </button>
+                ))}
+              </div>
             </div>
 
-            {/* Balance Display */}
-            <div className="bg-muted/50 rounded-xl p-3 flex justify-between items-center">
-              <span className="text-xs text-muted-foreground">Available</span>
-              <span className="font-bold text-sm text-foreground">₹{totalBalance.toLocaleString()}</span>
+            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-4 border border-blue-100">
+              <div className="flex justify-between items-center">
+                <span className="text-sm font-medium text-gray-600">Available Balance</span>
+                <span className="font-bold text-lg text-blue-600">₹{totalBalance.toLocaleString()}</span>
+              </div>
             </div>
 
-            {/* Confirm Button */}
             <Button 
               onClick={handleConfirmTrade}
-              className={`w-full h-12 text-base font-bold rounded-xl ${
+              className={`w-full h-14 text-lg font-bold rounded-xl shadow-lg transition-all duration-200 transform hover:scale-105 ${
                 direction === 'Call' 
-                  ? 'bg-market-increase hover:bg-market-increase/90' 
-                  : 'bg-market-decrease hover:bg-market-decrease/90'
-              } text-white shadow-sm`}
+                  ? 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700' 
+                  : 'bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700'
+              } text-white`}
             >
               Place {direction} Trade
             </Button>
