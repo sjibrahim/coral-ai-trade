@@ -67,7 +67,7 @@ const ProfilePage = () => {
       items: [
         { icon: Activity, label: "Contract Records", link: "/contract-record", color: "emerald" },
         { icon: FileText, label: "Transaction Records", link: "/transactions", color: "blue" },
-        { icon: IndianRupee, label: "Withdrawals", link: "/all-withdrawals", color: "pink" },
+        { icon: IndianRupee, label: "Withdrawal Records", link: "/withdrawal-records", color: "pink" },
         { icon: User, label: "My Team", link: "/team", color: "purple" }
       ]
     },
