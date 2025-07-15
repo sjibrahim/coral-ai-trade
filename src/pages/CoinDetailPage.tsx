@@ -217,10 +217,15 @@ const CoinDetailPage = () => {
       
       setIsTradeTimerOpen(true);
       
+      // Extract base symbol before sending to API
+      const baseSymbol = crypto.binance_symbol ? 
+        crypto.binance_symbol.replace(/USDT$/, '').replace(/usdt$/, '') : 
+        crypto.symbol.toUpperCase();
+      
       const response = await placeTrade(
         token,
         parseFloat(tradeAmount),
-        crypto.binance_symbol || crypto.symbol.toUpperCase(),
+        baseSymbol, // Send only base symbol like "BTC" instead of "BTCUSDT"
         direction.toLowerCase(),
         livePrice,
         timeInSeconds
@@ -234,6 +239,9 @@ const CoinDetailPage = () => {
           description: `${direction} trade of ₹${tradeAmount} placed successfully`,
         });
       } else {
+        // Close the timer modal if trade failed
+        setIsTradeTimerOpen(false);
+        
         toast({
           title: "Trade Failed",
           description: response.message || "Failed to place trade",
@@ -242,6 +250,8 @@ const CoinDetailPage = () => {
       }
     } catch (error) {
       console.error('Trade error:', error);
+      setIsTradeTimerOpen(false);
+      
       toast({
         title: "Trade Error",
         description: "An error occurred while placing the trade",

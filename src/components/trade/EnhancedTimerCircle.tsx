@@ -112,12 +112,12 @@ const EnhancedTimerCircle: React.FC<EnhancedTimerCircleProps> = ({
         </span>
       </div>
       
-      {/* Breathing Background Effect */}
+      {/* Breathing Background Effect - removed animate-breathing to stop up/down movement */}
       <div className={`absolute inset-0 rounded-full bg-gradient-to-r ${
         direction === 'Call' 
           ? 'from-green-400/10 to-emerald-400/10' 
           : 'from-red-400/10 to-rose-400/10'
-      } animate-breathing -z-10`} />
+      } -z-10`} />
     </div>
   );
 };

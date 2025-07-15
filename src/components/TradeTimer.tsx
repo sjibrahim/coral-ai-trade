@@ -265,11 +265,11 @@ const TradeTimer: React.FC<TradeTimerProps> = ({
     );
   }
 
-  // Trade Progress Modal - Enhanced with Network Animations
+  // Trade Progress Modal - Enhanced with Network Animations (removed animate-breathing)
   return (
     <Dialog open={open} onOpenChange={(open) => !open && handleClose()}>
       <DialogContent className="w-[90vw] max-w-sm mx-auto bg-white border-none rounded-3xl p-0 overflow-hidden">
-        <div className="relative p-6 network-container animate-breathing">
+        <div className="relative p-6 network-container">
           {/* Network Animation Overlay */}
           <NetworkAnimation 
             isActive={true} 
@@ -304,7 +304,7 @@ const TradeTimer: React.FC<TradeTimerProps> = ({
             }`} />
           </div>
 
-          {/* Price Info Grid with Enhanced Effects */}
+          {/* Price Info Grid with Enhanced Effects (removed animate-breathing) */}
           <div className="grid grid-cols-2 gap-4 mb-6">
             <div className="bg-gray-50/80 backdrop-blur-sm rounded-2xl p-4 text-center border border-gray-200/50 animate-fade-in-scale">
               <p className="text-xs text-gray-500 mb-1">Direction</p>
@@ -322,8 +322,8 @@ const TradeTimer: React.FC<TradeTimerProps> = ({
             </div>
           </div>
 
-          {/* Current Price with Enhanced Animations */}
-          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-4 mb-6 text-center border border-blue-200/50 animate-breathing">
+          {/* Current Price with Enhanced Animations (removed animate-breathing) */}
+          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-4 mb-6 text-center border border-blue-200/50">
             <p className="text-xs text-blue-600 mb-1">Current Price</p>
             <p className="text-xl font-bold text-blue-700 animate-pulse">
               ${currentPrice.toFixed(2)}

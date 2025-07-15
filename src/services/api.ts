@@ -1,4 +1,3 @@
-
 // API endpoints for our application
 const API_BASE = '/backend/restapi';
 const BINANCE_API = 'https://api.binance.com/api/v3';
@@ -189,7 +188,7 @@ export const isUsdtWithdrawal = (transaction: any): boolean => {
   return transaction && transaction.method === "USDT";
 };
 
-// Updated function for placing trades with better error handling and min_trade check
+// Updated function for placing trades with better error handling and symbol extraction
 export const placeTrade = async (
   token: string, 
   trade_amount: number, 
@@ -216,10 +215,13 @@ export const placeTrade = async (
       }
     }
     
+    // Extract base symbol (remove USDT suffix if present)
+    const baseSymbol = symbol.replace(/USDT$/, '').replace(/usdt$/, '');
+    
     const result = await apiRequest(endpoints.placeTrade, 'POST', {
       token,
       custom_amount: trade_amount,
-      symbol,
+      symbol: baseSymbol, // Send only base symbol like "BTC" instead of "BTCUSDT"
       direction,
       opening_price,
       sell_time
@@ -235,10 +237,17 @@ export const placeTrade = async (
         data: result.data
       };
     } else {
-      // If API returns failure, format the error
+      // Handle specific error messages
+      let errorMessage = result.message || result.msg || "Failed to place trade";
+      
+      // Check for daily trade limit error
+      if (errorMessage.toLowerCase().includes("only one trade is allowed per day")) {
+        errorMessage = "You can only place one trade per day. Please wait until tomorrow to place another trade.";
+      }
+      
       return {
         success: false,
-        message: result.message || result.msg || "Failed to place trade",
+        message: errorMessage,
         data: null
       };
     }
