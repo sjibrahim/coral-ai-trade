@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useCallback } from 'react';
 import { useParams, useLocation, Link, useNavigate } from 'react-router-dom';
 import MobileLayout from '@/components/layout/MobileLayout';
@@ -195,6 +194,11 @@ const CoinDetailPage = () => {
   const handleSellClick = () => {
     setDirection('Put');
     setIsSellModalOpen(true);
+  };
+
+  const handleMaxAmount = () => {
+    const maxAmount = availableBalance.toString();
+    setTradeAmount(maxAmount);
   };
 
   const handleConfirmTrade = async () => {
@@ -636,9 +640,19 @@ const CoinDetailPage = () => {
                     type="number"
                     value={tradeAmount}
                     onChange={(e) => setTradeAmount(e.target.value)}
-                    className="pl-10 h-12 text-lg font-semibold bg-gray-50 border-gray-200 rounded-xl text-gray-800"
+                    className="pl-10 pr-16 h-12 text-lg font-semibold bg-gray-50 border-gray-200 rounded-xl text-gray-800"
                     placeholder="1000"
                   />
+                  <button
+                    onClick={handleMaxAmount}
+                    className={`absolute right-2 top-1/2 transform -translate-y-1/2 px-3 py-1 rounded-lg text-xs font-bold transition-all ${
+                      direction === 'Call' 
+                        ? 'bg-green-500 hover:bg-green-600 text-white' 
+                        : 'bg-red-500 hover:bg-red-600 text-white'
+                    }`}
+                  >
+                    MAX
+                  </button>
                 </div>
                 
                 <div className="grid grid-cols-3 gap-2">
