@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MobileLayout from "@/components/layout/MobileLayout";
@@ -66,6 +67,22 @@ const ProfilePage = () => {
   const inviteCode = user?.invite_code || user?.referral_code || user?.id || "TREXO";
   const baseUrl = window.location.origin;
   const inviteLink = `${baseUrl}/register?referral=${inviteCode}`;
+
+  // Function to truncate URL for mobile display
+  const getTruncatedUrl = (url: string) => {
+    try {
+      const urlObj = new URL(url);
+      const domain = urlObj.hostname;
+      const path = urlObj.pathname + urlObj.search;
+      
+      if (path.length > 25) {
+        return `${domain}/...${path.slice(-15)}`;
+      }
+      return `${domain}${path}`;
+    } catch {
+      return url.length > 30 ? `${url.slice(0, 20)}...${url.slice(-10)}` : url;
+    }
+  };
 
   const handleCopyCode = () => {
     navigator.clipboard.writeText(inviteCode);
@@ -203,34 +220,62 @@ const ProfilePage = () => {
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                <div className="flex items-center justify-between p-3 bg-emerald-50 rounded-lg">
-                  <div>
-                    <p className="text-sm text-gray-600 mb-1">Your Invite Code</p>
-                    <p className="font-bold text-emerald-600">{inviteCode}</p>
+                {/* Invite Code */}
+                <div className="bg-emerald-50 rounded-xl p-4 border border-emerald-200">
+                  <div className="flex items-center justify-between">
+                    <div className="flex-1">
+                      <p className="text-sm text-gray-600 mb-1 font-medium">Your Invite Code</p>
+                      <p className="text-xl font-bold text-emerald-600 tracking-wider">{inviteCode}</p>
+                    </div>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={handleCopyCode}
+                      className="ml-3 h-10 px-4 bg-white hover:bg-emerald-50 border-emerald-300"
+                    >
+                      {copiedCode ? (
+                        <>
+                          <Check className="w-4 h-4 mr-2 text-green-600" />
+                          <span className="text-green-600 font-medium">Copied!</span>
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="w-4 h-4 mr-2" />
+                          <span className="font-medium">Copy</span>
+                        </>
+                      )}
+                    </Button>
                   </div>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={handleCopyCode}
-                    className="h-8 px-3"
-                  >
-                    {copiedCode ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
-                  </Button>
                 </div>
                 
-                <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
-                  <div className="flex-1 mr-3">
-                    <p className="text-sm text-gray-600 mb-1">Invite Link</p>
-                    <p className="text-xs text-blue-600 truncate font-medium">{inviteLink}</p>
+                {/* Invite Link */}
+                <div className="bg-blue-50 rounded-xl p-4 border border-blue-200">
+                  <div className="flex items-center justify-between">
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm text-gray-600 mb-1 font-medium">Invite Link</p>
+                      <p className="text-sm text-blue-600 font-mono bg-white px-2 py-1 rounded border truncate">
+                        {getTruncatedUrl(inviteLink)}
+                      </p>
+                    </div>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={handleCopyLink}
+                      className="ml-3 h-10 px-4 bg-white hover:bg-blue-50 border-blue-300"
+                    >
+                      {copiedLink ? (
+                        <>
+                          <Check className="w-4 h-4 mr-2 text-green-600" />
+                          <span className="text-green-600 font-medium">Copied!</span>
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="w-4 h-4 mr-2" />
+                          <span className="font-medium">Copy</span>
+                        </>
+                      )}
+                    </Button>
                   </div>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={handleCopyLink}
-                    className="h-8 px-3"
-                  >
-                    {copiedLink ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
-                  </Button>
                 </div>
               </div>
             </CardContent>
