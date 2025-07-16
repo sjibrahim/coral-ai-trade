@@ -4,7 +4,7 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useGeneralSettings } from "@/hooks/use-general-settings";
 import { useToast } from "@/hooks/use-toast";
-import { ExternalLink, Crown, Users, TrendingUp, Wallet, ArrowDownToLine, ArrowUpFromLine } from "lucide-react";
+import { ExternalLink, Crown, Users, TrendingUp, Wallet, ArrowDownToLine, ArrowUpFromLine, Clock, AlertCircle } from "lucide-react";
 
 export function WelcomeInfoModal() {
   const [open, setOpen] = useState(false);
@@ -72,6 +72,28 @@ export function WelcomeInfoModal() {
               </div>
               <p className="text-xs text-gray-600 mb-1">Daily Profit</p>
               <p className="font-bold text-green-600 text-sm">{settings.daily_profit || "1.5"}%</p>
+            </div>
+          </div>
+
+          {/* Withdrawal Timing Info */}
+          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-3 border border-blue-200/50">
+            <div className="flex items-start gap-2">
+              <div className="w-5 h-5 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-md flex items-center justify-center mt-0.5">
+                <Clock className="w-2.5 h-2.5 text-white" />
+              </div>
+              <div className="flex-1">
+                <p className="text-xs font-semibold text-blue-900 mb-1">Withdrawal Hours</p>
+                <div className="space-y-0.5 text-xs text-blue-700">
+                  <p className="flex items-center">
+                    <Clock className="w-2.5 h-2.5 mr-1" />
+                    <span className="font-medium">8:00 PM - 10:00 PM</span>
+                  </p>
+                  <p className="flex items-center">
+                    <AlertCircle className="w-2.5 h-2.5 mr-1" />
+                    <span>No weekends/holidays</span>
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
           
