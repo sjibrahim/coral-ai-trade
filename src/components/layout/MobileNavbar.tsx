@@ -1,6 +1,6 @@
 
-import { Link, useLocation } from 'react-router-dom';
-import { Home, LayoutDashboard, Users, UserCircle, ChevronLeft } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Home, LayoutDashboard, Users, UserCircle, ChevronLeft, Plus } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface MobileNavbarProps {
@@ -10,9 +10,14 @@ interface MobileNavbarProps {
 
 const MobileNavbar = ({ showBackButton = false, title = "Trexo" }: MobileNavbarProps) => {
   const location = useLocation();
+  const navigate = useNavigate();
   
   const isActive = (path: string) => {
     return location.pathname === path;
+  };
+
+  const handleDepositClick = () => {
+    navigate('/deposit');
   };
 
   if (showBackButton) {
@@ -35,7 +40,7 @@ const MobileNavbar = ({ showBackButton = false, title = "Trexo" }: MobileNavbarP
       {/* Floating action bar design */}
       <div className="mx-4 mb-4 mt-2">
         <div className="bg-gradient-to-r from-emerald-500 to-green-600 rounded-2xl shadow-2xl border border-emerald-400/20 p-1">
-          <div className="flex justify-between items-center bg-white/10 backdrop-blur-sm rounded-xl p-2">
+          <div className="flex justify-between items-center bg-white/10 backdrop-blur-sm rounded-xl p-2 relative">
             <NavItem 
               to="/home" 
               icon={<Home className="h-5 w-5" />} 
@@ -48,6 +53,21 @@ const MobileNavbar = ({ showBackButton = false, title = "Trexo" }: MobileNavbarP
               label="Market" 
               active={isActive('/market')} 
             />
+            
+            {/* Center Deposit Button */}
+            <button
+              onClick={handleDepositClick}
+              className="flex flex-col items-center justify-center transition-all duration-300 py-2 px-3 rounded-xl relative group min-w-[70px] hover:scale-105"
+            >
+              <div className="flex items-center justify-center rounded-xl p-2 transition-all duration-300 shadow-lg bg-white text-emerald-600 scale-110 shadow-emerald-500/30">
+                <Plus className="h-5 w-5" />
+              </div>
+              <span className="text-xs mt-1 font-semibold transition-colors duration-300 font-trading text-white">
+                Deposit
+              </span>
+              <div className="absolute -top-1 w-1 h-1 rounded-full bg-white animate-pulse shadow-lg"></div>
+            </button>
+            
             <NavItem 
               to="/team" 
               icon={<Users className="h-5 w-5" />} 
