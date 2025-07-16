@@ -23,6 +23,11 @@ export function WelcomeInfoModal() {
     window.open(settings.telegram_channel || "https://t.me/trexosupport", "_blank");
   };
 
+  const openCustomerSupport = () => {
+    const supportLink = `https://t.me/${settings.customer_support || "trexosupport"}`;
+    window.open(supportLink, "_blank");
+  };
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="sm:max-w-md border-0 bg-gradient-to-br from-emerald-50 via-white to-green-50 p-0 overflow-hidden shadow-2xl rounded-2xl">
@@ -91,7 +96,7 @@ export function WelcomeInfoModal() {
           
           {/* Customer Support */}
           <div 
-            onClick={openTelegramChannel}
+            onClick={openCustomerSupport}
             className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-3 border border-blue-200/50 cursor-pointer hover:shadow-lg transition-all duration-300 group"
           >
             <div className="flex items-center justify-between">
