@@ -4,14 +4,16 @@ import MobileLayout from "@/components/layout/MobileLayout";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { useAuth } from '@/contexts/AuthContext';
+import { useToast } from "@/hooks/use-toast";
 import { 
   Crown, User, Settings, Bell, Shield, Star, 
   Wallet, ArrowUpRight, Send,
   CreditCard, FileText, LogOut,
   Eye, EyeOff, TrendingUp, Award, Zap,
   BarChart3, Target, Gift, DollarSign,
-  IndianRupee, Activity, Sparkles
+  IndianRupee, Activity, Sparkles, Copy, Check
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -22,10 +24,13 @@ const getRandomAvatarUrl = () => {
 
 const ProfilePage = () => {
   const { user, logout } = useAuth();
+  const { toast } = useToast();
   const [avatarUrl, setAvatarUrl] = useState<string>('');
   const [isLoading, setIsLoading] = useState(true);
   const [hideBalance, setHideBalance] = useState(false);
   const [hideRevenue, setHideRevenue] = useState(false);
+  const [copiedCode, setCopiedCode] = useState(false);
+  const [copiedLink, setCopiedLink] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -57,7 +62,52 @@ const ProfilePage = () => {
   const incomeAmount = user?.income ? parseFloat(user.income) : 0;
   const depositBalance = walletAmount + incomeAmount;
 
-  
+  // Generate invite link and code
+  const inviteCode = user?.invite_code || user?.referral_code || user?.id || "TREXO";
+  const baseUrl = window.location.origin;
+  const inviteLink = `${baseUrl}/register?referral=${inviteCode}`;
+
+  const handleCopyCode = () => {
+    navigator.clipboard.writeText(inviteCode);
+    setCopiedCode(true);
+    toast({
+      title: "Copied!",
+      description: "Invite code copied to clipboard",
+    });
+    setTimeout(() => setCopiedCode(false), 2000);
+  };
+
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(inviteLink);
+    setCopiedLink(true);
+    toast({
+      title: "Copied!",
+      description: "Invite link copied to clipboard",
+    });
+    setTimeout(() => setCopiedLink(false), 2000);
+  };
+
+  // Get VIP badge variant based on rank
+  const getVipBadge = () => {
+    if (!user?.rank) return null;
+    
+    const rank = user.rank.toLowerCase();
+    if (rank.includes('vip1')) {
+      return (
+        <Badge variant="default" className="bg-gradient-to-r from-amber-500 to-yellow-600 text-white border-0">
+          <Crown className="w-3 h-3 mr-1" />
+          VIP1
+        </Badge>
+      );
+    }
+    // Add more VIP levels as needed
+    return (
+      <Badge variant="secondary" className="bg-gray-100 text-gray-700">
+        {user.rank}
+      </Badge>
+    );
+  };
+
   const quickActions = [
     { icon: Wallet, label: "Deposit", gradient: "from-emerald-500 to-green-600", link: "/deposit" },
     { icon: Send, label: "Withdraw", gradient: "from-blue-500 to-indigo-600", link: "/withdraw" },
@@ -128,7 +178,10 @@ const ProfilePage = () => {
                 </div>
                 
                 <div className="flex-1">
-                  <h2 className="text-xl font-bold mb-1">{user?.name || 'Trexo User'}</h2>
+                  <div className="flex items-center gap-2 mb-1">
+                    <h2 className="text-xl font-bold">{user?.name || 'Trexo User'}</h2>
+                    {getVipBadge()}
+                  </div>
                   <p className="text-emerald-100 text-sm mb-1">ID: {user?.id}</p>
                   <p className="text-emerald-200 text-sm">{user?.phone}</p>
                 </div>
@@ -136,6 +189,49 @@ const ProfilePage = () => {
                 <Button size="sm" variant="outline" className="bg-white/20 border-white/30 text-white hover:bg-white/30 h-10 w-10 p-0">
                   <Bell className="w-4 h-4" />
                 </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Invite Section */}
+          <Card className="bg-white/90 backdrop-blur-sm border border-gray-200/50 shadow-lg">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base flex items-center gap-2">
+                <Gift className="w-5 h-5 text-emerald-600" />
+                Invite Friends
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between p-3 bg-emerald-50 rounded-lg">
+                  <div>
+                    <p className="text-sm text-gray-600 mb-1">Your Invite Code</p>
+                    <p className="font-bold text-emerald-600">{inviteCode}</p>
+                  </div>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={handleCopyCode}
+                    className="h-8 px-3"
+                  >
+                    {copiedCode ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+                  </Button>
+                </div>
+                
+                <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
+                  <div className="flex-1 mr-3">
+                    <p className="text-sm text-gray-600 mb-1">Invite Link</p>
+                    <p className="text-xs text-blue-600 truncate font-medium">{inviteLink}</p>
+                  </div>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={handleCopyLink}
+                    className="h-8 px-3"
+                  >
+                    {copiedLink ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+                  </Button>
+                </div>
               </div>
             </CardContent>
           </Card>
