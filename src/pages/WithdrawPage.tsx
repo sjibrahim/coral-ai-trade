@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import MobileLayout from "@/components/layout/MobileLayout";
@@ -177,6 +176,32 @@ const WithdrawPage = () => {
             </Card>
           </motion.div>
 
+          {/* Withdrawal Timing Notice */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.05 }}
+          >
+            <Card className="bg-blue-50 border border-blue-200/50 shadow-lg">
+              <CardContent className="p-4">
+                <div className="flex items-center mb-2">
+                  <div className="w-6 h-6 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center mr-3">
+                    <Clock className="w-4 h-4 text-white" />
+                  </div>
+                  <h3 className="text-base font-semibold text-blue-800">Processing Hours</h3>
+                </div>
+                <div className="bg-white/80 rounded-lg p-3">
+                  <p className="text-sm text-blue-700 font-medium mb-1">
+                    Daily: 8:00 PM - 10:00 PM
+                  </p>
+                  <p className="text-xs text-blue-600">
+                    Available 7 days a week (No processing on holidays)
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+
           {/* Error Display */}
           {error && (
             <motion.div
@@ -301,7 +326,7 @@ const WithdrawPage = () => {
           
           <div className="flex items-center justify-center mt-2 text-sm text-gray-500">
             <Clock className="w-4 h-4 mr-1" />
-            <span>Processed within 24 hours on business days</span>
+            <span>Processing: 8-10 PM daily (No holidays)</span>
           </div>
         </div>
       </div>
