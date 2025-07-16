@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import MobileLayout from "@/components/layout/MobileLayout";
@@ -192,10 +193,10 @@ const WithdrawPage = () => {
                 </div>
                 <div className="bg-white/80 rounded-lg p-3">
                   <p className="text-sm text-blue-700 font-medium mb-1">
-                    Daily: 8:00 PM - 10:00 PM
+                    Daily: 8:00 AM - 10:00 AM
                   </p>
                   <p className="text-xs text-blue-600">
-                    Available 7 days a week (No processing on holidays)
+                    Available full weekend (No holidays)
                   </p>
                 </div>
               </CardContent>
@@ -326,7 +327,7 @@ const WithdrawPage = () => {
           
           <div className="flex items-center justify-center mt-2 text-sm text-gray-500">
             <Clock className="w-4 h-4 mr-1" />
-            <span>Processing: 8-10 PM daily (No holidays)</span>
+            <span>Processing: 8-10 AM daily (No holidays)</span>
           </div>
         </div>
       </div>

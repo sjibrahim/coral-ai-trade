@@ -89,8 +89,8 @@ export function WelcomeInfoModal() {
               <p className="text-xs font-semibold text-gray-800">Withdrawal Hours</p>
             </div>
             <div className="text-center">
-              <p className="text-xs text-purple-700 font-medium">8:00 PM - 10:00 PM Daily</p>
-              <p className="text-xs text-purple-600">(Available 7 days, No holidays)</p>
+              <p className="text-xs text-purple-700 font-medium">8:00 AM - 10:00 AM Daily</p>
+              <p className="text-xs text-purple-600">(Available full weekend, No holidays)</p>
             </div>
           </div>
           
