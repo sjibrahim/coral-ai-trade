@@ -111,15 +111,22 @@ const ProfilePage = () => {
     const rank = user.rank.toLowerCase();
     if (rank.includes('vip1')) {
       return (
-        <Badge variant="default" className="bg-gradient-to-r from-amber-500 to-yellow-600 text-white border-0">
-          <Crown className="w-3 h-3 mr-1" />
-          VIP1
-        </Badge>
+        <div className="relative">
+          <Badge 
+            variant="default" 
+            className="bg-gradient-to-r from-amber-500 via-yellow-500 to-amber-600 text-white border-0 shadow-lg px-3 py-1 text-xs font-bold tracking-wide animate-pulse-glow relative overflow-hidden"
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] animate-shimmer"></div>
+            <Crown className="w-3 h-3 mr-1 relative z-10" />
+            <span className="relative z-10">VIP1</span>
+          </Badge>
+          <div className="absolute -inset-1 bg-gradient-to-r from-amber-400 to-yellow-500 rounded-full blur opacity-30 animate-pulse"></div>
+        </div>
       );
     }
     // Add more VIP levels as needed
     return (
-      <Badge variant="secondary" className="bg-gray-100 text-gray-700">
+      <Badge variant="secondary" className="bg-gray-100 text-gray-700 text-xs px-2 py-0.5">
         {user.rank}
       </Badge>
     );
@@ -180,31 +187,31 @@ const ProfilePage = () => {
           {/* Profile Header */}
           <Card className="bg-gradient-to-r from-emerald-600 via-emerald-700 to-green-600 text-white border-0 shadow-xl overflow-hidden relative">
             <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent"></div>
-            <CardContent className="p-5 relative z-10">
-              <div className="flex items-center gap-4">
+            <CardContent className="p-4 relative z-10">
+              <div className="flex items-center gap-3">
                 <div className="relative">
-                  <Avatar className="w-16 h-16 border-3 border-white/30 shadow-lg">
+                  <Avatar className="w-14 h-14 border-3 border-white/30 shadow-lg">
                     <AvatarImage src={avatarUrl} alt={user?.name || ''} />
-                    <AvatarFallback className="bg-white/20 text-white font-bold text-xl">
+                    <AvatarFallback className="bg-white/20 text-white font-bold text-lg">
                       {user?.name?.charAt(0) || 'T'}
                     </AvatarFallback>
                   </Avatar>
-                  <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-amber-400 rounded-full flex items-center justify-center border-2 border-white">
-                    <Crown className="w-3 h-3 text-amber-800" />
+                  <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-amber-400 rounded-full flex items-center justify-center border-2 border-white">
+                    <Crown className="w-2.5 h-2.5 text-amber-800" />
                   </div>
                 </div>
                 
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-1">
-                    <h2 className="text-xl font-bold">{user?.name || 'Trexo User'}</h2>
+                    <h2 className="text-lg font-bold">{user?.name || 'Trexo User'}</h2>
                     {getVipBadge()}
                   </div>
-                  <p className="text-emerald-100 text-sm mb-1">ID: {user?.id}</p>
-                  <p className="text-emerald-200 text-sm">{user?.phone}</p>
+                  <p className="text-emerald-100 text-xs mb-0.5">ID: {user?.id}</p>
+                  <p className="text-emerald-200 text-xs">{user?.phone}</p>
                 </div>
 
-                <Button size="sm" variant="outline" className="bg-white/20 border-white/30 text-white hover:bg-white/30 h-10 w-10 p-0">
-                  <Bell className="w-4 h-4" />
+                <Button size="sm" variant="outline" className="bg-white/20 border-white/30 text-white hover:bg-white/30 h-8 w-8 p-0">
+                  <Bell className="w-3.5 h-3.5" />
                 </Button>
               </div>
             </CardContent>
@@ -212,36 +219,36 @@ const ProfilePage = () => {
 
           {/* Invite Section */}
           <Card className="bg-white/90 backdrop-blur-sm border border-gray-200/50 shadow-lg">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-base flex items-center gap-2">
-                <Gift className="w-5 h-5 text-emerald-600" />
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm flex items-center gap-2">
+                <Gift className="w-4 h-4 text-emerald-600" />
                 Invite Friends
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-3">
+              <div className="space-y-2.5">
                 {/* Invite Code */}
-                <div className="bg-emerald-50 rounded-xl p-4 border border-emerald-200">
+                <div className="bg-emerald-50 rounded-lg p-3 border border-emerald-200">
                   <div className="flex items-center justify-between">
                     <div className="flex-1">
-                      <p className="text-sm text-gray-600 mb-1 font-medium">Your Invite Code</p>
-                      <p className="text-xl font-bold text-emerald-600 tracking-wider">{inviteCode}</p>
+                      <p className="text-xs text-gray-600 mb-1 font-medium">Your Invite Code</p>
+                      <p className="text-lg font-bold text-emerald-600 tracking-wider">{inviteCode}</p>
                     </div>
                     <Button
                       size="sm"
                       variant="outline"
                       onClick={handleCopyCode}
-                      className="ml-3 h-10 px-4 bg-white hover:bg-emerald-50 border-emerald-300"
+                      className="ml-3 h-8 px-3 bg-white hover:bg-emerald-50 border-emerald-300"
                     >
                       {copiedCode ? (
                         <>
-                          <Check className="w-4 h-4 mr-2 text-green-600" />
-                          <span className="text-green-600 font-medium">Copied!</span>
+                          <Check className="w-3.5 h-3.5 mr-1.5 text-green-600" />
+                          <span className="text-green-600 font-medium text-xs">Copied!</span>
                         </>
                       ) : (
                         <>
-                          <Copy className="w-4 h-4 mr-2" />
-                          <span className="font-medium">Copy</span>
+                          <Copy className="w-3.5 h-3.5 mr-1.5" />
+                          <span className="font-medium text-xs">Copy</span>
                         </>
                       )}
                     </Button>
@@ -249,11 +256,11 @@ const ProfilePage = () => {
                 </div>
                 
                 {/* Invite Link */}
-                <div className="bg-blue-50 rounded-xl p-4 border border-blue-200">
+                <div className="bg-blue-50 rounded-lg p-3 border border-blue-200">
                   <div className="flex items-center justify-between">
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm text-gray-600 mb-1 font-medium">Invite Link</p>
-                      <p className="text-sm text-blue-600 font-mono bg-white px-2 py-1 rounded border truncate">
+                      <p className="text-xs text-gray-600 mb-1 font-medium">Invite Link</p>
+                      <p className="text-xs text-blue-600 font-mono bg-white px-2 py-1 rounded border truncate">
                         {getTruncatedUrl(inviteLink)}
                       </p>
                     </div>
@@ -261,17 +268,17 @@ const ProfilePage = () => {
                       size="sm"
                       variant="outline"
                       onClick={handleCopyLink}
-                      className="ml-3 h-10 px-4 bg-white hover:bg-blue-50 border-blue-300"
+                      className="ml-3 h-8 px-3 bg-white hover:bg-blue-50 border-blue-300"
                     >
                       {copiedLink ? (
                         <>
-                          <Check className="w-4 h-4 mr-2 text-green-600" />
-                          <span className="text-green-600 font-medium">Copied!</span>
+                          <Check className="w-3.5 h-3.5 mr-1.5 text-green-600" />
+                          <span className="text-green-600 font-medium text-xs">Copied!</span>
                         </>
                       ) : (
                         <>
-                          <Copy className="w-4 h-4 mr-2" />
-                          <span className="font-medium">Copy</span>
+                          <Copy className="w-3.5 h-3.5 mr-1.5" />
+                          <span className="font-medium text-xs">Copy</span>
                         </>
                       )}
                     </Button>
@@ -282,49 +289,49 @@ const ProfilePage = () => {
           </Card>
 
           {/* Balance Cards */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-3">
             <Card className="bg-white/90 backdrop-blur-sm border border-gray-200/50 shadow-lg">
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 bg-gradient-to-r from-emerald-500 to-green-600 rounded-lg flex items-center justify-center">
-                      <Wallet className="w-4 h-4 text-white" />
+              <CardContent className="p-3">
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-1.5">
+                    <div className="w-7 h-7 bg-gradient-to-r from-emerald-500 to-green-600 rounded-lg flex items-center justify-center">
+                      <Wallet className="w-3.5 h-3.5 text-white" />
                     </div>
-                    <span className="text-sm text-gray-600 font-medium">Balance</span>
+                    <span className="text-xs text-gray-600 font-medium">Balance</span>
                   </div>
                   <button onClick={() => setHideBalance(!hideBalance)} className="p-1">
-                    {hideBalance ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    {hideBalance ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
                   </button>
                 </div>
-                <p className="text-xl font-bold text-gray-900 mb-2">
+                <p className="text-lg font-bold text-gray-900 mb-1.5">
                   {hideBalance ? "••••••" : `₹${parseFloat(depositBalance.toString()).toLocaleString()}`}
                 </p>
                 <div className="flex items-center text-emerald-600">
                   <TrendingUp className="w-3 h-3 mr-1" />
-                  <span className="text-sm font-semibold">Available</span>
+                  <span className="text-xs font-semibold">Available</span>
                 </div>
               </CardContent>
             </Card>
 
             <Card className="bg-white/90 backdrop-blur-sm border border-gray-200/50 shadow-lg">
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
-                      <DollarSign className="w-4 h-4 text-white" />
+              <CardContent className="p-3">
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-1.5">
+                    <div className="w-7 h-7 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
+                      <DollarSign className="w-3.5 h-3.5 text-white" />
                     </div>
-                    <span className="text-sm text-gray-600 font-medium">Profit</span>
+                    <span className="text-xs text-gray-600 font-medium">Profit</span>
                   </div>
                   <button onClick={() => setHideRevenue(!hideRevenue)} className="p-1">
-                    {hideRevenue ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    {hideRevenue ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
                   </button>
                 </div>
-                <p className="text-xl font-bold text-gray-900 mb-2">
+                <p className="text-lg font-bold text-gray-900 mb-1.5">
                   {hideRevenue ? "••••••" : `₹${totalIncome.toLocaleString()}`}
                 </p>
                 <div className="flex items-center text-blue-600">
                   <ArrowUpRight className="w-3 h-3 mr-1" />
-                  <span className="text-sm font-semibold">Today: ₹{todayIncome}</span>
+                  <span className="text-xs font-semibold">Today: ₹{todayIncome}</span>
                 </div>
               </CardContent>
             </Card>
@@ -332,27 +339,27 @@ const ProfilePage = () => {
 
           {/* Quick Actions - 3 in one row */}
           <Card className="bg-white/90 backdrop-blur-sm border border-gray-200/50 shadow-lg">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-base flex items-center gap-2">
-                <Zap className="w-5 h-5 text-emerald-600" />
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm flex items-center gap-2">
+                <Zap className="w-4 h-4 text-emerald-600" />
                 Quick Actions
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-3 gap-2.5">
                 {quickActions.map((action, idx) => (
                   <button
                     key={idx}
                     onClick={() => navigate(action.link)}
-                    className="group p-3 rounded-xl bg-gradient-to-br from-gray-50 to-white hover:from-gray-100 hover:to-gray-50 transition-all duration-300 hover:scale-105 hover:shadow-md border border-gray-200/50"
+                    className="group p-2.5 rounded-lg bg-gradient-to-br from-gray-50 to-white hover:from-gray-100 hover:to-gray-50 transition-all duration-300 hover:scale-105 hover:shadow-md border border-gray-200/50"
                   >
                     <div className={cn(
-                      "w-10 h-10 rounded-xl flex items-center justify-center mb-2 mx-auto bg-gradient-to-r transition-all duration-300 group-hover:scale-110",
+                      "w-8 h-8 rounded-lg flex items-center justify-center mb-1.5 mx-auto bg-gradient-to-r transition-all duration-300 group-hover:scale-110",
                       action.gradient
                     )}>
-                      <action.icon className="w-5 h-5 text-white" />
+                      <action.icon className="w-4 h-4 text-white" />
                     </div>
-                    <span className="text-sm font-medium text-gray-700 group-hover:text-gray-900 transition-colors block text-center">
+                    <span className="text-xs font-medium text-gray-700 group-hover:text-gray-900 transition-colors block text-center">
                       {action.label}
                     </span>
                   </button>
@@ -364,27 +371,27 @@ const ProfilePage = () => {
           {/* Menu Items */}
           {profileMenuItems.map((category, categoryIdx) => (
             <Card key={categoryIdx} className="bg-white/90 backdrop-blur-sm border border-gray-200/50 shadow-lg">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-base text-gray-700">{category.category}</CardTitle>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm text-gray-700">{category.category}</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-2">
+                <div className="space-y-1.5">
                   {category.items.map((item, idx) => (
                     <button
                       key={idx}
                       onClick={() => navigate(item.link)}
-                      className="w-full flex items-center gap-4 p-3 rounded-xl hover:bg-gray-50 transition-all duration-300 hover:shadow-sm border border-transparent hover:border-gray-200 group"
+                      className="w-full flex items-center gap-3 p-2.5 rounded-lg hover:bg-gray-50 transition-all duration-300 hover:shadow-sm border border-transparent hover:border-gray-200 group"
                     >
                       <div className={cn(
-                        "w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-300 group-hover:scale-110",
+                        "w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-300 group-hover:scale-110",
                         getColorClasses(item.color)
                       )}>
-                        <item.icon className="w-5 h-5" />
+                        <item.icon className="w-4 h-4" />
                       </div>
-                      <span className="font-medium text-gray-700 group-hover:text-gray-900 transition-colors flex-1 text-left text-base">
+                      <span className="font-medium text-gray-700 group-hover:text-gray-900 transition-colors flex-1 text-left text-sm">
                         {item.label}
                       </span>
-                      <ArrowUpRight className="w-4 h-4 text-gray-400 group-hover:text-gray-600 transition-colors" />
+                      <ArrowUpRight className="w-3.5 h-3.5 text-gray-400 group-hover:text-gray-600 transition-colors" />
                     </button>
                   ))}
                 </div>
@@ -394,13 +401,13 @@ const ProfilePage = () => {
 
           {/* Logout Button */}
           <Card className="bg-red-50/80 backdrop-blur-sm border border-red-200/50 shadow-lg">
-            <CardContent className="p-4">
+            <CardContent className="p-3">
               <button
                 onClick={handleLogout}
-                className="w-full flex items-center justify-center gap-3 p-3 rounded-xl bg-gradient-to-r from-red-500 to-red-600 text-white hover:from-red-600 hover:to-red-700 transition-all duration-300 hover:shadow-lg"
+                className="w-full flex items-center justify-center gap-2.5 p-2.5 rounded-lg bg-gradient-to-r from-red-500 to-red-600 text-white hover:from-red-600 hover:to-red-700 transition-all duration-300 hover:shadow-lg"
               >
-                <LogOut className="w-5 h-5" />
-                <span className="font-semibold text-base">Logout</span>
+                <LogOut className="w-4 h-4" />
+                <span className="font-semibold text-sm">Logout</span>
               </button>
             </CardContent>
           </Card>
