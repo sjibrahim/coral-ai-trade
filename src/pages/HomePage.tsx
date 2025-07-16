@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
 import { Link } from "react-router-dom";
@@ -28,7 +27,8 @@ import {
   Lock,
   PieChart,
   LineChart,
-  Clock
+  Clock,
+  Download
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getMarketData } from "@/services/api";
@@ -101,6 +101,15 @@ const HomePage = () => {
     fetchMarketData();
   }, []);
   
+  const handleDownloadAPK = () => {
+    const link = document.createElement('a');
+    link.href = '/uploads/trexo.apk';
+    link.download = 'trexo.apk';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   const depositAmount = user?.deposit ? parseFloat(user.deposit) : 0;
   const walletAmount = user?.wallet ? parseFloat(user.wallet) : 0;
   const incomeAmount = user?.income ? parseFloat(user.income) : 0;
@@ -162,6 +171,14 @@ const HomePage = () => {
               </div>
             </div>
             <div className="flex items-center gap-2">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="rounded-full border-emerald-200 hover:bg-emerald-50"
+                onClick={handleDownloadAPK}
+              >
+                <Download className="w-3.5 h-3.5 text-emerald-600" />
+              </Button>
               <Button variant="outline" size="sm" className="rounded-full border-emerald-200 hover:bg-emerald-50">
                 <Bell className="w-3.5 h-3.5 text-emerald-600" />
               </Button>

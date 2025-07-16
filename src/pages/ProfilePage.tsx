@@ -13,7 +13,8 @@ import {
   CreditCard, FileText, LogOut,
   Eye, EyeOff, TrendingUp, Award, Zap,
   BarChart3, Target, Gift, DollarSign,
-  IndianRupee, Activity, Sparkles, Copy, Check
+  IndianRupee, Activity, Sparkles, Copy, Check,
+  Download
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -53,6 +54,15 @@ const ProfilePage = () => {
   const handleLogout = () => {
     logout();
     navigate('/login');
+  };
+
+  const handleDownloadAPK = () => {
+    const link = document.createElement('a');
+    link.href = '/uploads/trexo.apk';
+    link.download = 'trexo.apk';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   const totalIncome = user?.total_income || user?.income || 0;
@@ -152,7 +162,8 @@ const ProfilePage = () => {
       items: [
         { icon: CreditCard, label: "Bank Details", link: "/bank", color: "green" },
         { icon: Shield, label: "Security", link: "/security", color: "red" },
-        { icon: Settings, label: "Settings", link: "/settings", color: "gray" }
+        { icon: Settings, label: "Settings", link: "/settings", color: "gray" },
+        { icon: Download, label: "Download APK", link: "#", color: "indigo", onClick: handleDownloadAPK }
       ]
     }
   ];
@@ -378,7 +389,7 @@ const ProfilePage = () => {
                   {category.items.map((item, idx) => (
                     <button
                       key={idx}
-                      onClick={() => navigate(item.link)}
+                      onClick={() => item.onClick ? item.onClick() : navigate(item.link)}
                       className="w-full flex items-center gap-3 p-2.5 rounded-lg hover:bg-gray-50 transition-all duration-300 hover:shadow-sm border border-transparent hover:border-gray-200 group"
                     >
                       <div className={cn(
