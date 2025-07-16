@@ -1,4 +1,3 @@
-
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Home, LayoutDashboard, Users, UserCircle, ChevronLeft, Plus } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -37,46 +36,45 @@ const MobileNavbar = ({ showBackButton = false, title = "Trexo" }: MobileNavbarP
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-xl border-t border-emerald-100/50">
-      {/* Floating action bar design */}
-      <div className="mx-4 mb-4 mt-2">
-        <div className="bg-gradient-to-r from-emerald-500 to-green-600 rounded-2xl shadow-2xl border border-emerald-400/20 p-1">
-          <div className="flex justify-between items-center bg-white/10 backdrop-blur-sm rounded-xl p-2 relative">
+      {/* Mobile-friendly floating navigation */}
+      <div className="px-2 py-2">
+        <div className="bg-gradient-to-r from-emerald-500 to-green-600 rounded-2xl shadow-lg border border-emerald-400/20 p-1">
+          <div className="flex justify-around items-center bg-white/10 backdrop-blur-sm rounded-xl py-2 px-1">
             <NavItem 
               to="/home" 
-              icon={<Home className="h-5 w-5" />} 
+              icon={<Home className="h-4 w-4" />} 
               label="Home" 
               active={isActive('/home') || isActive('/')} 
             />
             <NavItem 
               to="/market" 
-              icon={<LayoutDashboard className="h-5 w-5" />} 
+              icon={<LayoutDashboard className="h-4 w-4" />} 
               label="Market" 
               active={isActive('/market')} 
             />
             
-            {/* Center Deposit Button */}
+            {/* Center Plus Button - Similar to reference */}
             <button
               onClick={handleDepositClick}
-              className="flex flex-col items-center justify-center transition-all duration-300 py-2 px-3 rounded-xl relative group min-w-[70px] hover:scale-105"
+              className="flex flex-col items-center justify-center transition-all duration-300 py-1 px-2 rounded-xl relative group"
             >
-              <div className="flex items-center justify-center rounded-xl p-2 transition-all duration-300 shadow-lg bg-white text-emerald-600 scale-110 shadow-emerald-500/30">
-                <Plus className="h-5 w-5" />
+              <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+                <Plus className="h-5 w-5 text-emerald-600 font-bold" />
               </div>
-              <span className="text-xs mt-1 font-semibold transition-colors duration-300 font-trading text-white">
+              <span className="text-xs mt-1 font-medium text-white/90">
                 Deposit
               </span>
-              <div className="absolute -top-1 w-1 h-1 rounded-full bg-white animate-pulse shadow-lg"></div>
             </button>
             
             <NavItem 
               to="/team" 
-              icon={<Users className="h-5 w-5" />} 
+              icon={<Users className="h-4 w-4" />} 
               label="Team" 
               active={isActive('/team')} 
             />
             <NavItem 
               to="/profile" 
-              icon={<UserCircle className="h-5 w-5" />} 
+              icon={<UserCircle className="h-4 w-4" />} 
               label="Profile" 
               active={isActive('/profile')} 
             />
@@ -100,26 +98,26 @@ const NavItem = ({ to, icon, label, active }: NavItemProps) => {
     <Link 
       to={to} 
       className={cn(
-        "flex flex-col items-center justify-center transition-all duration-300 py-2 px-3 rounded-xl relative group min-w-[70px]",
+        "flex flex-col items-center justify-center transition-all duration-300 py-1 px-2 rounded-xl relative group",
         active ? "scale-105" : "hover:scale-105"
       )}
     >
       <div className={cn(
-        "flex items-center justify-center rounded-xl p-2 transition-all duration-300 shadow-lg",
+        "flex items-center justify-center rounded-lg p-2 transition-all duration-300",
         active 
-          ? "text-emerald-600 bg-white shadow-emerald-500/30 scale-110" 
-          : "text-white/80 bg-white/10 group-hover:text-white group-hover:bg-white/20 group-hover:shadow-white/20"
+          ? "text-emerald-600 bg-white shadow-md scale-105" 
+          : "text-white/80 bg-white/10 group-hover:text-white group-hover:bg-white/20"
       )}>
         {icon}
       </div>
       <span className={cn(
-        "text-xs mt-1 font-semibold transition-colors duration-300 font-trading",
-        active ? "text-white" : "text-white/80 group-hover:text-white"
+        "text-xs mt-1 font-medium transition-colors duration-300",
+        active ? "text-white font-semibold" : "text-white/80 group-hover:text-white"
       )}>
         {label}
       </span>
       {active && (
-        <div className="absolute -top-1 w-1 h-1 rounded-full bg-white animate-pulse shadow-lg"></div>
+        <div className="absolute -top-0.5 w-1 h-1 rounded-full bg-white shadow-sm"></div>
       )}
     </Link>
   );
