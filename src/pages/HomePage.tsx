@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
 import { Link } from "react-router-dom";
@@ -180,7 +181,7 @@ const HomePage = () => {
                     <p className="text-emerald-100 text-xs font-medium font-trading">Total Portfolio</p>
                     <div className="flex items-center gap-1.5 mt-0.5">
                       <span className="text-xl font-bold font-trading">
-                        {showBalance ? `$${totalBalance.toLocaleString()}` : "••••••"}
+                        {showBalance ? `₹${totalBalance.toLocaleString()}` : "••••••"}
                       </span>
                       <button 
                         onClick={() => setShowBalance(!showBalance)}
@@ -207,7 +208,7 @@ const HomePage = () => {
                     <span className="text-xs text-emerald-200 font-trading">Available</span>
                   </div>
                   <p className="text-base font-bold font-mono">
-                    {showBalance ? `$${totalBalance.toLocaleString()}` : "••••"}
+                    {showBalance ? `₹${totalBalance.toLocaleString()}` : "••••"}
                   </p>
                 </div>
                 <div className="bg-white/10 backdrop-blur-sm rounded-lg p-2.5 border border-white/20">
@@ -216,7 +217,7 @@ const HomePage = () => {
                     <span className="text-xs text-emerald-200 font-trading">Profit</span>
                   </div>
                   <p className="text-base font-bold font-mono">
-                    {showBalance ? `$${incomeAmount.toLocaleString()}` : "••••"}
+                    {showBalance ? `₹${incomeAmount.toLocaleString()}` : "••••"}
                   </p>
                 </div>
               </div>
