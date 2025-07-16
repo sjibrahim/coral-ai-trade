@@ -197,7 +197,7 @@ const WithdrawPage = () => {
                       </p>
                       <p className="flex items-center">
                         <AlertCircle className="w-3 h-3 mr-2" />
-                        <span>No processing on weekends & holidays</span>
+                        <span>Including weekends • No holidays</span>
                       </p>
                     </div>
                   </div>
@@ -330,7 +330,7 @@ const WithdrawPage = () => {
           
           <div className="flex items-center justify-center mt-2 text-sm text-gray-500">
             <Clock className="w-4 h-4 mr-1" />
-            <span>Processing: 8-10 PM daily (No weekends/holidays)</span>
+            <span>Processing: 8-10 PM (including weekends, no holidays)</span>
           </div>
         </div>
       </div>

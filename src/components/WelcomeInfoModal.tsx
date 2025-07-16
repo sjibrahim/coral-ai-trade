@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -90,7 +89,7 @@ export function WelcomeInfoModal() {
                   </p>
                   <p className="flex items-center">
                     <AlertCircle className="w-2.5 h-2.5 mr-1" />
-                    <span>No weekends/holidays</span>
+                    <span>Including weekends • No holidays</span>
                   </p>
                 </div>
               </div>
