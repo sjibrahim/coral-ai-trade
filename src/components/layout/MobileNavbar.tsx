@@ -1,7 +1,7 @@
 
-import { ArrowLeft, Plus } from "lucide-react";
-import { useNavigate, useLocation } from "react-router-dom";
-import { Button } from "@/components/ui/button";
+import { Link, useLocation } from 'react-router-dom';
+import { Home, LayoutDashboard, Users, UserCircle, ChevronLeft } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface MobileNavbarProps {
   showBackButton?: boolean;
@@ -9,104 +9,99 @@ interface MobileNavbarProps {
 }
 
 const MobileNavbar = ({ showBackButton = false, title = "Trexo" }: MobileNavbarProps) => {
-  const navigate = useNavigate();
   const location = useLocation();
-
-  const handleBack = () => {
-    navigate(-1);
+  
+  const isActive = (path: string) => {
+    return location.pathname === path;
   };
 
-  const navItems = [
-    { 
-      icon: '🏠', 
-      label: 'Home', 
-      path: '/', 
-      isActive: location.pathname === '/' 
-    },
-    { 
-      icon: '📊', 
-      label: 'Market', 
-      path: '/market', 
-      isActive: location.pathname === '/market' 
-    },
-    null, // Placeholder for center button
-    { 
-      icon: '📈', 
-      label: 'Trade', 
-      path: '/market', 
-      isActive: location.pathname.includes('/coin/') 
-    },
-    { 
-      icon: '👤', 
-      label: 'Profile', 
-      path: '/profile', 
-      isActive: location.pathname === '/profile' 
-    }
-  ];
+  if (showBackButton) {
+    // Show header with back button instead of bottom navigation
+    return (
+      <header className="bg-white border-b border-gray-200 px-4 py-3 flex items-center">
+        <button 
+          onClick={() => window.history.back()}
+          className="mr-3 p-1 rounded-full hover:bg-gray-100"
+        >
+          <ChevronLeft className="h-6 w-6 text-gray-600" />
+        </button>
+        <h1 className="text-lg font-semibold text-gray-900">{title}</h1>
+      </header>
+    );
+  }
 
   return (
-    <>
-      {/* Top Header */}
-      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-200/50 safe-x-padding">
-        <div className="flex items-center justify-between h-14 px-4">
-          {showBackButton ? (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleBack}
-              className="h-8 w-8 p-0"
-            >
-              <ArrowLeft className="h-4 w-4" />
-            </Button>
-          ) : (
-            <div className="w-8" />
-          )}
-          
-          <h1 className="text-lg font-semibold text-gray-900">{title}</h1>
-          <div className="w-8" />
+    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-xl border-t border-emerald-100/50">
+      {/* Floating action bar design */}
+      <div className="mx-4 mb-4 mt-2">
+        <div className="bg-gradient-to-r from-emerald-500 to-green-600 rounded-2xl shadow-2xl border border-emerald-400/20 p-1">
+          <div className="flex justify-between items-center bg-white/10 backdrop-blur-sm rounded-xl p-2">
+            <NavItem 
+              to="/home" 
+              icon={<Home className="h-5 w-5" />} 
+              label="Home" 
+              active={isActive('/home') || isActive('/')} 
+            />
+            <NavItem 
+              to="/market" 
+              icon={<LayoutDashboard className="h-5 w-5" />} 
+              label="Market" 
+              active={isActive('/market')} 
+            />
+            <NavItem 
+              to="/team" 
+              icon={<Users className="h-5 w-5" />} 
+              label="Team" 
+              active={isActive('/team')} 
+            />
+            <NavItem 
+              to="/profile" 
+              icon={<UserCircle className="h-5 w-5" />} 
+              label="Profile" 
+              active={isActive('/profile')} 
+            />
+          </div>
         </div>
-      </header>
+      </div>
+      <div className="h-safe"></div>
+    </nav>
+  );
+};
 
-      {/* Bottom Navigation */}
-      <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-t border-gray-200/50 pb-safe">
-        <div className="flex items-center justify-around h-16 px-4 relative">
-          {navItems.map((item, index) => {
-            if (item === null) {
-              // Center floating plus button
-              return (
-                <div key={index} className="relative flex-1 flex justify-center">
-                  <button
-                    onClick={() => navigate('/deposit')}
-                    className="absolute -top-6 w-12 h-12 bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 flex items-center justify-center group"
-                  >
-                    <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                    <Plus className="w-6 h-6 text-white relative z-10" />
-                  </button>
-                </div>
-              );
-            }
+interface NavItemProps {
+  to: string;
+  icon: React.ReactNode;
+  label: string;
+  active: boolean;
+}
 
-            return (
-              <button
-                key={index}
-                onClick={() => navigate(item.path)}
-                className={`flex-1 flex flex-col items-center justify-center py-2 px-1 transition-colors duration-200 ${
-                  item.isActive 
-                    ? 'text-emerald-600' 
-                    : 'text-gray-500 hover:text-gray-700'
-                }`}
-              >
-                <span className="text-lg mb-1">{item.icon}</span>
-                <span className="text-xs font-medium">{item.label}</span>
-                {item.isActive && (
-                  <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-emerald-600 rounded-full"></div>
-                )}
-              </button>
-            );
-          })}
-        </div>
-      </nav>
-    </>
+const NavItem = ({ to, icon, label, active }: NavItemProps) => {
+  return (
+    <Link 
+      to={to} 
+      className={cn(
+        "flex flex-col items-center justify-center transition-all duration-300 py-2 px-3 rounded-xl relative group min-w-[70px]",
+        active ? "scale-105" : "hover:scale-105"
+      )}
+    >
+      <div className={cn(
+        "flex items-center justify-center rounded-xl p-2 transition-all duration-300 shadow-lg",
+        active 
+          ? "text-emerald-600 bg-white shadow-emerald-500/30 scale-110" 
+          : "text-white/80 bg-white/10 group-hover:text-white group-hover:bg-white/20 group-hover:shadow-white/20"
+      )}>
+        {icon}
+      </div>
+      <span className={cn(
+        "text-xs mt-1 font-semibold transition-colors duration-300 font-trading",
+        active ? "text-white" : "text-white/80 group-hover:text-white"
+      )}>
+        {label}
+      </span>
+      {active && (
+        <div className="absolute -top-1 w-1 h-1 rounded-full bg-white animate-pulse shadow-lg"></div>
+      )}
+    </Link>
   );
 };
 
