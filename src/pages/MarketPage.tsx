@@ -88,39 +88,39 @@ const MarketPage = () => {
       <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-green-50 relative overflow-hidden">
         {/* Animated Background */}
         <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-green-400/20 to-emerald-500/20 rounded-full blur-3xl animate-pulse"></div>
-          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-blue-400/20 to-green-400/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
+          <div className="absolute -top-32 -right-32 w-64 h-64 bg-gradient-to-br from-green-400/20 to-emerald-500/20 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute -bottom-32 -left-32 w-64 h-64 bg-gradient-to-tr from-blue-400/20 to-green-400/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
         </div>
 
-        <div className="px-3 py-4 space-y-4 relative z-10 pb-24">
+        <div className="px-3 py-3 space-y-3 relative z-10 pb-20">
           {/* Compact Header */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-gradient-to-r from-emerald-500 to-green-600 rounded-lg flex items-center justify-center">
-                <BarChart3 className="w-4 h-4 text-white" />
+              <div className="w-7 h-7 bg-gradient-to-r from-emerald-500 to-green-600 rounded-lg flex items-center justify-center">
+                <BarChart3 className="w-3.5 h-3.5 text-white" />
               </div>
               <div>
-                <h1 className="text-lg font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
+                <h1 className="text-base font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
                   Live Markets
                 </h1>
                 <div className="flex items-center gap-1">
-                  <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div>
+                  <div className="w-1 h-1 bg-green-500 rounded-full animate-pulse"></div>
                   <span className="text-xs text-gray-600">Real-time prices</span>
                 </div>
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm" className="rounded-full border-emerald-200 hover:bg-emerald-50 h-8 w-8 p-0">
+              <Button variant="outline" size="sm" className="rounded-full border-emerald-200 hover:bg-emerald-50 h-7 w-7 p-0">
                 <Search className="w-3 h-3 text-emerald-600" />
               </Button>
             </div>
           </div>
 
           {/* Compact Market Overview Cards */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-2">
             <Card className="bg-gradient-to-r from-green-500 to-emerald-600 text-white border-0 shadow-lg">
-              <CardContent className="p-3">
-                <div className="flex items-center gap-1.5 mb-1.5">
+              <CardContent className="p-2.5">
+                <div className="flex items-center gap-1 mb-1">
                   <TrendingUp className="w-3 h-3" />
                   <span className="text-xs font-medium opacity-90">Top Gainers</span>
                 </div>
@@ -136,8 +136,8 @@ const MarketPage = () => {
             </Card>
 
             <Card className="bg-gradient-to-r from-red-500 to-pink-600 text-white border-0 shadow-lg">
-              <CardContent className="p-3">
-                <div className="flex items-center gap-1.5 mb-1.5">
+              <CardContent className="p-2.5">
+                <div className="flex items-center gap-1 mb-1">
                   <TrendingDown className="w-3 h-3" />
                   <span className="text-xs font-medium opacity-90">Top Losers</span>
                 </div>
@@ -155,8 +155,8 @@ const MarketPage = () => {
 
           {/* Compact Filter Buttons */}
           <Card className="bg-white/90 backdrop-blur-sm border border-gray-200/50 shadow-lg">
-            <CardContent className="p-3">
-              <div className="flex gap-2 overflow-x-auto">
+            <CardContent className="p-2.5">
+              <div className="flex gap-1.5 overflow-x-auto">
                 {[
                   { key: 'all', label: 'All Coins', icon: Star },
                   { key: 'gainers', label: 'Gainers', icon: TrendingUp },
@@ -166,7 +166,7 @@ const MarketPage = () => {
                     key={item.key}
                     onClick={() => setFilter(item.key as any)}
                     className={cn(
-                      "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-300 whitespace-nowrap",
+                      "flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium transition-all duration-300 whitespace-nowrap",
                       filter === item.key
                         ? "bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-md"
                         : "bg-gray-100 text-gray-700 hover:bg-gray-200"
@@ -182,55 +182,55 @@ const MarketPage = () => {
 
           {/* Compact Cryptocurrency List */}
           <Card className="bg-white/95 backdrop-blur-sm border border-gray-200/50 shadow-xl">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-base flex items-center gap-2 font-trading">
-                <Activity className="w-4 h-4 text-emerald-600" />
+            <CardHeader className="pb-1.5">
+              <CardTitle className="text-sm flex items-center gap-2 font-trading">
+                <Activity className="w-3.5 h-3.5 text-emerald-600" />
                 <span className="bg-gradient-to-r from-emerald-700 to-green-600 bg-clip-text text-transparent">
                   {filter === 'all' ? 'All Cryptocurrencies' : 
                    filter === 'gainers' ? 'Top Gainers' : 'Top Losers'}
                 </span>
-                <div className="ml-auto text-xs bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">
+                <div className="ml-auto text-xs bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded-full">
                   {getFilteredData().length}
                 </div>
               </CardTitle>
             </CardHeader>
             <CardContent className="p-0">
               {isLoading ? (
-                <div className="space-y-2 p-3">
+                <div className="space-y-1.5 p-2">
                   {Array(8).fill(0).map((_, idx) => (
-                    <div key={idx} className="animate-pulse flex items-center justify-between p-2.5 bg-gray-50 rounded-lg">
-                      <div className="flex items-center gap-2.5">
-                        <div className="w-8 h-8 bg-gray-200 rounded-lg"></div>
+                    <div key={idx} className="animate-pulse flex items-center justify-between p-2 bg-gray-50 rounded-lg">
+                      <div className="flex items-center gap-2">
+                        <div className="w-7 h-7 bg-gray-200 rounded-lg"></div>
                         <div>
-                          <div className="h-3 w-16 bg-gray-200 rounded mb-1"></div>
-                          <div className="h-2.5 w-10 bg-gray-200 rounded"></div>
+                          <div className="h-2.5 w-14 bg-gray-200 rounded mb-1"></div>
+                          <div className="h-2 w-8 bg-gray-200 rounded"></div>
                         </div>
                       </div>
                       <div className="text-right">
-                        <div className="h-3 w-14 bg-gray-200 rounded mb-1"></div>
-                        <div className="h-2.5 w-8 bg-gray-200 rounded"></div>
+                        <div className="h-2.5 w-12 bg-gray-200 rounded mb-1"></div>
+                        <div className="h-2 w-6 bg-gray-200 rounded"></div>
                       </div>
                     </div>
                   ))}
                 </div>
               ) : (
-                <div className="space-y-1 p-2">
+                <div className="space-y-1 p-1.5">
                   {getFilteredData().map((crypto, idx) => (
                     <Link
                       key={crypto.id}
                       to={`/coin/${crypto.id}`}
-                      className="group flex items-center justify-between p-2.5 rounded-lg hover:bg-gray-50 transition-all duration-300 hover:shadow-md border border-transparent hover:border-gray-200 animate-fade-in"
+                      className="group flex items-center justify-between p-2 rounded-lg hover:bg-gray-50 transition-all duration-300 hover:shadow-md border border-transparent hover:border-gray-200 animate-fade-in"
                       style={{
                         animationDelay: `${idx * 30}ms`
                       }}
                     >
-                      <div className="flex items-center gap-2.5">
+                      <div className="flex items-center gap-2">
                         <div className="relative">
-                          <div className="w-8 h-8 bg-gradient-to-r from-gray-100 to-gray-200 rounded-lg flex items-center justify-center group-hover:scale-105 transition-transform">
+                          <div className="w-7 h-7 bg-gradient-to-r from-gray-100 to-gray-200 rounded-lg flex items-center justify-center group-hover:scale-105 transition-transform">
                             <img 
                               src={crypto.logo} 
                               alt={crypto.name} 
-                              className="w-5 h-5 rounded"
+                              className="w-4 h-4 rounded"
                               onError={(e) => {
                                 const target = e.target as HTMLImageElement;
                                 target.src = `https://raw.githubusercontent.com/Pymmdrza/CryptoIconsCDN/mainx/PNG/${crypto.symbol.toUpperCase()}.png`;
@@ -238,8 +238,8 @@ const MarketPage = () => {
                             />
                           </div>
                           {idx < 3 && (
-                            <div className="absolute -top-0.5 -right-0.5 w-3 h-3 bg-gradient-to-r from-amber-400 to-orange-500 rounded-full flex items-center justify-center">
-                              <Crown className="w-2 h-2 text-white" />
+                            <div className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-gradient-to-r from-amber-400 to-orange-500 rounded-full flex items-center justify-center">
+                              <Crown className="w-1.5 h-1.5 text-white" />
                             </div>
                           )}
                         </div>
@@ -252,16 +252,16 @@ const MarketPage = () => {
                       </div>
                       <div className="text-right">
                         <div className="font-semibold text-sm text-gray-900 font-mono">
-                          ₹{crypto.price > 100 ? crypto.price.toLocaleString(undefined, {maximumFractionDigits: 0}) : crypto.price.toLocaleString()}
+                          ${crypto.price > 100 ? crypto.price.toLocaleString(undefined, {maximumFractionDigits: 0}) : crypto.price.toLocaleString()}
                         </div>
                         <div className={cn(
                           "text-xs flex items-center justify-end font-medium",
                           (crypto.change || 0) >= 0 ? "text-emerald-600" : "text-red-500"
                         )}>
                           {(crypto.change || 0) >= 0 ? (
-                            <ArrowUpRight className="w-2.5 h-2.5 mr-0.5" />
+                            <ArrowUpRight className="w-2 h-2 mr-0.5" />
                           ) : (
-                            <ArrowDownRight className="w-2.5 h-2.5 mr-0.5" />
+                            <ArrowDownRight className="w-2 h-2 mr-0.5" />
                           )}
                           {(crypto.change || 0) >= 0 ? '+' : ''}{crypto.change?.toFixed(2) || 0}%
                         </div>
