@@ -1,7 +1,8 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import MobileLayout from "@/components/layout/MobileLayout";
-import { Check, Wallet, ArrowDown, CreditCard, Clock, Shield, Banknote, TrendingDown, Target, Zap, AlertCircle } from "lucide-react";
+import { Check, Wallet, ArrowDown, CreditCard, Clock, Shield, Banknote, TrendingDown, Target, Zap } from "lucide-react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -176,36 +177,6 @@ const WithdrawPage = () => {
             </Card>
           </motion.div>
 
-          {/* Withdrawal Timing Notice */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-          >
-            <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200/50 shadow-lg">
-              <CardContent className="p-4">
-                <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
-                    <Clock className="w-4 h-4 text-white" />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="text-sm font-semibold text-blue-900 mb-2">Withdrawal Processing Hours</h3>
-                    <div className="space-y-1 text-sm text-blue-700">
-                      <p className="flex items-center">
-                        <Clock className="w-3 h-3 mr-2" />
-                        <span className="font-medium">8:00 PM - 10:00 PM (Daily)</span>
-                      </p>
-                      <p className="flex items-center">
-                        <AlertCircle className="w-3 h-3 mr-2" />
-                        <span>Including weekends • No holidays</span>
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
-
           {/* Error Display */}
           {error && (
             <motion.div
@@ -224,7 +195,7 @@ const WithdrawPage = () => {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
+            transition={{ delay: 0.1 }}
           >
             <Card className="bg-white/90 backdrop-blur-sm border border-emerald-200/50 shadow-lg">
               <CardContent className="p-4">
@@ -250,7 +221,7 @@ const WithdrawPage = () => {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
+            transition={{ delay: 0.2 }}
           >
             <Card className="bg-white/90 backdrop-blur-sm border border-emerald-200/50 shadow-lg">
               <CardContent className="p-4">
@@ -278,7 +249,7 @@ const WithdrawPage = () => {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
+            transition={{ delay: 0.3 }}
           >
             <Card className="bg-white/90 backdrop-blur-sm border border-emerald-200/50 shadow-lg">
               <CardContent className="p-4">
@@ -330,7 +301,7 @@ const WithdrawPage = () => {
           
           <div className="flex items-center justify-center mt-2 text-sm text-gray-500">
             <Clock className="w-4 h-4 mr-1" />
-            <span>Processing: 8-10 PM (including weekends, no holidays)</span>
+            <span>Processed within 24 hours on business days</span>
           </div>
         </div>
       </div>
