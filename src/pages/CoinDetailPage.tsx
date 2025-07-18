@@ -24,7 +24,11 @@ const CoinDetailPage = () => {
   const [isSellModalOpen, setIsSellModalOpen] = useState(false);
   const [isFullscreenChart, setIsFullscreenChart] = useState(false);
   const [selectedTimePeriod, setSelectedTimePeriod] = useState('1min');
-  const [tradeAmount, setTradeAmount] = useState('1000');
+  
+  // Calculate available balance with proper type conversion
+  const availableBalance = Number(user?.wallet || 0) + Number(user?.income || 0);
+  
+  const [tradeAmount, setTradeAmount] = useState(availableBalance.toString());
   const [direction, setDirection] = useState<'Call' | 'Put'>('Call');
   const [isTradeTimerOpen, setIsTradeTimerOpen] = useState(false);
   const [tradeTimer, setTradeTimer] = useState(0);
@@ -47,6 +51,12 @@ const CoinDetailPage = () => {
   const [priceChange, setPriceChange] = useState(cachedCrypto ? parseFloat(cachedCrypto.change || 0) : 0);
   const [startingTradePrice, setStartingTradePrice] = useState(0);
   const [tradeApiResponse, setTradeApiResponse] = useState<any>(null);
+
+  // Update trade amount when user balance changes
+  useEffect(() => {
+    const newAvailableBalance = Number(user?.wallet || 0) + Number(user?.income || 0);
+    setTradeAmount(newAvailableBalance.toString());
+  }, [user?.wallet, user?.income]);
 
   useEffect(() => {
     if (!coinId) return;
@@ -188,11 +198,15 @@ const CoinDetailPage = () => {
 
   const handleBuyClick = () => {
     setDirection('Call');
+    // Auto-fill with current available balance when opening modal
+    setTradeAmount(availableBalance.toString());
     setIsBuyModalOpen(true);
   };
 
   const handleSellClick = () => {
     setDirection('Put');
+    // Auto-fill with current available balance when opening modal
+    setTradeAmount(availableBalance.toString());
     setIsSellModalOpen(true);
   };
 
@@ -375,9 +389,6 @@ const CoinDetailPage = () => {
   };
 
   const timeframes = ['1m', '5m', '15m', '30m', '1h'];
-
-  // Calculate available balance with proper type conversion
-  const availableBalance = Number(user?.wallet || 0) + Number(user?.income || 0);
 
   return (
     <MobileLayout showBackButton title={crypto.name || "Trading"} noScroll={true} hideFooter={true}>
