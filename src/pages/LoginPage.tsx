@@ -1,4 +1,5 @@
 
+// Login page for Zygo AI Trading Platform
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Shield, ShieldOff, ArrowRight, Phone, ChevronLeft } from "lucide-react";
