@@ -99,86 +99,74 @@ const LoginPage = () => {
   };
   
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex flex-col justify-center p-4 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex flex-col relative overflow-hidden">
       {/* Background Effects */}
       <div className="absolute inset-0 overflow-hidden">
-        {/* AI Grid Pattern */}
-        <div className="absolute inset-0 opacity-10">
+        <div className="absolute inset-0 opacity-5">
           <div className="absolute top-0 left-0 w-full h-full" style={{
             backgroundImage: `radial-gradient(circle at 20% 20%, #3b82f6 2px, transparent 2px),
                              radial-gradient(circle at 80% 80%, #8b5cf6 2px, transparent 2px)`,
-            backgroundSize: '50px 50px'
+            backgroundSize: '40px 40px'
           }}></div>
         </div>
-        
-        {/* Floating Elements */}
-        <div className="absolute top-20 right-10 w-32 h-32 bg-blue-500/10 rounded-full blur-2xl animate-pulse"></div>
-        <div className="absolute bottom-20 left-10 w-40 h-40 bg-purple-500/10 rounded-full blur-2xl animate-pulse delay-1000"></div>
+        <div className="absolute top-10 right-5 w-20 h-20 bg-blue-500/5 rounded-full blur-xl animate-pulse"></div>
+        <div className="absolute bottom-10 left-5 w-24 h-24 bg-purple-500/5 rounded-full blur-xl animate-pulse delay-1000"></div>
       </div>
 
       {/* Main Content */}
-      <div className="relative z-10 w-full max-w-sm mx-auto">
+      <div className="relative z-10 flex-1 px-4 py-6 flex flex-col">
         {/* Welcome Header */}
-        <div className="relative mb-8 bg-gradient-to-r from-emerald-500/20 via-cyan-500/20 to-blue-500/20 backdrop-blur-xl rounded-2xl p-6 border border-white/10 overflow-hidden">
-          {/* Background glow effect */}
-          <div className="absolute inset-0 bg-gradient-to-r from-emerald-400/10 to-cyan-400/10 blur-xl"></div>
-          
-          <div className="relative flex items-center justify-between">
+        <div className="mb-6 bg-gradient-to-r from-emerald-500/15 via-cyan-500/15 to-blue-500/15 backdrop-blur-xl rounded-xl p-4 border border-white/10 overflow-hidden">
+          <div className="flex items-center justify-between">
             <div className="flex-1">
-              <h1 className="text-2xl font-bold text-white mb-1">Hello</h1>
-              <p className="text-emerald-300 text-sm">Welcome to Zygo AI</p>
+              <h1 className="text-xl font-bold text-white mb-1">Hello</h1>
+              <p className="text-emerald-300 text-xs">Welcome to Zygo AI</p>
             </div>
             
             {/* AI Bot Visual */}
             <div className="relative">
-              <div className="w-16 h-16 bg-gradient-to-br from-emerald-400 to-cyan-500 rounded-2xl flex items-center justify-center relative overflow-hidden">
-                {/* Bot face */}
+              <div className="w-12 h-12 bg-gradient-to-br from-emerald-400 to-cyan-500 rounded-xl flex items-center justify-center relative">
                 <div className="relative">
-                  <div className="w-8 h-8 bg-white/20 rounded-lg mb-1"></div>
-                  <div className="flex gap-1 justify-center">
-                    <div className="w-1.5 h-1.5 bg-emerald-300 rounded-full animate-pulse"></div>
-                    <div className="w-1.5 h-1.5 bg-emerald-300 rounded-full animate-pulse delay-100"></div>
+                  <div className="w-6 h-6 bg-white/20 rounded-md mb-0.5"></div>
+                  <div className="flex gap-0.5 justify-center">
+                    <div className="w-1 h-1 bg-emerald-300 rounded-full animate-pulse"></div>
+                    <div className="w-1 h-1 bg-emerald-300 rounded-full animate-pulse delay-100"></div>
                   </div>
                 </div>
-                
-                {/* Glowing platform effect */}
-                <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-12 h-1 bg-gradient-to-r from-transparent via-emerald-300 to-transparent rounded-full opacity-60 animate-pulse"></div>
+                <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-8 h-0.5 bg-gradient-to-r from-transparent via-emerald-300 to-transparent rounded-full opacity-60 animate-pulse"></div>
               </div>
-              
-              {/* Floating particles */}
-              <div className="absolute -top-1 -right-1 w-2 h-2 bg-emerald-300 rounded-full animate-ping"></div>
-              <div className="absolute -bottom-1 -left-1 w-1.5 h-1.5 bg-cyan-300 rounded-full animate-ping delay-300"></div>
+              <div className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 bg-emerald-300 rounded-full animate-ping"></div>
             </div>
           </div>
         </div>
 
-        {/* Logo and Title */}
+        {/* Logo Section */}
         <div className="text-center mb-8">
           <div className="flex items-center justify-center mb-4">
-            <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center overflow-hidden shadow-xl">
+            <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center overflow-hidden shadow-lg">
               <img src={zygoLogo} alt="Zygo" className="w-full h-full object-cover" />
             </div>
           </div>
-          <h2 className="text-xl font-bold text-white mb-1">Zygo</h2>
-          <p className="text-slate-400 text-sm">AI Trading Platform</p>
+          <h2 className="text-lg font-bold text-white mb-1">Zygo</h2>
+          <p className="text-slate-400 text-xs">AI Trading Platform</p>
         </div>
 
         {/* Login Form */}
-        <div className="bg-white/[0.03] backdrop-blur-xl rounded-2xl p-6 shadow-2xl border border-white/10">
+        <div className="flex-1 bg-white/[0.02] backdrop-blur-xl rounded-xl p-5 border border-white/10 mb-4">
           <div className="text-center mb-6">
-            <h2 className="text-xl font-semibold text-white mb-1">Welcome Back</h2>
-            <p className="text-slate-400 text-sm">Sign in to continue trading</p>
+            <h3 className="text-lg font-semibold text-white mb-1">Welcome Back</h3>
+            <p className="text-slate-400 text-xs">Sign in to continue trading</p>
           </div>
 
-          <form onSubmit={handleLogin} className="space-y-4">
+          <form onSubmit={handleLogin} className="space-y-5">
             {/* Phone Field */}
             <div className="space-y-2">
-              <Label htmlFor="phone" className="text-sm font-medium text-white">
+              <Label htmlFor="phone" className="text-xs font-medium text-white">
                 Phone Number
               </Label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                  <span className="text-sm text-slate-400 border-r border-slate-600 pr-2 mr-2">+91</span>
+                  <span className="text-xs text-slate-400 border-r border-slate-600 pr-2 mr-2">+91</span>
                 </div>
                 <Input
                   id="phone"
@@ -187,7 +175,7 @@ const LoginPage = () => {
                   value={formData.phone}
                   onChange={handleChange}
                   placeholder="Enter phone number"
-                  className="h-12 pl-14 pr-4 bg-white/5 border border-white/20 focus:border-blue-400 focus:bg-white/10 rounded-xl text-white placeholder:text-slate-500 transition-all duration-300"
+                  className="h-14 pl-12 pr-12 text-base bg-white/5 border border-white/20 focus:border-blue-400 focus:bg-white/10 rounded-lg text-white placeholder:text-slate-500 transition-all duration-300"
                   maxLength={10}
                   required
                   inputMode="numeric"
@@ -204,7 +192,7 @@ const LoginPage = () => {
             
             {/* Password Field */}
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-sm font-medium text-white">
+              <Label htmlFor="password" className="text-xs font-medium text-white">
                 Password
               </Label>
               <div className="relative">
@@ -215,15 +203,15 @@ const LoginPage = () => {
                   value={formData.password}
                   onChange={handleChange}
                   placeholder="Enter password"
-                  className="h-12 pl-4 pr-12 bg-white/5 border border-white/20 focus:border-blue-400 focus:bg-white/10 rounded-xl text-white placeholder:text-slate-500 transition-all duration-300"
+                  className="h-14 pl-4 pr-12 text-base bg-white/5 border border-white/20 focus:border-blue-400 focus:bg-white/10 rounded-lg text-white placeholder:text-slate-500 transition-all duration-300"
                   required
                 />
                 <button
                   type="button"
-                  className="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-500 hover:text-white transition-colors"
+                  className="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-500 hover:text-white transition-colors touch-manipulation"
                   onClick={() => setShowPassword(!showPassword)}
                 >
-                  {showPassword ? <ShieldOff className="w-4 h-4" /> : <Shield className="w-4 h-4" />}
+                  {showPassword ? <ShieldOff className="w-5 h-5" /> : <Shield className="w-5 h-5" />}
                 </button>
               </div>
             </div>
@@ -231,17 +219,17 @@ const LoginPage = () => {
             {/* Submit Button */}
             <Button 
               type="submit" 
-              className="w-full h-12 text-sm font-semibold bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border-0 mt-6"
+              className="w-full h-14 text-base font-semibold bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 border-0 mt-8 touch-manipulation"
               disabled={isSubmitting}
             >
               {isSubmitting ? (
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                <div className="flex items-center gap-3">
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                   <span>Signing In...</span>
                 </div>
               ) : (
-                <div className="flex items-center gap-2">
-                  <ArrowRight className="w-4 h-4" />
+                <div className="flex items-center gap-3">
+                  <ArrowRight className="w-5 h-5" />
                   <span>Sign In</span>
                 </div>
               )}
@@ -252,18 +240,18 @@ const LoginPage = () => {
           <div className="mt-6 text-center space-y-3">
             <p className="text-slate-400 text-sm">
               Don't have an account?{" "}
-              <Link to="/register" className="text-blue-400 hover:text-blue-300 font-medium transition-colors">
+              <Link to="/register" className="text-blue-400 hover:text-blue-300 font-medium transition-colors touch-manipulation">
                 Sign Up
               </Link>
             </p>
             
-            <p className="text-xs text-slate-500 leading-relaxed">
+            <p className="text-xs text-slate-500 leading-relaxed px-2">
               By signing in, you agree to our{" "}
-              <Link to="/terms" className="text-blue-400 hover:underline transition-colors">
+              <Link to="/terms" className="text-blue-400 hover:underline transition-colors touch-manipulation">
                 Terms
               </Link>{" "}
               and{" "}
-              <Link to="/privacy" className="text-blue-400 hover:underline transition-colors">
+              <Link to="/privacy" className="text-blue-400 hover:underline transition-colors touch-manipulation">
                 Privacy Policy
               </Link>
             </p>
@@ -271,18 +259,18 @@ const LoginPage = () => {
         </div>
 
         {/* Features */}
-        <div className="mt-6 text-center">
-          <div className="flex justify-center items-center gap-6 text-xs text-slate-500">
+        <div className="text-center pb-4">
+          <div className="flex justify-center items-center gap-4 text-xs text-slate-500">
             <div className="flex items-center gap-1">
-              <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+              <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse"></div>
               <span>AI Powered</span>
             </div>
             <div className="flex items-center gap-1">
-              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+              <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div>
               <span>Secure</span>
             </div>
             <div className="flex items-center gap-1">
-              <div className="w-2 h-2 bg-purple-500 rounded-full animate-pulse"></div>
+              <div className="w-1.5 h-1.5 bg-purple-500 rounded-full animate-pulse"></div>
               <span>Fast Trading</span>
             </div>
           </div>
