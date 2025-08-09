@@ -2,13 +2,14 @@
 // Login page for Zygo AI Trading Platform
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Shield, ShieldOff, ArrowRight, Phone } from "lucide-react";
+import { Shield, ShieldOff, ArrowRight, Phone, ChevronLeft } from "lucide-react";
 import zygoLogo from "@/assets/zygo-logo.jpeg";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "@/hooks/use-toast";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -17,7 +18,7 @@ const LoginPage = () => {
     password: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
+  const isMobile = useIsMobile();
   
   let auth;
   try {
@@ -99,8 +100,18 @@ const LoginPage = () => {
   
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex flex-col relative overflow-hidden">
-      {/* Simple Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950"></div>
+      {/* Background Effects */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute inset-0 opacity-5">
+          <div className="absolute top-0 left-0 w-full h-full" style={{
+            backgroundImage: `radial-gradient(circle at 20% 20%, #3b82f6 2px, transparent 2px),
+                             radial-gradient(circle at 80% 80%, #8b5cf6 2px, transparent 2px)`,
+            backgroundSize: '40px 40px'
+          }}></div>
+        </div>
+        <div className="absolute top-10 right-5 w-20 h-20 bg-blue-500/5 rounded-full blur-xl animate-pulse"></div>
+        <div className="absolute bottom-10 left-5 w-24 h-24 bg-purple-500/5 rounded-full blur-xl animate-pulse delay-1000"></div>
+      </div>
 
       {/* Main Content */}
       <div className="relative z-10 flex-1 px-4 py-6 flex flex-col">
@@ -247,6 +258,23 @@ const LoginPage = () => {
           </div>
         </div>
 
+        {/* Features */}
+        <div className="text-center pb-4">
+          <div className="flex justify-center items-center gap-4 text-xs text-slate-500">
+            <div className="flex items-center gap-1">
+              <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse"></div>
+              <span>AI Powered</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div>
+              <span>Secure</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <div className="w-1.5 h-1.5 bg-purple-500 rounded-full animate-pulse"></div>
+              <span>Fast Trading</span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
