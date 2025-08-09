@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Eye, EyeOff, LogIn, Smartphone, ChevronLeft } from "lucide-react";
+import { Shield, ShieldOff, ArrowRight, Phone, ChevronLeft } from "lucide-react";
 import zygoLogo from "@/assets/zygo-logo.jpeg";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -159,7 +159,7 @@ const LoginPage = () => {
                   pattern="[0-9]*"
                 />
                 <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                  <Smartphone className="w-4 h-4 text-slate-500" />
+                  <Phone className="w-4 h-4 text-slate-500" />
                 </div>
               </div>
               {formData.phone && formData.phone.length < 10 && (
@@ -188,7 +188,7 @@ const LoginPage = () => {
                   className="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-500 hover:text-white transition-colors"
                   onClick={() => setShowPassword(!showPassword)}
                 >
-                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  {showPassword ? <ShieldOff className="w-4 h-4" /> : <Shield className="w-4 h-4" />}
                 </button>
               </div>
             </div>
@@ -206,7 +206,7 @@ const LoginPage = () => {
                 </div>
               ) : (
                 <div className="flex items-center gap-2">
-                  <LogIn className="w-4 h-4" />
+                  <ArrowRight className="w-4 h-4" />
                   <span>Sign In</span>
                 </div>
               )}
