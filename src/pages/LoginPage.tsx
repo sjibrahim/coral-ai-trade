@@ -118,14 +118,48 @@ const LoginPage = () => {
 
       {/* Main Content */}
       <div className="relative z-10 w-full max-w-sm mx-auto">
+        {/* Welcome Header */}
+        <div className="relative mb-8 bg-gradient-to-r from-emerald-500/20 via-cyan-500/20 to-blue-500/20 backdrop-blur-xl rounded-2xl p-6 border border-white/10 overflow-hidden">
+          {/* Background glow effect */}
+          <div className="absolute inset-0 bg-gradient-to-r from-emerald-400/10 to-cyan-400/10 blur-xl"></div>
+          
+          <div className="relative flex items-center justify-between">
+            <div className="flex-1">
+              <h1 className="text-2xl font-bold text-white mb-1">Hello</h1>
+              <p className="text-emerald-300 text-sm">Welcome to Zygo AI</p>
+            </div>
+            
+            {/* AI Bot Visual */}
+            <div className="relative">
+              <div className="w-16 h-16 bg-gradient-to-br from-emerald-400 to-cyan-500 rounded-2xl flex items-center justify-center relative overflow-hidden">
+                {/* Bot face */}
+                <div className="relative">
+                  <div className="w-8 h-8 bg-white/20 rounded-lg mb-1"></div>
+                  <div className="flex gap-1 justify-center">
+                    <div className="w-1.5 h-1.5 bg-emerald-300 rounded-full animate-pulse"></div>
+                    <div className="w-1.5 h-1.5 bg-emerald-300 rounded-full animate-pulse delay-100"></div>
+                  </div>
+                </div>
+                
+                {/* Glowing platform effect */}
+                <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-12 h-1 bg-gradient-to-r from-transparent via-emerald-300 to-transparent rounded-full opacity-60 animate-pulse"></div>
+              </div>
+              
+              {/* Floating particles */}
+              <div className="absolute -top-1 -right-1 w-2 h-2 bg-emerald-300 rounded-full animate-ping"></div>
+              <div className="absolute -bottom-1 -left-1 w-1.5 h-1.5 bg-cyan-300 rounded-full animate-ping delay-300"></div>
+            </div>
+          </div>
+        </div>
+
         {/* Logo and Title */}
         <div className="text-center mb-8">
-          <div className="flex items-center justify-center mb-6">
-            <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-3xl flex items-center justify-center overflow-hidden shadow-2xl">
+          <div className="flex items-center justify-center mb-4">
+            <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center overflow-hidden shadow-xl">
               <img src={zygoLogo} alt="Zygo" className="w-full h-full object-cover" />
             </div>
           </div>
-          <h1 className="text-3xl font-bold text-white mb-2">Zygo</h1>
+          <h2 className="text-xl font-bold text-white mb-1">Zygo</h2>
           <p className="text-slate-400 text-sm">AI Trading Platform</p>
         </div>
 
