@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff, LogIn, Smartphone, ChevronLeft } from "lucide-react";
+import zygoLogo from "@/assets/zygo-logo.jpeg";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -122,8 +123,8 @@ const LoginPage = () => {
               
               {/* App Icon */}
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-black rounded-xl flex items-center justify-center">
-                  <div className="w-8 h-8 border-2 border-teal-400 rounded-md transform rotate-45"></div>
+                <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center overflow-hidden">
+                  <img src={zygoLogo} alt="Zygo" className="w-full h-full object-cover" />
                 </div>
                 <div>
                   <h2 className="text-2xl font-bold">Hello</h2>
