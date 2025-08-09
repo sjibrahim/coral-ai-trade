@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Eye, EyeOff, LogIn, Smartphone, Shield, Lock, Award, Zap, CheckCircle } from "lucide-react";
+import { Eye, EyeOff, LogIn, Smartphone, ChevronLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -113,64 +113,40 @@ const LoginPage = () => {
 
       {/* Content */}
       <div className="relative z-10 flex flex-col min-h-screen">
-        {/* Header - Responsive spacing */}
-        <div className={`${isMobile ? 'pt-8 pb-4' : 'pt-12 pb-6'} px-4 sm:px-6 text-center`}>
-          <div className="mx-auto mb-3">
-            <img 
-              src="https://ik.imagekit.io/spmcumfu9/trexo.jpeg" 
-              alt="Trexo Logo" 
-              className={`${isMobile ? 'w-16 h-16' : 'w-20 h-20'} mx-auto rounded-2xl object-cover shadow-lg`}
-            />
-          </div>
-          <h1 className={`${isMobile ? 'text-2xl' : 'text-3xl'} font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-2`}>
-            Trexo
-          </h1>
-          <p className={`text-muted-foreground ${isMobile ? 'text-sm' : 'text-base'}`}>
-            Secure Crypto Trading Platform
-          </p>
-        </div>
-
-        {/* Trust Badges - More compact on mobile */}
-        <div className={`px-4 sm:px-6 ${isMobile ? 'mb-4' : 'mb-6'}`}>
-          <div className="flex flex-wrap justify-center gap-1.5 sm:gap-2 mb-3 sm:mb-4">
-            <div className="flex items-center gap-1 bg-white/70 backdrop-blur-sm px-2 sm:px-3 py-1 rounded-full border border-green-200/50">
-              <Shield className={`${isMobile ? 'w-3 h-3' : 'w-3 h-3'} text-green-600`} />
-              <span className={`${isMobile ? 'text-xs' : 'text-xs'} font-medium text-green-700`}>Bank Grade Security</span>
+        {/* Hero Banner - Dark teal style */}
+        <header className="px-4 sm:px-6 pt-6 pb-8">
+          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary/90 to-emerald-600/80 text-white shadow-2xl">
+            <div className="absolute inset-0 opacity-20">
+              <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/20 rounded-full blur-2xl"></div>
+              <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-black/10 rounded-full blur-2xl"></div>
             </div>
-            <div className="flex items-center gap-1 bg-white/70 backdrop-blur-sm px-2 sm:px-3 py-1 rounded-full border border-blue-200/50">
-              <Lock className={`${isMobile ? 'w-3 h-3' : 'w-3 h-3'} text-blue-600`} />
-              <span className={`${isMobile ? 'text-xs' : 'text-xs'} font-medium text-blue-700`}>256-bit Encryption</span>
+            <div className="flex items-center justify-between px-4 sm:px-6 py-4 relative z-10">
+              <button type="button" onClick={() => navigate(-1)} aria-label="Back" className="inline-flex items-center justify-center w-9 h-9 rounded-full bg-white/15 hover:bg-white/25 transition-colors">
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+              <div className="flex-1 text-center">
+                <h2 className={`${isMobile ? 'text-xl' : 'text-2xl'} font-semibold`}>Hello</h2>
+                <p className="text-white/80 text-xs sm:text-sm">Welcome to Trexo</p>
+              </div>
+              <div className="w-9" />
             </div>
           </div>
-          <div className="flex flex-wrap justify-center gap-1.5 sm:gap-2">
-            <div className="flex items-center gap-1 bg-white/70 backdrop-blur-sm px-2 sm:px-3 py-1 rounded-full border border-purple-200/50">
-              <Award className={`${isMobile ? 'w-3 h-3' : 'w-3 h-3'} text-purple-600`} />
-              <span className={`${isMobile ? 'text-xs' : 'text-xs'} font-medium text-purple-700`}>Trusted by 1M+</span>
-            </div>
-            <div className="flex items-center gap-1 bg-white/70 backdrop-blur-sm px-2 sm:px-3 py-1 rounded-full border border-orange-200/50">
-              <Zap className={`${isMobile ? 'w-3 h-3' : 'w-3 h-3'} text-orange-600`} />
-              <span className={`${isMobile ? 'text-xs' : 'text-xs'} font-medium text-orange-700`}>Instant Trading</span>
-            </div>
-            <div className="flex items-center gap-1 bg-white/70 backdrop-blur-sm px-2 sm:px-3 py-1 rounded-full border border-green-200/50">
-              <CheckCircle className={`${isMobile ? 'w-3 h-3' : 'w-3 h-3'} text-green-600`} />
-              <span className={`${isMobile ? 'text-xs' : 'text-xs'} font-medium text-green-700`}>RBI Compliant</span>
-            </div>
-          </div>
-        </div>
+        </header>
 
         {/* Login Form - Responsive positioning and sizing */}
         <div className="flex-1 px-4 sm:px-6 flex items-start justify-center pt-2 sm:pt-4">
           <div className="w-full max-w-sm">
-            <div className="bg-white/90 backdrop-blur-xl rounded-3xl p-6 sm:p-8 shadow-2xl border border-white/20 animate-fade-in-scale">
-              <form onSubmit={handleLogin} className="space-y-5 sm:space-y-6">
+            <div className="bg-foreground/95 backdrop-blur-xl rounded-3xl p-6 sm:p-8 shadow-2xl border border-white/10 animate-fade-in-scale text-white">
+                <form onSubmit={handleLogin} className="space-y-5 sm:space-y-6">
+                  <h3 className={`${isMobile ? 'text-lg' : 'text-xl'} font-semibold text-white mb-2`}>Login</h3>
                 {/* Phone Field with Indian Country Code */}
                 <div className="space-y-2 sm:space-y-3">
-                  <Label htmlFor="phone" className="text-sm font-semibold text-gray-700">
+                  <Label htmlFor="phone" className="text-sm font-semibold text-white">
                     Phone Number
                   </Label>
                   <div className="relative group">
                     <div className="absolute inset-y-0 left-0 flex items-center pl-3 sm:pl-4 pointer-events-none">
-                      <span className={`${isMobile ? 'text-sm' : 'text-sm'} font-medium text-gray-500 border-r border-gray-300 pr-2 sm:pr-3 mr-2 sm:mr-3`}>🇮🇳 +91</span>
+                      <span className={`${isMobile ? 'text-sm' : 'text-sm'} font-medium text-gray-200 border-r border-white/10 pr-2 sm:pr-3 mr-2 sm:mr-3`}>🇮🇳 +91</span>
                     </div>
                     <Input
                       id="phone"
@@ -179,14 +155,14 @@ const LoginPage = () => {
                       value={formData.phone}
                       onChange={handleChange}
                       placeholder="9876543210"
-                      className={`${isMobile ? 'h-12 pl-16 pr-10 text-base' : 'h-14 pl-20 pr-12 text-base'} bg-gray-50/50 border-2 border-gray-200 hover:border-green-300 focus:border-green-500 focus:bg-white rounded-2xl transition-all duration-300 group-hover:shadow-md focus:shadow-lg`}
+                      className={`${isMobile ? 'h-12 pl-16 pr-10 text-base' : 'h-14 pl-20 pr-12 text-base'} bg-white/5 border border-white/10 focus:border-primary focus:bg-white/10 rounded-2xl transition-all duration-300 text-white placeholder:text-white/60 group-hover:shadow-md focus:shadow-lg`}
                       maxLength={10}
                       required
                       inputMode="numeric"
                       pattern="[0-9]*"
                     />
                     <div className={`absolute inset-y-0 right-0 flex items-center ${isMobile ? 'pr-3' : 'pr-4'} pointer-events-none`}>
-                      <Smartphone className={`${isMobile ? 'w-4 h-4' : 'w-5 h-5'} text-gray-400 group-hover:text-green-500 transition-colors duration-300`} />
+                      <Smartphone className={`${isMobile ? 'w-4 h-4' : 'w-5 h-5'} text-white/60 group-hover:text-white transition-colors duration-300`} />
                     </div>
                   </div>
                   {formData.phone && formData.phone.length < 10 && (
@@ -196,7 +172,7 @@ const LoginPage = () => {
                 
                 {/* Password Field */}
                 <div className="space-y-2 sm:space-y-3">
-                  <Label htmlFor="password" className="text-sm font-semibold text-gray-700">
+                  <Label htmlFor="password" className="text-sm font-semibold text-white">
                     Password
                   </Label>
                   <div className="relative group">
@@ -207,12 +183,12 @@ const LoginPage = () => {
                       value={formData.password}
                       onChange={handleChange}
                       placeholder="Enter your secure password"
-                      className={`${isMobile ? 'h-12 pl-3 pr-10 text-base' : 'h-14 pl-4 pr-12 text-base'} bg-gray-50/50 border-2 border-gray-200 hover:border-green-300 focus:border-green-500 focus:bg-white rounded-2xl transition-all duration-300 group-hover:shadow-md focus:shadow-lg`}
+                      className={`${isMobile ? 'h-12 pl-3 pr-10 text-base' : 'h-14 pl-4 pr-12 text-base'} bg-white/5 border border-white/10 focus:border-primary focus:bg-white/10 rounded-2xl transition-all duration-300 text-white placeholder:text-white/60 group-hover:shadow-md focus:shadow-lg`}
                       required
                     />
                     <button
                       type="button"
-                      className={`absolute inset-y-0 right-0 flex items-center ${isMobile ? 'pr-3' : 'pr-4'} text-gray-400 hover:text-green-500 transition-colors duration-300`}
+                      className={`absolute inset-y-0 right-0 flex items-center ${isMobile ? 'pr-3' : 'pr-4'} text-white/60 hover:text-white transition-colors duration-300`}
                       onClick={() => setShowPassword(!showPassword)}
                     >
                       {showPassword ? <EyeOff className={`${isMobile ? 'w-4 h-4' : 'w-5 h-5'}`} /> : <Eye className={`${isMobile ? 'w-4 h-4' : 'w-5 h-5'}`} />}
