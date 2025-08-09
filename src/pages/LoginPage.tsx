@@ -97,30 +97,23 @@ const LoginPage = () => {
   };
   
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-green-50 relative overflow-hidden">
-      {/* Animated Background Elements */}
+    <div className="min-h-screen bg-gray-900 relative overflow-hidden">
+      {/* Subtle background effects */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-green-400/20 to-emerald-500/20 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-blue-400/20 to-green-400/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-green-300/10 to-emerald-300/10 rounded-full blur-3xl animate-pulse delay-500"></div>
-        
-        {/* Floating shapes */}
-        <div className="absolute top-20 left-10 w-4 h-4 bg-green-400/30 rounded-full animate-bounce delay-300"></div>
-        <div className="absolute top-32 right-16 w-3 h-3 bg-emerald-400/40 rounded-full animate-bounce delay-700"></div>
-        <div className="absolute bottom-40 left-20 w-5 h-5 bg-green-300/30 rounded-full animate-bounce delay-1000"></div>
-        <div className="absolute bottom-64 right-12 w-2 h-2 bg-emerald-500/40 rounded-full animate-bounce delay-500"></div>
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-primary/10 to-emerald-500/10 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-primary/5 to-emerald-400/5 rounded-full blur-3xl animate-pulse delay-1000"></div>
       </div>
 
       {/* Content */}
       <div className="relative z-10 flex flex-col min-h-screen">
         {/* Hero Banner - Dark teal style */}
         <header className="px-4 sm:px-6 pt-6 pb-8">
-          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary/90 to-emerald-600/80 text-white shadow-2xl">
-            <div className="absolute inset-0 opacity-20">
+          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary to-emerald-600 text-white shadow-2xl">
+            <div className="absolute inset-0 opacity-30">
               <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/20 rounded-full blur-2xl"></div>
               <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-black/10 rounded-full blur-2xl"></div>
             </div>
-            <div className="flex items-center justify-between px-4 sm:px-6 py-4 relative z-10">
+            <div className="flex items-center justify-between px-4 sm:px-6 py-6 relative z-10">
               <button type="button" onClick={() => navigate(-1)} aria-label="Back" className="inline-flex items-center justify-center w-9 h-9 rounded-full bg-white/15 hover:bg-white/25 transition-colors">
                 <ChevronLeft className="w-5 h-5" />
               </button>
@@ -136,7 +129,7 @@ const LoginPage = () => {
         {/* Login Form - Responsive positioning and sizing */}
         <div className="flex-1 px-4 sm:px-6 flex items-start justify-center pt-2 sm:pt-4">
           <div className="w-full max-w-sm">
-            <div className="bg-foreground/95 backdrop-blur-xl rounded-3xl p-6 sm:p-8 shadow-2xl border border-white/10 animate-fade-in-scale text-white">
+            <div className="bg-gray-800/95 backdrop-blur-xl rounded-3xl p-6 sm:p-8 shadow-2xl border border-gray-700/50 animate-fade-in-scale text-white">
                 <form onSubmit={handleLogin} className="space-y-5 sm:space-y-6">
                   <h3 className={`${isMobile ? 'text-lg' : 'text-xl'} font-semibold text-white mb-2`}>Login</h3>
                 {/* Phone Field with Indian Country Code */}
@@ -146,7 +139,7 @@ const LoginPage = () => {
                   </Label>
                   <div className="relative group">
                     <div className="absolute inset-y-0 left-0 flex items-center pl-3 sm:pl-4 pointer-events-none">
-                      <span className={`${isMobile ? 'text-sm' : 'text-sm'} font-medium text-gray-200 border-r border-white/10 pr-2 sm:pr-3 mr-2 sm:mr-3`}>🇮🇳 +91</span>
+                      <span className={`${isMobile ? 'text-sm' : 'text-sm'} font-medium text-gray-400 border-r border-gray-600 pr-2 sm:pr-3 mr-2 sm:mr-3`}>+44</span>
                     </div>
                     <Input
                       id="phone"
@@ -154,15 +147,15 @@ const LoginPage = () => {
                       type="tel"
                       value={formData.phone}
                       onChange={handleChange}
-                      placeholder="9876543210"
-                      className={`${isMobile ? 'h-12 pl-16 pr-10 text-base' : 'h-14 pl-20 pr-12 text-base'} bg-white/5 border border-white/10 focus:border-primary focus:bg-white/10 rounded-2xl transition-all duration-300 text-white placeholder:text-white/60 group-hover:shadow-md focus:shadow-lg`}
+                      placeholder="Enter your phone number"
+                      className={`${isMobile ? 'h-12 pl-14 pr-10 text-base' : 'h-14 pl-16 pr-12 text-base'} bg-gray-700/50 border border-gray-600 focus:border-primary focus:bg-gray-700/70 rounded-xl transition-all duration-300 text-white placeholder:text-gray-400 group-hover:shadow-md focus:shadow-lg`}
                       maxLength={10}
                       required
                       inputMode="numeric"
                       pattern="[0-9]*"
                     />
                     <div className={`absolute inset-y-0 right-0 flex items-center ${isMobile ? 'pr-3' : 'pr-4'} pointer-events-none`}>
-                      <Smartphone className={`${isMobile ? 'w-4 h-4' : 'w-5 h-5'} text-white/60 group-hover:text-white transition-colors duration-300`} />
+                      <Smartphone className={`${isMobile ? 'w-4 h-4' : 'w-5 h-5'} text-gray-400 group-hover:text-white transition-colors duration-300`} />
                     </div>
                   </div>
                   {formData.phone && formData.phone.length < 10 && (
@@ -183,12 +176,12 @@ const LoginPage = () => {
                       value={formData.password}
                       onChange={handleChange}
                       placeholder="Enter your secure password"
-                      className={`${isMobile ? 'h-12 pl-3 pr-10 text-base' : 'h-14 pl-4 pr-12 text-base'} bg-white/5 border border-white/10 focus:border-primary focus:bg-white/10 rounded-2xl transition-all duration-300 text-white placeholder:text-white/60 group-hover:shadow-md focus:shadow-lg`}
+                      className={`${isMobile ? 'h-12 pl-3 pr-10 text-base' : 'h-14 pl-4 pr-12 text-base'} bg-gray-700/50 border border-gray-600 focus:border-primary focus:bg-gray-700/70 rounded-xl transition-all duration-300 text-white placeholder:text-gray-400 group-hover:shadow-md focus:shadow-lg`}
                       required
                     />
                     <button
                       type="button"
-                      className={`absolute inset-y-0 right-0 flex items-center ${isMobile ? 'pr-3' : 'pr-4'} text-white/60 hover:text-white transition-colors duration-300`}
+                      className={`absolute inset-y-0 right-0 flex items-center ${isMobile ? 'pr-3' : 'pr-4'} text-gray-400 hover:text-white transition-colors duration-300`}
                       onClick={() => setShowPassword(!showPassword)}
                     >
                       {showPassword ? <EyeOff className={`${isMobile ? 'w-4 h-4' : 'w-5 h-5'}`} /> : <Eye className={`${isMobile ? 'w-4 h-4' : 'w-5 h-5'}`} />}
@@ -199,7 +192,7 @@ const LoginPage = () => {
                 {/* Submit Button */}
                 <Button 
                   type="submit" 
-                  className={`w-full ${isMobile ? 'h-12 text-base' : 'h-14 text-base'} font-semibold bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300`}
+                  className={`w-full ${isMobile ? 'h-12 text-base' : 'h-14 text-base'} font-semibold bg-primary hover:bg-primary/90 text-white rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300`}
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? (
@@ -221,20 +214,20 @@ const LoginPage = () => {
         
         {/* Footer - Responsive spacing */}
         <div className={`flex-shrink-0 ${isMobile ? 'p-4' : 'p-6'} text-center space-y-3 sm:space-y-4`}>
-          <p className={`text-gray-600 ${isMobile ? 'text-sm' : 'text-base'}`}>
-            New to Trexo?{" "}
-            <Link to="/register" className="text-green-600 hover:text-green-700 font-semibold transition-colors duration-300">
-              Create Account
+          <p className={`text-gray-400 ${isMobile ? 'text-sm' : 'text-base'}`}>
+            Don't have an account?{" "}
+            <Link to="/register" className="text-primary hover:text-primary/80 font-semibold transition-colors duration-300">
+              Register now
             </Link>
           </p>
           
           <p className={`${isMobile ? 'text-xs' : 'text-xs'} text-gray-500 leading-relaxed px-2 sm:px-4`}>
             By signing in, you agree to our{" "}
-            <Link to="/terms" className="text-green-600 hover:underline transition-colors duration-300">
+            <Link to="/terms" className="text-primary hover:underline transition-colors duration-300">
               Terms
             </Link>{" "}
             and{" "}
-            <Link to="/privacy" className="text-green-600 hover:underline transition-colors duration-300">
+            <Link to="/privacy" className="text-primary hover:underline transition-colors duration-300">
               Privacy Policy
             </Link>
           </p>
