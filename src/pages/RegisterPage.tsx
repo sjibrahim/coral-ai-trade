@@ -140,41 +140,40 @@ const RegisterPage = () => {
       </div>
 
       {/* Main Content */}
-      <div className="relative z-10 flex-1 px-4 py-4 flex flex-col w-full max-w-md mx-auto sm:max-w-lg md:max-w-xl lg:max-w-2xl">
+      <div className="relative z-10 flex items-center justify-center min-h-screen px-4 py-6">
+        <div className="w-full max-w-sm mx-auto space-y-4">
         {/* Welcome Header */}
-        <div className="mb-4 sm:mb-6 bg-gradient-to-r from-emerald-500/15 via-cyan-500/15 to-blue-500/15 backdrop-blur-xl rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-white/10 overflow-hidden">
+        <div className="bg-gradient-to-r from-emerald-500/15 via-cyan-500/15 to-blue-500/15 backdrop-blur-xl rounded-xl p-4 border border-white/10">
           <div className="flex items-center justify-between">
-            <div className="flex-1 min-w-0">
-              <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-1 truncate">Hello</h1>
-              <p className="text-emerald-300 text-xs sm:text-sm truncate">Welcome to CORAL</p>
+            <div className="flex-1">
+              <h1 className="text-lg font-bold text-white mb-1">Hello</h1>
+              <p className="text-emerald-300 text-xs">Welcome to CORAL</p>
             </div>
             
             {/* CORAL Logo */}
-            <div className="relative flex-shrink-0 ml-3">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center overflow-hidden shadow-lg">
-                <img src={coralLogo} alt="CORAL" className="w-full h-full object-cover" />
-              </div>
+            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center overflow-hidden shadow-lg">
+              <img src={coralLogo} alt="CORAL" className="w-full h-full object-cover" />
             </div>
           </div>
         </div>
 
         {/* Register Form */}
-        <div className="flex-1 bg-white/[0.03] backdrop-blur-xl rounded-2xl p-4 sm:p-6 md:p-8 border border-white/10 mb-4 shadow-xl">
-          <div className="text-center mb-6">
-            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-white mb-1">Create Account</h2>
-            <p className="text-slate-400 text-sm sm:text-base">Join CORAL Trading Platform</p>
+        <div className="bg-white/[0.03] backdrop-blur-xl rounded-2xl p-5 border border-white/10 shadow-xl">
+          <div className="text-center mb-5">
+            <h2 className="text-xl font-bold text-white mb-1">Create Account</h2>
+            <p className="text-slate-400 text-sm">Join CORAL Trading Platform</p>
           </div>
 
-          <form onSubmit={handleRegister} className="space-y-4 sm:space-y-5 md:space-y-6">
+          <form onSubmit={handleRegister} className="space-y-4">
             {/* Phone Field */}
-            <div className="space-y-2">
-              <Label htmlFor="phone" className="text-sm sm:text-base font-medium text-white flex items-center gap-2">
-                <Smartphone className="w-4 h-4 sm:w-5 sm:h-5 text-blue-400" />
+            <div className="space-y-1.5">
+              <Label htmlFor="phone" className="text-sm font-medium text-white flex items-center gap-2">
+                <Smartphone className="w-4 h-4 text-blue-400" />
                 Phone Number
               </Label>
               <div className="relative group">
                 <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none z-10">
-                  <span className="text-sm sm:text-base text-slate-400 border-r border-slate-600/50 pr-3 mr-3 font-medium">+91</span>
+                  <span className="text-sm text-slate-400 border-r border-slate-600/50 pr-3 mr-3 font-medium">+91</span>
                 </div>
                 <Input
                   id="phone"
@@ -183,7 +182,7 @@ const RegisterPage = () => {
                   value={formData.phone}
                   onChange={handleChange}
                   placeholder="Enter your phone number"
-                  className="h-12 sm:h-14 md:h-16 pl-16 sm:pl-20 pr-4 text-base sm:text-lg bg-white/5 border-2 border-white/10 focus:border-blue-400/50 focus:bg-white/10 rounded-xl text-white placeholder:text-slate-500 transition-all duration-300 w-full group-hover:border-white/20 backdrop-blur-sm"
+                  className="h-12 pl-16 pr-4 text-base bg-white/5 border-2 border-white/10 focus:border-blue-400/50 focus:bg-white/10 rounded-xl text-white placeholder:text-slate-500 transition-all duration-300 w-full group-hover:border-white/20 backdrop-blur-sm"
                   maxLength={10}
                   required
                   inputMode="numeric"
@@ -200,9 +199,9 @@ const RegisterPage = () => {
             </div>
             
             {/* Email Field */}
-            <div className="space-y-2">
-              <Label htmlFor="email" className="text-sm sm:text-base font-medium text-white flex items-center gap-2">
-                <AtSign className="w-4 h-4 sm:w-5 sm:h-5 text-blue-400" />
+            <div className="space-y-1.5">
+              <Label htmlFor="email" className="text-sm font-medium text-white flex items-center gap-2">
+                <AtSign className="w-4 h-4 text-blue-400" />
                 Email Address
               </Label>
               <div className="relative group">
@@ -213,7 +212,7 @@ const RegisterPage = () => {
                   value={formData.email}
                   onChange={handleChange}
                   placeholder="Enter your email address"
-                  className="h-12 sm:h-14 md:h-16 pl-4 pr-4 text-base sm:text-lg bg-white/5 border-2 border-white/10 focus:border-blue-400/50 focus:bg-white/10 rounded-xl text-white placeholder:text-slate-500 transition-all duration-300 w-full group-hover:border-white/20 backdrop-blur-sm"
+                  className="h-12 pl-4 pr-4 text-base bg-white/5 border-2 border-white/10 focus:border-blue-400/50 focus:bg-white/10 rounded-xl text-white placeholder:text-slate-500 transition-all duration-300 w-full group-hover:border-white/20 backdrop-blur-sm"
                   required
                 />
                 <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
@@ -221,9 +220,9 @@ const RegisterPage = () => {
             </div>
             
             {/* Password Field */}
-            <div className="space-y-2">
-              <Label htmlFor="password" className="text-sm sm:text-base font-medium text-white flex items-center gap-2">
-                <Eye className="w-4 h-4 sm:w-5 sm:h-5 text-blue-400" />
+            <div className="space-y-1.5">
+              <Label htmlFor="password" className="text-sm font-medium text-white flex items-center gap-2">
+                <Eye className="w-4 h-4 text-blue-400" />
                 Password
               </Label>
               <div className="relative group">
@@ -234,24 +233,24 @@ const RegisterPage = () => {
                   value={formData.password}
                   onChange={handleChange}
                   placeholder="Create a strong password"
-                  className="h-12 sm:h-14 md:h-16 pl-4 pr-14 sm:pr-16 text-base sm:text-lg bg-white/5 border-2 border-white/10 focus:border-blue-400/50 focus:bg-white/10 rounded-xl text-white placeholder:text-slate-500 transition-all duration-300 w-full group-hover:border-white/20 backdrop-blur-sm"
+                  className="h-12 pl-4 pr-14 text-base bg-white/5 border-2 border-white/10 focus:border-blue-400/50 focus:bg-white/10 rounded-xl text-white placeholder:text-slate-500 transition-all duration-300 w-full group-hover:border-white/20 backdrop-blur-sm"
                   required
                 />
                 <button
                   type="button"
-                  className="absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400 hover:text-white transition-all duration-200 touch-manipulation hover:scale-110 min-h-[44px] min-w-[44px] justify-center"
+                  className="absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400 hover:text-white transition-all duration-200 touch-manipulation hover:scale-110"
                   onClick={() => setShowPassword(!showPassword)}
                 >
-                  {showPassword ? <EyeOff className="w-5 h-5 sm:w-6 sm:h-6" /> : <Eye className="w-5 h-5 sm:w-6 sm:h-6" />}
+                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
                 <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
               </div>
             </div>
             
             {/* Referral Code Field */}
-            <div className="space-y-2">
-              <Label htmlFor="referral_code" className="text-sm sm:text-base font-medium text-white flex items-center gap-2">
-                <UserPlus className="w-4 h-4 sm:w-5 sm:h-5 text-blue-400" />
+            <div className="space-y-1.5">
+              <Label htmlFor="referral_code" className="text-sm font-medium text-white flex items-center gap-2">
+                <UserPlus className="w-4 h-4 text-blue-400" />
                 Referral Code
                 <span className="text-xs text-slate-500 font-normal bg-slate-800/50 px-2 py-0.5 rounded-full">Optional</span>
               </Label>
@@ -263,23 +262,23 @@ const RegisterPage = () => {
                   value={formData.referral_code}
                   onChange={handleChange}
                   placeholder="Enter referral code"
-                  className="h-12 sm:h-14 md:h-16 pl-4 pr-4 text-base sm:text-lg bg-white/5 border-2 border-white/10 focus:border-blue-400/50 focus:bg-white/10 rounded-xl text-white placeholder:text-slate-500 transition-all duration-300 w-full group-hover:border-white/20 backdrop-blur-sm"
+                  className="h-12 pl-4 pr-4 text-base bg-white/5 border-2 border-white/10 focus:border-blue-400/50 focus:bg-white/10 rounded-xl text-white placeholder:text-slate-500 transition-all duration-300 w-full group-hover:border-white/20 backdrop-blur-sm"
                 />
                 <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
               </div>
             </div>
             
             {/* Terms Checkbox */}
-            <div className="flex items-start space-x-3 pt-2 sm:pt-3">
+            <div className="flex items-start space-x-3 pt-1">
               <Checkbox 
                 id="terms" 
                 checked={agreeTerms} 
                 onCheckedChange={(checked) => setAgreeTerms(checked as boolean)}
-                className="mt-1 flex-shrink-0 scale-110 sm:scale-125"
+                className="mt-0.5 flex-shrink-0"
               />
               <label
                 htmlFor="terms"
-                className="text-xs sm:text-sm text-slate-400 leading-relaxed"
+                className="text-xs text-slate-400 leading-relaxed"
               >
                 I agree to the{" "}
                 <Link to="/terms" className="text-blue-400 hover:text-blue-300 font-medium transition-colors touch-manipulation">
@@ -295,7 +294,7 @@ const RegisterPage = () => {
             {/* Submit Button */}
             <Button 
               type="submit" 
-              className="w-full h-12 sm:h-14 md:h-16 text-base sm:text-lg font-semibold bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border-0 mt-6 sm:mt-8 touch-manipulation hover:scale-[1.02] min-h-[44px]"
+              className="w-full h-12 text-base font-semibold bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border-0 mt-5 touch-manipulation hover:scale-[1.02]"
               disabled={!agreeTerms || isSubmitting}
             >
               {isSubmitting ? (
@@ -313,7 +312,7 @@ const RegisterPage = () => {
           </form>
 
           {/* Footer Links */}
-          <div className="mt-6 text-center space-y-3">
+          <div className="mt-4 text-center space-y-2">
             <p className="text-slate-400 text-sm">
               Already have an account?{" "}
               <Link to="/login" className="text-blue-400 hover:text-blue-300 font-medium transition-colors touch-manipulation">
@@ -321,7 +320,7 @@ const RegisterPage = () => {
               </Link>
             </p>
             
-            <p className="text-xs text-slate-500 leading-relaxed px-2">
+            <p className="text-xs text-slate-500 leading-relaxed">
               By creating an account, you agree to our{" "}
               <Link to="/terms" className="text-blue-400 hover:underline transition-colors touch-manipulation">
                 Terms
@@ -332,6 +331,7 @@ const RegisterPage = () => {
               </Link>
             </p>
           </div>
+        </div>
         </div>
       </div>
     </div>
