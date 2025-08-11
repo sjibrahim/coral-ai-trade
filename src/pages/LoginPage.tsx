@@ -147,7 +147,6 @@ const LoginPage = () => {
               <img src={zygoLogo} alt="Zygo" className="w-full h-full object-cover" />
             </div>
           </div>
-          <h2 className="text-lg font-bold text-white mb-1">Zygo</h2>
           <p className="text-slate-400 text-xs">AI Trading Platform</p>
         </div>
 
