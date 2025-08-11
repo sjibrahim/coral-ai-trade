@@ -159,32 +159,15 @@ const RegisterPage = () => {
               <p className="text-emerald-300 text-xs">Welcome to Zygo AI</p>
             </div>
             
-            {/* AI Bot Visual */}
+            {/* Zygo Logo */}
             <div className="relative">
-              <div className="w-12 h-12 bg-gradient-to-br from-emerald-400 to-cyan-500 rounded-xl flex items-center justify-center relative">
-                <div className="relative">
-                  <div className="w-6 h-6 bg-white/20 rounded-md mb-0.5"></div>
-                  <div className="flex gap-0.5 justify-center">
-                    <div className="w-1 h-1 bg-emerald-300 rounded-full animate-pulse"></div>
-                    <div className="w-1 h-1 bg-emerald-300 rounded-full animate-pulse delay-100"></div>
-                  </div>
-                </div>
-                <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-8 h-0.5 bg-gradient-to-r from-transparent via-emerald-300 to-transparent rounded-full opacity-60 animate-pulse"></div>
+              <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center overflow-hidden shadow-lg">
+                <img src={zygoLogo} alt="Zygo" className="w-full h-full object-cover" />
               </div>
-              <div className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 bg-emerald-300 rounded-full animate-ping"></div>
             </div>
           </div>
         </div>
 
-        {/* Logo Section */}
-        <div className="text-center mb-6">
-          <div className="flex items-center justify-center mb-4">
-            <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center overflow-hidden shadow-lg">
-              <img src={zygoLogo} alt="Zygo" className="w-full h-full object-cover" />
-            </div>
-          </div>
-          <p className="text-slate-400 text-xs">AI Trading Platform</p>
-        </div>
 
         {/* Register Form */}
         <div className="flex-1 bg-white/[0.02] backdrop-blur-xl rounded-xl p-5 border border-white/10 mb-4">
@@ -205,7 +188,7 @@ const RegisterPage = () => {
                   value={formData.phone}
                   onChange={handleChange}
                   placeholder="Enter phone number"
-                  className="h-12 pl-12 pr-12 text-base bg-white/5 border border-white/20 focus:border-blue-400 focus:bg-white/10 rounded-lg text-white placeholder:text-slate-500 transition-all duration-300"
+                  className="h-11 sm:h-12 pl-12 pr-12 text-sm sm:text-base bg-white/5 border border-white/20 focus:border-blue-400 focus:bg-white/10 rounded-lg text-white placeholder:text-slate-500 transition-all duration-300"
                   maxLength={10}
                   required
                   inputMode="numeric"
@@ -233,7 +216,7 @@ const RegisterPage = () => {
                   value={formData.email}
                   onChange={handleChange}
                   placeholder="Enter email address"
-                  className="h-12 pl-4 pr-12 text-base bg-white/5 border border-white/20 focus:border-blue-400 focus:bg-white/10 rounded-lg text-white placeholder:text-slate-500 transition-all duration-300"
+                  className="h-11 sm:h-12 pl-4 pr-12 text-sm sm:text-base bg-white/5 border border-white/20 focus:border-blue-400 focus:bg-white/10 rounded-lg text-white placeholder:text-slate-500 transition-all duration-300"
                   required
                 />
                 <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
@@ -255,7 +238,7 @@ const RegisterPage = () => {
                   value={formData.password}
                   onChange={handleChange}
                   placeholder="Create password"
-                  className="h-12 pl-4 pr-12 text-base bg-white/5 border border-white/20 focus:border-blue-400 focus:bg-white/10 rounded-lg text-white placeholder:text-slate-500 transition-all duration-300"
+                  className="h-11 sm:h-12 pl-4 pr-12 text-sm sm:text-base bg-white/5 border border-white/20 focus:border-blue-400 focus:bg-white/10 rounded-lg text-white placeholder:text-slate-500 transition-all duration-300"
                   required
                 />
                 <button
@@ -281,7 +264,7 @@ const RegisterPage = () => {
                   value={formData.confirmPassword}
                   onChange={handleChange}
                   placeholder="Confirm password"
-                  className="h-12 pl-4 pr-12 text-base bg-white/5 border border-white/20 focus:border-blue-400 focus:bg-white/10 rounded-lg text-white placeholder:text-slate-500 transition-all duration-300"
+                  className="h-11 sm:h-12 pl-4 pr-12 text-sm sm:text-base bg-white/5 border border-white/20 focus:border-blue-400 focus:bg-white/10 rounded-lg text-white placeholder:text-slate-500 transition-all duration-300"
                   required
                 />
                 <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
@@ -302,7 +285,7 @@ const RegisterPage = () => {
                 value={formData.referral_code}
                 onChange={handleChange}
                 placeholder="Enter referral code"
-                className="h-12 pl-4 pr-4 text-base bg-white/5 border border-white/20 focus:border-blue-400 focus:bg-white/10 rounded-lg text-white placeholder:text-slate-500 transition-all duration-300"
+                className="h-11 sm:h-12 pl-4 pr-4 text-sm sm:text-base bg-white/5 border border-white/20 focus:border-blue-400 focus:bg-white/10 rounded-lg text-white placeholder:text-slate-500 transition-all duration-300"
               />
             </div>
             
@@ -332,7 +315,7 @@ const RegisterPage = () => {
             {/* Submit Button */}
             <Button 
               type="submit" 
-              className="w-full h-12 text-base font-semibold bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 border-0 mt-6 touch-manipulation"
+              className="w-full h-11 sm:h-12 text-sm sm:text-base font-semibold bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 border-0 mt-6 touch-manipulation"
               disabled={!agreeTerms || isSubmitting}
             >
               {isSubmitting ? (
