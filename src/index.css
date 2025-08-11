@@ -77,13 +77,14 @@
   }
   
   #root {
-    @apply max-w-md mx-auto h-[100svh] relative bg-white/80 backdrop-blur-sm border-x border-border/20;
+    @apply max-w-md mx-auto h-[100svh] relative backdrop-blur-sm border-x border-border/20;
     max-height: 100%;
     padding: 0;
     position: relative;
     z-index: 1;
     display: flex;
     flex-direction: column;
+    background-color: #0f1526;
     box-shadow: 0 0 50px rgba(34, 197, 94, 0.1);
   }
 
