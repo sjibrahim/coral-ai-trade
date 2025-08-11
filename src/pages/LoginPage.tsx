@@ -153,10 +153,6 @@ const LoginPage = () => {
 
         {/* Login Form */}
         <div className="flex-1 bg-white/[0.02] backdrop-blur-xl rounded-xl p-5 border border-white/10 mb-4">
-          <div className="text-center mb-6">
-            <h3 className="text-lg font-semibold text-white mb-1">Welcome Back</h3>
-            <p className="text-slate-400 text-xs">Sign in to continue trading</p>
-          </div>
 
           <form onSubmit={handleLogin} className="space-y-5">
             {/* Phone Field */}
