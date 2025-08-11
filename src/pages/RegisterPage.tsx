@@ -1,8 +1,8 @@
-// Register page for Zygo AI Trading Platform
+// Register page for CORAL Trading Platform
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Eye, EyeOff, ArrowRight, Smartphone, AtSign, UserPlus } from "lucide-react";
-import zygoLogo from "@/assets/zygo-logo.jpeg";
+import coralLogo from "@/assets/coral-logo.png";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -146,13 +146,13 @@ const RegisterPage = () => {
           <div className="flex items-center justify-between">
             <div className="flex-1 min-w-0">
               <h1 className="text-lg font-bold text-white mb-1 truncate">Hello</h1>
-              <p className="text-emerald-300 text-xs truncate">Welcome to Zygo</p>
+              <p className="text-emerald-300 text-xs truncate">Welcome to CORAL</p>
             </div>
             
-            {/* Zygo Logo */}
+            {/* CORAL Logo */}
             <div className="relative flex-shrink-0 ml-3">
               <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center overflow-hidden shadow-lg">
-                <img src={zygoLogo} alt="Zygo" className="w-full h-full object-cover" />
+                <img src={coralLogo} alt="CORAL" className="w-full h-full object-cover" />
               </div>
             </div>
           </div>

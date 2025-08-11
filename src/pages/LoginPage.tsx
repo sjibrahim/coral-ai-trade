@@ -1,9 +1,9 @@
 
-// Login page for Zygo AI Trading Platform
+// Login page for CORAL Trading Platform
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff, ArrowRight, Smartphone, ChevronLeft } from "lucide-react";
-import zygoLogo from "@/assets/zygo-logo.jpeg";
+import coralLogo from "@/assets/coral-logo.png";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -120,7 +120,7 @@ const LoginPage = () => {
           <div className="flex items-center justify-between">
             <div className="flex-1">
               <h1 className="text-xl font-bold text-white mb-1">Hello</h1>
-              <p className="text-emerald-300 text-xs">Welcome to Zygo AI</p>
+              <p className="text-emerald-300 text-xs">Welcome to CORAL</p>
             </div>
             
             {/* AI Bot Visual */}
@@ -144,7 +144,7 @@ const LoginPage = () => {
         <div className="text-center mb-8">
           <div className="flex items-center justify-center mb-4">
             <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center overflow-hidden shadow-lg">
-              <img src={zygoLogo} alt="Zygo" className="w-full h-full object-cover" />
+              <img src={coralLogo} alt="CORAL" className="w-full h-full object-cover" />
             </div>
           </div>
           <p className="text-slate-400 text-xs">AI Trading Platform</p>
