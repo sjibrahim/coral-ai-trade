@@ -159,16 +159,22 @@ const RegisterPage = () => {
         </div>
 
         {/* Register Form */}
-        <div className="flex-1 bg-white/[0.02] backdrop-blur-xl rounded-xl p-3 border border-white/10 mb-4">
-          <form onSubmit={handleRegister} className="space-y-3">
+        <div className="flex-1 bg-white/[0.03] backdrop-blur-xl rounded-2xl p-6 border border-white/10 mb-4 shadow-xl">
+          <div className="text-center mb-6">
+            <h2 className="text-xl font-bold text-white mb-1">Create Account</h2>
+            <p className="text-slate-400 text-sm">Join CORAL Trading Platform</p>
+          </div>
+
+          <form onSubmit={handleRegister} className="space-y-5">
             {/* Phone Field */}
-            <div className="space-y-1">
-              <Label htmlFor="phone" className="text-xs font-medium text-white">
+            <div className="space-y-2">
+              <Label htmlFor="phone" className="text-sm font-medium text-white flex items-center gap-2">
+                <Smartphone className="w-4 h-4 text-blue-400" />
                 Phone Number
               </Label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 flex items-center pl-2 pointer-events-none z-10">
-                  <span className="text-xs text-slate-400 border-r border-slate-600 pr-1.5 mr-1.5 whitespace-nowrap">+91</span>
+              <div className="relative group">
+                <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none z-10">
+                  <span className="text-sm text-slate-400 border-r border-slate-600/50 pr-3 mr-3 font-medium">+91</span>
                 </div>
                 <Input
                   id="phone"
@@ -176,85 +182,91 @@ const RegisterPage = () => {
                   type="tel"
                   value={formData.phone}
                   onChange={handleChange}
-                  placeholder="Enter phone number"
-                  className="h-10 pl-10 pr-10 text-sm bg-white/5 border border-white/20 focus:border-blue-400 focus:bg-white/10 rounded-lg text-white placeholder:text-slate-500 transition-all duration-300 w-full"
+                  placeholder="Enter your phone number"
+                  className="h-14 pl-16 pr-4 text-base bg-white/5 border-2 border-white/10 focus:border-blue-400/50 focus:bg-white/10 rounded-xl text-white placeholder:text-slate-500 transition-all duration-300 w-full group-hover:border-white/20 backdrop-blur-sm"
                   maxLength={10}
                   required
                   inputMode="numeric"
                   pattern="[0-9]*"
                 />
-                <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                  <Smartphone className="w-3.5 h-3.5 text-slate-500" />
-                </div>
+                <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
               </div>
               {formData.phone && formData.phone.length < 10 && (
-                <p className="text-xs text-red-400">Please enter 10 digits</p>
+                <div className="flex items-center gap-2 text-xs text-red-400 animate-fade-in">
+                  <div className="w-1 h-1 bg-red-400 rounded-full"></div>
+                  Please enter 10 digits
+                </div>
               )}
             </div>
             
             {/* Email Field */}
-            <div className="space-y-1">
-              <Label htmlFor="email" className="text-xs font-medium text-white">
+            <div className="space-y-2">
+              <Label htmlFor="email" className="text-sm font-medium text-white flex items-center gap-2">
+                <AtSign className="w-4 h-4 text-blue-400" />
                 Email Address
               </Label>
-              <div className="relative">
+              <div className="relative group">
                 <Input
                   id="email"
                   name="email"
                   type="email"
                   value={formData.email}
                   onChange={handleChange}
-                  placeholder="Enter email address"
-                  className="h-10 pl-3 pr-10 text-sm bg-white/5 border border-white/20 focus:border-blue-400 focus:bg-white/10 rounded-lg text-white placeholder:text-slate-500 transition-all duration-300 w-full"
+                  placeholder="Enter your email address"
+                  className="h-14 pl-4 pr-4 text-base bg-white/5 border-2 border-white/10 focus:border-blue-400/50 focus:bg-white/10 rounded-xl text-white placeholder:text-slate-500 transition-all duration-300 w-full group-hover:border-white/20 backdrop-blur-sm"
                   required
                 />
-                <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                  <AtSign className="w-3.5 h-3.5 text-slate-500" />
-                </div>
+                <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
               </div>
             </div>
             
             {/* Password Field */}
-            <div className="space-y-1">
-              <Label htmlFor="password" className="text-xs font-medium text-white">
+            <div className="space-y-2">
+              <Label htmlFor="password" className="text-sm font-medium text-white flex items-center gap-2">
+                <Eye className="w-4 h-4 text-blue-400" />
                 Password
               </Label>
-              <div className="relative">
+              <div className="relative group">
                 <Input
                   id="password"
                   name="password"
                   type={showPassword ? "text" : "password"}
                   value={formData.password}
                   onChange={handleChange}
-                  placeholder="Create password"
-                  className="h-10 pl-3 pr-10 text-sm bg-white/5 border border-white/20 focus:border-blue-400 focus:bg-white/10 rounded-lg text-white placeholder:text-slate-500 transition-all duration-300 w-full"
+                  placeholder="Create a strong password"
+                  className="h-14 pl-4 pr-14 text-base bg-white/5 border-2 border-white/10 focus:border-blue-400/50 focus:bg-white/10 rounded-xl text-white placeholder:text-slate-500 transition-all duration-300 w-full group-hover:border-white/20 backdrop-blur-sm"
                   required
                 />
                 <button
                   type="button"
-                  className="absolute inset-y-0 right-0 flex items-center pr-2 text-slate-500 hover:text-white transition-colors touch-manipulation"
+                  className="absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400 hover:text-white transition-all duration-200 touch-manipulation hover:scale-110"
                   onClick={() => setShowPassword(!showPassword)}
                 >
-                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
+                <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
               </div>
             </div>
             
-            
             {/* Referral Code Field */}
-            <div className="space-y-1">
-              <Label htmlFor="referral_code" className="text-xs font-medium text-white">
-                Referral Code <span className="text-xs text-slate-500 font-normal">(Optional)</span>
+            <div className="space-y-2">
+              <Label htmlFor="referral_code" className="text-sm font-medium text-white flex items-center gap-2">
+                <UserPlus className="w-4 h-4 text-blue-400" />
+                Referral Code 
+                <span className="text-xs text-slate-500 font-normal bg-slate-800/50 px-2 py-0.5 rounded-full">Optional</span>
               </Label>
-              <Input
-                id="referral_code"
-                name="referral_code"
-                type="text"
-                value={formData.referral_code}
-                onChange={handleChange}
-                placeholder="Enter referral code"
-                className="h-10 pl-3 pr-3 text-sm bg-white/5 border border-white/20 focus:border-blue-400 focus:bg-white/10 rounded-lg text-white placeholder:text-slate-500 transition-all duration-300 w-full"
-              />
+              <div className="relative group">
+                <Input
+                  id="referral_code"
+                  name="referral_code"
+                  type="text"
+                  value={formData.referral_code}
+                  onChange={handleChange}
+                  placeholder="Enter referral code"
+                  className="h-14 pl-4 pr-4 text-base bg-white/5 border-2 border-white/10 focus:border-blue-400/50 focus:bg-white/10 rounded-xl text-white placeholder:text-slate-500 transition-all duration-300 w-full group-hover:border-white/20 backdrop-blur-sm"
+                />
+                <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+              </div>
             </div>
             
             {/* Terms Checkbox */}
@@ -283,7 +295,7 @@ const RegisterPage = () => {
             {/* Submit Button */}
             <Button 
               type="submit" 
-              className="w-full h-10 text-sm font-semibold bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 border-0 mt-4 touch-manipulation"
+              className="w-full h-14 text-base font-semibold bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border-0 mt-6 touch-manipulation hover:scale-[1.02]"
               disabled={!agreeTerms || isSubmitting}
             >
               {isSubmitting ? (
