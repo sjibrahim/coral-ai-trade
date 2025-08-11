@@ -136,74 +136,41 @@ const RegisterPage = () => {
   
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex flex-col relative overflow-hidden">
-      {/* Enhanced Background Effects */}
+      {/* Background Effects */}
       <div className="absolute inset-0 overflow-hidden">
-        {/* Animated Grid Pattern */}
-        <div className="absolute inset-0 opacity-10">
+        <div className="absolute inset-0 opacity-5">
           <div className="absolute top-0 left-0 w-full h-full" style={{
-            backgroundImage: `
-              linear-gradient(90deg, rgba(59, 130, 246, 0.1) 1px, transparent 1px),
-              linear-gradient(rgba(59, 130, 246, 0.1) 1px, transparent 1px),
-              radial-gradient(circle at 20% 20%, #3b82f6 1px, transparent 1px),
-              radial-gradient(circle at 80% 80%, #8b5cf6 1px, transparent 1px)
-            `,
-            backgroundSize: '60px 60px, 60px 60px, 30px 30px, 30px 30px',
-            animation: 'pulse 4s ease-in-out infinite'
+            backgroundImage: `radial-gradient(circle at 20% 20%, #3b82f6 2px, transparent 2px),
+                             radial-gradient(circle at 80% 80%, #8b5cf6 2px, transparent 2px)`,
+            backgroundSize: '40px 40px'
           }}></div>
         </div>
-        
-        {/* Floating Orbs */}
-        <div className="absolute top-20 right-10 w-32 h-32 bg-gradient-to-r from-blue-500/10 to-cyan-500/10 rounded-full blur-2xl animate-bounce" style={{animationDuration: '3s'}}></div>
-        <div className="absolute bottom-32 left-10 w-40 h-40 bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-full blur-2xl animate-bounce" style={{animationDuration: '4s', animationDelay: '1s'}}></div>
-        <div className="absolute top-1/3 left-1/4 w-20 h-20 bg-gradient-to-r from-emerald-500/10 to-teal-500/10 rounded-full blur-xl animate-ping" style={{animationDuration: '5s'}}></div>
-        
-        {/* Floating Particles */}
-        <div className="absolute top-1/4 right-1/3 w-2 h-2 bg-blue-400/30 rounded-full animate-pulse"></div>
-        <div className="absolute top-2/3 left-1/5 w-1.5 h-1.5 bg-purple-400/30 rounded-full animate-pulse" style={{animationDelay: '2s'}}></div>
-        <div className="absolute bottom-1/4 right-1/5 w-1 h-1 bg-cyan-400/30 rounded-full animate-pulse" style={{animationDelay: '3s'}}></div>
+        <div className="absolute top-10 right-5 w-20 h-20 bg-blue-500/5 rounded-full blur-xl animate-pulse"></div>
+        <div className="absolute bottom-10 left-5 w-24 h-24 bg-purple-500/5 rounded-full blur-xl animate-pulse delay-1000"></div>
       </div>
 
       {/* Main Content */}
       <div className="relative z-10 flex-1 px-3 py-4 flex flex-col max-w-sm mx-auto w-full">
         {/* Welcome Header */}
-        <div className="mb-4 relative group">
-          <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/20 via-cyan-500/20 to-blue-500/20 rounded-xl blur-sm group-hover:blur-none transition-all duration-500"></div>
-          <div className="relative bg-gradient-to-r from-emerald-500/10 via-cyan-500/10 to-blue-500/10 backdrop-blur-xl rounded-xl p-4 border border-white/20 hover:border-white/30 transition-all duration-300 overflow-hidden">
-            {/* Shimmer effect */}
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+        <div className="mb-4 bg-gradient-to-r from-emerald-500/15 via-cyan-500/15 to-blue-500/15 backdrop-blur-xl rounded-xl p-3 border border-white/10 overflow-hidden">
+          <div className="flex items-center justify-between">
+            <div className="flex-1 min-w-0">
+              <h1 className="text-lg font-bold text-white mb-1 truncate">Hello</h1>
+              <p className="text-emerald-300 text-xs truncate">Welcome to Zygo</p>
+            </div>
             
-            <div className="flex items-center justify-between relative z-10">
-              <div className="flex-1 min-w-0">
-                <h1 className="text-xl font-bold bg-gradient-to-r from-white via-emerald-200 to-cyan-200 bg-clip-text text-transparent mb-1 truncate">
-                  Create Account
-                </h1>
-                <p className="text-emerald-300 text-sm truncate font-medium">Join Zygo AI Trading</p>
-              </div>
-              
-              {/* Enhanced Zygo Logo */}
-              <div className="relative flex-shrink-0 ml-4">
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl blur-sm opacity-50 group-hover:opacity-75 transition-opacity duration-300"></div>
-                <div className="relative w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center overflow-hidden shadow-xl transform group-hover:scale-105 transition-transform duration-300">
-                  <img src={zygoLogo} alt="Zygo" className="w-full h-full object-cover" />
-                </div>
+            {/* Zygo Logo */}
+            <div className="relative flex-shrink-0 ml-3">
+              <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center overflow-hidden shadow-lg">
+                <img src={zygoLogo} alt="Zygo" className="w-full h-full object-cover" />
               </div>
             </div>
           </div>
         </div>
 
-        {/* Enhanced Register Form */}
-        <div className="flex-1 relative group">
-          <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-white/2 to-white/5 rounded-xl blur-sm group-hover:blur-none transition-all duration-500"></div>
-          <div className="relative bg-white/[0.03] backdrop-blur-xl rounded-xl p-4 border border-white/20 hover:border-white/30 transition-all duration-300 mb-4 overflow-hidden">
-            {/* Form background pattern */}
-            <div className="absolute inset-0 opacity-5">
-              <div className="absolute top-0 left-0 w-full h-full" style={{
-                backgroundImage: `radial-gradient(circle at 50% 50%, #3b82f6 0.5px, transparent 0.5px)`,
-                backgroundSize: '20px 20px'
-              }}></div>
-            </div>
-            
-            <form onSubmit={handleRegister} className="space-y-4 relative z-10">
+        {/* Register Form */}
+        <div className="flex-1 bg-white/[0.02] backdrop-blur-xl rounded-xl p-3 border border-white/10 mb-4">
+          <form onSubmit={handleRegister} className="space-y-3">
             {/* Phone Field */}
             <div className="space-y-1">
               <Label htmlFor="phone" className="text-xs font-medium text-white">
@@ -362,28 +329,27 @@ const RegisterPage = () => {
                 </div>
               )}
             </Button>
-            </form>
+          </form>
 
-            {/* Footer Links */}
-            <div className="mt-6 text-center space-y-3">
-              <p className="text-slate-400 text-sm">
-                Already have an account?{" "}
-                <Link to="/login" className="text-blue-400 hover:text-blue-300 font-medium transition-colors touch-manipulation">
-                  Sign In
-                </Link>
-              </p>
-              
-              <p className="text-xs text-slate-500 leading-relaxed px-2">
-                By creating an account, you agree to our{" "}
-                <Link to="/terms" className="text-blue-400 hover:underline transition-colors touch-manipulation">
-                  Terms
-                </Link>{" "}
-                and{" "}
-                <Link to="/privacy" className="text-blue-400 hover:underline transition-colors touch-manipulation">
-                  Privacy Policy
-                </Link>
-              </p>
-            </div>
+          {/* Footer Links */}
+          <div className="mt-6 text-center space-y-3">
+            <p className="text-slate-400 text-sm">
+              Already have an account?{" "}
+              <Link to="/login" className="text-blue-400 hover:text-blue-300 font-medium transition-colors touch-manipulation">
+                Sign In
+              </Link>
+            </p>
+            
+            <p className="text-xs text-slate-500 leading-relaxed px-2">
+              By creating an account, you agree to our{" "}
+              <Link to="/terms" className="text-blue-400 hover:underline transition-colors touch-manipulation">
+                Terms
+              </Link>{" "}
+              and{" "}
+              <Link to="/privacy" className="text-blue-400 hover:underline transition-colors touch-manipulation">
+                Privacy Policy
+              </Link>
+            </p>
           </div>
         </div>
       </div>
