@@ -150,36 +150,35 @@ const RegisterPage = () => {
       </div>
 
       {/* Main Content */}
-      <div className="relative z-10 flex-1 px-4 py-6 flex flex-col">
+      <div className="relative z-10 flex-1 px-3 py-4 flex flex-col max-w-sm mx-auto w-full">
         {/* Welcome Header */}
-        <div className="mb-6 bg-gradient-to-r from-emerald-500/15 via-cyan-500/15 to-blue-500/15 backdrop-blur-xl rounded-xl p-4 border border-white/10 overflow-hidden">
+        <div className="mb-4 bg-gradient-to-r from-emerald-500/15 via-cyan-500/15 to-blue-500/15 backdrop-blur-xl rounded-xl p-3 border border-white/10 overflow-hidden">
           <div className="flex items-center justify-between">
-            <div className="flex-1">
-              <h1 className="text-xl font-bold text-white mb-1">Hello</h1>
-              <p className="text-emerald-300 text-xs">Welcome to Zygo AI</p>
+            <div className="flex-1 min-w-0">
+              <h1 className="text-lg font-bold text-white mb-1 truncate">Hello</h1>
+              <p className="text-emerald-300 text-xs truncate">Welcome to Zygo</p>
             </div>
             
             {/* Zygo Logo */}
-            <div className="relative">
-              <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center overflow-hidden shadow-lg">
+            <div className="relative flex-shrink-0 ml-3">
+              <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center overflow-hidden shadow-lg">
                 <img src={zygoLogo} alt="Zygo" className="w-full h-full object-cover" />
               </div>
             </div>
           </div>
         </div>
 
-
         {/* Register Form */}
-        <div className="flex-1 bg-white/[0.02] backdrop-blur-xl rounded-xl p-5 border border-white/10 mb-4">
-          <form onSubmit={handleRegister} className="space-y-4">
+        <div className="flex-1 bg-white/[0.02] backdrop-blur-xl rounded-xl p-3 border border-white/10 mb-4">
+          <form onSubmit={handleRegister} className="space-y-3">
             {/* Phone Field */}
-            <div className="space-y-2">
+            <div className="space-y-1">
               <Label htmlFor="phone" className="text-xs font-medium text-white">
                 Phone Number
               </Label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                  <span className="text-xs text-slate-400 border-r border-slate-600 pr-2 mr-2">+91</span>
+                <div className="absolute inset-y-0 left-0 flex items-center pl-2 pointer-events-none z-10">
+                  <span className="text-xs text-slate-400 border-r border-slate-600 pr-1.5 mr-1.5 whitespace-nowrap">+91</span>
                 </div>
                 <Input
                   id="phone"
@@ -188,14 +187,14 @@ const RegisterPage = () => {
                   value={formData.phone}
                   onChange={handleChange}
                   placeholder="Enter phone number"
-                  className="h-11 sm:h-12 pl-12 pr-12 text-sm sm:text-base bg-white/5 border border-white/20 focus:border-blue-400 focus:bg-white/10 rounded-lg text-white placeholder:text-slate-500 transition-all duration-300"
+                  className="h-10 pl-10 pr-10 text-sm bg-white/5 border border-white/20 focus:border-blue-400 focus:bg-white/10 rounded-lg text-white placeholder:text-slate-500 transition-all duration-300 w-full"
                   maxLength={10}
                   required
                   inputMode="numeric"
                   pattern="[0-9]*"
                 />
-                <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                  <Phone className="w-4 h-4 text-slate-500" />
+                <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+                  <Phone className="w-3.5 h-3.5 text-slate-500" />
                 </div>
               </div>
               {formData.phone && formData.phone.length < 10 && (
@@ -204,7 +203,7 @@ const RegisterPage = () => {
             </div>
             
             {/* Email Field */}
-            <div className="space-y-2">
+            <div className="space-y-1">
               <Label htmlFor="email" className="text-xs font-medium text-white">
                 Email Address
               </Label>
@@ -216,17 +215,17 @@ const RegisterPage = () => {
                   value={formData.email}
                   onChange={handleChange}
                   placeholder="Enter email address"
-                  className="h-11 sm:h-12 pl-4 pr-12 text-sm sm:text-base bg-white/5 border border-white/20 focus:border-blue-400 focus:bg-white/10 rounded-lg text-white placeholder:text-slate-500 transition-all duration-300"
+                  className="h-10 pl-3 pr-10 text-sm bg-white/5 border border-white/20 focus:border-blue-400 focus:bg-white/10 rounded-lg text-white placeholder:text-slate-500 transition-all duration-300 w-full"
                   required
                 />
-                <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                  <Mail className="w-4 h-4 text-slate-500" />
+                <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+                  <Mail className="w-3.5 h-3.5 text-slate-500" />
                 </div>
               </div>
             </div>
             
             {/* Password Field */}
-            <div className="space-y-2">
+            <div className="space-y-1">
               <Label htmlFor="password" className="text-xs font-medium text-white">
                 Password
               </Label>
@@ -238,21 +237,21 @@ const RegisterPage = () => {
                   value={formData.password}
                   onChange={handleChange}
                   placeholder="Create password"
-                  className="h-11 sm:h-12 pl-4 pr-12 text-sm sm:text-base bg-white/5 border border-white/20 focus:border-blue-400 focus:bg-white/10 rounded-lg text-white placeholder:text-slate-500 transition-all duration-300"
+                  className="h-10 pl-3 pr-10 text-sm bg-white/5 border border-white/20 focus:border-blue-400 focus:bg-white/10 rounded-lg text-white placeholder:text-slate-500 transition-all duration-300 w-full"
                   required
                 />
                 <button
                   type="button"
-                  className="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-500 hover:text-white transition-colors touch-manipulation"
+                  className="absolute inset-y-0 right-0 flex items-center pr-2 text-slate-500 hover:text-white transition-colors touch-manipulation"
                   onClick={() => setShowPassword(!showPassword)}
                 >
-                  {showPassword ? <ShieldOff className="w-5 h-5" /> : <Shield className="w-5 h-5" />}
+                  {showPassword ? <ShieldOff className="w-4 h-4" /> : <Shield className="w-4 h-4" />}
                 </button>
               </div>
             </div>
             
             {/* Confirm Password Field */}
-            <div className="space-y-2">
+            <div className="space-y-1">
               <Label htmlFor="confirmPassword" className="text-xs font-medium text-white">
                 Confirm Password
               </Label>
@@ -264,17 +263,17 @@ const RegisterPage = () => {
                   value={formData.confirmPassword}
                   onChange={handleChange}
                   placeholder="Confirm password"
-                  className="h-11 sm:h-12 pl-4 pr-12 text-sm sm:text-base bg-white/5 border border-white/20 focus:border-blue-400 focus:bg-white/10 rounded-lg text-white placeholder:text-slate-500 transition-all duration-300"
+                  className="h-10 pl-3 pr-10 text-sm bg-white/5 border border-white/20 focus:border-blue-400 focus:bg-white/10 rounded-lg text-white placeholder:text-slate-500 transition-all duration-300 w-full"
                   required
                 />
-                <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                  <Shield className="w-4 h-4 text-slate-500" />
+                <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+                  <Shield className="w-3.5 h-3.5 text-slate-500" />
                 </div>
               </div>
             </div>
             
             {/* Referral Code Field */}
-            <div className="space-y-2">
+            <div className="space-y-1">
               <Label htmlFor="referral_code" className="text-xs font-medium text-white">
                 Referral Code <span className="text-xs text-slate-500 font-normal">(Optional)</span>
               </Label>
@@ -285,21 +284,21 @@ const RegisterPage = () => {
                 value={formData.referral_code}
                 onChange={handleChange}
                 placeholder="Enter referral code"
-                className="h-11 sm:h-12 pl-4 pr-4 text-sm sm:text-base bg-white/5 border border-white/20 focus:border-blue-400 focus:bg-white/10 rounded-lg text-white placeholder:text-slate-500 transition-all duration-300"
+                className="h-10 pl-3 pr-3 text-sm bg-white/5 border border-white/20 focus:border-blue-400 focus:bg-white/10 rounded-lg text-white placeholder:text-slate-500 transition-all duration-300 w-full"
               />
             </div>
             
             {/* Terms Checkbox */}
-            <div className="flex items-start space-x-2 pt-2">
+            <div className="flex items-start space-x-2 pt-1">
               <Checkbox 
                 id="terms" 
                 checked={agreeTerms} 
                 onCheckedChange={(checked) => setAgreeTerms(checked as boolean)}
-                className="mt-0.5"
+                className="mt-0.5 flex-shrink-0"
               />
               <label
                 htmlFor="terms"
-                className="text-sm text-slate-400 leading-relaxed"
+                className="text-xs text-slate-400 leading-relaxed"
               >
                 I agree to the{" "}
                 <Link to="/terms" className="text-blue-400 hover:text-blue-300 font-medium transition-colors touch-manipulation">
@@ -315,17 +314,17 @@ const RegisterPage = () => {
             {/* Submit Button */}
             <Button 
               type="submit" 
-              className="w-full h-11 sm:h-12 text-sm sm:text-base font-semibold bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 border-0 mt-6 touch-manipulation"
+              className="w-full h-10 text-sm font-semibold bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 border-0 mt-4 touch-manipulation"
               disabled={!agreeTerms || isSubmitting}
             >
               {isSubmitting ? (
-                <div className="flex items-center gap-3">
-                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                   <span>Creating Account...</span>
                 </div>
               ) : (
-                <div className="flex items-center gap-3">
-                  <UserPlus className="w-5 h-5" />
+                <div className="flex items-center gap-2">
+                  <UserPlus className="w-4 h-4" />
                   <span>Create Account</span>
                 </div>
               )}
