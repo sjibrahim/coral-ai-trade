@@ -16,6 +16,7 @@ const RegisterPage = () => {
     phone: "",
     email: "",
     password: "",
+    confirmPassword: "",
     referral_code: "",
   });
   const [agreeTerms, setAgreeTerms] = useState(false);
@@ -73,7 +74,7 @@ const RegisterPage = () => {
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.phone || !formData.email || !formData.password) {
+    if (!formData.phone || !formData.email || !formData.password || !formData.confirmPassword) {
       toast({
         title: "Missing Information",
         description: "Please fill in all required fields",
@@ -86,6 +87,15 @@ const RegisterPage = () => {
       toast({
         title: "Invalid Phone Number",
         description: "Please enter a valid 10-digit phone number",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    if (formData.password !== formData.confirmPassword) {
+      toast({
+        title: "Password Mismatch",
+        description: "Passwords don't match",
         variant: "destructive"
       });
       return;
@@ -107,7 +117,7 @@ const RegisterPage = () => {
         formData.phone,
         formData.email,
         formData.password,
-        formData.password,
+        formData.confirmPassword,
         formData.referral_code
       );
       
@@ -125,7 +135,7 @@ const RegisterPage = () => {
   };
   
   return (
-    <div className="min-h-screen bg-white/5 flex flex-col relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex flex-col relative overflow-hidden">
       {/* Background Effects */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute inset-0 opacity-5">
@@ -159,7 +169,7 @@ const RegisterPage = () => {
         </div>
 
         {/* Register Form */}
-        <div className="flex-1 bg-white/5 backdrop-blur-xl rounded-xl p-3 border border-white/20 mb-4">
+        <div className="flex-1 bg-white/[0.02] backdrop-blur-xl rounded-xl p-3 border border-white/10 mb-4">
           <form onSubmit={handleRegister} className="space-y-3">
             {/* Phone Field */}
             <div className="space-y-1">
@@ -240,6 +250,27 @@ const RegisterPage = () => {
               </div>
             </div>
             
+            {/* Confirm Password Field */}
+            <div className="space-y-1">
+              <Label htmlFor="confirmPassword" className="text-xs font-medium text-white">
+                Confirm Password
+              </Label>
+              <div className="relative">
+                <Input
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  type={showPassword ? "text" : "password"}
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  placeholder="Confirm password"
+                  className="h-10 pl-3 pr-10 text-sm bg-white/5 border border-white/20 focus:border-blue-400 focus:bg-white/10 rounded-lg text-white placeholder:text-slate-500 transition-all duration-300 w-full"
+                  required
+                />
+                <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+                  <Shield className="w-3.5 h-3.5 text-slate-500" />
+                </div>
+              </div>
+            </div>
             
             {/* Referral Code Field */}
             <div className="space-y-1">
