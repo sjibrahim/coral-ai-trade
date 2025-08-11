@@ -1,7 +1,7 @@
 // Register page for Zygo AI Trading Platform
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { Shield, ShieldOff, ArrowRight, Phone, Mail, UserPlus } from "lucide-react";
+import { Eye, EyeOff, ArrowRight, Smartphone, AtSign, UserPlus } from "lucide-react";
 import zygoLogo from "@/assets/zygo-logo.jpeg";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -184,7 +184,7 @@ const RegisterPage = () => {
                   pattern="[0-9]*"
                 />
                 <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                  <Phone className="w-3.5 h-3.5 text-slate-500" />
+                  <Smartphone className="w-3.5 h-3.5 text-slate-500" />
                 </div>
               </div>
               {formData.phone && formData.phone.length < 10 && (
@@ -209,7 +209,7 @@ const RegisterPage = () => {
                   required
                 />
                 <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                  <Mail className="w-3.5 h-3.5 text-slate-500" />
+                  <AtSign className="w-3.5 h-3.5 text-slate-500" />
                 </div>
               </div>
             </div>
@@ -235,7 +235,7 @@ const RegisterPage = () => {
                   className="absolute inset-y-0 right-0 flex items-center pr-2 text-slate-500 hover:text-white transition-colors touch-manipulation"
                   onClick={() => setShowPassword(!showPassword)}
                 >
-                  {showPassword ? <ShieldOff className="w-4 h-4" /> : <Shield className="w-4 h-4" />}
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
             </div>

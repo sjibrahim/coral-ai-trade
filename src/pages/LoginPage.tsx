@@ -2,7 +2,7 @@
 // Login page for Zygo AI Trading Platform
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Shield, ShieldOff, ArrowRight, Phone, ChevronLeft } from "lucide-react";
+import { Eye, EyeOff, ArrowRight, Smartphone, ChevronLeft } from "lucide-react";
 import zygoLogo from "@/assets/zygo-logo.jpeg";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -177,7 +177,7 @@ const LoginPage = () => {
                   pattern="[0-9]*"
                 />
                 <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                  <Phone className="w-4 h-4 text-slate-500" />
+                  <Smartphone className="w-4 h-4 text-slate-500" />
                 </div>
               </div>
               {formData.phone && formData.phone.length < 10 && (
@@ -206,7 +206,7 @@ const LoginPage = () => {
                   className="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-500 hover:text-white transition-colors touch-manipulation"
                   onClick={() => setShowPassword(!showPassword)}
                 >
-                  {showPassword ? <ShieldOff className="w-5 h-5" /> : <Shield className="w-5 h-5" />}
+                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
               </div>
             </div>
