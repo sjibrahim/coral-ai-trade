@@ -84,7 +84,8 @@ const TeamPage = () => {
   return (
     <div className="min-h-screen bg-gray-900 text-white">
       <MobileLayout title="Team Network" hideFooter>
-        <div className="pb-24">
+        {/* Content with proper bottom spacing */}
+        <div className="pb-32">
           {/* Hero Section */}
           <div className="relative overflow-hidden bg-gradient-to-br from-gray-800 via-gray-900 to-black">
             <div className="absolute inset-0 bg-gradient-to-r from-teal-500/10 to-cyan-500/10"></div>
@@ -252,7 +253,7 @@ const TeamPage = () => {
               </div>
 
               {/* Benefits Section */}
-              <div className="p-4">
+              <div className="p-4 pb-8">
                 <Card className="bg-gray-800/50 backdrop-blur-sm border border-gray-700/50">
                   <CardContent className="p-4">
                     <h3 className="text-lg font-bold text-white mb-4 flex items-center">

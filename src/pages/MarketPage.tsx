@@ -72,7 +72,8 @@ const MarketPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-900 text-white">
-      <div className="pb-24">
+      {/* Content with proper bottom spacing */}
+      <div className="pb-32">
         {/* Mobile-optimized Header */}
         <div className="sticky top-0 z-40 bg-gray-900/95 backdrop-blur-xl border-b border-gray-800">
           <div className="flex items-center justify-between p-4">
@@ -126,7 +127,7 @@ const MarketPage = () => {
         </div>
 
         {/* Mobile-optimized Cryptocurrency List */}
-        <div className="px-4">
+        <div className="px-4 pb-8">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
