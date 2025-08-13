@@ -72,31 +72,31 @@ const MarketPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-900 text-white">
-      {/* Content with proper bottom spacing */}
-      <div className="pb-32">
-        {/* Mobile-optimized Header */}
-        <div className="sticky top-0 z-40 bg-gray-900/95 backdrop-blur-xl border-b border-gray-800">
-          <div className="flex items-center justify-between p-4">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-r from-teal-400 to-cyan-500 rounded-xl flex items-center justify-center shadow-lg">
-                <span className="text-lg font-bold text-white">C</span>
-              </div>
-              <div>
-                <span className="text-xl font-bold text-white">Market</span>
-                <p className="text-xs text-gray-400">Live Crypto Prices</p>
-              </div>
+      {/* Fixed Header */}
+      <div className="sticky top-0 z-40 bg-gray-900/95 backdrop-blur-xl border-b border-gray-800">
+        <div className="flex items-center justify-between p-4">
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 bg-gradient-to-r from-teal-400 to-cyan-500 rounded-xl flex items-center justify-center shadow-lg">
+              <span className="text-lg font-bold text-white">C</span>
             </div>
-            <div className="flex items-center space-x-2">
-              <Button variant="ghost" size="sm" className="text-gray-400 hover:text-white hover:bg-gray-800 p-2">
-                <Search className="w-5 h-5" />
-              </Button>
-              <Button variant="ghost" size="sm" className="text-gray-400 hover:text-white hover:bg-gray-800 p-2">
-                <Filter className="w-5 h-5" />
-              </Button>
+            <div>
+              <span className="text-xl font-bold text-white">Market</span>
+              <p className="text-xs text-gray-400">Live Crypto Prices</p>
             </div>
           </div>
+          <div className="flex items-center space-x-2">
+            <Button variant="ghost" size="sm" className="text-gray-400 hover:text-white hover:bg-gray-800 p-2">
+              <Search className="w-5 h-5" />
+            </Button>
+            <Button variant="ghost" size="sm" className="text-gray-400 hover:text-white hover:bg-gray-800 p-2">
+              <Filter className="w-5 h-5" />
+            </Button>
+          </div>
         </div>
+      </div>
 
+      {/* Scrollable Content */}
+      <div className="pb-28 min-h-0 flex-1">
         {/* Mobile Hero Stats */}
         <div className="px-4 py-6">
           <div className="bg-gradient-to-br from-teal-500/10 via-cyan-500/10 to-blue-500/10 rounded-2xl p-4 border border-teal-500/20">
@@ -127,7 +127,7 @@ const MarketPage = () => {
         </div>
 
         {/* Mobile-optimized Cryptocurrency List */}
-        <div className="px-4 pb-8">
+        <div className="px-4 pb-12">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
@@ -236,7 +236,7 @@ const MarketPage = () => {
       </div>
 
       {/* Mobile AI Assistant Button */}
-      <div className="fixed bottom-28 right-4 z-40">
+      <div className="fixed bottom-32 right-4 z-40">
         <button className="w-12 h-12 bg-gradient-to-r from-teal-400 to-cyan-500 rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
           <Bot className="w-5 h-5 text-white" />
         </button>
