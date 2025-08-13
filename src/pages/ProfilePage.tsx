@@ -44,7 +44,7 @@ const ProfilePage = () => {
 
   return (
     <MobileLayout hideNavbar hideFooter>
-      <div className="min-h-screen bg-gray-900 text-white relative">
+      <div className="min-h-screen bg-gray-900 text-white relative pb-24">
         {/* Background Pattern */}
         <div className="absolute inset-0 bg-gray-900">
           <div className="absolute inset-0 opacity-10" style={{
@@ -159,8 +159,8 @@ const ProfilePage = () => {
             </div>
           </div>
 
-          {/* Menu Grid - Updated with new options */}
-          <div className="grid grid-cols-4 gap-4 mb-20">
+          {/* Menu Grid - Updated with proper spacing to avoid footer overlap */}
+          <div className="grid grid-cols-4 gap-4 mb-8">
             <button 
               onClick={() => navigate('/bank')}
               className="flex flex-col items-center p-4 bg-gray-800/50 rounded-xl hover:bg-gray-800 transition-colors"
@@ -244,8 +244,8 @@ const ProfilePage = () => {
           </div>
         </div>
 
-        {/* Bottom Navigation - Now Functional */}
-        <div className="fixed bottom-0 left-0 right-0 bg-gray-900/95 backdrop-blur-xl border-t border-gray-700/50 px-4">
+        {/* Bottom Navigation - Fixed positioning and proper functionality */}
+        <div className="fixed bottom-0 left-0 right-0 bg-gray-900/95 backdrop-blur-xl border-t border-gray-700/50 px-4 z-50">
           <div className="flex items-center justify-around py-3">
             {navItems.map((item, index) => (
               <button
