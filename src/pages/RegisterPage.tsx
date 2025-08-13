@@ -2,7 +2,7 @@
 // Register page for CORAL Trading Platform
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { Eye, EyeOff, ArrowRight, Smartphone, AtSign, UserPlus } from "lucide-react";
+import { Eye, EyeOff, Mail, Phone, Lock, Gift, ChevronRight, Sparkles } from "lucide-react";
 import coralLogo from "@/assets/coral-logo.png";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -28,10 +28,10 @@ const RegisterPage = () => {
   } catch (error) {
     console.error("Auth context not available:", error);
     return (
-      <div className="flex min-h-screen items-center justify-center p-4">
+      <div className="flex min-h-screen items-center justify-center p-4 bg-slate-900">
         <div className="flex flex-col items-center space-y-4">
-          <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
-          <p className="text-muted-foreground">Loading...</p>
+          <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+          <p className="text-slate-400">Loading...</p>
         </div>
       </div>
     );
@@ -126,213 +126,201 @@ const RegisterPage = () => {
   };
   
   return (
-    <div className="min-h-screen flex flex-col relative overflow-hidden" style={{backgroundColor: '#0f1526'}}>
-      {/* Background Effects */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute inset-0 opacity-5">
-          <div className="absolute top-0 left-0 w-full h-full" style={{
-            backgroundImage: `radial-gradient(circle at 20% 20%, #3b82f6 2px, transparent 2px),
-                             radial-gradient(circle at 80% 80%, #8b5cf6 2px, transparent 2px)`,
-            backgroundSize: '40px 40px'
-          }}></div>
-        </div>
-        <div className="absolute top-10 right-5 w-20 h-20 bg-blue-500/5 rounded-full blur-xl animate-pulse"></div>
-        <div className="absolute bottom-10 left-5 w-24 h-24 bg-purple-500/5 rounded-full blur-xl animate-pulse delay-1000"></div>
+    <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 relative overflow-hidden">
+      {/* Animated Background Elements */}
+      <div className="absolute inset-0">
+        <div className="absolute top-20 left-10 w-32 h-32 bg-blue-500/10 rounded-full blur-2xl animate-pulse"></div>
+        <div className="absolute bottom-40 right-10 w-40 h-40 bg-purple-500/10 rounded-full blur-2xl animate-pulse delay-1000"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-cyan-500/5 rounded-full blur-3xl"></div>
       </div>
 
-      {/* Main Content */}
-      <div className="relative z-10 flex items-center justify-center min-h-screen px-3 py-4 sm:px-4 sm:py-6">
-        <div className="w-full max-w-xs sm:max-w-sm mx-auto space-y-3 sm:space-y-4">
-        {/* Welcome Header */}
-        <div className="bg-gradient-to-r from-emerald-500/15 via-cyan-500/15 to-blue-500/15 backdrop-blur-xl rounded-xl p-3 sm:p-4 border border-white/10">
-          <div className="flex items-center justify-between">
-            <div className="flex-1">
-              <h1 className="text-base sm:text-lg font-bold text-white mb-1">Hello</h1>
-              <p className="text-emerald-300 text-xs">Welcome to CORAL</p>
+      <div className="relative z-10 min-h-screen flex flex-col">
+        {/* Header */}
+        <div className="pt-12 pb-8 px-6">
+          <div className="flex items-center justify-center mb-6">
+            <div className="relative">
+              <div className="w-16 h-16 bg-gradient-to-tr from-blue-500 via-purple-500 to-cyan-500 rounded-2xl p-0.5">
+                <div className="w-full h-full bg-slate-900 rounded-2xl flex items-center justify-center overflow-hidden">
+                  <img src={coralLogo} alt="CORAL" className="w-10 h-10 object-cover" />
+                </div>
+              </div>
+              <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-400 rounded-full animate-ping"></div>
             </div>
-            
-            {/* CORAL Logo */}
-            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center overflow-hidden shadow-lg">
-              <img src={coralLogo} alt="CORAL" className="w-full h-full object-cover" />
-            </div>
+          </div>
+          <div className="text-center">
+            <h1 className="text-3xl font-bold text-white mb-2">Join CORAL</h1>
+            <p className="text-slate-400">Create your trading account</p>
           </div>
         </div>
 
-        {/* Register Form */}
-        <div className="bg-white/[0.03] backdrop-blur-xl rounded-2xl p-4 sm:p-5 border border-white/10 shadow-xl">
-          <div className="text-center mb-4 sm:mb-5">
-            <h2 className="text-lg sm:text-xl font-bold text-white mb-1">Create Account</h2>
-            <p className="text-slate-400 text-sm">Join CORAL Trading Platform</p>
-          </div>
+        {/* Main Form */}
+        <div className="flex-1 px-6 pb-6">
+          <div className="bg-slate-800/50 backdrop-blur-xl rounded-3xl border border-slate-700/50 p-6 shadow-2xl">
+            <form onSubmit={handleRegister} className="space-y-6">
+              {/* Phone Input */}
+              <div className="space-y-2">
+                <Label className="text-slate-300 text-sm font-medium flex items-center gap-2">
+                  <Phone className="w-4 h-4 text-blue-400" />
+                  Phone Number
+                </Label>
+                <div className="relative group">
+                  <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-cyan-500/20 rounded-xl blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none z-10">
+                      <span className="text-slate-400 text-sm border-r border-slate-600 pr-3 mr-3">+91</span>
+                    </div>
+                    <Input
+                      name="phone"
+                      type="tel"
+                      value={formData.phone}
+                      onChange={handleChange}
+                      placeholder="Enter your phone number"
+                      className="h-14 pl-16 pr-4 bg-slate-900/80 border-slate-600 text-white placeholder:text-slate-500 rounded-xl focus:border-blue-400 focus:ring-1 focus:ring-blue-400/50 transition-all duration-300"
+                      maxLength={10}
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
 
-          <form onSubmit={handleRegister} className="space-y-3 sm:space-y-4">
-            {/* Phone Field */}
-            <div className="space-y-1.5">
-              <Label htmlFor="phone" className="text-sm font-medium text-white flex items-center gap-2">
-                <Smartphone className="w-4 h-4 text-emerald-400" />
-                Phone Number
-              </Label>
-              <div className="relative group">
-                <div className="absolute inset-y-0 left-0 flex items-center pl-3 sm:pl-4 pointer-events-none z-10">
-                  <span className="text-sm text-slate-300 border-r border-slate-600/50 pr-2 sm:pr-3 mr-2 sm:mr-3 font-medium">+91</span>
+              {/* Email Input */}
+              <div className="space-y-2">
+                <Label className="text-slate-300 text-sm font-medium flex items-center gap-2">
+                  <Mail className="w-4 h-4 text-purple-400" />
+                  Email Address
+                </Label>
+                <div className="relative group">
+                  <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 via-pink-500/20 to-purple-500/20 rounded-xl blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div className="relative">
+                    <Input
+                      name="email"
+                      type="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      placeholder="Enter your email"
+                      className="h-14 px-4 bg-slate-900/80 border-slate-600 text-white placeholder:text-slate-500 rounded-xl focus:border-purple-400 focus:ring-1 focus:ring-purple-400/50 transition-all duration-300"
+                      required
+                    />
+                  </div>
                 </div>
-                <Input
-                  id="phone"
-                  name="phone"
-                  type="tel"
-                  value={formData.phone}
-                  onChange={handleChange}
-                  placeholder="Enter your phone number"
-                  className="h-12 sm:h-14 pl-12 sm:pl-16 pr-3 sm:pr-4 text-sm sm:text-base bg-gradient-to-r from-slate-800/40 to-slate-700/40 border-2 border-slate-600/30 focus:border-emerald-400/70 focus:bg-slate-800/60 rounded-xl text-white placeholder:text-slate-400 transition-all duration-300 w-full group-hover:border-emerald-400/50 backdrop-blur-sm shadow-inner focus:shadow-emerald-400/20 focus:shadow-lg"
-                  maxLength={10}
-                  required
-                  inputMode="numeric"
-                  pattern="[0-9]*"
-                />
-                <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-emerald-500/5 to-cyan-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
               </div>
-              {formData.phone && formData.phone.length < 10 && (
-                <div className="flex items-center gap-2 text-xs text-red-400 animate-fade-in">
-                  <div className="w-1 h-1 bg-red-400 rounded-full"></div>
-                  Please enter 10 digits
+
+              {/* Password Input */}
+              <div className="space-y-2">
+                <Label className="text-slate-300 text-sm font-medium flex items-center gap-2">
+                  <Lock className="w-4 h-4 text-cyan-400" />
+                  Password
+                </Label>
+                <div className="relative group">
+                  <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/20 via-blue-500/20 to-cyan-500/20 rounded-xl blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div className="relative">
+                    <Input
+                      name="password"
+                      type={showPassword ? "text" : "password"}
+                      value={formData.password}
+                      onChange={handleChange}
+                      placeholder="Create a password"
+                      className="h-14 px-4 pr-12 bg-slate-900/80 border-slate-600 text-white placeholder:text-slate-500 rounded-xl focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/50 transition-all duration-300"
+                      required
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400 hover:text-cyan-400 transition-colors"
+                    >
+                      {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                    </button>
+                  </div>
                 </div>
-              )}
-            </div>
-            
-            {/* Email Field */}
-            <div className="space-y-1.5">
-              <Label htmlFor="email" className="text-sm font-medium text-white flex items-center gap-2">
-                <AtSign className="w-4 h-4 text-cyan-400" />
-                Email Address
-              </Label>
-              <div className="relative group">
-                <Input
-                  id="email"
-                  name="email"
-                  type="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  placeholder="Enter your email address"
-                  className="h-12 sm:h-14 pl-3 sm:pl-4 pr-3 sm:pr-4 text-sm sm:text-base bg-gradient-to-r from-slate-800/40 to-slate-700/40 border-2 border-slate-600/30 focus:border-cyan-400/70 focus:bg-slate-800/60 rounded-xl text-white placeholder:text-slate-400 transition-all duration-300 w-full group-hover:border-cyan-400/50 backdrop-blur-sm shadow-inner focus:shadow-cyan-400/20 focus:shadow-lg"
-                  required
-                />
-                <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-cyan-500/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
               </div>
-            </div>
-            
-            {/* Password Field */}
-            <div className="space-y-1.5">
-              <Label htmlFor="password" className="text-sm font-medium text-white flex items-center gap-2">
-                <Eye className="w-4 h-4 text-blue-400" />
-                Password
-              </Label>
-              <div className="relative group">
-                <Input
-                  id="password"
-                  name="password"
-                  type={showPassword ? "text" : "password"}
-                  value={formData.password}
-                  onChange={handleChange}
-                  placeholder="Create a strong password"
-                  className="h-12 sm:h-14 pl-3 sm:pl-4 pr-12 sm:pr-14 text-sm sm:text-base bg-gradient-to-r from-slate-800/40 to-slate-700/40 border-2 border-slate-600/30 focus:border-blue-400/70 focus:bg-slate-800/60 rounded-xl text-white placeholder:text-slate-400 transition-all duration-300 w-full group-hover:border-blue-400/50 backdrop-blur-sm shadow-inner focus:shadow-blue-400/20 focus:shadow-lg"
-                  required
-                />
-                <button
-                  type="button"
-                  className="absolute inset-y-0 right-0 flex items-center pr-3 sm:pr-4 text-slate-400 hover:text-blue-300 transition-all duration-200 touch-manipulation hover:scale-110"
-                  onClick={() => setShowPassword(!showPassword)}
-                >
-                  {showPassword ? <EyeOff className="w-4 h-4 sm:w-5 sm:h-5" /> : <Eye className="w-4 h-4 sm:w-5 sm:h-5" />}
-                </button>
-                <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+
+              {/* Referral Code Input */}
+              <div className="space-y-2">
+                <Label className="text-slate-300 text-sm font-medium flex items-center gap-2">
+                  <Gift className="w-4 h-4 text-green-400" />
+                  Referral Code
+                  <span className="text-xs bg-slate-700 text-slate-300 px-2 py-0.5 rounded-full">Optional</span>
+                </Label>
+                <div className="relative group">
+                  <div className="absolute inset-0 bg-gradient-to-r from-green-500/20 via-emerald-500/20 to-green-500/20 rounded-xl blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div className="relative">
+                    <Input
+                      name="referral_code"
+                      type="text"
+                      value={formData.referral_code}
+                      onChange={handleChange}
+                      placeholder="Enter referral code"
+                      className="h-14 px-4 bg-slate-900/80 border-slate-600 text-white placeholder:text-slate-500 rounded-xl focus:border-green-400 focus:ring-1 focus:ring-green-400/50 transition-all duration-300"
+                    />
+                  </div>
+                </div>
               </div>
-            </div>
-            
-            {/* Referral Code Field */}
-            <div className="space-y-1.5">
-              <Label htmlFor="referral_code" className="text-sm font-medium text-white flex items-center gap-2">
-                <UserPlus className="w-4 h-4 text-purple-400" />
-                Referral Code
-                <span className="text-xs text-slate-500 font-normal bg-slate-800/50 px-2 py-0.5 rounded-full">Optional</span>
-              </Label>
-              <div className="relative group">
-                <Input
-                  id="referral_code"
-                  name="referral_code"
-                  type="text"
-                  value={formData.referral_code}
-                  onChange={handleChange}
-                  placeholder="Enter referral code"
-                  className="h-12 sm:h-14 pl-3 sm:pl-4 pr-3 sm:pr-4 text-sm sm:text-base bg-gradient-to-r from-slate-800/40 to-slate-700/40 border-2 border-slate-600/30 focus:border-purple-400/70 focus:bg-slate-800/60 rounded-xl text-white placeholder:text-slate-400 transition-all duration-300 w-full group-hover:border-purple-400/50 backdrop-blur-sm shadow-inner focus:shadow-purple-400/20 focus:shadow-lg"
+
+              {/* Terms Checkbox */}
+              <div className="flex items-start gap-3 pt-2">
+                <Checkbox
+                  id="terms"
+                  checked={agreeTerms}
+                  onCheckedChange={(checked) => setAgreeTerms(checked as boolean)}
+                  className="mt-0.5 border-slate-600 data-[state=checked]:bg-blue-500 data-[state=checked]:border-blue-500"
                 />
-                <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-purple-500/5 to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+                <label htmlFor="terms" className="text-sm text-slate-400 leading-relaxed">
+                  I agree to the{" "}
+                  <Link to="/terms" className="text-blue-400 hover:text-blue-300 underline underline-offset-2">
+                    Terms of Service
+                  </Link>
+                  {" "}and{" "}
+                  <Link to="/privacy" className="text-blue-400 hover:text-blue-300 underline underline-offset-2">
+                    Privacy Policy
+                  </Link>
+                </label>
               </div>
-            </div>
-            
-            {/* Terms Checkbox */}
-            <div className="flex items-start space-x-3 pt-1">
-              <Checkbox 
-                id="terms" 
-                checked={agreeTerms} 
-                onCheckedChange={(checked) => setAgreeTerms(checked as boolean)}
-                className="mt-0.5 flex-shrink-0"
-              />
-              <label
-                htmlFor="terms"
-                className="text-xs text-slate-400 leading-relaxed"
+
+              {/* Submit Button */}
+              <Button
+                type="submit"
+                disabled={!agreeTerms || isSubmitting}
+                className="w-full h-14 bg-gradient-to-r from-blue-500 via-purple-500 to-cyan-500 hover:from-blue-600 hover:via-purple-600 hover:to-cyan-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 mt-6 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                I agree to the{" "}
-                <Link to="/terms" className="text-blue-400 hover:text-blue-300 font-medium transition-colors touch-manipulation">
-                  Terms of Service
-                </Link>
-                {" "}and{" "}
-                <Link to="/privacy" className="text-blue-400 hover:text-blue-300 font-medium transition-colors touch-manipulation">
-                  Privacy Policy
-                </Link>
-              </label>
-            </div>
-            
-            {/* Submit Button */}
-            <Button 
-              type="submit" 
-              className="w-full h-12 sm:h-14 text-sm sm:text-base font-semibold bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border-0 mt-4 sm:mt-5 touch-manipulation hover:scale-[1.02]"
-              disabled={!agreeTerms || isSubmitting}
-            >
-              {isSubmitting ? (
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 sm:w-4 sm:h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                  <span>Creating Account...</span>
-                </div>
-              ) : (
-                <div className="flex items-center gap-2">
-                  <UserPlus className="w-3 h-3 sm:w-4 sm:h-4" />
-                  <span>Create Account</span>
-                </div>
-              )}
-            </Button>
-          </form>
+                {isSubmitting ? (
+                  <div className="flex items-center gap-3">
+                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                    Creating Account...
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-3">
+                    <Sparkles className="w-5 h-5" />
+                    Create Account
+                    <ChevronRight className="w-4 h-4" />
+                  </div>
+                )}
+              </Button>
+            </form>
 
-          {/* Footer Links */}
-          <div className="mt-3 sm:mt-4 text-center space-y-2">
-            <p className="text-slate-400 text-sm">
-              Already have an account?{" "}
-              <Link to="/login" className="text-blue-400 hover:text-blue-300 font-medium transition-colors touch-manipulation">
-                Sign In
-              </Link>
-            </p>
-            
-            <p className="text-xs text-slate-500 leading-relaxed">
-              By creating an account, you agree to our{" "}
-              <Link to="/terms" className="text-blue-400 hover:underline transition-colors touch-manipulation">
-                Terms
-              </Link>{" "}
-              and{" "}
-              <Link to="/privacy" className="text-blue-400 hover:underline transition-colors touch-manipulation">
-                Privacy Policy
-              </Link>
-            </p>
+            {/* Footer */}
+            <div className="mt-6 pt-6 border-t border-slate-700/50 text-center">
+              <p className="text-slate-400 text-sm mb-4">
+                Already have an account?{" "}
+                <Link to="/login" className="text-blue-400 hover:text-blue-300 font-medium">
+                  Sign in here
+                </Link>
+              </p>
+              <div className="flex items-center justify-center gap-6 text-xs text-slate-500">
+                <div className="flex items-center gap-1">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+                  <span>Secure</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                  <span>Fast Setup</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <div className="w-2 h-2 bg-purple-500 rounded-full animate-pulse"></div>
+                  <span>AI Powered</span>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
         </div>
       </div>
     </div>
