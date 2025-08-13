@@ -1,6 +1,6 @@
+
 import {
   createBrowserRouter,
-  RouterProvider,
   Route,
   createRoutesFromElements,
 } from "react-router-dom";
@@ -72,3 +72,5 @@ export const router = createBrowserRouter([
     element: <ProtectedRoute><TradePage /></ProtectedRoute>
   },
 ]);
+
+export default router;
