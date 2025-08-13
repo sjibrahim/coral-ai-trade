@@ -1,8 +1,7 @@
 
-// Register page for CORAL Trading Platform
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { Eye, EyeOff, Mail, Phone, Lock, Gift, ChevronRight, Sparkles } from "lucide-react";
+import { Eye, EyeOff, User, Mail, Phone, Lock, Gift, Sparkles, ArrowRight, Shield, Zap, Star } from "lucide-react";
 import coralLogo from "@/assets/coral-logo.png";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -28,9 +27,9 @@ const RegisterPage = () => {
   } catch (error) {
     console.error("Auth context not available:", error);
     return (
-      <div className="flex min-h-screen items-center justify-center p-4 bg-slate-900">
+      <div className="flex min-h-screen items-center justify-center p-4 bg-slate-950">
         <div className="flex flex-col items-center space-y-4">
-          <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+          <div className="w-8 h-8 border-4 border-emerald-400 border-t-transparent rounded-full animate-spin"></div>
           <p className="text-slate-400">Loading...</p>
         </div>
       </div>
@@ -126,56 +125,87 @@ const RegisterPage = () => {
   };
   
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 relative overflow-hidden">
-      {/* Animated Background Elements */}
+    <div className="min-h-screen bg-slate-950 relative overflow-hidden">
+      {/* Unique Background Pattern */}
       <div className="absolute inset-0">
-        <div className="absolute top-20 left-10 w-32 h-32 bg-blue-500/10 rounded-full blur-2xl animate-pulse"></div>
-        <div className="absolute bottom-40 right-10 w-40 h-40 bg-purple-500/10 rounded-full blur-2xl animate-pulse delay-1000"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-cyan-500/5 rounded-full blur-3xl"></div>
+        <div className="absolute top-0 left-0 w-full h-full">
+          <div className="absolute top-12 left-8 w-24 h-24 bg-emerald-400/10 rounded-full animate-pulse"></div>
+          <div className="absolute top-32 right-12 w-16 h-16 bg-violet-400/10 rounded-full animate-pulse delay-1000"></div>
+          <div className="absolute bottom-40 left-16 w-20 h-20 bg-orange-400/10 rounded-full animate-pulse delay-500"></div>
+          <div className="absolute bottom-20 right-8 w-28 h-28 bg-pink-400/10 rounded-full animate-pulse delay-700"></div>
+        </div>
+        
+        {/* Geometric Patterns */}
+        <div className="absolute inset-0 opacity-5">
+          <div className="absolute top-1/4 left-1/4 w-32 h-32 border border-emerald-400 rotate-45 rounded-lg"></div>
+          <div className="absolute top-3/4 right-1/4 w-24 h-24 border border-violet-400 rotate-12 rounded-lg"></div>
+        </div>
       </div>
 
-      <div className="relative z-10 min-h-screen flex flex-col">
-        {/* Header */}
-        <div className="pt-12 pb-8 px-6">
-          <div className="flex items-center justify-center mb-6">
+      <div className="relative z-10 min-h-screen flex flex-col px-4 py-6">
+        {/* Header Section */}
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center justify-center mb-6">
             <div className="relative">
-              <div className="w-16 h-16 bg-gradient-to-tr from-blue-500 via-purple-500 to-cyan-500 rounded-2xl p-0.5">
-                <div className="w-full h-full bg-slate-900 rounded-2xl flex items-center justify-center overflow-hidden">
-                  <img src={coralLogo} alt="CORAL" className="w-10 h-10 object-cover" />
+              <div className="w-20 h-20 bg-gradient-to-br from-emerald-400 via-teal-400 to-cyan-400 rounded-3xl p-1 shadow-lg shadow-emerald-500/25">
+                <div className="w-full h-full bg-slate-950 rounded-3xl flex items-center justify-center">
+                  <img src={coralLogo} alt="CORAL" className="w-12 h-12 object-cover rounded-2xl" />
                 </div>
               </div>
-              <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-400 rounded-full animate-ping"></div>
+              <div className="absolute -top-2 -right-2 w-6 h-6 bg-emerald-400 rounded-full flex items-center justify-center">
+                <Sparkles className="w-3 h-3 text-slate-950" />
+              </div>
             </div>
           </div>
-          <div className="text-center">
-            <h1 className="text-3xl font-bold text-white mb-2">Join CORAL</h1>
-            <p className="text-slate-400">Create your trading account</p>
+          
+          <h1 className="text-4xl font-bold text-white mb-2 tracking-tight">
+            Welcome to <span className="bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">CORAL</span>
+          </h1>
+          <p className="text-slate-400 text-lg">Start your trading journey today</p>
+          
+          {/* Feature Pills */}
+          <div className="flex flex-wrap justify-center gap-3 mt-6">
+            <div className="flex items-center gap-2 bg-slate-900/60 backdrop-blur-sm border border-slate-800 rounded-full px-4 py-2">
+              <Shield className="w-4 h-4 text-emerald-400" />
+              <span className="text-sm text-slate-300">Secure</span>
+            </div>
+            <div className="flex items-center gap-2 bg-slate-900/60 backdrop-blur-sm border border-slate-800 rounded-full px-4 py-2">
+              <Zap className="w-4 h-4 text-violet-400" />
+              <span className="text-sm text-slate-300">Fast</span>
+            </div>
+            <div className="flex items-center gap-2 bg-slate-900/60 backdrop-blur-sm border border-slate-800 rounded-full px-4 py-2">
+              <Star className="w-4 h-4 text-orange-400" />
+              <span className="text-sm text-slate-300">Trusted</span>
+            </div>
           </div>
         </div>
 
-        {/* Main Form */}
-        <div className="flex-1 px-6 pb-6">
-          <div className="bg-slate-800/50 backdrop-blur-xl rounded-3xl border border-slate-700/50 p-6 shadow-2xl">
-            <form onSubmit={handleRegister} className="space-y-6">
+        {/* Form Container */}
+        <div className="flex-1 max-w-md mx-auto w-full">
+          <div className="bg-slate-900/40 backdrop-blur-xl border border-slate-800/50 rounded-3xl p-6 shadow-2xl">
+            <form onSubmit={handleRegister} className="space-y-5">
+              
               {/* Phone Input */}
-              <div className="space-y-2">
-                <Label className="text-slate-300 text-sm font-medium flex items-center gap-2">
-                  <Phone className="w-4 h-4 text-blue-400" />
+              <div className="space-y-3">
+                <Label className="text-slate-200 text-sm font-medium flex items-center gap-2">
+                  <div className="w-5 h-5 bg-gradient-to-br from-emerald-400 to-teal-400 rounded-lg flex items-center justify-center">
+                    <Phone className="w-3 h-3 text-slate-950" />
+                  </div>
                   Phone Number
                 </Label>
                 <div className="relative group">
-                  <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-cyan-500/20 rounded-xl blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div className="absolute inset-0 bg-gradient-to-r from-emerald-400/20 to-teal-400/20 rounded-2xl blur-sm opacity-0 group-focus-within:opacity-100 transition-all duration-300"></div>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none z-10">
-                      <span className="text-slate-400 text-sm border-r border-slate-600 pr-3 mr-3">+91</span>
+                      <span className="text-slate-400 text-sm bg-slate-800 px-2 py-1 rounded-lg mr-3">+91</span>
                     </div>
                     <Input
                       name="phone"
                       type="tel"
                       value={formData.phone}
                       onChange={handleChange}
-                      placeholder="Enter your phone number"
-                      className="h-14 pl-16 pr-4 bg-slate-900/80 border-slate-600 text-white placeholder:text-slate-500 rounded-xl focus:border-blue-400 focus:ring-1 focus:ring-blue-400/50 transition-all duration-300"
+                      placeholder="Your phone number"
+                      className="h-14 pl-20 pr-4 bg-slate-800/50 border-slate-700 text-white placeholder:text-slate-500 rounded-2xl focus:border-emerald-400/50 focus:ring-2 focus:ring-emerald-400/20 transition-all duration-300"
                       maxLength={10}
                       required
                     />
@@ -184,21 +214,23 @@ const RegisterPage = () => {
               </div>
 
               {/* Email Input */}
-              <div className="space-y-2">
-                <Label className="text-slate-300 text-sm font-medium flex items-center gap-2">
-                  <Mail className="w-4 h-4 text-purple-400" />
+              <div className="space-y-3">
+                <Label className="text-slate-200 text-sm font-medium flex items-center gap-2">
+                  <div className="w-5 h-5 bg-gradient-to-br from-violet-400 to-purple-400 rounded-lg flex items-center justify-center">
+                    <Mail className="w-3 h-3 text-slate-950" />
+                  </div>
                   Email Address
                 </Label>
                 <div className="relative group">
-                  <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 via-pink-500/20 to-purple-500/20 rounded-xl blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div className="absolute inset-0 bg-gradient-to-r from-violet-400/20 to-purple-400/20 rounded-2xl blur-sm opacity-0 group-focus-within:opacity-100 transition-all duration-300"></div>
                   <div className="relative">
                     <Input
                       name="email"
                       type="email"
                       value={formData.email}
                       onChange={handleChange}
-                      placeholder="Enter your email"
-                      className="h-14 px-4 bg-slate-900/80 border-slate-600 text-white placeholder:text-slate-500 rounded-xl focus:border-purple-400 focus:ring-1 focus:ring-purple-400/50 transition-all duration-300"
+                      placeholder="Your email address"
+                      className="h-14 px-4 bg-slate-800/50 border-slate-700 text-white placeholder:text-slate-500 rounded-2xl focus:border-violet-400/50 focus:ring-2 focus:ring-violet-400/20 transition-all duration-300"
                       required
                     />
                   </div>
@@ -206,27 +238,29 @@ const RegisterPage = () => {
               </div>
 
               {/* Password Input */}
-              <div className="space-y-2">
-                <Label className="text-slate-300 text-sm font-medium flex items-center gap-2">
-                  <Lock className="w-4 h-4 text-cyan-400" />
-                  Password
+              <div className="space-y-3">
+                <Label className="text-slate-200 text-sm font-medium flex items-center gap-2">
+                  <div className="w-5 h-5 bg-gradient-to-br from-orange-400 to-red-400 rounded-lg flex items-center justify-center">
+                    <Lock className="w-3 h-3 text-slate-950" />
+                  </div>
+                  Create Password
                 </Label>
                 <div className="relative group">
-                  <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/20 via-blue-500/20 to-cyan-500/20 rounded-xl blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div className="absolute inset-0 bg-gradient-to-r from-orange-400/20 to-red-400/20 rounded-2xl blur-sm opacity-0 group-focus-within:opacity-100 transition-all duration-300"></div>
                   <div className="relative">
                     <Input
                       name="password"
                       type={showPassword ? "text" : "password"}
                       value={formData.password}
                       onChange={handleChange}
-                      placeholder="Create a password"
-                      className="h-14 px-4 pr-12 bg-slate-900/80 border-slate-600 text-white placeholder:text-slate-500 rounded-xl focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/50 transition-all duration-300"
+                      placeholder="Create a secure password"
+                      className="h-14 px-4 pr-12 bg-slate-800/50 border-slate-700 text-white placeholder:text-slate-500 rounded-2xl focus:border-orange-400/50 focus:ring-2 focus:ring-orange-400/20 transition-all duration-300"
                       required
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400 hover:text-cyan-400 transition-colors"
+                      className="absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400 hover:text-orange-400 transition-colors"
                     >
                       {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                     </button>
@@ -235,22 +269,24 @@ const RegisterPage = () => {
               </div>
 
               {/* Referral Code Input */}
-              <div className="space-y-2">
-                <Label className="text-slate-300 text-sm font-medium flex items-center gap-2">
-                  <Gift className="w-4 h-4 text-green-400" />
+              <div className="space-y-3">
+                <Label className="text-slate-200 text-sm font-medium flex items-center gap-2">
+                  <div className="w-5 h-5 bg-gradient-to-br from-pink-400 to-rose-400 rounded-lg flex items-center justify-center">
+                    <Gift className="w-3 h-3 text-slate-950" />
+                  </div>
                   Referral Code
-                  <span className="text-xs bg-slate-700 text-slate-300 px-2 py-0.5 rounded-full">Optional</span>
+                  <span className="bg-gradient-to-r from-pink-400 to-rose-400 text-slate-950 text-xs px-2 py-1 rounded-full font-medium">Optional</span>
                 </Label>
                 <div className="relative group">
-                  <div className="absolute inset-0 bg-gradient-to-r from-green-500/20 via-emerald-500/20 to-green-500/20 rounded-xl blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div className="absolute inset-0 bg-gradient-to-r from-pink-400/20 to-rose-400/20 rounded-2xl blur-sm opacity-0 group-focus-within:opacity-100 transition-all duration-300"></div>
                   <div className="relative">
                     <Input
                       name="referral_code"
                       type="text"
                       value={formData.referral_code}
                       onChange={handleChange}
-                      placeholder="Enter referral code"
-                      className="h-14 px-4 bg-slate-900/80 border-slate-600 text-white placeholder:text-slate-500 rounded-xl focus:border-green-400 focus:ring-1 focus:ring-green-400/50 transition-all duration-300"
+                      placeholder="Enter referral code (optional)"
+                      className="h-14 px-4 bg-slate-800/50 border-slate-700 text-white placeholder:text-slate-500 rounded-2xl focus:border-pink-400/50 focus:ring-2 focus:ring-pink-400/20 transition-all duration-300"
                     />
                   </div>
                 </div>
@@ -262,15 +298,15 @@ const RegisterPage = () => {
                   id="terms"
                   checked={agreeTerms}
                   onCheckedChange={(checked) => setAgreeTerms(checked as boolean)}
-                  className="mt-0.5 border-slate-600 data-[state=checked]:bg-blue-500 data-[state=checked]:border-blue-500"
+                  className="mt-1 border-slate-600 data-[state=checked]:bg-emerald-400 data-[state=checked]:border-emerald-400 rounded-lg"
                 />
                 <label htmlFor="terms" className="text-sm text-slate-400 leading-relaxed">
                   I agree to the{" "}
-                  <Link to="/terms" className="text-blue-400 hover:text-blue-300 underline underline-offset-2">
+                  <Link to="/terms" className="text-emerald-400 hover:text-emerald-300 underline underline-offset-2 font-medium">
                     Terms of Service
                   </Link>
                   {" "}and{" "}
-                  <Link to="/privacy" className="text-blue-400 hover:text-blue-300 underline underline-offset-2">
+                  <Link to="/privacy" className="text-emerald-400 hover:text-emerald-300 underline underline-offset-2 font-medium">
                     Privacy Policy
                   </Link>
                 </label>
@@ -280,43 +316,45 @@ const RegisterPage = () => {
               <Button
                 type="submit"
                 disabled={!agreeTerms || isSubmitting}
-                className="w-full h-14 bg-gradient-to-r from-blue-500 via-purple-500 to-cyan-500 hover:from-blue-600 hover:via-purple-600 hover:to-cyan-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 mt-6 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full h-14 bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 hover:from-emerald-500 hover:via-teal-500 hover:to-cyan-500 text-slate-950 font-semibold rounded-2xl shadow-lg hover:shadow-emerald-400/25 transition-all duration-300 mt-6 disabled:opacity-50 disabled:cursor-not-allowed border-0"
               >
                 {isSubmitting ? (
                   <div className="flex items-center gap-3">
-                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                    <div className="w-5 h-5 border-2 border-slate-950/30 border-t-slate-950 rounded-full animate-spin"></div>
                     Creating Account...
                   </div>
                 ) : (
                   <div className="flex items-center gap-3">
-                    <Sparkles className="w-5 h-5" />
-                    Create Account
-                    <ChevronRight className="w-4 h-4" />
+                    <User className="w-5 h-5" />
+                    Create My Account
+                    <ArrowRight className="w-4 h-4" />
                   </div>
                 )}
               </Button>
             </form>
 
             {/* Footer */}
-            <div className="mt-6 pt-6 border-t border-slate-700/50 text-center">
-              <p className="text-slate-400 text-sm mb-4">
+            <div className="mt-6 pt-6 border-t border-slate-800/50 text-center space-y-4">
+              <p className="text-slate-400 text-sm">
                 Already have an account?{" "}
-                <Link to="/login" className="text-blue-400 hover:text-blue-300 font-medium">
+                <Link to="/login" className="text-emerald-400 hover:text-emerald-300 font-medium underline underline-offset-2">
                   Sign in here
                 </Link>
               </p>
-              <div className="flex items-center justify-center gap-6 text-xs text-slate-500">
-                <div className="flex items-center gap-1">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
-                  <span>Secure</span>
+              
+              {/* Security Badges */}
+              <div className="flex items-center justify-center gap-4 text-xs">
+                <div className="flex items-center gap-2 text-slate-500">
+                  <div className="w-2 h-2 bg-emerald-400 rounded-full"></div>
+                  <span>256-bit Encryption</span>
                 </div>
-                <div className="flex items-center gap-1">
-                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                  <span>Fast Setup</span>
+                <div className="flex items-center gap-2 text-slate-500">
+                  <div className="w-2 h-2 bg-violet-400 rounded-full"></div>
+                  <span>GDPR Compliant</span>
                 </div>
-                <div className="flex items-center gap-1">
-                  <div className="w-2 h-2 bg-purple-500 rounded-full animate-pulse"></div>
-                  <span>AI Powered</span>
+                <div className="flex items-center gap-2 text-slate-500">
+                  <div className="w-2 h-2 bg-orange-400 rounded-full"></div>
+                  <span>ISO Certified</span>
                 </div>
               </div>
             </div>
