@@ -8,7 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { 
   CreditCard, Lock, Calendar, Gift,
   Home, Users, Monitor, TrendingUp, User,
-  Copy, Check, ArrowRight
+  Copy, Check, ArrowRight, FileText, Receipt, Wallet, ArrowDownCircle
 } from "lucide-react";
 
 const ProfilePage = () => {
@@ -22,7 +22,7 @@ const ProfilePage = () => {
   const totalBalance = walletAmount + incomeAmount;
 
   // Generate invite code
-  const inviteCode = user?.invite_code || user?.referral_code || user?.id || "TREX123";
+  const inviteCode = user?.invite_code || user?.referral_code || user?.id || "CORAL123";
 
   const handleCopyCode = () => {
     navigator.clipboard.writeText(inviteCode);
@@ -64,11 +64,11 @@ const ProfilePage = () => {
           <div className="flex items-center justify-between mb-6 pt-8">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 bg-gradient-to-r from-teal-400 to-cyan-400 rounded-full flex items-center justify-center">
-                <span className="text-xl font-bold text-white">T</span>
+                <span className="text-xl font-bold text-white">C</span>
               </div>
               <div>
-                <div className="text-white font-medium">Trexo</div>
-                <div className="text-gray-400 text-sm">Trading Platform</div>
+                <div className="text-white font-medium">Coral</div>
+                <div className="text-gray-400 text-sm">AI Trading Platform</div>
               </div>
             </div>
             <div className="text-right">
@@ -159,7 +159,7 @@ const ProfilePage = () => {
             </div>
           </div>
 
-          {/* Menu Grid */}
+          {/* Menu Grid - Updated with new options */}
           <div className="grid grid-cols-4 gap-4 mb-20">
             <button 
               onClick={() => navigate('/bank')}
@@ -200,10 +200,51 @@ const ProfilePage = () => {
               </div>
               <span className="text-xs text-gray-300 text-center">Gift Code</span>
             </button>
+
+            {/* New Menu Options */}
+            <button 
+              onClick={() => navigate('/contract-records')}
+              className="flex flex-col items-center p-4 bg-gray-800/50 rounded-xl hover:bg-gray-800 transition-colors"
+            >
+              <div className="w-12 h-12 bg-teal-500/20 rounded-xl flex items-center justify-center mb-2">
+                <FileText className="w-6 h-6 text-teal-400" />
+              </div>
+              <span className="text-xs text-gray-300 text-center">Contract Records</span>
+            </button>
+
+            <button 
+              onClick={() => navigate('/salary-records')}
+              className="flex flex-col items-center p-4 bg-gray-800/50 rounded-xl hover:bg-gray-800 transition-colors"
+            >
+              <div className="w-12 h-12 bg-cyan-500/20 rounded-xl flex items-center justify-center mb-2">
+                <Wallet className="w-6 h-6 text-cyan-400" />
+              </div>
+              <span className="text-xs text-gray-300 text-center">Salary Records</span>
+            </button>
+
+            <button 
+              onClick={() => navigate('/transaction-records')}
+              className="flex flex-col items-center p-4 bg-gray-800/50 rounded-xl hover:bg-gray-800 transition-colors"
+            >
+              <div className="w-12 h-12 bg-indigo-500/20 rounded-xl flex items-center justify-center mb-2">
+                <Receipt className="w-6 h-6 text-indigo-400" />
+              </div>
+              <span className="text-xs text-gray-300 text-center">Transaction Records</span>
+            </button>
+
+            <button 
+              onClick={() => navigate('/withdrawal-records')}
+              className="flex flex-col items-center p-4 bg-gray-800/50 rounded-xl hover:bg-gray-800 transition-colors"
+            >
+              <div className="w-12 h-12 bg-red-500/20 rounded-xl flex items-center justify-center mb-2">
+                <ArrowDownCircle className="w-6 h-6 text-red-400" />
+              </div>
+              <span className="text-xs text-gray-300 text-center">Withdrawal Records</span>
+            </button>
           </div>
         </div>
 
-        {/* Bottom Navigation */}
+        {/* Bottom Navigation - Now Functional */}
         <div className="fixed bottom-0 left-0 right-0 bg-gray-900/95 backdrop-blur-xl border-t border-gray-700/50 px-4">
           <div className="flex items-center justify-around py-3">
             {navItems.map((item, index) => (
@@ -211,7 +252,7 @@ const ProfilePage = () => {
                 key={index}
                 onClick={() => navigate(item.path)}
                 className={`flex flex-col items-center justify-center py-2 px-3 transition-all duration-300 ${
-                  item.active ? 'text-teal-400' : 'text-gray-400'
+                  item.active ? 'text-teal-400' : 'text-gray-400 hover:text-teal-300'
                 }`}
               >
                 {item.path === '/trade' ? (

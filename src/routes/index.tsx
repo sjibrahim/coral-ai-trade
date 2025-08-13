@@ -17,6 +17,10 @@ import CoinPage from "@/pages/CoinPage";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import USDTWithdraw from "@/pages/USDTWithdraw";
 import TradePage from '@/pages/TradePage';
+import ContractRecordsPage from '@/pages/ContractRecordsPage';
+import SalaryRecordPage from '@/pages/SalaryRecordPage';
+import TransactionRecordsPage from '@/pages/TransactionRecordsPage';
+import SecurityPage from '@/pages/SecurityPage';
 
 export const router = createBrowserRouter([
   {
@@ -70,6 +74,22 @@ export const router = createBrowserRouter([
   {
     path: '/trade',
     element: <ProtectedRoute><TradePage /></ProtectedRoute>
+  },
+  {
+    path: '/contract-records',
+    element: <ProtectedRoute><ContractRecordsPage /></ProtectedRoute>
+  },
+  {
+    path: '/salary-records',
+    element: <ProtectedRoute><SalaryRecordPage /></ProtectedRoute>
+  },
+  {
+    path: '/transaction-records',
+    element: <ProtectedRoute><TransactionRecordsPage /></ProtectedRoute>
+  },
+  {
+    path: '/security',
+    element: <ProtectedRoute><SecurityPage /></ProtectedRoute>
   },
 ]);
 
