@@ -1,8 +1,6 @@
-
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Eye, EyeOff, User, ArrowRight, Smartphone, Mail, Lock, Gift } from "lucide-react";
-import coralLogo from "@/assets/coral-logo.png";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -126,11 +124,24 @@ const RegisterPage = () => {
   };
   
   return (
-    <div className="min-h-screen bg-slate-950">
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 relative overflow-hidden">
+      {/* Background Effects */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute inset-0 opacity-5">
+          <div className="absolute top-0 left-0 w-full h-full" style={{
+            backgroundImage: `radial-gradient(circle at 20% 20%, #3b82f6 2px, transparent 2px),
+                             radial-gradient(circle at 80% 80%, #8b5cf6 2px, transparent 2px)`,
+            backgroundSize: '40px 40px'
+          }}></div>
+        </div>
+        <div className="absolute top-10 right-5 w-20 h-20 bg-blue-500/5 rounded-full blur-xl animate-pulse"></div>
+        <div className="absolute bottom-10 left-5 w-24 h-24 bg-purple-500/5 rounded-full blur-xl animate-pulse delay-1000"></div>
+      </div>
+      
       <ScrollArea className="h-screen">
-        <div className="p-6 pb-20">
-          {/* Header */}
-          <div className="mb-8 bg-gradient-to-r from-emerald-500/15 via-cyan-500/15 to-blue-500/15 backdrop-blur-xl rounded-xl p-4 border border-white/10">
+        <div className="relative z-10 px-4 py-6">
+          {/* Welcome Header */}
+          <div className="mb-6 bg-gradient-to-r from-emerald-500/15 via-cyan-500/15 to-blue-500/15 backdrop-blur-xl rounded-xl p-4 border border-white/10 overflow-hidden">
             <div className="flex items-center justify-between">
               <div className="flex-1">
                 <h1 className="text-xl font-bold text-white mb-1">Hello</h1>
@@ -157,16 +168,16 @@ const RegisterPage = () => {
           {/* Logo Section */}
           <div className="text-center mb-8">
             <div className="flex items-center justify-center mb-4">
-              <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center overflow-hidden shadow-lg">
-                <img src={coralLogo} alt="CORAL" className="w-full h-full object-cover" />
+              <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center overflow-hidden shadow-lg">
+                <img src="https://ik.imagekit.io/spmcumfu9/coral.jpeg" alt="CORAL" className="w-full h-full object-cover" />
               </div>
             </div>
-            <p className="text-slate-400 text-sm">AI Trading Platform</p>
+            <p className="text-slate-400 text-xs">AI Trading Platform</p>
           </div>
 
           {/* Registration Form */}
-          <div className="bg-slate-900/50 backdrop-blur-xl rounded-2xl p-6 border border-slate-700/50">
-            <form onSubmit={handleRegister} className="space-y-6">
+          <div className="bg-white/[0.02] backdrop-blur-xl rounded-xl p-5 border border-white/10 mb-6">
+            <form onSubmit={handleRegister} className="space-y-5">
               
               {/* Phone Input */}
               <div className="space-y-2">
@@ -310,7 +321,7 @@ const RegisterPage = () => {
             </form>
 
             {/* Footer Links */}
-            <div className="mt-6 text-center space-y-4">
+            <div className="mt-6 text-center space-y-3">
               <p className="text-slate-400 text-sm">
                 Already have an account?{" "}
                 <Link to="/login" className="text-blue-400 hover:text-blue-300 font-medium transition-colors">
@@ -332,7 +343,7 @@ const RegisterPage = () => {
           </div>
 
           {/* Features */}
-          <div className="text-center mt-8">
+          <div className="text-center pb-6">
             <div className="flex justify-center items-center gap-6 text-sm text-slate-400">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>

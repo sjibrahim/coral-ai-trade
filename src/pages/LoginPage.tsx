@@ -1,9 +1,7 @@
-
 // Login page for CORAL Trading Platform
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff, ArrowRight, Smartphone, ChevronLeft } from "lucide-react";
-import coralLogo from "@/assets/coral-logo.png";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -144,7 +142,7 @@ const LoginPage = () => {
         <div className="text-center mb-8">
           <div className="flex items-center justify-center mb-4">
             <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center overflow-hidden shadow-lg">
-              <img src={coralLogo} alt="CORAL" className="w-full h-full object-cover" />
+              <img src="https://ik.imagekit.io/spmcumfu9/coral.jpeg" alt="CORAL" className="w-full h-full object-cover" />
             </div>
           </div>
           <p className="text-slate-400 text-xs">AI Trading Platform</p>
