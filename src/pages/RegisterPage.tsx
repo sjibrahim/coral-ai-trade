@@ -1,8 +1,7 @@
-
 // Register page for CORAL Trading Platform
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { Eye, EyeOff, Smartphone, AtSign, UserPlus, Lock } from "lucide-react";
+import { Eye, EyeOff, ArrowRight, Smartphone, AtSign, UserPlus } from "lucide-react";
 import coralLogo from "@/assets/coral-logo.png";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -126,37 +125,55 @@ const RegisterPage = () => {
   };
   
   return (
-    <div className="min-h-screen bg-background flex flex-col">
-      {/* Header */}
-      <div className="flex items-center justify-between p-4 pb-0">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg overflow-hidden">
-            <img src={coralLogo} alt="CORAL" className="w-full h-full object-cover" />
-          </div>
-          <h1 className="text-lg font-semibold text-foreground">CORAL</h1>
+    <div className="min-h-screen flex flex-col relative overflow-hidden" style={{backgroundColor: '#0f1526'}}>
+      {/* Background Effects */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute inset-0 opacity-5">
+          <div className="absolute top-0 left-0 w-full h-full" style={{
+            backgroundImage: `radial-gradient(circle at 20% 20%, #3b82f6 2px, transparent 2px),
+                             radial-gradient(circle at 80% 80%, #8b5cf6 2px, transparent 2px)`,
+            backgroundSize: '40px 40px'
+          }}></div>
         </div>
+        <div className="absolute top-10 right-5 w-20 h-20 bg-blue-500/5 rounded-full blur-xl animate-pulse"></div>
+        <div className="absolute bottom-10 left-5 w-24 h-24 bg-purple-500/5 rounded-full blur-xl animate-pulse delay-1000"></div>
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col px-4 py-6">
-        {/* Welcome Text */}
-        <div className="text-center mb-8">
-          <h2 className="text-2xl font-bold text-foreground mb-2">Create Account</h2>
-          <p className="text-muted-foreground">Join the CORAL trading community</p>
+      <div className="relative z-10 flex items-center justify-center min-h-screen px-4 py-6">
+        <div className="w-full max-w-sm mx-auto space-y-4">
+        {/* Welcome Header */}
+        <div className="bg-gradient-to-r from-emerald-500/15 via-cyan-500/15 to-blue-500/15 backdrop-blur-xl rounded-xl p-4 border border-white/10">
+          <div className="flex items-center justify-between">
+            <div className="flex-1">
+              <h1 className="text-lg font-bold text-white mb-1">Hello</h1>
+              <p className="text-emerald-300 text-xs">Welcome to CORAL</p>
+            </div>
+            
+            {/* CORAL Logo */}
+            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center overflow-hidden shadow-lg">
+              <img src={coralLogo} alt="CORAL" className="w-full h-full object-cover" />
+            </div>
+          </div>
         </div>
 
-        {/* Form */}
-        <div className="flex-1 max-w-sm mx-auto w-full">
+        {/* Register Form */}
+        <div className="bg-white/[0.03] backdrop-blur-xl rounded-2xl p-5 border border-white/10 shadow-xl">
+          <div className="text-center mb-5">
+            <h2 className="text-xl font-bold text-white mb-1">Create Account</h2>
+            <p className="text-slate-400 text-sm">Join CORAL Trading Platform</p>
+          </div>
+
           <form onSubmit={handleRegister} className="space-y-4">
             {/* Phone Field */}
-            <div className="space-y-2">
-              <Label htmlFor="phone" className="text-foreground flex items-center gap-2 text-sm font-medium">
-                <Smartphone className="w-4 h-4 text-primary" />
+            <div className="space-y-1.5">
+              <Label htmlFor="phone" className="text-sm font-medium text-white flex items-center gap-2">
+                <Smartphone className="w-4 h-4 text-blue-400" />
                 Phone Number
               </Label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                  <span className="text-muted-foreground text-sm">+91</span>
+              <div className="relative group">
+                <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none z-10">
+                  <span className="text-sm text-slate-400 border-r border-slate-600/50 pr-3 mr-3 font-medium">+91</span>
                 </div>
                 <Input
                   id="phone"
@@ -164,136 +181,157 @@ const RegisterPage = () => {
                   type="tel"
                   value={formData.phone}
                   onChange={handleChange}
-                  placeholder="Enter phone number"
-                  className="pl-12 h-12 text-base"
+                  placeholder="Enter your phone number"
+                  className="h-12 pl-16 pr-4 text-base bg-white/5 border-2 border-white/10 focus:border-blue-400/50 focus:bg-white/10 rounded-xl text-white placeholder:text-slate-500 transition-all duration-300 w-full group-hover:border-white/20 backdrop-blur-sm"
                   maxLength={10}
                   required
                   inputMode="numeric"
                   pattern="[0-9]*"
                 />
+                <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
               </div>
               {formData.phone && formData.phone.length < 10 && (
-                <p className="text-xs text-destructive">Please enter 10 digits</p>
+                <div className="flex items-center gap-2 text-xs text-red-400 animate-fade-in">
+                  <div className="w-1 h-1 bg-red-400 rounded-full"></div>
+                  Please enter 10 digits
+                </div>
               )}
             </div>
             
             {/* Email Field */}
-            <div className="space-y-2">
-              <Label htmlFor="email" className="text-foreground flex items-center gap-2 text-sm font-medium">
-                <AtSign className="w-4 h-4 text-primary" />
+            <div className="space-y-1.5">
+              <Label htmlFor="email" className="text-sm font-medium text-white flex items-center gap-2">
+                <AtSign className="w-4 h-4 text-blue-400" />
                 Email Address
               </Label>
-              <Input
-                id="email"
-                name="email"
-                type="email"
-                value={formData.email}
-                onChange={handleChange}
-                placeholder="Enter email address"
-                className="h-12 text-base"
-                required
-              />
+              <div className="relative group">
+                <Input
+                  id="email"
+                  name="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  placeholder="Enter your email address"
+                  className="h-12 pl-4 pr-4 text-base bg-white/5 border-2 border-white/10 focus:border-blue-400/50 focus:bg-white/10 rounded-xl text-white placeholder:text-slate-500 transition-all duration-300 w-full group-hover:border-white/20 backdrop-blur-sm"
+                  required
+                />
+                <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+              </div>
             </div>
             
             {/* Password Field */}
-            <div className="space-y-2">
-              <Label htmlFor="password" className="text-foreground flex items-center gap-2 text-sm font-medium">
-                <Lock className="w-4 h-4 text-primary" />
+            <div className="space-y-1.5">
+              <Label htmlFor="password" className="text-sm font-medium text-white flex items-center gap-2">
+                <Eye className="w-4 h-4 text-blue-400" />
                 Password
               </Label>
-              <div className="relative">
+              <div className="relative group">
                 <Input
                   id="password"
                   name="password"
                   type={showPassword ? "text" : "password"}
                   value={formData.password}
                   onChange={handleChange}
-                  placeholder="Create password"
-                  className="h-12 pr-12 text-base"
+                  placeholder="Create a strong password"
+                  className="h-12 pl-4 pr-14 text-base bg-white/5 border-2 border-white/10 focus:border-blue-400/50 focus:bg-white/10 rounded-xl text-white placeholder:text-slate-500 transition-all duration-300 w-full group-hover:border-white/20 backdrop-blur-sm"
                   required
                 />
                 <button
                   type="button"
-                  className="absolute inset-y-0 right-0 flex items-center pr-3 text-muted-foreground hover:text-foreground transition-colors"
+                  className="absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400 hover:text-white transition-all duration-200 touch-manipulation hover:scale-110"
                   onClick={() => setShowPassword(!showPassword)}
                 >
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
+                <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
               </div>
             </div>
             
             {/* Referral Code Field */}
-            <div className="space-y-2">
-              <Label htmlFor="referral_code" className="text-foreground flex items-center gap-2 text-sm font-medium">
-                <UserPlus className="w-4 h-4 text-primary" />
+            <div className="space-y-1.5">
+              <Label htmlFor="referral_code" className="text-sm font-medium text-white flex items-center gap-2">
+                <UserPlus className="w-4 h-4 text-blue-400" />
                 Referral Code
-                <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded-full">Optional</span>
+                <span className="text-xs text-slate-500 font-normal bg-slate-800/50 px-2 py-0.5 rounded-full">Optional</span>
               </Label>
-              <Input
-                id="referral_code"
-                name="referral_code"
-                type="text"
-                value={formData.referral_code}
-                onChange={handleChange}
-                placeholder="Enter referral code"
-                className="h-12 text-base"
-              />
+              <div className="relative group">
+                <Input
+                  id="referral_code"
+                  name="referral_code"
+                  type="text"
+                  value={formData.referral_code}
+                  onChange={handleChange}
+                  placeholder="Enter referral code"
+                  className="h-12 pl-4 pr-4 text-base bg-white/5 border-2 border-white/10 focus:border-blue-400/50 focus:bg-white/10 rounded-xl text-white placeholder:text-slate-500 transition-all duration-300 w-full group-hover:border-white/20 backdrop-blur-sm"
+                />
+                <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+              </div>
             </div>
             
             {/* Terms Checkbox */}
-            <div className="flex items-start space-x-3 pt-2">
+            <div className="flex items-start space-x-3 pt-1">
               <Checkbox 
                 id="terms" 
                 checked={agreeTerms} 
                 onCheckedChange={(checked) => setAgreeTerms(checked as boolean)}
-                className="mt-0.5"
+                className="mt-0.5 flex-shrink-0"
               />
               <label
                 htmlFor="terms"
-                className="text-sm text-muted-foreground leading-relaxed"
+                className="text-xs text-slate-400 leading-relaxed"
               >
                 I agree to the{" "}
-                <Link to="/terms" className="text-primary hover:underline font-medium">
+                <Link to="/terms" className="text-blue-400 hover:text-blue-300 font-medium transition-colors touch-manipulation">
                   Terms of Service
                 </Link>
                 {" "}and{" "}
-                <Link to="/privacy" className="text-primary hover:underline font-medium">
+                <Link to="/privacy" className="text-blue-400 hover:text-blue-300 font-medium transition-colors touch-manipulation">
                   Privacy Policy
                 </Link>
               </label>
             </div>
+            
+            {/* Submit Button */}
+            <Button 
+              type="submit" 
+              className="w-full h-12 text-base font-semibold bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border-0 mt-5 touch-manipulation hover:scale-[1.02]"
+              disabled={!agreeTerms || isSubmitting}
+            >
+              {isSubmitting ? (
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  <span>Creating Account...</span>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <UserPlus className="w-4 h-4" />
+                  <span>Create Account</span>
+                </div>
+              )}
+            </Button>
           </form>
-        </div>
-
-        {/* Submit Button - Fixed at bottom */}
-        <div className="mt-6 max-w-sm mx-auto w-full">
-          <Button 
-            onClick={handleRegister}
-            className="w-full h-12 text-base font-semibold"
-            disabled={!agreeTerms || isSubmitting}
-          >
-            {isSubmitting ? (
-              <div className="flex items-center gap-2">
-                <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
-                <span>Creating Account...</span>
-              </div>
-            ) : (
-              <div className="flex items-center gap-2">
-                <UserPlus className="w-4 h-4" />
-                <span>Create Account</span>
-              </div>
-            )}
-          </Button>
 
           {/* Footer Links */}
           <div className="mt-4 text-center space-y-2">
-            <p className="text-muted-foreground text-sm">
+            <p className="text-slate-400 text-sm">
               Already have an account?{" "}
-              <Link to="/login" className="text-primary hover:underline font-medium">
+              <Link to="/login" className="text-blue-400 hover:text-blue-300 font-medium transition-colors touch-manipulation">
                 Sign In
               </Link>
             </p>
+            
+            <p className="text-xs text-slate-500 leading-relaxed">
+              By creating an account, you agree to our{" "}
+              <Link to="/terms" className="text-blue-400 hover:underline transition-colors touch-manipulation">
+                Terms
+              </Link>{" "}
+              and{" "}
+              <Link to="/privacy" className="text-blue-400 hover:underline transition-colors touch-manipulation">
+                Privacy Policy
+              </Link>
+            </p>
           </div>
+        </div>
         </div>
       </div>
     </div>
