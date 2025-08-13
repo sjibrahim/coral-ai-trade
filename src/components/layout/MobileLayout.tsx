@@ -14,7 +14,7 @@ interface MobileLayoutProps {
 const MobileLayout = ({ 
   children, 
   showBackButton = false, 
-  title = "Trexo", 
+  title = "CORAL", 
   noScroll = false,
   hideFooter = false,
   hideNavbar = false

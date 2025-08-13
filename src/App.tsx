@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -8,13 +8,12 @@ import { BrowserRouter } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import AppRoutes from "./routes";
 
-// Create a new QueryClient outside of the component
-const queryClient = new QueryClient();
-
-// Set document title for Trexo
-document.title = "Trexo - Crypto Trading Platform";
+// Set document title for CORAL
+document.title = "CORAL - AI Trading Platform";
 
 const App = () => {
+  const [queryClient] = useState(() => new QueryClient());
+
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
