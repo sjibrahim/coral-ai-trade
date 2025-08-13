@@ -1,3 +1,4 @@
+
 // Register page for CORAL Trading Platform
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
@@ -168,12 +169,12 @@ const RegisterPage = () => {
             {/* Phone Field */}
             <div className="space-y-1.5">
               <Label htmlFor="phone" className="text-sm font-medium text-white flex items-center gap-2">
-                <Smartphone className="w-4 h-4 text-blue-400" />
+                <Smartphone className="w-4 h-4 text-emerald-400" />
                 Phone Number
               </Label>
               <div className="relative group">
                 <div className="absolute inset-y-0 left-0 flex items-center pl-3 sm:pl-4 pointer-events-none z-10">
-                  <span className="text-sm text-slate-400 border-r border-slate-600/50 pr-2 sm:pr-3 mr-2 sm:mr-3 font-medium">+91</span>
+                  <span className="text-sm text-slate-300 border-r border-slate-600/50 pr-2 sm:pr-3 mr-2 sm:mr-3 font-medium">+91</span>
                 </div>
                 <Input
                   id="phone"
@@ -182,13 +183,13 @@ const RegisterPage = () => {
                   value={formData.phone}
                   onChange={handleChange}
                   placeholder="Enter your phone number"
-                  className="h-10 sm:h-12 pl-12 sm:pl-16 pr-3 sm:pr-4 text-sm sm:text-base bg-white/5 border-2 border-white/10 focus:border-blue-400/50 focus:bg-white/10 rounded-xl text-white placeholder:text-slate-500 transition-all duration-300 w-full group-hover:border-white/20 backdrop-blur-sm"
+                  className="h-12 sm:h-14 pl-12 sm:pl-16 pr-3 sm:pr-4 text-sm sm:text-base bg-gradient-to-r from-slate-800/40 to-slate-700/40 border-2 border-slate-600/30 focus:border-emerald-400/70 focus:bg-slate-800/60 rounded-xl text-white placeholder:text-slate-400 transition-all duration-300 w-full group-hover:border-emerald-400/50 backdrop-blur-sm shadow-inner focus:shadow-emerald-400/20 focus:shadow-lg"
                   maxLength={10}
                   required
                   inputMode="numeric"
                   pattern="[0-9]*"
                 />
-                <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+                <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-emerald-500/5 to-cyan-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
               </div>
               {formData.phone && formData.phone.length < 10 && (
                 <div className="flex items-center gap-2 text-xs text-red-400 animate-fade-in">
@@ -201,7 +202,7 @@ const RegisterPage = () => {
             {/* Email Field */}
             <div className="space-y-1.5">
               <Label htmlFor="email" className="text-sm font-medium text-white flex items-center gap-2">
-                <AtSign className="w-4 h-4 text-blue-400" />
+                <AtSign className="w-4 h-4 text-cyan-400" />
                 Email Address
               </Label>
               <div className="relative group">
@@ -212,10 +213,10 @@ const RegisterPage = () => {
                   value={formData.email}
                   onChange={handleChange}
                   placeholder="Enter your email address"
-                  className="h-10 sm:h-12 pl-3 sm:pl-4 pr-3 sm:pr-4 text-sm sm:text-base bg-white/5 border-2 border-white/10 focus:border-blue-400/50 focus:bg-white/10 rounded-xl text-white placeholder:text-slate-500 transition-all duration-300 w-full group-hover:border-white/20 backdrop-blur-sm"
+                  className="h-12 sm:h-14 pl-3 sm:pl-4 pr-3 sm:pr-4 text-sm sm:text-base bg-gradient-to-r from-slate-800/40 to-slate-700/40 border-2 border-slate-600/30 focus:border-cyan-400/70 focus:bg-slate-800/60 rounded-xl text-white placeholder:text-slate-400 transition-all duration-300 w-full group-hover:border-cyan-400/50 backdrop-blur-sm shadow-inner focus:shadow-cyan-400/20 focus:shadow-lg"
                   required
                 />
-                <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+                <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-cyan-500/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
               </div>
             </div>
             
@@ -233,12 +234,12 @@ const RegisterPage = () => {
                   value={formData.password}
                   onChange={handleChange}
                   placeholder="Create a strong password"
-                  className="h-10 sm:h-12 pl-3 sm:pl-4 pr-12 sm:pr-14 text-sm sm:text-base bg-white/5 border-2 border-white/10 focus:border-blue-400/50 focus:bg-white/10 rounded-xl text-white placeholder:text-slate-500 transition-all duration-300 w-full group-hover:border-white/20 backdrop-blur-sm"
+                  className="h-12 sm:h-14 pl-3 sm:pl-4 pr-12 sm:pr-14 text-sm sm:text-base bg-gradient-to-r from-slate-800/40 to-slate-700/40 border-2 border-slate-600/30 focus:border-blue-400/70 focus:bg-slate-800/60 rounded-xl text-white placeholder:text-slate-400 transition-all duration-300 w-full group-hover:border-blue-400/50 backdrop-blur-sm shadow-inner focus:shadow-blue-400/20 focus:shadow-lg"
                   required
                 />
                 <button
                   type="button"
-                  className="absolute inset-y-0 right-0 flex items-center pr-3 sm:pr-4 text-slate-400 hover:text-white transition-all duration-200 touch-manipulation hover:scale-110"
+                  className="absolute inset-y-0 right-0 flex items-center pr-3 sm:pr-4 text-slate-400 hover:text-blue-300 transition-all duration-200 touch-manipulation hover:scale-110"
                   onClick={() => setShowPassword(!showPassword)}
                 >
                   {showPassword ? <EyeOff className="w-4 h-4 sm:w-5 sm:h-5" /> : <Eye className="w-4 h-4 sm:w-5 sm:h-5" />}
@@ -250,7 +251,7 @@ const RegisterPage = () => {
             {/* Referral Code Field */}
             <div className="space-y-1.5">
               <Label htmlFor="referral_code" className="text-sm font-medium text-white flex items-center gap-2">
-                <UserPlus className="w-4 h-4 text-blue-400" />
+                <UserPlus className="w-4 h-4 text-purple-400" />
                 Referral Code
                 <span className="text-xs text-slate-500 font-normal bg-slate-800/50 px-2 py-0.5 rounded-full">Optional</span>
               </Label>
@@ -262,9 +263,9 @@ const RegisterPage = () => {
                   value={formData.referral_code}
                   onChange={handleChange}
                   placeholder="Enter referral code"
-                  className="h-10 sm:h-12 pl-3 sm:pl-4 pr-3 sm:pr-4 text-sm sm:text-base bg-white/5 border-2 border-white/10 focus:border-blue-400/50 focus:bg-white/10 rounded-xl text-white placeholder:text-slate-500 transition-all duration-300 w-full group-hover:border-white/20 backdrop-blur-sm"
+                  className="h-12 sm:h-14 pl-3 sm:pl-4 pr-3 sm:pr-4 text-sm sm:text-base bg-gradient-to-r from-slate-800/40 to-slate-700/40 border-2 border-slate-600/30 focus:border-purple-400/70 focus:bg-slate-800/60 rounded-xl text-white placeholder:text-slate-400 transition-all duration-300 w-full group-hover:border-purple-400/50 backdrop-blur-sm shadow-inner focus:shadow-purple-400/20 focus:shadow-lg"
                 />
-                <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+                <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-purple-500/5 to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
               </div>
             </div>
             
@@ -294,7 +295,7 @@ const RegisterPage = () => {
             {/* Submit Button */}
             <Button 
               type="submit" 
-              className="w-full h-10 sm:h-12 text-sm sm:text-base font-semibold bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border-0 mt-4 sm:mt-5 touch-manipulation hover:scale-[1.02]"
+              className="w-full h-12 sm:h-14 text-sm sm:text-base font-semibold bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border-0 mt-4 sm:mt-5 touch-manipulation hover:scale-[1.02]"
               disabled={!agreeTerms || isSubmitting}
             >
               {isSubmitting ? (
