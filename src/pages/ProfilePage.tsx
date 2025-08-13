@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MobileLayout from "@/components/layout/MobileLayout";
 import { Button } from "@/components/ui/button";
@@ -8,7 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { 
   CreditCard, Lock, Calendar, Gift,
   Home, Users, Monitor, TrendingUp, User,
-  ArrowRight, Copy, Check
+  Copy, Check, ArrowRight
 } from "lucide-react";
 
 const ProfilePage = () => {
@@ -22,7 +22,7 @@ const ProfilePage = () => {
   const totalBalance = walletAmount + incomeAmount;
 
   // Generate invite code
-  const inviteCode = user?.invite_code || user?.referral_code || user?.id || "TREXO";
+  const inviteCode = user?.invite_code || user?.referral_code || user?.id || "TREX123";
 
   const handleCopyCode = () => {
     navigator.clipboard.writeText(inviteCode);
@@ -44,188 +44,192 @@ const ProfilePage = () => {
 
   return (
     <MobileLayout hideNavbar hideFooter>
-      <div className="min-h-screen bg-gray-900 text-white relative overflow-hidden">
-        {/* Background with geometric pattern */}
-        <div className="absolute inset-0 bg-gradient-to-br from-gray-800 via-gray-900 to-black">
-          <div className="absolute inset-0" style={{
+      <div className="min-h-screen bg-gray-900 text-white relative">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 bg-gray-900">
+          <div className="absolute inset-0 opacity-10" style={{
             backgroundImage: `
-              linear-gradient(135deg, transparent 25%, rgba(20, 184, 166, 0.05) 25%, rgba(20, 184, 166, 0.05) 50%, transparent 50%, transparent 75%, rgba(20, 184, 166, 0.05) 75%),
-              linear-gradient(45deg, transparent 25%, rgba(20, 184, 166, 0.03) 25%, rgba(20, 184, 166, 0.03) 50%, transparent 50%, transparent 75%, rgba(20, 184, 166, 0.03) 75%)
+              linear-gradient(45deg, #14b8a6 25%, transparent 25%), 
+              linear-gradient(-45deg, #14b8a6 25%, transparent 25%), 
+              linear-gradient(45deg, transparent 75%, #14b8a6 75%), 
+              linear-gradient(-45deg, transparent 75%, #14b8a6 75%)
             `,
-            backgroundSize: '40px 40px'
+            backgroundSize: '30px 30px',
+            backgroundPosition: '0 0, 0 15px, 15px -15px, -15px 0px'
           }}></div>
         </div>
 
-        <div className="relative z-10 p-4 space-y-4">
-          {/* Header with logo and ID */}
-          <div className="flex items-center justify-between mb-6 pt-2">
+        <div className="relative z-10 p-4">
+          {/* Header */}
+          <div className="flex items-center justify-between mb-6 pt-8">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-r from-teal-400 to-cyan-400 rounded-full flex items-center justify-center border-2 border-teal-300/30">
-                <span className="text-lg font-bold text-white">C</span>
+              <div className="w-12 h-12 bg-gradient-to-r from-teal-400 to-cyan-400 rounded-full flex items-center justify-center">
+                <span className="text-xl font-bold text-white">T</span>
+              </div>
+              <div>
+                <div className="text-white font-medium">Trexo</div>
+                <div className="text-gray-400 text-sm">Trading Platform</div>
               </div>
             </div>
             <div className="text-right">
-              <div className="text-2xl font-bold text-white">{user?.id || '1789083144'}</div>
-              <div className="text-xs text-gray-400 font-medium">™</div>
+              <div className="text-2xl font-bold text-white">{user?.id || '123456'}</div>
+              <div className="text-xs text-gray-400">ID</div>
             </div>
           </div>
 
-          {/* VIP Upgrade Card */}
-          <div className="bg-gradient-to-r from-teal-400 to-cyan-400 rounded-2xl p-4 relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-r from-teal-400/90 to-cyan-400/90"></div>
-            <div className="relative flex items-center justify-between">
+          {/* VIP Card */}
+          <div className="bg-gradient-to-r from-amber-500 to-orange-500 rounded-2xl p-4 mb-6 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-20 h-20 bg-white/10 rounded-full -mr-10 -mt-10"></div>
+            <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
-                  <div className="w-8 h-8 bg-white/30 rounded-full flex items-center justify-center">
-                    <div className="w-4 h-4 bg-white rounded-full"></div>
-                  </div>
+                <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+                  <div className="w-6 h-6 bg-white/40 rounded-full"></div>
                 </div>
                 <div>
-                  <div className="text-white font-medium text-sm">VIP Member</div>
-                  <div className="text-teal-100 text-xs">Exclusive benefits</div>
+                  <div className="text-white font-semibold">VIP Member</div>
+                  <div className="text-white/80 text-sm">Premium Benefits</div>
                 </div>
               </div>
               <Button 
-                className="bg-amber-500 hover:bg-amber-600 text-white px-6 py-2 rounded-full font-medium shadow-lg"
+                className="bg-white text-orange-500 hover:bg-gray-100 px-6 py-2 rounded-full font-semibold"
                 onClick={() => navigate('/vip')}
               >
-                Upgrade now
+                Upgrade
               </Button>
             </div>
           </div>
 
-          {/* Balance Overview */}
-          <div className="bg-gradient-to-r from-teal-500/20 to-cyan-500/20 backdrop-blur-sm border border-teal-400/30 rounded-2xl p-6">
-            <div className="grid grid-cols-3 gap-6 text-center">
-              <div>
-                <div className="text-3xl font-bold text-white mb-1">
-                  ${totalBalance.toLocaleString()}
-                </div>
-                <div className="text-gray-300 text-sm font-medium">Asset Overview</div>
+          {/* Balance Cards */}
+          <div className="grid grid-cols-3 gap-3 mb-6">
+            <div className="bg-gray-800 rounded-xl p-4 text-center">
+              <div className="text-2xl font-bold text-white mb-1">
+                ₹{totalBalance.toLocaleString()}
               </div>
-              <div>
-                <div className="text-3xl font-bold text-white mb-1">$0</div>
-                <div className="text-gray-300 text-sm font-medium">Recharge Funds</div>
-              </div>
-              <div>
-                <div className="text-3xl font-bold text-white mb-1">$0</div>
-                <div className="text-gray-300 text-sm font-medium">Withdraw Funds</div>
-              </div>
+              <div className="text-gray-400 text-xs">Total Assets</div>
+            </div>
+            <div className="bg-gray-800 rounded-xl p-4 text-center">
+              <div className="text-2xl font-bold text-white mb-1">₹0</div>
+              <div className="text-gray-400 text-xs">Recharge</div>
+            </div>
+            <div className="bg-gray-800 rounded-xl p-4 text-center">
+              <div className="text-2xl font-bold text-white mb-1">₹0</div>
+              <div className="text-gray-400 text-xs">Withdraw</div>
             </div>
           </div>
 
           {/* Action Cards */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-4 mb-6">
             {/* Invite Friends Card */}
-            <div className="bg-gradient-to-br from-teal-400 to-cyan-400 rounded-2xl p-4 relative overflow-hidden">
+            <div className="bg-gradient-to-br from-teal-400 via-teal-500 to-cyan-500 rounded-2xl p-4 relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-16 h-16 bg-white/10 rounded-full -mr-8 -mt-8"></div>
               <div className="relative">
-                <div className="text-black font-bold text-base mb-2">Invite Friends</div>
+                <div className="text-white font-bold text-base mb-2">Invite Friends</div>
                 <div className="flex items-center gap-2 mb-3">
-                  <span className="text-black/80 text-sm font-mono font-medium">{inviteCode}</span>
+                  <span className="text-white/90 text-sm font-mono bg-white/20 px-2 py-1 rounded">
+                    {inviteCode}
+                  </span>
                   <button 
                     onClick={handleCopyCode} 
-                    className="text-black/70 hover:text-black transition-colors"
+                    className="text-white/80 hover:text-white transition-colors"
                   >
                     {copiedCode ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
                   </button>
                 </div>
                 <div className="flex items-center justify-between">
-                  <div className="w-16 h-12 bg-white/20 rounded-lg flex items-center justify-center">
-                    <div className="w-8 h-6 bg-white/40 rounded"></div>
-                  </div>
-                  <ArrowRight className="w-5 h-5 text-black/60" />
+                  <div className="text-white/80 text-xs">Share & Earn</div>
+                  <ArrowRight className="w-4 h-4 text-white/60" />
                 </div>
               </div>
             </div>
 
-            {/* Wealth Contest Card */}
-            <div className="bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl p-4 relative overflow-hidden">
+            {/* Contest Card */}
+            <div className="bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl p-4 relative overflow-hidden">
+              <div className="absolute bottom-0 left-0 w-12 h-12 bg-white/10 rounded-full -ml-6 -mb-6"></div>
               <div className="relative">
-                <div className="text-white font-bold text-base mb-2">Wealth Contest</div>
-                <div className="text-white/80 text-xs mb-3 leading-tight">
-                  Participate in the event and get rewards
-                </div>
+                <div className="text-white font-bold text-base mb-2">Contest</div>
+                <div className="text-white/80 text-xs mb-3">Win rewards daily</div>
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-1">
-                    <div className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center">
-                      <span className="text-xs text-white">$</span>
-                    </div>
-                    <div className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center">
-                      <span className="text-xs text-white">₿</span>
-                    </div>
+                  <div className="flex gap-1">
+                    <div className="w-4 h-4 bg-white/20 rounded-full"></div>
+                    <div className="w-4 h-4 bg-white/30 rounded-full"></div>
                   </div>
-                  <ArrowRight className="w-5 h-5 text-white/60" />
+                  <ArrowRight className="w-4 h-4 text-white/60" />
                 </div>
               </div>
             </div>
           </div>
 
           {/* Menu Grid */}
-          <div className="grid grid-cols-3 gap-4 mt-6">
+          <div className="grid grid-cols-4 gap-4 mb-20">
             <button 
               onClick={() => navigate('/bank')}
-              className="flex flex-col items-center p-6 bg-gray-800/40 backdrop-blur-sm border border-gray-700/50 rounded-2xl hover:bg-gray-700/40 transition-all"
+              className="flex flex-col items-center p-4 bg-gray-800/50 rounded-xl hover:bg-gray-800 transition-colors"
             >
-              <CreditCard className="w-8 h-8 text-gray-300 mb-3" />
-              <span className="text-sm text-gray-300 font-medium">Bind Bank</span>
+              <div className="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center mb-2">
+                <CreditCard className="w-6 h-6 text-blue-400" />
+              </div>
+              <span className="text-xs text-gray-300 text-center">Bank Card</span>
             </button>
 
             <button 
               onClick={() => navigate('/security')}
-              className="flex flex-col items-center p-6 bg-gray-800/40 backdrop-blur-sm border border-gray-700/50 rounded-2xl hover:bg-gray-700/40 transition-all"
+              className="flex flex-col items-center p-4 bg-gray-800/50 rounded-xl hover:bg-gray-800 transition-colors"
             >
-              <Lock className="w-8 h-8 text-gray-300 mb-3" />
-              <span className="text-sm text-gray-300 font-medium">Login Password</span>
+              <div className="w-12 h-12 bg-green-500/20 rounded-xl flex items-center justify-center mb-2">
+                <Lock className="w-6 h-6 text-green-400" />
+              </div>
+              <span className="text-xs text-gray-300 text-center">Security</span>
             </button>
 
             <button 
               onClick={() => navigate('/checkin')}
-              className="flex flex-col items-center p-6 bg-gray-800/40 backdrop-blur-sm border border-gray-700/50 rounded-2xl hover:bg-gray-700/40 transition-all"
+              className="flex flex-col items-center p-4 bg-gray-800/50 rounded-xl hover:bg-gray-800 transition-colors"
             >
-              <Calendar className="w-8 h-8 text-gray-300 mb-3" />
-              <span className="text-sm text-gray-300 font-medium">Checkin</span>
+              <div className="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center mb-2">
+                <Calendar className="w-6 h-6 text-purple-400" />
+              </div>
+              <span className="text-xs text-gray-300 text-center">Check-in</span>
             </button>
 
             <button 
               onClick={() => navigate('/gift-code')}
-              className="flex flex-col items-center p-6 bg-gray-800/40 backdrop-blur-sm border border-gray-700/50 rounded-2xl hover:bg-gray-700/40 transition-all"
+              className="flex flex-col items-center p-4 bg-gray-800/50 rounded-xl hover:bg-gray-800 transition-colors"
             >
-              <Gift className="w-8 h-8 text-gray-300 mb-3" />
-              <span className="text-sm text-gray-300 font-medium">Gift Code</span>
+              <div className="w-12 h-12 bg-orange-500/20 rounded-xl flex items-center justify-center mb-2">
+                <Gift className="w-6 h-6 text-orange-400" />
+              </div>
+              <span className="text-xs text-gray-300 text-center">Gift Code</span>
             </button>
           </div>
+        </div>
 
-          {/* Bottom Navigation */}
-          <div className="fixed bottom-0 left-0 right-0 bg-gray-900/95 backdrop-blur-xl border-t border-gray-700/50">
-            <div className="flex items-center justify-around py-3 px-4">
-              {navItems.map((item, index) => (
-                <button
-                  key={index}
-                  onClick={() => navigate(item.path)}
-                  className={`flex flex-col items-center justify-center py-2 px-3 rounded-xl transition-all duration-300 ${
-                    item.active ? 'text-teal-400' : 'text-gray-400'
-                  }`}
-                >
-                  {item.path === '/trade' ? (
-                    <div className="w-14 h-14 bg-gradient-to-r from-teal-400 to-cyan-400 rounded-full flex items-center justify-center shadow-lg -mt-6 mb-1">
-                      <item.icon className="w-6 h-6 text-white" />
-                    </div>
-                  ) : (
-                    <item.icon className={`w-6 h-6 mb-1 ${item.active ? 'text-teal-400' : 'text-gray-400'}`} />
-                  )}
-                  <span className={`text-xs font-medium ${
-                    item.path === '/trade' ? 'text-white' : 
-                    item.active ? 'text-teal-400' : 'text-gray-400'
-                  }`}>
-                    {item.label}
-                  </span>
-                </button>
-              ))}
-            </div>
+        {/* Bottom Navigation */}
+        <div className="fixed bottom-0 left-0 right-0 bg-gray-900/95 backdrop-blur-xl border-t border-gray-700/50 px-4">
+          <div className="flex items-center justify-around py-3">
+            {navItems.map((item, index) => (
+              <button
+                key={index}
+                onClick={() => navigate(item.path)}
+                className={`flex flex-col items-center justify-center py-2 px-3 transition-all duration-300 ${
+                  item.active ? 'text-teal-400' : 'text-gray-400'
+                }`}
+              >
+                {item.path === '/trade' ? (
+                  <div className="w-14 h-14 bg-gradient-to-r from-teal-400 to-cyan-400 rounded-full flex items-center justify-center shadow-lg -mt-6 mb-1">
+                    <item.icon className="w-6 h-6 text-white" />
+                  </div>
+                ) : (
+                  <item.icon className={`w-6 h-6 mb-1 ${item.active ? 'text-teal-400' : 'text-gray-400'}`} />
+                )}
+                <span className={`text-xs font-medium ${
+                  item.path === '/trade' ? 'text-white' : 
+                  item.active ? 'text-teal-400' : 'text-gray-400'
+                }`}>
+                  {item.label}
+                </span>
+              </button>
+            ))}
           </div>
-
-          {/* Bottom spacing for navigation */}
-          <div className="h-20"></div>
         </div>
       </div>
     </MobileLayout>
