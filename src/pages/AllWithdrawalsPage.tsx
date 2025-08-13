@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
 import { cn } from "@/lib/utils";
@@ -153,6 +154,7 @@ const AllWithdrawalsPage = () => {
           </Link>
         
           {isLoading ? (
+            // Loading skeletons
             <div className="space-y-4">
               {Array(3).fill(0).map((_, idx) => (
                 <Card key={`skeleton-${idx}`} className="bg-white shadow-sm animate-pulse">
@@ -229,7 +231,7 @@ const AllWithdrawalsPage = () => {
                       <div className="flex justify-between text-sm text-gray-500">
                         <div>
                           <p className="mb-1">Bank Account</p>
-                          <p>{maskValue(user?.account_number?.toString())}</p>
+                          <p>{maskValue(user?.account_number)}</p>
                         </div>
                         <div className="text-right">
                           <p className="mb-1">Date</p>

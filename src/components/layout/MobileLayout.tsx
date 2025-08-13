@@ -14,19 +14,14 @@ interface MobileLayoutProps {
 const MobileLayout = ({ 
   children, 
   showBackButton = false, 
-  title = "CORAL", 
+  title = "Trexo", 
   noScroll = false,
   hideFooter = false,
   hideNavbar = false
 }: MobileLayoutProps) => {
   return (
     <div className="flex flex-col h-screen bg-background">
-      {!hideNavbar && (
-        <MobileNavbar 
-          showBackButton={showBackButton} 
-          title={title} 
-        />
-      )}
+      {!hideNavbar && <MobileNavbar showBackButton={showBackButton} title={title} />}
       <main 
         className={`flex-1 ${noScroll ? 'overflow-hidden' : 'overflow-y-auto'} ${
           hideFooter ? '' : 'pb-20'

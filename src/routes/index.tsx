@@ -1,3 +1,4 @@
+
 import { Route, Routes, Navigate } from 'react-router-dom';
 import ProtectedRoute from '@/components/ProtectedRoute';
 
@@ -30,14 +31,10 @@ import TransactionRecordsPage from '@/pages/TransactionRecordsPage';
 import TermsPage from '@/pages/TermsPage';
 import PrivacyPage from '@/pages/PrivacyPage';
 import VipPage from '@/pages/VipPage';
-import Index from '@/pages/Index';
 
 const AppRoutes = () => {
   return (
     <Routes>
-      {/* Root Route */}
-      <Route path="/" element={<Index />} />
-      
       {/* Public Routes */}
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
@@ -45,6 +42,7 @@ const AppRoutes = () => {
       <Route path="/privacy" element={<PrivacyPage />} />
       
       {/* Protected Routes */}
+      <Route path="/" element={<Navigate to="/home" replace />} />
       <Route path="/home" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
       <Route path="/market" element={<ProtectedRoute><MarketPage /></ProtectedRoute>} />
       <Route path="/team" element={<ProtectedRoute><TeamPage /></ProtectedRoute>} />
