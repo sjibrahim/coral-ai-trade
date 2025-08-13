@@ -8,20 +8,13 @@ import { BrowserRouter } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import AppRoutes from "./routes";
 
+// Create a new QueryClient outside of the component
+const queryClient = new QueryClient();
+
 // Set document title for Trexo
 document.title = "Trexo - Crypto Trading Platform";
 
-const App: React.FC = () => {
-  // Create QueryClient inside the component to avoid SSR issues
-  const [queryClient] = React.useState(() => new QueryClient({
-    defaultOptions: {
-      queries: {
-        staleTime: 5 * 60 * 1000, // 5 minutes
-        retry: 1,
-      },
-    },
-  }));
-
+const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
