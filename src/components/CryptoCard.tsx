@@ -54,7 +54,7 @@ const CryptoCard = ({
   
   return (
     <div 
-      className="p-3.5 border-b border-border/30 hover:bg-card/80 cursor-pointer transition-all"
+      className="p-4 hover:bg-gray-700/30 cursor-pointer transition-all duration-200"
       onClick={handleCardClick}
       style={{ 
         animation: `fade-in 0.5s ease-out forwards`,
@@ -64,11 +64,11 @@ const CryptoCard = ({
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-full bg-secondary/30 flex items-center justify-center crypto-icon overflow-hidden">
+          <div className="w-10 h-10 rounded-full bg-gray-700/50 flex items-center justify-center overflow-hidden">
             <img 
               src={logo} 
               alt={name} 
-              className="w-7 h-7 object-contain"
+              className="w-8 h-8 object-contain"
               onError={(e) => {
                 const target = e.target as HTMLImageElement;
                 target.src = `https://raw.githubusercontent.com/Pymmdrza/CryptoIconsCDN/mainx/PNG/${symbol.toUpperCase()}.png`;
@@ -76,18 +76,20 @@ const CryptoCard = ({
             />
           </div>
           <div>
-            <h3 className="font-medium text-sm text-gray-100">{name}</h3>
-            <p className="text-xs text-gray-400">{symbol.toUpperCase()}</p>
+            <h3 className="font-medium text-white">{name}</h3>
+            <p className="text-sm text-gray-400">{symbol.toUpperCase()}</p>
           </div>
         </div>
         <div className="text-right">
-          <p className="font-medium text-sm text-gray-100">${price.toLocaleString(undefined, {maximumFractionDigits: 2})}</p>
-          <div className={cn("text-xs flex items-center justify-end", 
-            change >= 0 ? "text-market-increase" : "text-market-decrease")}>
+          <p className="font-medium text-white">
+            ${price.toLocaleString(undefined, {maximumFractionDigits: 2})}
+          </p>
+          <div className={cn("text-sm flex items-center justify-end", 
+            change >= 0 ? "text-green-400" : "text-red-400")}>
             {change >= 0 ? (
-              <ArrowUp className="w-3 h-3 mr-0.5" />
+              <ArrowUp className="w-3 h-3 mr-1" />
             ) : (
-              <ArrowDown className="w-3 h-3 mr-0.5" />
+              <ArrowDown className="w-3 h-3 mr-1" />
             )}
             {Math.abs(change).toFixed(2)}%
           </div>

@@ -6,6 +6,7 @@ import { getMarketData } from "@/services/api";
 import PromotionalBanner from "@/components/PromotionalBanner";
 import ActionGrid from "@/components/ActionGrid";
 import PromotionalVideo from "@/components/PromotionalVideo";
+import CoinsList from "@/components/CoinsList";
 import BottomNavigation from "@/components/BottomNavigation";
 
 interface CryptoData {
@@ -32,9 +33,9 @@ const HomePage = () => {
   const totalBalance = walletAmount + incomeAmount;
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white relative overflow-hidden">
-      {/* Header with balance */}
-      <div className="relative z-10">
+    <div className="min-h-screen bg-gray-900 text-white">
+      {/* Scrollable content */}
+      <div className="pb-20"> {/* Add padding bottom for navigation */}
         {/* Top header with logo and icons */}
         <div className="flex items-center justify-between p-4">
           <div className="flex items-center space-x-2">
@@ -73,19 +74,19 @@ const HomePage = () => {
         {/* Promotional Video */}
         <PromotionalVideo />
 
-        {/* AI Assistant Button */}
-        <div className="fixed bottom-24 right-4 z-40">
-          <button className="w-14 h-14 bg-gradient-to-r from-teal-400 to-cyan-500 rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
-            <Bot className="w-6 h-6 text-white" />
-          </button>
-        </div>
+        {/* Coins List Section */}
+        <CoinsList />
+      </div>
 
-        {/* Bottom spacing for navigation */}
-        <div className="h-20"></div>
+      {/* AI Assistant Button */}
+      <div className="fixed bottom-24 right-4 z-40">
+        <button className="w-14 h-14 bg-gradient-to-r from-teal-400 to-cyan-500 rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+          <Bot className="w-6 h-6 text-white" />
+        </button>
       </div>
 
       {/* Background decoration */}
-      <div className="absolute inset-0 overflow-hidden">
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-32 -right-32 w-64 h-64 bg-gradient-to-br from-teal-500/10 to-cyan-500/10 rounded-full blur-3xl"></div>
         <div className="absolute -bottom-32 -left-32 w-64 h-64 bg-gradient-to-tr from-blue-500/10 to-teal-500/10 rounded-full blur-3xl"></div>
       </div>
