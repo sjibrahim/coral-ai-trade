@@ -1,7 +1,6 @@
 
 import { useState, useEffect } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link, useNavigate } from "react-router-dom";
 import { getMarketData } from "@/services/api";
@@ -9,9 +8,10 @@ import {
   TrendingUp, TrendingDown, Star, Activity, 
   Search, Filter, Crown, Zap, BarChart3,
   ArrowUpRight, ArrowDownRight, Eye, Sparkles,
-  Home, Users, TrendingUpIcon, DollarSign, User
+  Home, Users, TrendingUpIcon, DollarSign, User, Monitor, Bot
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import BottomNavigation from "@/components/BottomNavigation";
 
 interface CryptoData {
   id: string | number;
@@ -86,52 +86,38 @@ const MarketPage = () => {
   const topGainers = marketData.filter(crypto => (crypto.change || 0) > 0).slice(0, 3);
   const topLosers = marketData.filter(crypto => (crypto.change || 0) < 0).slice(0, 3);
 
-  // Bottom Navigation Items
-  const navItems = [
-    { icon: Home, label: 'Home', path: '/home' },
-    { icon: Users, label: 'Team', path: '/team' },
-    { icon: TrendingUpIcon, label: 'Trade', path: '/trade' },
-    { icon: DollarSign, label: 'Invest', path: '/market' },
-    { icon: User, label: 'Profile', path: '/profile' }
-  ];
-
   return (
-    <MobileLayout hideNavbar hideFooter>
-      <div className="min-h-screen bg-gray-900 text-white relative pb-24">
-        {/* Background Pattern */}
-        <div className="absolute inset-0 bg-gray-900">
-          <div className="absolute inset-0 opacity-10" style={{
-            backgroundImage: `radial-gradient(circle at 25% 25%, #10b981 0%, transparent 70%),
-                             radial-gradient(circle at 75% 75%, #3b82f6 0%, transparent 70%)`
-          }} />
-        </div>
-
-        <div className="relative z-10">
-          {/* Header */}
-          <div className="flex items-center justify-between p-4 pt-12">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-r from-emerald-400 to-emerald-600 flex items-center justify-center">
-                <img 
-                  src="https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/128/color/btc.png" 
-                  alt="Coral" 
-                  className="w-6 h-6"
-                />
-              </div>
-              <div>
-                <h1 className="text-xl font-bold">Live Markets</h1>
-                <div className="flex items-center gap-1">
-                  <div className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></div>
-                  <span className="text-xs text-gray-400">Real-time prices</span>
-                </div>
-              </div>
+    <div className="min-h-screen bg-gray-900 text-white overflow-y-auto">
+      {/* Scrollable content container */}
+      <div className="pb-24 min-h-screen"> 
+        {/* Top header with logo and icons - matching HomePage */}
+        <div className="flex items-center justify-between p-4">
+          <div className="flex items-center space-x-2">
+            <div className="w-8 h-8 bg-gradient-to-r from-teal-400 to-cyan-500 rounded-lg flex items-center justify-center">
+              <span className="text-sm font-bold text-white">C</span>
             </div>
+            <span className="text-lg font-bold text-white">Coral</span>
+          </div>
+          <div className="flex items-center space-x-4 text-gray-400">
             <Button variant="ghost" size="sm" className="text-white hover:bg-gray-800">
               <Search className="w-5 h-5" />
             </Button>
+            <Button variant="ghost" size="sm" className="text-white hover:bg-gray-800">
+              <Filter className="w-5 h-5" />
+            </Button>
           </div>
+        </div>
 
-          {/* Market Overview Cards */}
-          <div className="px-4 mb-6">
+        {/* Market tagline */}
+        <div className="px-4 mb-6">
+          <p className="text-gray-400 text-sm">
+            Live cryptocurrency prices and market data
+          </p>
+        </div>
+
+        {/* Market Overview Cards - matching HomePage style */}
+        <div className="px-4 mb-6">
+          <div className="bg-gray-800/80 rounded-2xl overflow-hidden backdrop-blur-sm border border-gray-700/30 p-4">
             <div className="grid grid-cols-2 gap-3">
               <div className="bg-gradient-to-r from-green-500 to-emerald-600 rounded-xl p-4">
                 <div className="flex items-center gap-2 mb-2">
@@ -164,151 +150,146 @@ const MarketPage = () => {
               </div>
             </div>
           </div>
+        </div>
 
-          {/* Filter Buttons */}
-          <div className="px-4 mb-6">
-            <div className="bg-gray-800/50 rounded-xl p-3">
-              <div className="flex gap-2 overflow-x-auto">
-                {[
-                  { key: 'all', label: 'All Coins', icon: Star },
-                  { key: 'gainers', label: 'Gainers', icon: TrendingUp },
-                  { key: 'losers', label: 'Losers', icon: TrendingDown }
-                ].map((item) => (
-                  <button
-                    key={item.key}
-                    onClick={() => setFilter(item.key as any)}
-                    className={cn(
-                      "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 whitespace-nowrap",
-                      filter === item.key
-                        ? "bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-lg"
-                        : "bg-gray-700/50 text-gray-300 hover:bg-gray-700"
-                    )}
-                  >
-                    <item.icon className="w-4 h-4" />
-                    {item.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Cryptocurrency List */}
-          <div className="px-4">
-            <div className="bg-gray-800/50 rounded-xl overflow-hidden">
-              <div className="p-4 border-b border-gray-700/50">
-                <div className="flex items-center gap-2">
-                  <Activity className="w-5 h-5 text-emerald-400" />
-                  <span className="font-semibold text-white">
-                    {filter === 'all' ? 'All Cryptocurrencies' : 
-                     filter === 'gainers' ? 'Top Gainers' : 'Top Losers'}
-                  </span>
-                  <div className="ml-auto text-xs bg-emerald-500/20 text-emerald-400 px-2 py-1 rounded-full">
-                    {getFilteredData().length}
-                  </div>
-                </div>
-              </div>
-
-              {isLoading ? (
-                <div className="space-y-1 p-4">
-                  {Array(8).fill(0).map((_, idx) => (
-                    <div key={idx} className="animate-pulse flex items-center justify-between p-3 bg-gray-700/30 rounded-lg">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-gray-600 rounded-full"></div>
-                        <div>
-                          <div className="h-4 w-16 bg-gray-600 rounded mb-1"></div>
-                          <div className="h-3 w-12 bg-gray-600 rounded"></div>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <div className="h-4 w-20 bg-gray-600 rounded mb-1"></div>
-                        <div className="h-3 w-10 bg-gray-600 rounded"></div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="divide-y divide-gray-700/30">
-                  {getFilteredData().map((crypto, idx) => (
-                    <Link
-                      key={crypto.id}
-                      to={`/coin/${crypto.id}`}
-                      className="group flex items-center justify-between p-4 hover:bg-gray-700/30 transition-all duration-300"
-                      style={{
-                        animationDelay: `${idx * 50}ms`
-                      }}
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className="relative">
-                          <div className="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center overflow-hidden group-hover:scale-105 transition-transform">
-                            <img 
-                              src={crypto.logo} 
-                              alt={crypto.name} 
-                              className="w-8 h-8 rounded-full"
-                              onError={(e) => {
-                                const target = e.target as HTMLImageElement;
-                                target.src = `https://raw.githubusercontent.com/Pymmdrza/CryptoIconsCDN/mainx/PNG/${crypto.symbol.toUpperCase()}.png`;
-                              }}
-                            />
-                          </div>
-                          {idx < 3 && (
-                            <div className="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-r from-amber-400 to-orange-500 rounded-full flex items-center justify-center">
-                              <Crown className="w-2 h-2 text-white" />
-                            </div>
-                          )}
-                        </div>
-                        <div>
-                          <div className="font-semibold text-white group-hover:text-emerald-400 transition-colors">
-                            {crypto.name.length > 12 ? crypto.name.substring(0, 12) + '...' : crypto.name}
-                          </div>
-                          <div className="text-sm text-gray-400 font-mono">{crypto.symbol.toUpperCase()}</div>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <div className="font-semibold text-white font-mono">
-                          ₹{crypto.price > 100 ? crypto.price.toLocaleString(undefined, {maximumFractionDigits: 0}) : crypto.price.toLocaleString()}
-                        </div>
-                        <div className={cn(
-                          "text-sm flex items-center justify-end font-medium",
-                          (crypto.change || 0) >= 0 ? "text-green-400" : "text-red-400"
-                        )}>
-                          {(crypto.change || 0) >= 0 ? (
-                            <ArrowUpRight className="w-3 h-3 mr-1" />
-                          ) : (
-                            <ArrowDownRight className="w-3 h-3 mr-1" />
-                          )}
-                          {(crypto.change || 0) >= 0 ? '+' : ''}{crypto.change?.toFixed(2) || 0}%
-                        </div>
-                      </div>
-                    </Link>
-                  ))}
-                </div>
-              )}
+        {/* Filter Buttons - matching HomePage style */}
+        <div className="px-4 mb-6">
+          <div className="bg-gray-800/80 rounded-2xl overflow-hidden backdrop-blur-sm border border-gray-700/30 p-4">
+            <div className="flex gap-2 overflow-x-auto">
+              {[
+                { key: 'all', label: 'All Coins', icon: Star },
+                { key: 'gainers', label: 'Gainers', icon: TrendingUp },
+                { key: 'losers', label: 'Losers', icon: TrendingDown }
+              ].map((item) => (
+                <button
+                  key={item.key}
+                  onClick={() => setFilter(item.key as any)}
+                  className={cn(
+                    "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 whitespace-nowrap",
+                    filter === item.key
+                      ? "bg-gradient-to-r from-teal-400 to-cyan-500 text-white shadow-lg"
+                      : "bg-gray-700/50 text-gray-300 hover:bg-gray-700"
+                  )}
+                >
+                  <item.icon className="w-4 h-4" />
+                  {item.label}
+                </button>
+              ))}
             </div>
           </div>
         </div>
 
-        {/* Bottom Navigation */}
-        <div className="fixed bottom-0 left-0 right-0 bg-gray-900/95 backdrop-blur-xl border-t border-gray-700/50 px-4 z-50">
-          <div className="flex items-center justify-around py-3">
-            {navItems.map((item, index) => (
-              <button
-                key={index}
-                onClick={() => navigate(item.path)}
-                className={cn(
-                  "flex flex-col items-center gap-1 p-2 rounded-lg transition-colors",
-                  item.path === '/market' 
-                    ? "text-emerald-400" 
-                    : "text-gray-400 hover:text-white"
-                )}
-              >
-                <item.icon className="w-5 h-5" />
-                <span className="text-xs font-medium">{item.label}</span>
-              </button>
-            ))}
+        {/* Cryptocurrency List - matching HomePage style */}
+        <div className="px-4">
+          <div className="bg-gray-800/80 rounded-2xl overflow-hidden backdrop-blur-sm border border-gray-700/30">
+            <div className="p-4 border-b border-gray-700/50">
+              <div className="flex items-center gap-2">
+                <Activity className="w-5 h-5 text-teal-400" />
+                <span className="font-semibold text-white">
+                  {filter === 'all' ? 'All Cryptocurrencies' : 
+                   filter === 'gainers' ? 'Top Gainers' : 'Top Losers'}
+                </span>
+                <div className="ml-auto text-xs bg-teal-400/20 text-teal-400 px-2 py-1 rounded-full">
+                  {getFilteredData().length}
+                </div>
+              </div>
+            </div>
+
+            {isLoading ? (
+              <div className="space-y-1 p-4">
+                {Array(8).fill(0).map((_, idx) => (
+                  <div key={idx} className="animate-pulse flex items-center justify-between p-3 bg-gray-700/30 rounded-lg">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-gray-600 rounded-full"></div>
+                      <div>
+                        <div className="h-4 w-16 bg-gray-600 rounded mb-1"></div>
+                        <div className="h-3 w-12 bg-gray-600 rounded"></div>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="h-4 w-20 bg-gray-600 rounded mb-1"></div>
+                      <div className="h-3 w-10 bg-gray-600 rounded"></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="divide-y divide-gray-700/30">
+                {getFilteredData().map((crypto, idx) => (
+                  <Link
+                    key={crypto.id}
+                    to={`/coin/${crypto.id}`}
+                    className="group flex items-center justify-between p-4 hover:bg-gray-700/30 transition-all duration-300"
+                    style={{
+                      animationDelay: `${idx * 50}ms`
+                    }}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="relative">
+                        <div className="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center overflow-hidden group-hover:scale-105 transition-transform">
+                          <img 
+                            src={crypto.logo} 
+                            alt={crypto.name} 
+                            className="w-8 h-8 rounded-full"
+                            onError={(e) => {
+                              const target = e.target as HTMLImageElement;
+                              target.src = `https://raw.githubusercontent.com/Pymmdrza/CryptoIconsCDN/mainx/PNG/${crypto.symbol.toUpperCase()}.png`;
+                            }}
+                          />
+                        </div>
+                        {idx < 3 && (
+                          <div className="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-r from-amber-400 to-orange-500 rounded-full flex items-center justify-center">
+                            <Crown className="w-2 h-2 text-white" />
+                          </div>
+                        )}
+                      </div>
+                      <div>
+                        <div className="font-semibold text-white group-hover:text-teal-400 transition-colors">
+                          {crypto.name.length > 12 ? crypto.name.substring(0, 12) + '...' : crypto.name}
+                        </div>
+                        <div className="text-sm text-gray-400 font-mono">{crypto.symbol.toUpperCase()}</div>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="font-semibold text-white font-mono">
+                        ₹{crypto.price > 100 ? crypto.price.toLocaleString(undefined, {maximumFractionDigits: 0}) : crypto.price.toLocaleString()}
+                      </div>
+                      <div className={cn(
+                        "text-sm flex items-center justify-end font-medium",
+                        (crypto.change || 0) >= 0 ? "text-green-400" : "text-red-400"
+                      )}>
+                        {(crypto.change || 0) >= 0 ? (
+                          <ArrowUpRight className="w-3 h-3 mr-1" />
+                        ) : (
+                          <ArrowDownRight className="w-3 h-3 mr-1" />
+                        )}
+                        {(crypto.change || 0) >= 0 ? '+' : ''}{crypto.change?.toFixed(2) || 0}%
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>
-    </MobileLayout>
+
+      {/* AI Assistant Button - matching HomePage */}
+      <div className="fixed bottom-28 right-4 z-40">
+        <button className="w-14 h-14 bg-gradient-to-r from-teal-400 to-cyan-500 rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+          <Bot className="w-6 h-6 text-white" />
+        </button>
+      </div>
+
+      {/* Background decoration - matching HomePage */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-32 -right-32 w-64 h-64 bg-gradient-to-br from-teal-500/10 to-cyan-500/10 rounded-full blur-3xl"></div>
+        <div className="absolute -bottom-32 -left-32 w-64 h-64 bg-gradient-to-tr from-blue-500/10 to-teal-500/10 rounded-full blur-3xl"></div>
+      </div>
+
+      {/* Bottom Navigation - using new component */}
+      <BottomNavigation />
+    </div>
   );
 };
 

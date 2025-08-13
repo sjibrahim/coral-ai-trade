@@ -8,7 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { 
   CreditCard, Lock, Calendar, Gift,
   Home, Users, Monitor, TrendingUp, User,
-  Copy, Check, ArrowRight, FileText, Receipt, Wallet, ArrowDownCircle
+  Copy, Check, ArrowRight, ScrollText, Banknote, CreditCard as CardIcon, TrendingDown
 } from "lucide-react";
 
 const ProfilePage = () => {
@@ -159,7 +159,7 @@ const ProfilePage = () => {
             </div>
           </div>
 
-          {/* Menu Grid - Updated with proper spacing to avoid footer overlap */}
+          {/* Menu Grid - Updated with new icons */}
           <div className="grid grid-cols-4 gap-4 mb-8">
             <button 
               onClick={() => navigate('/bank')}
@@ -201,13 +201,13 @@ const ProfilePage = () => {
               <span className="text-xs text-gray-300 text-center">Gift Code</span>
             </button>
 
-            {/* New Menu Options */}
+            {/* Updated icons for new menu options */}
             <button 
               onClick={() => navigate('/contract-records')}
               className="flex flex-col items-center p-4 bg-gray-800/50 rounded-xl hover:bg-gray-800 transition-colors"
             >
               <div className="w-12 h-12 bg-teal-500/20 rounded-xl flex items-center justify-center mb-2">
-                <FileText className="w-6 h-6 text-teal-400" />
+                <ScrollText className="w-6 h-6 text-teal-400" />
               </div>
               <span className="text-xs text-gray-300 text-center">Contract Records</span>
             </button>
@@ -217,7 +217,7 @@ const ProfilePage = () => {
               className="flex flex-col items-center p-4 bg-gray-800/50 rounded-xl hover:bg-gray-800 transition-colors"
             >
               <div className="w-12 h-12 bg-cyan-500/20 rounded-xl flex items-center justify-center mb-2">
-                <Wallet className="w-6 h-6 text-cyan-400" />
+                <Banknote className="w-6 h-6 text-cyan-400" />
               </div>
               <span className="text-xs text-gray-300 text-center">Salary Records</span>
             </button>
@@ -227,7 +227,7 @@ const ProfilePage = () => {
               className="flex flex-col items-center p-4 bg-gray-800/50 rounded-xl hover:bg-gray-800 transition-colors"
             >
               <div className="w-12 h-12 bg-indigo-500/20 rounded-xl flex items-center justify-center mb-2">
-                <Receipt className="w-6 h-6 text-indigo-400" />
+                <CardIcon className="w-6 h-6 text-indigo-400" />
               </div>
               <span className="text-xs text-gray-300 text-center">Transaction Records</span>
             </button>
@@ -237,7 +237,7 @@ const ProfilePage = () => {
               className="flex flex-col items-center p-4 bg-gray-800/50 rounded-xl hover:bg-gray-800 transition-colors"
             >
               <div className="w-12 h-12 bg-red-500/20 rounded-xl flex items-center justify-center mb-2">
-                <ArrowDownCircle className="w-6 h-6 text-red-400" />
+                <TrendingDown className="w-6 h-6 text-red-400" />
               </div>
               <span className="text-xs text-gray-300 text-center">Withdrawal Records</span>
             </button>
