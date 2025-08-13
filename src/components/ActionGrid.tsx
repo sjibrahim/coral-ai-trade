@@ -64,25 +64,23 @@ const ActionGrid = () => {
   ];
 
   return (
-    <div className="px-4 mb-6">
-      <div className="grid grid-cols-4 gap-4">
-        {actions.map((action, index) => (
-          <Link
-            key={index}
-            to={action.link}
-            className="group flex flex-col items-center space-y-2 p-3 rounded-xl hover:bg-gray-50/50 transition-all duration-300"
-          >
-            <div className={`w-12 h-12 rounded-xl bg-gradient-to-r ${action.bg} flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300`}>
-              <div className="text-white">
-                {action.icon}
-              </div>
+    <div className="grid grid-cols-4 gap-4">
+      {actions.map((action, index) => (
+        <Link
+          key={index}
+          to={action.link}
+          className="group flex flex-col items-center space-y-2 p-3 rounded-xl hover:bg-gray-50/50 transition-all duration-300"
+        >
+          <div className={`w-12 h-12 rounded-xl bg-gradient-to-r ${action.bg} flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+            <div className="text-white">
+              {action.icon}
             </div>
-            <span className="text-xs text-center text-gray-300 font-medium leading-tight">
-              {action.label}
-            </span>
-          </Link>
-        ))}
-      </div>
+          </div>
+          <span className="text-xs text-center text-gray-300 font-medium leading-tight">
+            {action.label}
+          </span>
+        </Link>
+      ))}
     </div>
   );
 };

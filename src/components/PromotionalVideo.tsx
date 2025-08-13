@@ -1,5 +1,5 @@
 
-import { Play } from "lucide-react";
+import { Play, Sparkles, Zap } from "lucide-react";
 
 const PromotionalVideo = () => {
   return (
@@ -16,9 +16,13 @@ const PromotionalVideo = () => {
             <Play className="w-6 h-6 text-white ml-1" />
           </button>
         </div>
-        {/* Animated background elements */}
-        <div className="absolute top-2 right-8 w-3 h-3 bg-white/30 rounded-full animate-pulse"></div>
-        <div className="absolute bottom-4 right-12 w-2 h-2 bg-white/40 rounded-full animate-pulse delay-500"></div>
+        {/* Animated background elements with icons */}
+        <div className="absolute top-2 right-8 text-white/30">
+          <Sparkles className="w-4 h-4 animate-pulse" />
+        </div>
+        <div className="absolute bottom-4 right-12 text-white/40">
+          <Zap className="w-3 h-3 animate-pulse delay-500" />
+        </div>
       </div>
     </div>
   );

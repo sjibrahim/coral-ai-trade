@@ -3,9 +3,41 @@ import { useState, useEffect } from "react";
 import CryptoCard from "@/components/CryptoCard";
 import { mockCryptoCurrencies } from "@/data/mockData";
 
-const CoinsList = () => {
+interface CryptoData {
+  id: string | number;
+  symbol: string;
+  name: string;
+  logo: string;
+  price: number;
+  market_cap?: string;
+  volume_24h?: string;
+  rank?: string;
+  status?: string | number;
+  picks?: number | string;
+  home?: number | string;
+  change?: number;
+  binance_symbol?: string;
+}
+
+interface CoinsListProps {
+  marketData?: CryptoData[];
+  loading?: boolean;
+}
+
+const CoinsList = ({ marketData = [], loading = false }: CoinsListProps) => {
   const [cryptoData, setCryptoData] = useState(mockCryptoCurrencies);
-  const [loading, setLoading] = useState(false);
+
+  // Use live market data if available, otherwise use mock data
+  useEffect(() => {
+    if (marketData && marketData.length > 0) {
+      // Map the market data to match our expected format
+      const formattedData = marketData.map((coin) => ({
+        ...coin,
+        binance_symbol: coin.symbol ? `${coin.symbol.toUpperCase()}USDT` : 'BTCUSDT'
+      }));
+      setCryptoData(formattedData);
+    }
+  }, [marketData]);
 
   return (
     <div className="px-4 mb-6">
