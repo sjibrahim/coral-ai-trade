@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
 import { Link } from "react-router-dom";
@@ -36,7 +37,9 @@ import {
   UserPlus,
   Banknote,
   Volume2,
-  Home
+  Home,
+  ChevronLeft,
+  ChevronRight
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getMarketData } from "@/services/api";
@@ -44,6 +47,13 @@ import { useAuth } from "@/contexts/AuthContext";
 import { WelcomeInfoModal } from "@/components/WelcomeInfoModal";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 
 interface CryptoData {
   id: string | number;
@@ -133,10 +143,18 @@ const HomePage = () => {
     { icon: HelpCircle, label: "Instruction", color: "bg-teal-500", link: "/support" },
     { icon: HelpCircle, label: "Help", color: "bg-teal-500", link: "/support" }
   ];
+
+  // Sample slider images
+  const sliderImages = [
+    "https://ik.imagekit.io/spmcumfu9/coral.jpeg",
+    "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=800&h=400&fit=crop",
+    "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=800&h=400&fit=crop",
+    "https://images.unsplash.com/photo-1642104704074-907c0698cbd9?w=800&h=400&fit=crop"
+  ];
   
   return (
     <MobileLayout hideNavbar={true}>
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white relative overflow-hidden">
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white relative overflow-hidden pb-32">
         <WelcomeInfoModal />
         
         {/* Background Effects */}
@@ -150,7 +168,7 @@ const HomePage = () => {
           </div>
         </div>
         
-        <div className="relative z-10 pb-24">
+        <div className="relative z-10">
           {/* Header */}
           <div className="flex items-center justify-between p-4">
             <div className="flex items-center gap-3">
@@ -176,37 +194,49 @@ const HomePage = () => {
             </p>
           </div>
 
-          {/* Promotional Banner */}
-          <div className="mx-4 mb-6">
-            <div className="bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 rounded-2xl p-6 relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-8 translate-x-8"></div>
-              <div className="absolute bottom-0 right-0 w-20 h-20 bg-white/5 rounded-full translate-y-4 translate-x-4"></div>
-              
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
-                  <img src="https://ik.imagekit.io/spmcumfu9/coral.jpeg" alt="TCPatel" className="w-full h-full object-cover rounded-lg" />
-                </div>
-                <span className="text-white font-semibold">TCPatel</span>
-              </div>
-              
-              <div className="relative z-10">
-                <h2 className="text-white text-xl font-bold mb-2">
-                  New users receive a<br />
-                  <span className="text-yellow-300 text-3xl">$6</span> <span className="text-lg">bonus upon</span><br />
-                  registration
-                </h2>
-              </div>
-              
-              {/* Phone mockup illustration */}
-              <div className="absolute right-4 top-4 w-24 h-32 bg-black/30 rounded-xl border border-white/20">
-                <div className="w-full h-4 bg-gradient-to-r from-emerald-400 to-teal-400 rounded-t-xl"></div>
-                <div className="p-2 space-y-1">
-                  <div className="w-full h-2 bg-white/20 rounded"></div>
-                  <div className="w-3/4 h-2 bg-white/15 rounded"></div>
-                  <div className="w-1/2 h-2 bg-white/10 rounded"></div>
-                </div>
-              </div>
-            </div>
+          {/* Image Slider */}
+          <div className="px-4 mb-6">
+            <Carousel className="w-full">
+              <CarouselContent>
+                {sliderImages.map((image, index) => (
+                  <CarouselItem key={index}>
+                    <div className="relative">
+                      <div className="bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 rounded-2xl p-6 relative overflow-hidden min-h-[180px]">
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-8 translate-x-8"></div>
+                        <div className="absolute bottom-0 right-0 w-20 h-20 bg-white/5 rounded-full translate-y-4 translate-x-4"></div>
+                        
+                        <div className="flex items-center gap-3 mb-4">
+                          <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
+                            <img src={image} alt="TCPatel" className="w-full h-full object-cover rounded-lg" />
+                          </div>
+                          <span className="text-white font-semibold">TCPatel</span>
+                        </div>
+                        
+                        <div className="relative z-10">
+                          <h2 className="text-white text-xl font-bold mb-2">
+                            New users receive a<br />
+                            <span className="text-yellow-300 text-3xl">$6</span> <span className="text-lg">bonus upon</span><br />
+                            registration
+                          </h2>
+                        </div>
+                        
+                        {/* Phone mockup illustration */}
+                        <div className="absolute right-4 top-4 w-24 h-32 bg-black/30 rounded-xl border border-white/20">
+                          <div className="w-full h-4 bg-gradient-to-r from-emerald-400 to-teal-400 rounded-t-xl"></div>
+                          <div className="p-2 space-y-1">
+                            <div className="w-full h-2 bg-white/20 rounded"></div>
+                            <div className="w-3/4 h-2 bg-white/15 rounded"></div>
+                            <div className="w-1/2 h-2 bg-white/10 rounded"></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <CarouselPrevious className="left-2" />
+              <CarouselNext className="right-2" />
+            </Carousel>
           </div>
 
           {/* Action Grid */}
@@ -250,7 +280,7 @@ const HomePage = () => {
           </div>
 
           {/* Top Cryptocurrencies */}
-          <div className="px-4">
+          <div className="px-4 mb-6">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-white font-semibold">Market Trends</h3>
               <Link to="/market" className="text-emerald-400 text-sm hover:text-emerald-300 transition-colors">
@@ -328,37 +358,43 @@ const HomePage = () => {
           </div>
         </div>
 
-        {/* Bottom Navigation */}
-        <div className="fixed bottom-0 left-0 right-0 bg-slate-900/95 backdrop-blur-xl border-t border-slate-700/50">
-          <div className="flex justify-around items-center py-3 px-2">
-            <Link to="/home" className="flex flex-col items-center gap-1 p-2 rounded-lg bg-emerald-500/20">
-              <div className="w-6 h-6 bg-emerald-500 rounded-lg flex items-center justify-center">
-                <Home className="w-4 h-4 text-white" />
-              </div>
-              <span className="text-xs text-emerald-400 font-medium">Home</span>
-            </Link>
-            <Link to="/team" className="flex flex-col items-center gap-1 p-2">
-              <Users className="w-6 h-6 text-gray-500" />
-              <span className="text-xs text-gray-500">Team</span>
-            </Link>
-            <Link to="/deposit" className="flex flex-col items-center gap-1 p-2">
-              <div className="w-12 h-12 bg-emerald-500 rounded-full flex items-center justify-center shadow-lg">
-                <TrendingUp className="w-6 h-6 text-white" />
-              </div>
-            </Link>
-            <Link to="/market" className="flex flex-col items-center gap-1 p-2">
-              <BarChart3 className="w-6 h-6 text-gray-500" />
-              <span className="text-xs text-gray-500">Invest</span>
-            </Link>
-            <Link to="/profile" className="flex flex-col items-center gap-1 p-2">
-              <Clock className="w-6 h-6 text-gray-500" />
-              <span className="text-xs text-gray-500">Profile</span>
-            </Link>
+        {/* Overlapping Bottom Navigation */}
+        <div className="fixed bottom-0 left-0 right-0 z-50">
+          {/* Overlapping gradient background */}
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/95 to-transparent h-32 -translate-y-8"></div>
+          
+          {/* Navigation content */}
+          <div className="relative bg-slate-900/95 backdrop-blur-xl border-t border-slate-700/50 rounded-t-3xl">
+            <div className="flex justify-around items-center py-4 px-2">
+              <Link to="/home" className="flex flex-col items-center gap-1 p-2 rounded-lg bg-emerald-500/20">
+                <div className="w-6 h-6 bg-emerald-500 rounded-lg flex items-center justify-center">
+                  <Home className="w-4 h-4 text-white" />
+                </div>
+                <span className="text-xs text-emerald-400 font-medium">Home</span>
+              </Link>
+              <Link to="/team" className="flex flex-col items-center gap-1 p-2">
+                <Users className="w-6 h-6 text-gray-500" />
+                <span className="text-xs text-gray-500">Team</span>
+              </Link>
+              <Link to="/deposit" className="flex flex-col items-center gap-1 p-2">
+                <div className="w-14 h-14 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full flex items-center justify-center shadow-lg -translate-y-2">
+                  <TrendingUp className="w-7 h-7 text-white" />
+                </div>
+              </Link>
+              <Link to="/market" className="flex flex-col items-center gap-1 p-2">
+                <BarChart3 className="w-6 h-6 text-gray-500" />
+                <span className="text-xs text-gray-500">Invest</span>
+              </Link>
+              <Link to="/profile" className="flex flex-col items-center gap-1 p-2">
+                <Clock className="w-6 h-6 text-gray-500" />
+                <span className="text-xs text-gray-500">Profile</span>
+              </Link>
+            </div>
           </div>
         </div>
 
         {/* AI Assistant Button */}
-        <div className="fixed bottom-24 right-4">
+        <div className="fixed bottom-28 right-4 z-40">
           <div className="w-12 h-12 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full flex items-center justify-center shadow-lg animate-pulse">
             <div className="w-6 h-6 bg-white/20 rounded-md mb-0.5"></div>
           </div>
