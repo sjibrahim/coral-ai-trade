@@ -2,58 +2,20 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MobileLayout from "@/components/layout/MobileLayout";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from "@/hooks/use-toast";
 import { 
-  Crown, User, Settings, Bell, Shield, Star, 
-  Wallet, ArrowUpRight, Send,
-  CreditCard, FileText, LogOut,
-  Eye, EyeOff, TrendingUp, Award, Zap,
-  BarChart3, Target, Gift, DollarSign,
-  IndianRupee, Activity, Sparkles, Copy, Check,
-  Download, Users, Lock, Calendar
+  CreditCard, Lock, Calendar, Gift,
+  Home, Users, Monitor, TrendingUp, User,
+  ArrowRight, Copy, Check
 } from "lucide-react";
-import { cn } from "@/lib/utils";
-
-const getRandomAvatarUrl = () => {
-  const seed = Math.floor(Math.random() * 1000);
-  return `https://api.dicebear.com/6.x/avataaars/svg?seed=${seed}`;
-};
 
 const ProfilePage = () => {
   const { user, logout } = useAuth();
   const { toast } = useToast();
-  const [avatarUrl, setAvatarUrl] = useState<string>('');
-  const [isLoading, setIsLoading] = useState(true);
-  const [hideBalance, setHideBalance] = useState(false);
   const [copiedCode, setCopiedCode] = useState(false);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (!user) {
-      setIsLoading(true);
-      return;
-    }
-    
-    setIsLoading(false);
-    
-    if (user.name) {
-      const newAvatarUrl = getRandomAvatarUrl();
-      const img = new Image();
-      img.src = newAvatarUrl;
-      img.onload = () => setAvatarUrl(newAvatarUrl);
-      img.onerror = () => setAvatarUrl('https://api.dicebear.com/6.x/avataaars/svg?seed=default');
-    }
-  }, [user?.name]);
-
-  const handleLogout = () => {
-    logout();
-    navigate('/login');
-  };
 
   const walletAmount = user?.wallet ? parseFloat(user.wallet) : 0;
   const incomeAmount = user?.income ? parseFloat(user.income) : 0;
@@ -72,197 +34,198 @@ const ProfilePage = () => {
     setTimeout(() => setCopiedCode(false), 2000);
   };
 
-  // Get VIP badge
-  const getVipBadge = () => {
-    if (!user?.rank) return null;
-    
-    const rank = user.rank.toLowerCase();
-    if (rank.includes('vip1')) {
-      return (
-        <Badge className="bg-gradient-to-r from-amber-500 to-yellow-500 text-white border-0 text-xs">
-          <Crown className="w-3 h-3 mr-1" />
-          VIP1
-        </Badge>
-      );
-    }
-    return (
-      <Badge variant="secondary" className="text-xs">
-        {user.rank}
-      </Badge>
-    );
-  };
+  const navItems = [
+    { icon: Home, label: "Home", path: "/home" },
+    { icon: Users, label: "Team", path: "/team" },
+    { icon: Monitor, label: "Trade", path: "/trade" },
+    { icon: TrendingUp, label: "Invest", path: "/market" },
+    { icon: User, label: "Profile", path: "/profile", active: true }
+  ];
 
   return (
-    <MobileLayout hideNavbar>
+    <MobileLayout hideNavbar hideFooter>
       <div className="min-h-screen bg-gray-900 text-white relative overflow-hidden">
-        {/* Background Pattern */}
-        <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
+        {/* Background with geometric pattern */}
+        <div className="absolute inset-0 bg-gradient-to-br from-gray-800 via-gray-900 to-black">
           <div className="absolute inset-0" style={{
-            backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 2px, rgba(34, 197, 94, 0.03) 2px, rgba(34, 197, 94, 0.03) 4px)`
+            backgroundImage: `
+              linear-gradient(135deg, transparent 25%, rgba(20, 184, 166, 0.05) 25%, rgba(20, 184, 166, 0.05) 50%, transparent 50%, transparent 75%, rgba(20, 184, 166, 0.05) 75%),
+              linear-gradient(45deg, transparent 25%, rgba(20, 184, 166, 0.03) 25%, rgba(20, 184, 166, 0.03) 50%, transparent 50%, transparent 75%, rgba(20, 184, 166, 0.03) 75%)
+            `,
+            backgroundSize: '40px 40px'
           }}></div>
         </div>
 
-        <div className="relative z-10 px-4 py-6 space-y-4 pb-24">
-          {/* Header with ID */}
-          <div className="flex items-center justify-between mb-6">
+        <div className="relative z-10 p-4 space-y-4">
+          {/* Header with logo and ID */}
+          <div className="flex items-center justify-between mb-6 pt-2">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-gradient-to-r from-teal-400 to-green-500 rounded-lg flex items-center justify-center">
-                <span className="text-sm font-bold">C</span>
+              <div className="w-10 h-10 bg-gradient-to-r from-teal-400 to-cyan-400 rounded-full flex items-center justify-center border-2 border-teal-300/30">
+                <span className="text-lg font-bold text-white">C</span>
               </div>
-              <span className="text-xl font-bold">CORAL</span>
             </div>
             <div className="text-right">
-              <span className="text-2xl font-bold">{user?.id || '1789083144'}</span>
-              <div className="text-xs text-gray-400">™</div>
+              <div className="text-2xl font-bold text-white">{user?.id || '1789083144'}</div>
+              <div className="text-xs text-gray-400 font-medium">™</div>
             </div>
           </div>
 
-          {/* VIP Upgrade Banner */}
-          <Card className="bg-gradient-to-r from-teal-500 to-green-500 border-0 overflow-hidden">
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
-                    <Award className="w-6 h-6 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="text-white font-semibold">VIP Member</h3>
-                    <p className="text-teal-100 text-sm">Exclusive benefits</p>
+          {/* VIP Upgrade Card */}
+          <div className="bg-gradient-to-r from-teal-400 to-cyan-400 rounded-2xl p-4 relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-r from-teal-400/90 to-cyan-400/90"></div>
+            <div className="relative flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
+                  <div className="w-8 h-8 bg-white/30 rounded-full flex items-center justify-center">
+                    <div className="w-4 h-4 bg-white rounded-full"></div>
                   </div>
                 </div>
-                <Button 
-                  size="sm" 
-                  className="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-full"
-                  onClick={() => navigate('/vip')}
-                >
-                  Upgrade now
-                </Button>
+                <div>
+                  <div className="text-white font-medium text-sm">VIP Member</div>
+                  <div className="text-teal-100 text-xs">Exclusive benefits</div>
+                </div>
               </div>
-            </CardContent>
-          </Card>
+              <Button 
+                className="bg-amber-500 hover:bg-amber-600 text-white px-6 py-2 rounded-full font-medium shadow-lg"
+                onClick={() => navigate('/vip')}
+              >
+                Upgrade now
+              </Button>
+            </div>
+          </div>
 
           {/* Balance Overview */}
-          <Card className="bg-gray-800/50 border-gray-700/50 backdrop-blur-sm">
-            <CardContent className="p-4">
-              <div className="grid grid-cols-3 gap-4 text-center">
-                <div>
-                  <div className="flex items-center justify-center gap-2 mb-2">
-                    <span className="text-2xl font-bold">
-                      {hideBalance ? "••••" : `$${totalBalance.toLocaleString()}`}
-                    </span>
-                    <button onClick={() => setHideBalance(!hideBalance)}>
-                      {hideBalance ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                    </button>
+          <div className="bg-gradient-to-r from-teal-500/20 to-cyan-500/20 backdrop-blur-sm border border-teal-400/30 rounded-2xl p-6">
+            <div className="grid grid-cols-3 gap-6 text-center">
+              <div>
+                <div className="text-3xl font-bold text-white mb-1">
+                  ${totalBalance.toLocaleString()}
+                </div>
+                <div className="text-gray-300 text-sm font-medium">Asset Overview</div>
+              </div>
+              <div>
+                <div className="text-3xl font-bold text-white mb-1">$0</div>
+                <div className="text-gray-300 text-sm font-medium">Recharge Funds</div>
+              </div>
+              <div>
+                <div className="text-3xl font-bold text-white mb-1">$0</div>
+                <div className="text-gray-300 text-sm font-medium">Withdraw Funds</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Action Cards */}
+          <div className="grid grid-cols-2 gap-4">
+            {/* Invite Friends Card */}
+            <div className="bg-gradient-to-br from-teal-400 to-cyan-400 rounded-2xl p-4 relative overflow-hidden">
+              <div className="relative">
+                <div className="text-black font-bold text-base mb-2">Invite Friends</div>
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="text-black/80 text-sm font-mono font-medium">{inviteCode}</span>
+                  <button 
+                    onClick={handleCopyCode} 
+                    className="text-black/70 hover:text-black transition-colors"
+                  >
+                    {copiedCode ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                  </button>
+                </div>
+                <div className="flex items-center justify-between">
+                  <div className="w-16 h-12 bg-white/20 rounded-lg flex items-center justify-center">
+                    <div className="w-8 h-6 bg-white/40 rounded"></div>
                   </div>
-                  <p className="text-gray-400 text-sm">Asset Overview</p>
-                </div>
-                <div>
-                  <div className="text-2xl font-bold mb-2">$0</div>
-                  <p className="text-gray-400 text-sm">Recharge Funds</p>
-                </div>
-                <div>
-                  <div className="text-2xl font-bold mb-2">$0</div>
-                  <p className="text-gray-400 text-sm">Withdraw Funds</p>
+                  <ArrowRight className="w-5 h-5 text-black/60" />
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
 
-          {/* Action Cards Row */}
-          <div className="grid grid-cols-2 gap-3">
-            {/* Invite Friends */}
-            <Card className="bg-gradient-to-r from-teal-500 to-cyan-500 border-0 overflow-hidden">
-              <CardContent className="p-4 relative">
-                <div className="absolute right-2 top-2">
-                  <ArrowUpRight className="w-5 h-5 text-white/70" />
+            {/* Wealth Contest Card */}
+            <div className="bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl p-4 relative overflow-hidden">
+              <div className="relative">
+                <div className="text-white font-bold text-base mb-2">Wealth Contest</div>
+                <div className="text-white/80 text-xs mb-3 leading-tight">
+                  Participate in the event and get rewards
                 </div>
-                <div className="space-y-2">
-                  <h3 className="text-white font-semibold">Invite Friends</h3>
-                  <div className="flex items-center gap-2">
-                    <span className="text-white/80 text-sm font-mono">{inviteCode}</span>
-                    <button onClick={handleCopyCode} className="text-white/80 hover:text-white">
-                      {copiedCode ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-                    </button>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1">
+                    <div className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center">
+                      <span className="text-xs text-white">$</span>
+                    </div>
+                    <div className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center">
+                      <span className="text-xs text-white">₿</span>
+                    </div>
                   </div>
-                  <div className="w-8 h-8 bg-white/20 rounded flex items-center justify-center mt-2">
-                    <Gift className="w-5 h-5 text-white" />
-                  </div>
+                  <ArrowRight className="w-5 h-5 text-white/60" />
                 </div>
-              </CardContent>
-            </Card>
-
-            {/* Wealth Contest */}
-            <Card className="bg-gradient-to-r from-green-600 to-emerald-600 border-0 overflow-hidden">
-              <CardContent className="p-4 relative">
-                <div className="absolute right-2 top-2">
-                  <ArrowUpRight className="w-5 h-5 text-white/70" />
-                </div>
-                <div className="space-y-2">
-                  <h3 className="text-white font-semibold">Wealth Contest</h3>
-                  <p className="text-white/80 text-xs">Participate in the event and get rewards</p>
-                  <div className="flex items-center gap-1 mt-2">
-                    <DollarSign className="w-4 h-4 text-white" />
-                    <Sparkles className="w-4 h-4 text-white" />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           </div>
 
           {/* Menu Grid */}
           <div className="grid grid-cols-3 gap-4 mt-6">
-            {/* Row 1 */}
             <button 
               onClick={() => navigate('/bank')}
-              className="flex flex-col items-center p-4 rounded-xl bg-gray-800/50 border border-gray-700/50 hover:bg-gray-700/50 transition-colors"
+              className="flex flex-col items-center p-6 bg-gray-800/40 backdrop-blur-sm border border-gray-700/50 rounded-2xl hover:bg-gray-700/40 transition-all"
             >
-              <div className="w-12 h-12 bg-gray-700 rounded-xl flex items-center justify-center mb-3">
-                <CreditCard className="w-6 h-6 text-gray-300" />
-              </div>
-              <span className="text-sm text-gray-300">Bind Bank</span>
+              <CreditCard className="w-8 h-8 text-gray-300 mb-3" />
+              <span className="text-sm text-gray-300 font-medium">Bind Bank</span>
             </button>
 
             <button 
               onClick={() => navigate('/security')}
-              className="flex flex-col items-center p-4 rounded-xl bg-gray-800/50 border border-gray-700/50 hover:bg-gray-700/50 transition-colors"
+              className="flex flex-col items-center p-6 bg-gray-800/40 backdrop-blur-sm border border-gray-700/50 rounded-2xl hover:bg-gray-700/40 transition-all"
             >
-              <div className="w-12 h-12 bg-gray-700 rounded-xl flex items-center justify-center mb-3">
-                <Lock className="w-6 h-6 text-gray-300" />
-              </div>
-              <span className="text-sm text-gray-300">Login Password</span>
+              <Lock className="w-8 h-8 text-gray-300 mb-3" />
+              <span className="text-sm text-gray-300 font-medium">Login Password</span>
             </button>
 
             <button 
               onClick={() => navigate('/checkin')}
-              className="flex flex-col items-center p-4 rounded-xl bg-gray-800/50 border border-gray-700/50 hover:bg-gray-700/50 transition-colors"
+              className="flex flex-col items-center p-6 bg-gray-800/40 backdrop-blur-sm border border-gray-700/50 rounded-2xl hover:bg-gray-700/40 transition-all"
             >
-              <div className="w-12 h-12 bg-gray-700 rounded-xl flex items-center justify-center mb-3">
-                <Calendar className="w-6 h-6 text-gray-300" />
-              </div>
-              <span className="text-sm text-gray-300">Checkin</span>
+              <Calendar className="w-8 h-8 text-gray-300 mb-3" />
+              <span className="text-sm text-gray-300 font-medium">Checkin</span>
             </button>
 
-            {/* Row 2 - Gift Code */}
             <button 
               onClick={() => navigate('/gift-code')}
-              className="flex flex-col items-center p-4 rounded-xl bg-gray-800/50 border border-gray-700/50 hover:bg-gray-700/50 transition-colors col-span-1"
+              className="flex flex-col items-center p-6 bg-gray-800/40 backdrop-blur-sm border border-gray-700/50 rounded-2xl hover:bg-gray-700/40 transition-all"
             >
-              <div className="w-12 h-12 bg-gray-700 rounded-xl flex items-center justify-center mb-3">
-                <Gift className="w-6 h-6 text-gray-300" />
-              </div>
-              <span className="text-sm text-gray-300">Gift Code</span>
+              <Gift className="w-8 h-8 text-gray-300 mb-3" />
+              <span className="text-sm text-gray-300 font-medium">Gift Code</span>
             </button>
           </div>
 
-          {/* Bottom Navigation Placeholder */}
-          <div className="h-20"></div>
-        </div>
-
-        {/* Floating Profile Button */}
-        <div className="fixed bottom-20 left-1/2 transform -translate-x-1/2 z-50">
-          <div className="w-16 h-16 bg-gradient-to-r from-teal-400 to-green-500 rounded-full flex items-center justify-center shadow-lg">
-            <User className="w-8 h-8 text-white" />
+          {/* Bottom Navigation */}
+          <div className="fixed bottom-0 left-0 right-0 bg-gray-900/95 backdrop-blur-xl border-t border-gray-700/50">
+            <div className="flex items-center justify-around py-3 px-4">
+              {navItems.map((item, index) => (
+                <button
+                  key={index}
+                  onClick={() => navigate(item.path)}
+                  className={`flex flex-col items-center justify-center py-2 px-3 rounded-xl transition-all duration-300 ${
+                    item.active ? 'text-teal-400' : 'text-gray-400'
+                  }`}
+                >
+                  {item.path === '/trade' ? (
+                    <div className="w-14 h-14 bg-gradient-to-r from-teal-400 to-cyan-400 rounded-full flex items-center justify-center shadow-lg -mt-6 mb-1">
+                      <item.icon className="w-6 h-6 text-white" />
+                    </div>
+                  ) : (
+                    <item.icon className={`w-6 h-6 mb-1 ${item.active ? 'text-teal-400' : 'text-gray-400'}`} />
+                  )}
+                  <span className={`text-xs font-medium ${
+                    item.path === '/trade' ? 'text-white' : 
+                    item.active ? 'text-teal-400' : 'text-gray-400'
+                  }`}>
+                    {item.label}
+                  </span>
+                </button>
+              ))}
+            </div>
           </div>
+
+          {/* Bottom spacing for navigation */}
+          <div className="h-20"></div>
         </div>
       </div>
     </MobileLayout>
