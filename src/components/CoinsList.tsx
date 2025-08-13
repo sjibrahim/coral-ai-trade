@@ -30,8 +30,13 @@ const CoinsList = ({ marketData = [], loading = false }: CoinsListProps) => {
   // Use live market data if available, otherwise use mock data
   useEffect(() => {
     if (marketData && marketData.length > 0) {
-      // Map the market data to match our expected format
-      const formattedData: CryptoData[] = marketData.map((coin) => ({
+      // Filter to only show coins where home = "1" or home = 1
+      const homeCoins = marketData.filter(coin => 
+        coin.home === "1" || coin.home === 1
+      );
+      
+      // Map the filtered market data to match our expected format
+      const formattedData: CryptoData[] = homeCoins.map((coin) => ({
         ...coin,
         id: String(coin.id), // Ensure id is always a string
         change: coin.change || 0, // Provide default value for change
