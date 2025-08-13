@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { Eye, EyeOff, User, Mail, Phone, Lock, Gift, Sparkles, ArrowRight, Shield, Zap, Star } from "lucide-react";
+import { Eye, EyeOff, User, ArrowRight, Shield, Zap, Star, Smartphone, Mail, Lock, Gift } from "lucide-react";
 import coralLogo from "@/assets/coral-logo.png";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -125,238 +125,238 @@ const RegisterPage = () => {
   };
   
   return (
-    <div className="min-h-screen bg-slate-950 relative overflow-hidden">
-      {/* Unique Background Pattern */}
-      <div className="absolute inset-0">
-        <div className="absolute top-0 left-0 w-full h-full">
-          <div className="absolute top-12 left-8 w-24 h-24 bg-emerald-400/10 rounded-full animate-pulse"></div>
-          <div className="absolute top-32 right-12 w-16 h-16 bg-violet-400/10 rounded-full animate-pulse delay-1000"></div>
-          <div className="absolute bottom-40 left-16 w-20 h-20 bg-orange-400/10 rounded-full animate-pulse delay-500"></div>
-          <div className="absolute bottom-20 right-8 w-28 h-28 bg-pink-400/10 rounded-full animate-pulse delay-700"></div>
-        </div>
-        
-        {/* Geometric Patterns */}
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex flex-col relative overflow-hidden">
+      {/* Background Effects */}
+      <div className="absolute inset-0 overflow-hidden">
         <div className="absolute inset-0 opacity-5">
-          <div className="absolute top-1/4 left-1/4 w-32 h-32 border border-emerald-400 rotate-45 rounded-lg"></div>
-          <div className="absolute top-3/4 right-1/4 w-24 h-24 border border-violet-400 rotate-12 rounded-lg"></div>
+          <div className="absolute top-0 left-0 w-full h-full" style={{
+            backgroundImage: `radial-gradient(circle at 20% 20%, #3b82f6 2px, transparent 2px),
+                             radial-gradient(circle at 80% 80%, #8b5cf6 2px, transparent 2px)`,
+            backgroundSize: '40px 40px'
+          }}></div>
         </div>
+        <div className="absolute top-10 right-5 w-20 h-20 bg-blue-500/5 rounded-full blur-xl animate-pulse"></div>
+        <div className="absolute bottom-10 left-5 w-24 h-24 bg-purple-500/5 rounded-full blur-xl animate-pulse delay-1000"></div>
       </div>
 
-      <div className="relative z-10 min-h-screen flex flex-col px-4 py-6">
-        {/* Header Section */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center mb-6">
+      {/* Main Content */}
+      <div className="relative z-10 flex-1 px-4 py-6 flex flex-col">
+        {/* Welcome Header */}
+        <div className="mb-6 bg-gradient-to-r from-emerald-500/15 via-cyan-500/15 to-blue-500/15 backdrop-blur-xl rounded-xl p-4 border border-white/10 overflow-hidden">
+          <div className="flex items-center justify-between">
+            <div className="flex-1">
+              <h1 className="text-xl font-bold text-white mb-1">Hello</h1>
+              <p className="text-emerald-300 text-xs">Welcome to CORAL</p>
+            </div>
+            
+            {/* AI Bot Visual */}
             <div className="relative">
-              <div className="w-20 h-20 bg-gradient-to-br from-emerald-400 via-teal-400 to-cyan-400 rounded-3xl p-1 shadow-lg shadow-emerald-500/25">
-                <div className="w-full h-full bg-slate-950 rounded-3xl flex items-center justify-center">
-                  <img src={coralLogo} alt="CORAL" className="w-12 h-12 object-cover rounded-2xl" />
+              <div className="w-12 h-12 bg-gradient-to-br from-emerald-400 to-cyan-500 rounded-xl flex items-center justify-center relative">
+                <div className="relative">
+                  <div className="w-6 h-6 bg-white/20 rounded-md mb-0.5"></div>
+                  <div className="flex gap-0.5 justify-center">
+                    <div className="w-1 h-1 bg-emerald-300 rounded-full animate-pulse"></div>
+                    <div className="w-1 h-1 bg-emerald-300 rounded-full animate-pulse delay-100"></div>
+                  </div>
                 </div>
+                <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-8 h-0.5 bg-gradient-to-r from-transparent via-emerald-300 to-transparent rounded-full opacity-60 animate-pulse"></div>
               </div>
-              <div className="absolute -top-2 -right-2 w-6 h-6 bg-emerald-400 rounded-full flex items-center justify-center">
-                <Sparkles className="w-3 h-3 text-slate-950" />
-              </div>
-            </div>
-          </div>
-          
-          <h1 className="text-4xl font-bold text-white mb-2 tracking-tight">
-            Welcome to <span className="bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">CORAL</span>
-          </h1>
-          <p className="text-slate-400 text-lg">Start your trading journey today</p>
-          
-          {/* Feature Pills */}
-          <div className="flex flex-wrap justify-center gap-3 mt-6">
-            <div className="flex items-center gap-2 bg-slate-900/60 backdrop-blur-sm border border-slate-800 rounded-full px-4 py-2">
-              <Shield className="w-4 h-4 text-emerald-400" />
-              <span className="text-sm text-slate-300">Secure</span>
-            </div>
-            <div className="flex items-center gap-2 bg-slate-900/60 backdrop-blur-sm border border-slate-800 rounded-full px-4 py-2">
-              <Zap className="w-4 h-4 text-violet-400" />
-              <span className="text-sm text-slate-300">Fast</span>
-            </div>
-            <div className="flex items-center gap-2 bg-slate-900/60 backdrop-blur-sm border border-slate-800 rounded-full px-4 py-2">
-              <Star className="w-4 h-4 text-orange-400" />
-              <span className="text-sm text-slate-300">Trusted</span>
+              <div className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 bg-emerald-300 rounded-full animate-ping"></div>
             </div>
           </div>
         </div>
 
-        {/* Form Container */}
-        <div className="flex-1 max-w-md mx-auto w-full">
-          <div className="bg-slate-900/40 backdrop-blur-xl border border-slate-800/50 rounded-3xl p-6 shadow-2xl">
-            <form onSubmit={handleRegister} className="space-y-5">
-              
-              {/* Phone Input */}
-              <div className="space-y-3">
-                <Label className="text-slate-200 text-sm font-medium flex items-center gap-2">
-                  <div className="w-5 h-5 bg-gradient-to-br from-emerald-400 to-teal-400 rounded-lg flex items-center justify-center">
-                    <Phone className="w-3 h-3 text-slate-950" />
-                  </div>
-                  Phone Number
-                </Label>
-                <div className="relative group">
-                  <div className="absolute inset-0 bg-gradient-to-r from-emerald-400/20 to-teal-400/20 rounded-2xl blur-sm opacity-0 group-focus-within:opacity-100 transition-all duration-300"></div>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none z-10">
-                      <span className="text-slate-400 text-sm bg-slate-800 px-2 py-1 rounded-lg mr-3">+91</span>
-                    </div>
-                    <Input
-                      name="phone"
-                      type="tel"
-                      value={formData.phone}
-                      onChange={handleChange}
-                      placeholder="Your phone number"
-                      className="h-14 pl-20 pr-4 bg-slate-800/50 border-slate-700 text-white placeholder:text-slate-500 rounded-2xl focus:border-emerald-400/50 focus:ring-2 focus:ring-emerald-400/20 transition-all duration-300"
-                      maxLength={10}
-                      required
-                    />
-                  </div>
-                </div>
-              </div>
+        {/* Logo Section */}
+        <div className="text-center mb-8">
+          <div className="flex items-center justify-center mb-4">
+            <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center overflow-hidden shadow-lg">
+              <img src={coralLogo} alt="CORAL" className="w-full h-full object-cover" />
+            </div>
+          </div>
+          <p className="text-slate-400 text-xs">AI Trading Platform</p>
+        </div>
 
-              {/* Email Input */}
-              <div className="space-y-3">
-                <Label className="text-slate-200 text-sm font-medium flex items-center gap-2">
-                  <div className="w-5 h-5 bg-gradient-to-br from-violet-400 to-purple-400 rounded-lg flex items-center justify-center">
-                    <Mail className="w-3 h-3 text-slate-950" />
-                  </div>
-                  Email Address
-                </Label>
-                <div className="relative group">
-                  <div className="absolute inset-0 bg-gradient-to-r from-violet-400/20 to-purple-400/20 rounded-2xl blur-sm opacity-0 group-focus-within:opacity-100 transition-all duration-300"></div>
-                  <div className="relative">
-                    <Input
-                      name="email"
-                      type="email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      placeholder="Your email address"
-                      className="h-14 px-4 bg-slate-800/50 border-slate-700 text-white placeholder:text-slate-500 rounded-2xl focus:border-violet-400/50 focus:ring-2 focus:ring-violet-400/20 transition-all duration-300"
-                      required
-                    />
-                  </div>
+        {/* Registration Form */}
+        <div className="flex-1 bg-white/[0.02] backdrop-blur-xl rounded-xl p-5 border border-white/10 mb-4">
+          <form onSubmit={handleRegister} className="space-y-5">
+            
+            {/* Phone Input */}
+            <div className="space-y-2">
+              <Label htmlFor="phone" className="text-xs font-medium text-white">
+                Phone Number
+              </Label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                  <span className="text-xs text-slate-400 border-r border-slate-600 pr-2 mr-2">+91</span>
                 </div>
-              </div>
-
-              {/* Password Input */}
-              <div className="space-y-3">
-                <Label className="text-slate-200 text-sm font-medium flex items-center gap-2">
-                  <div className="w-5 h-5 bg-gradient-to-br from-orange-400 to-red-400 rounded-lg flex items-center justify-center">
-                    <Lock className="w-3 h-3 text-slate-950" />
-                  </div>
-                  Create Password
-                </Label>
-                <div className="relative group">
-                  <div className="absolute inset-0 bg-gradient-to-r from-orange-400/20 to-red-400/20 rounded-2xl blur-sm opacity-0 group-focus-within:opacity-100 transition-all duration-300"></div>
-                  <div className="relative">
-                    <Input
-                      name="password"
-                      type={showPassword ? "text" : "password"}
-                      value={formData.password}
-                      onChange={handleChange}
-                      placeholder="Create a secure password"
-                      className="h-14 px-4 pr-12 bg-slate-800/50 border-slate-700 text-white placeholder:text-slate-500 rounded-2xl focus:border-orange-400/50 focus:ring-2 focus:ring-orange-400/20 transition-all duration-300"
-                      required
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400 hover:text-orange-400 transition-colors"
-                    >
-                      {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              {/* Referral Code Input */}
-              <div className="space-y-3">
-                <Label className="text-slate-200 text-sm font-medium flex items-center gap-2">
-                  <div className="w-5 h-5 bg-gradient-to-br from-pink-400 to-rose-400 rounded-lg flex items-center justify-center">
-                    <Gift className="w-3 h-3 text-slate-950" />
-                  </div>
-                  Referral Code
-                  <span className="bg-gradient-to-r from-pink-400 to-rose-400 text-slate-950 text-xs px-2 py-1 rounded-full font-medium">Optional</span>
-                </Label>
-                <div className="relative group">
-                  <div className="absolute inset-0 bg-gradient-to-r from-pink-400/20 to-rose-400/20 rounded-2xl blur-sm opacity-0 group-focus-within:opacity-100 transition-all duration-300"></div>
-                  <div className="relative">
-                    <Input
-                      name="referral_code"
-                      type="text"
-                      value={formData.referral_code}
-                      onChange={handleChange}
-                      placeholder="Enter referral code (optional)"
-                      className="h-14 px-4 bg-slate-800/50 border-slate-700 text-white placeholder:text-slate-500 rounded-2xl focus:border-pink-400/50 focus:ring-2 focus:ring-pink-400/20 transition-all duration-300"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Terms Checkbox */}
-              <div className="flex items-start gap-3 pt-2">
-                <Checkbox
-                  id="terms"
-                  checked={agreeTerms}
-                  onCheckedChange={(checked) => setAgreeTerms(checked as boolean)}
-                  className="mt-1 border-slate-600 data-[state=checked]:bg-emerald-400 data-[state=checked]:border-emerald-400 rounded-lg"
+                <Input
+                  id="phone"
+                  name="phone"
+                  type="tel"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  placeholder="Enter phone number"
+                  className="h-14 pl-12 pr-12 text-base bg-white/5 border border-white/20 focus:border-blue-400 focus:bg-white/10 rounded-lg text-white placeholder:text-slate-500 transition-all duration-300"
+                  maxLength={10}
+                  required
+                  inputMode="numeric"
+                  pattern="[0-9]*"
                 />
-                <label htmlFor="terms" className="text-sm text-slate-400 leading-relaxed">
-                  I agree to the{" "}
-                  <Link to="/terms" className="text-emerald-400 hover:text-emerald-300 underline underline-offset-2 font-medium">
-                    Terms of Service
-                  </Link>
-                  {" "}and{" "}
-                  <Link to="/privacy" className="text-emerald-400 hover:text-emerald-300 underline underline-offset-2 font-medium">
-                    Privacy Policy
-                  </Link>
-                </label>
+                <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                  <Smartphone className="w-4 h-4 text-slate-500" />
+                </div>
               </div>
+              {formData.phone && formData.phone.length < 10 && (
+                <p className="text-xs text-red-400">Please enter 10 digits</p>
+              )}
+            </div>
 
-              {/* Submit Button */}
-              <Button
-                type="submit"
-                disabled={!agreeTerms || isSubmitting}
-                className="w-full h-14 bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 hover:from-emerald-500 hover:via-teal-500 hover:to-cyan-500 text-slate-950 font-semibold rounded-2xl shadow-lg hover:shadow-emerald-400/25 transition-all duration-300 mt-6 disabled:opacity-50 disabled:cursor-not-allowed border-0"
-              >
-                {isSubmitting ? (
-                  <div className="flex items-center gap-3">
-                    <div className="w-5 h-5 border-2 border-slate-950/30 border-t-slate-950 rounded-full animate-spin"></div>
-                    Creating Account...
-                  </div>
-                ) : (
-                  <div className="flex items-center gap-3">
-                    <User className="w-5 h-5" />
-                    Create My Account
-                    <ArrowRight className="w-4 h-4" />
-                  </div>
-                )}
-              </Button>
-            </form>
+            {/* Email Input */}
+            <div className="space-y-2">
+              <Label htmlFor="email" className="text-xs font-medium text-white">
+                Email Address
+              </Label>
+              <div className="relative">
+                <Input
+                  id="email"
+                  name="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  placeholder="Enter email address"
+                  className="h-14 pl-4 pr-12 text-base bg-white/5 border border-white/20 focus:border-blue-400 focus:bg-white/10 rounded-lg text-white placeholder:text-slate-500 transition-all duration-300"
+                  required
+                />
+                <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                  <Mail className="w-4 h-4 text-slate-500" />
+                </div>
+              </div>
+            </div>
+            
+            {/* Password Input */}
+            <div className="space-y-2">
+              <Label htmlFor="password" className="text-xs font-medium text-white">
+                Password
+              </Label>
+              <div className="relative">
+                <Input
+                  id="password"
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  value={formData.password}
+                  onChange={handleChange}
+                  placeholder="Create password"
+                  className="h-14 pl-4 pr-12 text-base bg-white/5 border border-white/20 focus:border-blue-400 focus:bg-white/10 rounded-lg text-white placeholder:text-slate-500 transition-all duration-300"
+                  required
+                />
+                <button
+                  type="button"
+                  className="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-500 hover:text-white transition-colors touch-manipulation"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                </button>
+              </div>
+            </div>
 
-            {/* Footer */}
-            <div className="mt-6 pt-6 border-t border-slate-800/50 text-center space-y-4">
-              <p className="text-slate-400 text-sm">
-                Already have an account?{" "}
-                <Link to="/login" className="text-emerald-400 hover:text-emerald-300 font-medium underline underline-offset-2">
-                  Sign in here
+            {/* Referral Code Input */}
+            <div className="space-y-2">
+              <Label htmlFor="referral_code" className="text-xs font-medium text-white">
+                Referral Code (Optional)
+              </Label>
+              <div className="relative">
+                <Input
+                  id="referral_code"
+                  name="referral_code"
+                  type="text"
+                  value={formData.referral_code}
+                  onChange={handleChange}
+                  placeholder="Enter referral code"
+                  className="h-14 pl-4 pr-12 text-base bg-white/5 border border-white/20 focus:border-blue-400 focus:bg-white/10 rounded-lg text-white placeholder:text-slate-500 transition-all duration-300"
+                />
+                <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                  <Gift className="w-4 h-4 text-slate-500" />
+                </div>
+              </div>
+            </div>
+
+            {/* Terms Checkbox */}
+            <div className="flex items-start gap-3 pt-2">
+              <Checkbox
+                id="terms"
+                checked={agreeTerms}
+                onCheckedChange={(checked) => setAgreeTerms(checked as boolean)}
+                className="mt-1 border-slate-600 data-[state=checked]:bg-blue-500 data-[state=checked]:border-blue-500"
+              />
+              <label htmlFor="terms" className="text-sm text-slate-400 leading-relaxed">
+                I agree to the{" "}
+                <Link to="/terms" className="text-blue-400 hover:text-blue-300 underline underline-offset-2 font-medium">
+                  Terms of Service
                 </Link>
-              </p>
-              
-              {/* Security Badges */}
-              <div className="flex items-center justify-center gap-4 text-xs">
-                <div className="flex items-center gap-2 text-slate-500">
-                  <div className="w-2 h-2 bg-emerald-400 rounded-full"></div>
-                  <span>256-bit Encryption</span>
+                {" "}and{" "}
+                <Link to="/privacy" className="text-blue-400 hover:text-blue-300 underline underline-offset-2 font-medium">
+                  Privacy Policy
+                </Link>
+              </label>
+            </div>
+            
+            {/* Submit Button */}
+            <Button 
+              type="submit" 
+              className="w-full h-14 text-base font-semibold bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 border-0 mt-8 touch-manipulation"
+              disabled={isSubmitting || !agreeTerms}
+            >
+              {isSubmitting ? (
+                <div className="flex items-center gap-3">
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  <span>Creating Account...</span>
                 </div>
-                <div className="flex items-center gap-2 text-slate-500">
-                  <div className="w-2 h-2 bg-violet-400 rounded-full"></div>
-                  <span>GDPR Compliant</span>
+              ) : (
+                <div className="flex items-center gap-3">
+                  <User className="w-5 h-5" />
+                  <span>Create Account</span>
+                  <ArrowRight className="w-4 h-4" />
                 </div>
-                <div className="flex items-center gap-2 text-slate-500">
-                  <div className="w-2 h-2 bg-orange-400 rounded-full"></div>
-                  <span>ISO Certified</span>
-                </div>
-              </div>
+              )}
+            </Button>
+          </form>
+
+          {/* Footer Links */}
+          <div className="mt-6 text-center space-y-3">
+            <p className="text-slate-400 text-sm">
+              Already have an account?{" "}
+              <Link to="/login" className="text-blue-400 hover:text-blue-300 font-medium transition-colors touch-manipulation">
+                Sign In
+              </Link>
+            </p>
+            
+            <p className="text-xs text-slate-500 leading-relaxed px-2">
+              By signing up, you agree to our{" "}
+              <Link to="/terms" className="text-blue-400 hover:underline transition-colors touch-manipulation">
+                Terms
+              </Link>{" "}
+              and{" "}
+              <Link to="/privacy" className="text-blue-400 hover:underline transition-colors touch-manipulation">
+                Privacy Policy
+              </Link>
+            </p>
+          </div>
+        </div>
+
+        {/* Features */}
+        <div className="text-center pb-4">
+          <div className="flex justify-center items-center gap-4 text-xs text-slate-500">
+            <div className="flex items-center gap-1">
+              <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse"></div>
+              <span>AI Powered</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div>
+              <span>Secure</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <div className="w-1.5 h-1.5 bg-purple-500 rounded-full animate-pulse"></div>
+              <span>Fast Trading</span>
             </div>
           </div>
         </div>
