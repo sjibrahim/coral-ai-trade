@@ -1,11 +1,11 @@
+
 // Register page for CORAL Trading Platform
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { Eye, EyeOff, ArrowRight, Smartphone, AtSign, UserPlus } from "lucide-react";
+import { Eye, EyeOff, Smartphone, AtSign, Lock, UserPlus, User } from "lucide-react";
 import coralLogo from "@/assets/coral-logo.png";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "@/hooks/use-toast";
@@ -125,213 +125,174 @@ const RegisterPage = () => {
   };
   
   return (
-    <div className="min-h-screen flex flex-col relative overflow-hidden" style={{backgroundColor: '#0f1526'}}>
-      {/* Background Effects */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute inset-0 opacity-5">
-          <div className="absolute top-0 left-0 w-full h-full" style={{
-            backgroundImage: `radial-gradient(circle at 20% 20%, #3b82f6 2px, transparent 2px),
-                             radial-gradient(circle at 80% 80%, #8b5cf6 2px, transparent 2px)`,
-            backgroundSize: '40px 40px'
-          }}></div>
+    <div className="min-h-screen bg-slate-900 flex flex-col p-4" style={{backgroundColor: '#1a2332'}}>
+      {/* Header Section */}
+      <div className="mb-6 mt-8">
+        <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-4 border border-slate-700/50">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-bold text-white">Hello</h1>
+              <p className="text-emerald-400 text-sm">Welcome to CORAL</p>
+            </div>
+            <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center">
+              <img src={coralLogo} alt="CORAL" className="w-8 h-8 object-cover" />
+            </div>
+          </div>
         </div>
-        <div className="absolute top-10 right-5 w-20 h-20 bg-blue-500/5 rounded-full blur-xl animate-pulse"></div>
-        <div className="absolute bottom-10 left-5 w-24 h-24 bg-purple-500/5 rounded-full blur-xl animate-pulse delay-1000"></div>
       </div>
 
-      {/* Main Content */}
-      <div className="relative z-10 flex items-center justify-center min-h-screen px-4 py-6">
-        <div className="w-full max-w-sm mx-auto space-y-4">
-        {/* Welcome Header */}
-        <div className="bg-gradient-to-r from-emerald-500/15 via-cyan-500/15 to-blue-500/15 backdrop-blur-xl rounded-xl p-4 border border-white/10">
-          <div className="flex items-center justify-between">
-            <div className="flex-1">
-              <h1 className="text-lg font-bold text-white mb-1">Hello</h1>
-              <p className="text-emerald-300 text-xs">Welcome to CORAL</p>
-            </div>
-            
-            {/* CORAL Logo */}
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center overflow-hidden shadow-lg">
-              <img src={coralLogo} alt="CORAL" className="w-full h-full object-cover" />
-            </div>
-          </div>
+      {/* Main Form Section */}
+      <div className="flex-1 bg-slate-800/30 backdrop-blur-sm rounded-3xl p-6 border border-slate-700/30">
+        <div className="text-center mb-8">
+          <h2 className="text-2xl font-bold text-white mb-2">Create Account</h2>
+          <p className="text-slate-400">Join CORAL Trading Platform</p>
         </div>
 
-        {/* Register Form */}
-        <div className="bg-white/[0.03] backdrop-blur-xl rounded-2xl p-5 border border-white/10 shadow-xl">
-          <div className="text-center mb-5">
-            <h2 className="text-xl font-bold text-white mb-1">Create Account</h2>
-            <p className="text-slate-400 text-sm">Join CORAL Trading Platform</p>
+        <form onSubmit={handleRegister} className="space-y-6">
+          {/* Phone Number Field */}
+          <div className="space-y-2">
+            <div className="flex items-center gap-2 mb-2">
+              <Smartphone className="w-5 h-5 text-blue-400" />
+              <span className="text-white font-medium">Phone Number</span>
+            </div>
+            <div className="relative">
+              <div className="absolute left-4 top-1/2 transform -translate-y-1/2 flex items-center">
+                <span className="text-slate-400 text-sm border-r border-slate-600 pr-3 mr-3">+91</span>
+              </div>
+              <Input
+                name="phone"
+                type="tel"
+                value={formData.phone}
+                onChange={handleChange}
+                placeholder="Enter your phone number"
+                className="h-14 pl-16 bg-slate-700/50 border-slate-600 focus:border-blue-400 focus:ring-blue-400/20 rounded-2xl text-white placeholder:text-slate-400 text-base"
+                maxLength={10}
+                required
+                inputMode="numeric"
+                pattern="[0-9]*"
+              />
+            </div>
           </div>
 
-          <form onSubmit={handleRegister} className="space-y-4">
-            {/* Phone Field */}
-            <div className="space-y-1.5">
-              <Label htmlFor="phone" className="text-sm font-medium text-white flex items-center gap-2">
-                <Smartphone className="w-4 h-4 text-blue-400" />
-                Phone Number
-              </Label>
-              <div className="relative group">
-                <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none z-10">
-                  <span className="text-sm text-slate-400 border-r border-slate-600/50 pr-3 mr-3 font-medium">+91</span>
-                </div>
-                <Input
-                  id="phone"
-                  name="phone"
-                  type="tel"
-                  value={formData.phone}
-                  onChange={handleChange}
-                  placeholder="Enter your phone number"
-                  className="h-12 pl-16 pr-4 text-base bg-white/5 border-2 border-white/10 focus:border-blue-400/50 focus:bg-white/10 rounded-xl text-white placeholder:text-slate-500 transition-all duration-300 w-full group-hover:border-white/20 backdrop-blur-sm"
-                  maxLength={10}
-                  required
-                  inputMode="numeric"
-                  pattern="[0-9]*"
-                />
-                <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
-              </div>
-              {formData.phone && formData.phone.length < 10 && (
-                <div className="flex items-center gap-2 text-xs text-red-400 animate-fade-in">
-                  <div className="w-1 h-1 bg-red-400 rounded-full"></div>
-                  Please enter 10 digits
-                </div>
-              )}
+          {/* Email Field */}
+          <div className="space-y-2">
+            <div className="flex items-center gap-2 mb-2">
+              <AtSign className="w-5 h-5 text-blue-400" />
+              <span className="text-white font-medium">Email Address</span>
             </div>
-            
-            {/* Email Field */}
-            <div className="space-y-1.5">
-              <Label htmlFor="email" className="text-sm font-medium text-white flex items-center gap-2">
-                <AtSign className="w-4 h-4 text-blue-400" />
-                Email Address
-              </Label>
-              <div className="relative group">
-                <Input
-                  id="email"
-                  name="email"
-                  type="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  placeholder="Enter your email address"
-                  className="h-12 pl-4 pr-4 text-base bg-white/5 border-2 border-white/10 focus:border-blue-400/50 focus:bg-white/10 rounded-xl text-white placeholder:text-slate-500 transition-all duration-300 w-full group-hover:border-white/20 backdrop-blur-sm"
-                  required
-                />
-                <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
-              </div>
-            </div>
-            
-            {/* Password Field */}
-            <div className="space-y-1.5">
-              <Label htmlFor="password" className="text-sm font-medium text-white flex items-center gap-2">
-                <Eye className="w-4 h-4 text-blue-400" />
-                Password
-              </Label>
-              <div className="relative group">
-                <Input
-                  id="password"
-                  name="password"
-                  type={showPassword ? "text" : "password"}
-                  value={formData.password}
-                  onChange={handleChange}
-                  placeholder="Create a strong password"
-                  className="h-12 pl-4 pr-14 text-base bg-white/5 border-2 border-white/10 focus:border-blue-400/50 focus:bg-white/10 rounded-xl text-white placeholder:text-slate-500 transition-all duration-300 w-full group-hover:border-white/20 backdrop-blur-sm"
-                  required
-                />
-                <button
-                  type="button"
-                  className="absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400 hover:text-white transition-all duration-200 touch-manipulation hover:scale-110"
-                  onClick={() => setShowPassword(!showPassword)}
-                >
-                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                </button>
-                <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
-              </div>
-            </div>
-            
-            {/* Referral Code Field */}
-            <div className="space-y-1.5">
-              <Label htmlFor="referral_code" className="text-sm font-medium text-white flex items-center gap-2">
-                <UserPlus className="w-4 h-4 text-blue-400" />
-                Referral Code
-                <span className="text-xs text-slate-500 font-normal bg-slate-800/50 px-2 py-0.5 rounded-full">Optional</span>
-              </Label>
-              <div className="relative group">
-                <Input
-                  id="referral_code"
-                  name="referral_code"
-                  type="text"
-                  value={formData.referral_code}
-                  onChange={handleChange}
-                  placeholder="Enter referral code"
-                  className="h-12 pl-4 pr-4 text-base bg-white/5 border-2 border-white/10 focus:border-blue-400/50 focus:bg-white/10 rounded-xl text-white placeholder:text-slate-500 transition-all duration-300 w-full group-hover:border-white/20 backdrop-blur-sm"
-                />
-                <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
-              </div>
-            </div>
-            
-            {/* Terms Checkbox */}
-            <div className="flex items-start space-x-3 pt-1">
-              <Checkbox 
-                id="terms" 
-                checked={agreeTerms} 
-                onCheckedChange={(checked) => setAgreeTerms(checked as boolean)}
-                className="mt-0.5 flex-shrink-0"
-              />
-              <label
-                htmlFor="terms"
-                className="text-xs text-slate-400 leading-relaxed"
-              >
-                I agree to the{" "}
-                <Link to="/terms" className="text-blue-400 hover:text-blue-300 font-medium transition-colors touch-manipulation">
-                  Terms of Service
-                </Link>
-                {" "}and{" "}
-                <Link to="/privacy" className="text-blue-400 hover:text-blue-300 font-medium transition-colors touch-manipulation">
-                  Privacy Policy
-                </Link>
-              </label>
-            </div>
-            
-            {/* Submit Button */}
-            <Button 
-              type="submit" 
-              className="w-full h-12 text-base font-semibold bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border-0 mt-5 touch-manipulation hover:scale-[1.02]"
-              disabled={!agreeTerms || isSubmitting}
-            >
-              {isSubmitting ? (
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                  <span>Creating Account...</span>
-                </div>
-              ) : (
-                <div className="flex items-center gap-2">
-                  <UserPlus className="w-4 h-4" />
-                  <span>Create Account</span>
-                </div>
-              )}
-            </Button>
-          </form>
+            <Input
+              name="email"
+              type="email"
+              value={formData.email}
+              onChange={handleChange}
+              placeholder="Enter your email address"
+              className="h-14 bg-slate-700/50 border-slate-600 focus:border-blue-400 focus:ring-blue-400/20 rounded-2xl text-white placeholder:text-slate-400 text-base"
+              required
+            />
+          </div>
 
-          {/* Footer Links */}
-          <div className="mt-4 text-center space-y-2">
-            <p className="text-slate-400 text-sm">
-              Already have an account?{" "}
-              <Link to="/login" className="text-blue-400 hover:text-blue-300 font-medium transition-colors touch-manipulation">
-                Sign In
+          {/* Password Field */}
+          <div className="space-y-2">
+            <div className="flex items-center gap-2 mb-2">
+              <Lock className="w-5 h-5 text-blue-400" />
+              <span className="text-white font-medium">Password</span>
+            </div>
+            <div className="relative">
+              <Input
+                name="password"
+                type={showPassword ? "text" : "password"}
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="Create a strong password"
+                className="h-14 pr-12 bg-slate-700/50 border-slate-600 focus:border-blue-400 focus:ring-blue-400/20 rounded-2xl text-white placeholder:text-slate-400 text-base"
+                required
+              />
+              <button
+                type="button"
+                className="absolute right-4 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-white transition-colors"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+              </button>
+            </div>
+          </div>
+
+          {/* Referral Code Field */}
+          <div className="space-y-2">
+            <div className="flex items-center gap-2 mb-2">
+              <User className="w-5 h-5 text-blue-400" />
+              <span className="text-white font-medium">Referral Code</span>
+              <span className="text-xs text-slate-400 bg-slate-700 px-2 py-1 rounded-lg">Optional</span>
+            </div>
+            <Input
+              name="referral_code"
+              type="text"
+              value={formData.referral_code}
+              onChange={handleChange}
+              placeholder="Enter referral code"
+              className="h-14 bg-slate-700/50 border-slate-600 focus:border-blue-400 focus:ring-blue-400/20 rounded-2xl text-white placeholder:text-slate-400 text-base"
+            />
+          </div>
+
+          {/* Terms Checkbox */}
+          <div className="flex items-start gap-3 py-2">
+            <Checkbox 
+              id="terms" 
+              checked={agreeTerms} 
+              onCheckedChange={(checked) => setAgreeTerms(checked as boolean)}
+              className="mt-1"
+            />
+            <label htmlFor="terms" className="text-sm text-slate-300 leading-relaxed">
+              I agree to the{" "}
+              <Link to="/terms" className="text-blue-400 hover:text-blue-300 underline">
+                Terms of Service
               </Link>
-            </p>
-            
-            <p className="text-xs text-slate-500 leading-relaxed">
-              By creating an account, you agree to our{" "}
-              <Link to="/terms" className="text-blue-400 hover:underline transition-colors touch-manipulation">
-                Terms
-              </Link>{" "}
-              and{" "}
-              <Link to="/privacy" className="text-blue-400 hover:underline transition-colors touch-manipulation">
+              {" "}and{" "}
+              <Link to="/privacy" className="text-blue-400 hover:text-blue-300 underline">
                 Privacy Policy
               </Link>
-            </p>
+            </label>
           </div>
-        </div>
+
+          {/* Submit Button */}
+          <Button 
+            type="submit" 
+            className="w-full h-14 text-base font-semibold bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-2xl shadow-lg mt-8"
+            disabled={!agreeTerms || isSubmitting}
+          >
+            {isSubmitting ? (
+              <div className="flex items-center gap-2">
+                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                <span>Creating Account...</span>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2">
+                <UserPlus className="w-5 h-5" />
+                <span>Create Account</span>
+              </div>
+            )}
+          </Button>
+        </form>
+
+        {/* Footer */}
+        <div className="mt-6 text-center space-y-4">
+          <p className="text-slate-400">
+            Already have an account?{" "}
+            <Link to="/login" className="text-blue-400 hover:text-blue-300 font-medium">
+              Sign In
+            </Link>
+          </p>
+          
+          <p className="text-xs text-slate-500 leading-relaxed px-4">
+            By creating an account, you agree to our{" "}
+            <Link to="/terms" className="text-blue-400 hover:underline">
+              Terms
+            </Link>
+            {" "}and{" "}
+            <Link to="/privacy" className="text-blue-400 hover:underline">
+              Privacy Policy
+            </Link>
+          </p>
         </div>
       </div>
     </div>
