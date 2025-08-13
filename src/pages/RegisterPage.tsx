@@ -140,31 +140,31 @@ const RegisterPage = () => {
       </div>
 
       {/* Main Content */}
-      <div className="relative z-10 flex items-center justify-center min-h-screen px-4 py-6">
-        <div className="w-full max-w-sm mx-auto space-y-4">
+      <div className="relative z-10 flex items-center justify-center min-h-screen px-3 py-4 sm:px-4 sm:py-6">
+        <div className="w-full max-w-xs sm:max-w-sm mx-auto space-y-3 sm:space-y-4">
         {/* Welcome Header */}
-        <div className="bg-gradient-to-r from-emerald-500/15 via-cyan-500/15 to-blue-500/15 backdrop-blur-xl rounded-xl p-4 border border-white/10">
+        <div className="bg-gradient-to-r from-emerald-500/15 via-cyan-500/15 to-blue-500/15 backdrop-blur-xl rounded-xl p-3 sm:p-4 border border-white/10">
           <div className="flex items-center justify-between">
             <div className="flex-1">
-              <h1 className="text-lg font-bold text-white mb-1">Hello</h1>
+              <h1 className="text-base sm:text-lg font-bold text-white mb-1">Hello</h1>
               <p className="text-emerald-300 text-xs">Welcome to CORAL</p>
             </div>
             
             {/* CORAL Logo */}
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center overflow-hidden shadow-lg">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center overflow-hidden shadow-lg">
               <img src={coralLogo} alt="CORAL" className="w-full h-full object-cover" />
             </div>
           </div>
         </div>
 
         {/* Register Form */}
-        <div className="bg-white/[0.03] backdrop-blur-xl rounded-2xl p-5 border border-white/10 shadow-xl">
-          <div className="text-center mb-5">
-            <h2 className="text-xl font-bold text-white mb-1">Create Account</h2>
+        <div className="bg-white/[0.03] backdrop-blur-xl rounded-2xl p-4 sm:p-5 border border-white/10 shadow-xl">
+          <div className="text-center mb-4 sm:mb-5">
+            <h2 className="text-lg sm:text-xl font-bold text-white mb-1">Create Account</h2>
             <p className="text-slate-400 text-sm">Join CORAL Trading Platform</p>
           </div>
 
-          <form onSubmit={handleRegister} className="space-y-4">
+          <form onSubmit={handleRegister} className="space-y-3 sm:space-y-4">
             {/* Phone Field */}
             <div className="space-y-1.5">
               <Label htmlFor="phone" className="text-sm font-medium text-white flex items-center gap-2">
@@ -172,8 +172,8 @@ const RegisterPage = () => {
                 Phone Number
               </Label>
               <div className="relative group">
-                <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none z-10">
-                  <span className="text-sm text-slate-400 border-r border-slate-600/50 pr-3 mr-3 font-medium">+91</span>
+                <div className="absolute inset-y-0 left-0 flex items-center pl-3 sm:pl-4 pointer-events-none z-10">
+                  <span className="text-sm text-slate-400 border-r border-slate-600/50 pr-2 sm:pr-3 mr-2 sm:mr-3 font-medium">+91</span>
                 </div>
                 <Input
                   id="phone"
@@ -182,7 +182,7 @@ const RegisterPage = () => {
                   value={formData.phone}
                   onChange={handleChange}
                   placeholder="Enter your phone number"
-                  className="h-12 pl-16 pr-4 text-base bg-white/5 border-2 border-white/10 focus:border-blue-400/50 focus:bg-white/10 rounded-xl text-white placeholder:text-slate-500 transition-all duration-300 w-full group-hover:border-white/20 backdrop-blur-sm"
+                  className="h-10 sm:h-12 pl-12 sm:pl-16 pr-3 sm:pr-4 text-sm sm:text-base bg-white/5 border-2 border-white/10 focus:border-blue-400/50 focus:bg-white/10 rounded-xl text-white placeholder:text-slate-500 transition-all duration-300 w-full group-hover:border-white/20 backdrop-blur-sm"
                   maxLength={10}
                   required
                   inputMode="numeric"
@@ -212,7 +212,7 @@ const RegisterPage = () => {
                   value={formData.email}
                   onChange={handleChange}
                   placeholder="Enter your email address"
-                  className="h-12 pl-4 pr-4 text-base bg-white/5 border-2 border-white/10 focus:border-blue-400/50 focus:bg-white/10 rounded-xl text-white placeholder:text-slate-500 transition-all duration-300 w-full group-hover:border-white/20 backdrop-blur-sm"
+                  className="h-10 sm:h-12 pl-3 sm:pl-4 pr-3 sm:pr-4 text-sm sm:text-base bg-white/5 border-2 border-white/10 focus:border-blue-400/50 focus:bg-white/10 rounded-xl text-white placeholder:text-slate-500 transition-all duration-300 w-full group-hover:border-white/20 backdrop-blur-sm"
                   required
                 />
                 <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
@@ -233,15 +233,15 @@ const RegisterPage = () => {
                   value={formData.password}
                   onChange={handleChange}
                   placeholder="Create a strong password"
-                  className="h-12 pl-4 pr-14 text-base bg-white/5 border-2 border-white/10 focus:border-blue-400/50 focus:bg-white/10 rounded-xl text-white placeholder:text-slate-500 transition-all duration-300 w-full group-hover:border-white/20 backdrop-blur-sm"
+                  className="h-10 sm:h-12 pl-3 sm:pl-4 pr-12 sm:pr-14 text-sm sm:text-base bg-white/5 border-2 border-white/10 focus:border-blue-400/50 focus:bg-white/10 rounded-xl text-white placeholder:text-slate-500 transition-all duration-300 w-full group-hover:border-white/20 backdrop-blur-sm"
                   required
                 />
                 <button
                   type="button"
-                  className="absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400 hover:text-white transition-all duration-200 touch-manipulation hover:scale-110"
+                  className="absolute inset-y-0 right-0 flex items-center pr-3 sm:pr-4 text-slate-400 hover:text-white transition-all duration-200 touch-manipulation hover:scale-110"
                   onClick={() => setShowPassword(!showPassword)}
                 >
-                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  {showPassword ? <EyeOff className="w-4 h-4 sm:w-5 sm:h-5" /> : <Eye className="w-4 h-4 sm:w-5 sm:h-5" />}
                 </button>
                 <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
               </div>
@@ -262,7 +262,7 @@ const RegisterPage = () => {
                   value={formData.referral_code}
                   onChange={handleChange}
                   placeholder="Enter referral code"
-                  className="h-12 pl-4 pr-4 text-base bg-white/5 border-2 border-white/10 focus:border-blue-400/50 focus:bg-white/10 rounded-xl text-white placeholder:text-slate-500 transition-all duration-300 w-full group-hover:border-white/20 backdrop-blur-sm"
+                  className="h-10 sm:h-12 pl-3 sm:pl-4 pr-3 sm:pr-4 text-sm sm:text-base bg-white/5 border-2 border-white/10 focus:border-blue-400/50 focus:bg-white/10 rounded-xl text-white placeholder:text-slate-500 transition-all duration-300 w-full group-hover:border-white/20 backdrop-blur-sm"
                 />
                 <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
               </div>
@@ -294,17 +294,17 @@ const RegisterPage = () => {
             {/* Submit Button */}
             <Button 
               type="submit" 
-              className="w-full h-12 text-base font-semibold bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border-0 mt-5 touch-manipulation hover:scale-[1.02]"
+              className="w-full h-10 sm:h-12 text-sm sm:text-base font-semibold bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border-0 mt-4 sm:mt-5 touch-manipulation hover:scale-[1.02]"
               disabled={!agreeTerms || isSubmitting}
             >
               {isSubmitting ? (
                 <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  <div className="w-3 h-3 sm:w-4 sm:h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                   <span>Creating Account...</span>
                 </div>
               ) : (
                 <div className="flex items-center gap-2">
-                  <UserPlus className="w-4 h-4" />
+                  <UserPlus className="w-3 h-3 sm:w-4 sm:h-4" />
                   <span>Create Account</span>
                 </div>
               )}
@@ -312,7 +312,7 @@ const RegisterPage = () => {
           </form>
 
           {/* Footer Links */}
-          <div className="mt-4 text-center space-y-2">
+          <div className="mt-3 sm:mt-4 text-center space-y-2">
             <p className="text-slate-400 text-sm">
               Already have an account?{" "}
               <Link to="/login" className="text-blue-400 hover:text-blue-300 font-medium transition-colors touch-manipulation">
