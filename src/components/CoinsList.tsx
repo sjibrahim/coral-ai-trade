@@ -25,15 +25,17 @@ interface CoinsListProps {
 }
 
 const CoinsList = ({ marketData = [], loading = false }: CoinsListProps) => {
-  const [cryptoData, setCryptoData] = useState(mockCryptoCurrencies);
+  const [cryptoData, setCryptoData] = useState<CryptoData[]>(mockCryptoCurrencies);
 
   // Use live market data if available, otherwise use mock data
   useEffect(() => {
     if (marketData && marketData.length > 0) {
       // Map the market data to match our expected format
-      const formattedData = marketData.map((coin) => ({
+      const formattedData: CryptoData[] = marketData.map((coin) => ({
         ...coin,
-        binance_symbol: coin.symbol ? `${coin.symbol.toUpperCase()}USDT` : 'BTCUSDT'
+        id: String(coin.id), // Ensure id is always a string
+        change: coin.change || 0, // Provide default value for change
+        binance_symbol: coin.binance_symbol || (coin.symbol ? `${coin.symbol.toUpperCase()}USDT` : 'BTCUSDT')
       }));
       setCryptoData(formattedData);
     }
@@ -58,11 +60,11 @@ const CoinsList = ({ marketData = [], loading = false }: CoinsListProps) => {
             {cryptoData.map((crypto, index) => (
               <CryptoCard
                 key={crypto.id}
-                id={crypto.id}
+                id={String(crypto.id)}
                 name={crypto.name}
                 symbol={crypto.symbol}
                 price={crypto.price}
-                change={crypto.change}
+                change={crypto.change || 0}
                 logo={crypto.logo}
                 binance_symbol={crypto.binance_symbol}
                 animationDelay={index * 100}
