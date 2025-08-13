@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { Eye, EyeOff, Bot } from "lucide-react";
+import { Eye, EyeOff, Bot, Calendar, Gamepad2, Smartphone } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { getMarketData } from "@/services/api";
 import PromotionalBanner from "@/components/PromotionalBanner";
@@ -39,20 +39,20 @@ const HomePage = () => {
         {/* Top header with logo and icons */}
         <div className="flex items-center justify-between p-4">
           <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-gradient-to-r from-teal-400 to-cyan-500 rounded-lg flex items-center justify-center">
-              <span className="text-sm font-bold text-white">TC</span>
+            <div className="w-8 h-8 bg-gradient-to-r from-coral-400 to-coral-500 rounded-lg flex items-center justify-center">
+              <span className="text-sm font-bold text-white">C</span>
             </div>
-            <span className="text-lg font-bold text-white">TCPatel</span>
+            <span className="text-lg font-bold text-white">Coral</span>
           </div>
           <div className="flex items-center space-x-4 text-gray-400">
             <div className="w-6 h-6 bg-gray-700 rounded flex items-center justify-center">
-              <span className="text-xs">📅</span>
+              <Calendar className="w-4 h-4" />
             </div>
             <div className="w-6 h-6 bg-gray-700 rounded flex items-center justify-center">
-              <span className="text-xs">🎮</span>
+              <Gamepad2 className="w-4 h-4" />
             </div>
             <div className="w-6 h-6 bg-gray-700 rounded flex items-center justify-center">
-              <span className="text-xs">📱</span>
+              <Smartphone className="w-4 h-4" />
             </div>
           </div>
         </div>
@@ -60,7 +60,7 @@ const HomePage = () => {
         {/* Future tagline */}
         <div className="px-4 mb-6">
           <p className="text-gray-400 text-sm flex items-center">
-            <span className="mr-2">🔊</span>
+            <Bot className="w-4 h-4 mr-2" />
             for the future and intelligently control every risk
           </p>
         </div>
@@ -82,15 +82,15 @@ const HomePage = () => {
 
       {/* AI Assistant Button */}
       <div className="fixed bottom-28 right-4 z-40">
-        <button className="w-14 h-14 bg-gradient-to-r from-teal-400 to-cyan-500 rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+        <button className="w-14 h-14 bg-gradient-to-r from-coral-400 to-coral-500 rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
           <Bot className="w-6 h-6 text-white" />
         </button>
       </div>
 
       {/* Background decoration */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-32 -right-32 w-64 h-64 bg-gradient-to-br from-teal-500/10 to-cyan-500/10 rounded-full blur-3xl"></div>
-        <div className="absolute -bottom-32 -left-32 w-64 h-64 bg-gradient-to-tr from-blue-500/10 to-teal-500/10 rounded-full blur-3xl"></div>
+        <div className="absolute -top-32 -right-32 w-64 h-64 bg-gradient-to-br from-coral-500/10 to-coral-400/10 rounded-full blur-3xl"></div>
+        <div className="absolute -bottom-32 -left-32 w-64 h-64 bg-gradient-to-tr from-blue-500/10 to-coral-500/10 rounded-full blur-3xl"></div>
       </div>
 
       {/* Bottom Navigation */}
