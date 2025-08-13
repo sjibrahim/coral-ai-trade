@@ -64,7 +64,7 @@ const CryptoCard = ({
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-gray-700/50 flex items-center justify-center overflow-hidden">
+          <div className="w-10 h-10 rounded-full bg-gray-600 flex items-center justify-center overflow-hidden">
             <img 
               src={logo} 
               alt={name} 
@@ -76,13 +76,13 @@ const CryptoCard = ({
             />
           </div>
           <div>
-            <h3 className="font-medium text-white">{name}</h3>
-            <p className="text-sm text-gray-400">{symbol.toUpperCase()}</p>
+            <h3 className="font-medium text-white text-base">{name}</h3>
+            <p className="text-sm text-gray-400 uppercase">{symbol}</p>
           </div>
         </div>
         <div className="text-right">
-          <p className="font-medium text-white">
-            ${price.toLocaleString(undefined, {maximumFractionDigits: 2})}
+          <p className="font-medium text-white text-base">
+            ${price.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}
           </p>
           <div className={cn("text-sm flex items-center justify-end", 
             change >= 0 ? "text-green-400" : "text-red-400")}>

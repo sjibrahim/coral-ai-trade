@@ -33,9 +33,9 @@ const HomePage = () => {
   const totalBalance = walletAmount + incomeAmount;
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white">
-      {/* Scrollable content */}
-      <div className="pb-20"> {/* Add padding bottom for navigation */}
+    <div className="min-h-screen bg-gray-900 text-white overflow-y-auto">
+      {/* Scrollable content container */}
+      <div className="pb-24 min-h-screen"> 
         {/* Top header with logo and icons */}
         <div className="flex items-center justify-between p-4">
           <div className="flex items-center space-x-2">
@@ -75,11 +75,13 @@ const HomePage = () => {
         <PromotionalVideo />
 
         {/* Coins List Section */}
-        <CoinsList />
+        <div className="flex-1">
+          <CoinsList />
+        </div>
       </div>
 
       {/* AI Assistant Button */}
-      <div className="fixed bottom-24 right-4 z-40">
+      <div className="fixed bottom-28 right-4 z-40">
         <button className="w-14 h-14 bg-gradient-to-r from-teal-400 to-cyan-500 rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
           <Bot className="w-6 h-6 text-white" />
         </button>
