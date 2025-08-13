@@ -14,6 +14,7 @@ import WithdrawPage from "@/pages/WithdrawPage";
 import InvitePage from "@/pages/InvitePage";
 import ProfilePage from "@/pages/ProfilePage";
 import TeamPage from "@/pages/TeamPage";
+import TeamLevelPage from "@/pages/TeamLevelPage";
 import MarketPage from "@/pages/MarketPage";
 import TradePage from '@/pages/TradePage';
 import ProtectedRoute from "@/components/ProtectedRoute";
@@ -42,6 +43,7 @@ const App = () => {
               <Route path="/invite" element={<ProtectedRoute><InvitePage /></ProtectedRoute>} />
               <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
               <Route path="/team" element={<ProtectedRoute><TeamPage /></ProtectedRoute>} />
+              <Route path="/team-level/:level" element={<ProtectedRoute><TeamLevelPage /></ProtectedRoute>} />
               <Route path="/market" element={<ProtectedRoute><MarketPage /></ProtectedRoute>} />
               <Route path="/trade" element={<ProtectedRoute><TradePage /></ProtectedRoute>} />
             </Routes>

@@ -1,5 +1,6 @@
 
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
@@ -29,8 +30,22 @@ interface TeamData {
   team_members: TeamMember[];
 }
 
+// New interface for the API response format you showed
+interface ApiTeamMember {
+  id: string;
+  name: string;
+  phone: string;
+  invited_by: string;
+  level: string;
+  active_member: string;
+  total_deposit: string;
+  total_withdraw: string;
+}
+
 const TeamPage = () => {
+  const navigate = useNavigate();
   const [teamData, setTeamData] = useState<TeamData | null>(null);
+  const [apiTeamMembers, setApiTeamMembers] = useState<ApiTeamMember[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
 
@@ -42,7 +57,27 @@ const TeamPage = () => {
 
         const response = await getTeamDetails(token);
         if (response.status && response.data) {
-          setTeamData(response.data);
+          // Check if response.data is an array (new format) or object (old format)
+          if (Array.isArray(response.data)) {
+            setApiTeamMembers(response.data);
+            // Create summary data from the array
+            const total_members = response.data.length;
+            const direct_members = response.data.filter(member => member.level === "1").length;
+            const total_commission = response.data.reduce((sum, member) => 
+              sum + parseFloat(member.total_deposit || "0"), 0
+            ).toString();
+            
+            setTeamData({
+              total_members,
+              direct_members,
+              total_commission,
+              referral_code: "REF12345", // You might need to get this from elsewhere
+              team_members: []
+            });
+          } else {
+            setTeamData(response.data);
+            setApiTeamMembers([]);
+          }
         } else {
           toast({
             title: "Error",
@@ -85,6 +120,15 @@ const TeamPage = () => {
     }
   };
 
+  // Calculate level statistics from API data
+  const level1Members = apiTeamMembers.filter(member => member.level === "1");
+  const level2Members = apiTeamMembers.filter(member => member.level === "2");
+  const level3Members = apiTeamMembers.filter(member => member.level === "3");
+
+  const handleLevelClick = (level: number) => {
+    navigate(`/team-level/${level}`);
+  };
+
   return (
     <div className="flex flex-col h-screen bg-gray-900 text-white">
       {/* Fixed Header */}
@@ -125,7 +169,7 @@ const TeamPage = () => {
                       <Users className="w-5 h-5 text-white" />
                     </div>
                     <div>
-                      <p className="text-xl font-bold text-white">{teamData?.total_members || 0}</p>
+                      <p className="text-xl font-bold text-white">{teamData?.total_members || apiTeamMembers.length || 0}</p>
                       <p className="text-xs text-gray-400">Total Members</p>
                     </div>
                   </div>
@@ -187,11 +231,33 @@ const TeamPage = () => {
             
             <div className="space-y-3">
               {[
-                { level: 1, members: teamData?.direct_members || 0, commission: "10%", color: "from-yellow-400 to-orange-500" },
-                { level: 2, members: Math.max(0, (teamData?.total_members || 0) - (teamData?.direct_members || 0)), commission: "5%", color: "from-blue-400 to-purple-500" },
-                { level: 3, members: 0, commission: "3%", color: "from-green-400 to-teal-500" },
+                { 
+                  level: 1, 
+                  members: level1Members.length, 
+                  commission: "10%", 
+                  color: "from-yellow-400 to-orange-500",
+                  activeMembers: level1Members.filter(m => m.active_member === "1").length
+                },
+                { 
+                  level: 2, 
+                  members: level2Members.length, 
+                  commission: "5%", 
+                  color: "from-blue-400 to-purple-500",
+                  activeMembers: level2Members.filter(m => m.active_member === "1").length
+                },
+                { 
+                  level: 3, 
+                  members: level3Members.length, 
+                  commission: "3%", 
+                  color: "from-green-400 to-teal-500",
+                  activeMembers: level3Members.filter(m => m.active_member === "1").length
+                },
               ].map((item) => (
-                <Card key={item.level} className="bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 hover:border-gray-600/50 transition-all">
+                <Card 
+                  key={item.level} 
+                  className="bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 hover:border-gray-600/50 transition-all cursor-pointer"
+                  onClick={() => handleLevelClick(item.level)}
+                >
                   <CardContent className="p-4">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
@@ -200,12 +266,15 @@ const TeamPage = () => {
                         </div>
                         <div>
                           <h3 className="font-semibold text-white text-sm">Level {item.level}</h3>
-                          <p className="text-xs text-gray-400">{item.members} members</p>
+                          <p className="text-xs text-gray-400">{item.members} members ({item.activeMembers} active)</p>
                         </div>
                       </div>
-                      <div className="text-right">
-                        <div className="text-base font-bold text-white">{item.commission}</div>
-                        <div className="text-xs text-gray-400">Commission</div>
+                      <div className="flex items-center gap-3">
+                        <div className="text-right">
+                          <div className="text-base font-bold text-white">{item.commission}</div>
+                          <div className="text-xs text-gray-400">Commission</div>
+                        </div>
+                        <ChevronRight className="w-5 h-5 text-gray-400" />
                       </div>
                     </div>
                   </CardContent>
@@ -214,8 +283,8 @@ const TeamPage = () => {
             </div>
           </div>
 
-          {/* Team Members List */}
-          {teamData?.team_members && teamData.team_members.length > 0 && (
+          {/* Recent Members List */}
+          {apiTeamMembers.length > 0 && (
             <div className="px-4 pb-6">
               <h2 className="text-lg font-bold text-white mb-4 flex items-center">
                 <UserPlus className="w-5 h-5 text-teal-400 mr-2" />
@@ -223,25 +292,25 @@ const TeamPage = () => {
               </h2>
               
               <div className="space-y-2">
-                {teamData.team_members.slice(0, 5).map((member) => (
+                {apiTeamMembers.slice(0, 5).map((member) => (
                   <Card key={member.id} className="bg-gray-800/50 backdrop-blur-sm border border-gray-700/30">
                     <CardContent className="p-3">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
                           <div className="w-8 h-8 bg-gradient-to-r from-gray-600 to-gray-700 rounded-full flex items-center justify-center flex-shrink-0">
                             <span className="text-white font-semibold text-xs">
-                              {member.username.charAt(0).toUpperCase()}
+                              {member.phone.charAt(0)}
                             </span>
                           </div>
                           <div className="min-w-0 flex-1">
-                            <h4 className="font-medium text-white text-sm truncate">{member.username}</h4>
+                            <h4 className="font-medium text-white text-sm truncate">{member.phone}</h4>
                             <p className="text-xs text-gray-400">Level {member.level}</p>
                           </div>
                         </div>
                         <div className="text-right flex-shrink-0">
-                          <div className="text-sm font-semibold text-green-400">₹{member.total_income}</div>
+                          <div className="text-sm font-semibold text-green-400">₹{member.total_deposit}</div>
                           <div className="text-xs text-gray-500">
-                            {new Date(member.registration_date).toLocaleDateString()}
+                            {member.active_member === "1" ? "Active" : "Inactive"}
                           </div>
                         </div>
                       </div>
