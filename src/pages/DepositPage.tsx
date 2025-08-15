@@ -12,7 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Wallet, TrendingUp, Shield, Zap, DollarSign } from "lucide-react";
+import { Wallet, DollarSign } from "lucide-react";
 
 interface PaymentMethod {
   id: string;
@@ -85,55 +85,10 @@ const DepositPage = () => {
   }
   
   return (
-    <MobileLayout showBackButton title="AI Deposit" hideFooter>
+    <MobileLayout showBackButton title="Recharge Wallet" hideFooter>
       <div className="min-h-screen bg-gray-900">
         
-        {/* Dark AI Trading Header */}
-        <div className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 px-4 py-6 border-b border-gray-700/50">
-          <div className="text-center mb-4">
-            <div className="flex items-center justify-center mb-2">
-              <div className="w-12 h-12 bg-gradient-to-r from-[#00e8be] to-cyan-400 rounded-full flex items-center justify-center mr-3">
-                <TrendingUp className="w-6 h-6 text-gray-900" />
-              </div>
-              <h1 className="text-2xl font-bold text-white">AI Trading Deposit</h1>
-            </div>
-            <p className="text-gray-400 text-sm">Powered by Advanced AI Technology</p>
-          </div>
-          
-          {/* Current Balance Card */}
-          <div className="bg-gradient-to-r from-gray-800/50 to-gray-700/50 rounded-xl p-4 border border-gray-600/30 backdrop-blur-sm">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <Wallet className="w-5 h-5 text-[#00e8be] mr-2" />
-                <span className="text-gray-400 text-sm">Available Balance</span>
-              </div>
-              <div className="text-right">
-                <p className="text-2xl font-bold text-white">${user?.wallet || '0.00'}</p>
-                <p className="text-xs text-gray-500">USD</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
         <div className="px-4 py-6 space-y-6">
-          
-          {/* AI Features Banner */}
-          <div className="bg-gradient-to-r from-[#00e8be]/10 to-cyan-400/10 rounded-xl p-4 border border-[#00e8be]/20">
-            <div className="flex items-center mb-3">
-              <Zap className="w-5 h-5 text-[#00e8be] mr-2" />
-              <h3 className="text-white font-semibold">AI Trading Benefits</h3>
-            </div>
-            <div className="grid grid-cols-2 gap-3">
-              <div className="flex items-center text-sm text-gray-300">
-                <Shield className="w-4 h-4 text-[#00e8be] mr-2" />
-                Secure Deposits
-              </div>
-              <div className="flex items-center text-sm text-gray-300">
-                <TrendingUp className="w-4 h-4 text-[#00e8be] mr-2" />
-                Smart Trading
-              </div>
-            </div>
-          </div>
 
           {/* Select Payment Channel */}
           <div className="bg-gray-800/50 rounded-xl border border-gray-700/50 p-4">
@@ -142,7 +97,7 @@ const DepositPage = () => {
               <h3 className="text-white font-medium">Payment Channel</h3>
             </div>
             <Select value={selectedChannel} onValueChange={setSelectedChannel}>
-              <SelectTrigger className="w-full bg-gray-700/50 border-gray-600/50 text-gray-200 h-12 rounded-lg">
+              <SelectTrigger className="w-full bg-gray-700/50 border-gray-600/50 text-gray-200 h-12 rounded-lg focus:ring-white">
                 <SelectValue placeholder="Select payment method" />
               </SelectTrigger>
               <SelectContent className="bg-gray-800 border-gray-600">
@@ -166,13 +121,13 @@ const DepositPage = () => {
               <h3 className="text-white font-medium">Deposit Amount</h3>
             </div>
             <div className="relative">
-              <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-lg">$</span>
+              <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-lg">₹</span>
               <input
                 type="text"
                 inputMode="decimal"
                 value={amount}
                 onChange={handleAmountChange}
-                className="w-full bg-gray-700/50 border border-gray-600/50 rounded-lg pl-8 pr-4 py-3 text-white placeholder-gray-500 focus:border-[#00e8be] focus:outline-none text-lg"
+                className="w-full bg-gray-700/50 border border-gray-600/50 rounded-lg pl-8 pr-4 py-3 text-white placeholder-gray-500 focus:border-[#00e8be] focus:outline-none focus:ring-white text-lg"
                 placeholder={`Min ${minDepositAmount}`}
                 maxLength={10}
               />
@@ -188,7 +143,7 @@ const DepositPage = () => {
                     onClick={() => setAmount(quickAmount.toString())}
                     className="py-2 px-3 bg-gray-700/30 hover:bg-[#00e8be]/20 border border-gray-600/30 hover:border-[#00e8be]/50 rounded-lg text-sm text-gray-300 hover:text-[#00e8be] transition-all duration-200"
                   >
-                    ${quickAmount}
+                    ₹{quickAmount}
                   </button>
                 ))}
               </div>
@@ -202,7 +157,7 @@ const DepositPage = () => {
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-400">Amount:</span>
-                  <span className="text-white font-medium">${amount}</span>
+                  <span className="text-white font-medium">₹{amount}</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-400">Channel:</span>
@@ -222,7 +177,7 @@ const DepositPage = () => {
             disabled={!isValidAmount || !selectedChannel}
             className={`w-full h-14 rounded-xl font-semibold transition-all duration-300 text-lg flex items-center justify-center ${
               isValidAmount && selectedChannel
-                ? "bg-gradient-to-r from-[#00e8be] to-cyan-400 text-gray-900 hover:shadow-lg hover:shadow-[#00e8be]/25 hover:scale-[1.02] active:scale-[0.98]"
+                ? "bg-[#00e8be] text-gray-900 hover:shadow-lg hover:shadow-[#00e8be]/25 hover:scale-[1.02] active:scale-[0.98]"
                 : "bg-gray-700/50 text-gray-500 cursor-not-allowed"
             }`}
           >
@@ -233,24 +188,11 @@ const DepositPage = () => {
               </>
             ) : (
               <>
-                <TrendingUp className="w-5 h-5 mr-2" />
-                Confirm AI Deposit
+                <Wallet className="w-5 h-5 mr-2" />
+                Confirm Deposit
               </>
             )}
           </button>
-
-          {/* Security Notice */}
-          <div className="text-center">
-            <div className="flex items-center justify-center mb-2">
-              <Shield className="w-4 h-4 text-[#00e8be] mr-2" />
-              <p className="text-xs text-gray-400">
-                256-bit SSL encryption ensures your deposits are secure
-              </p>
-            </div>
-            <p className="text-xs text-gray-500">
-              AI-powered instant processing • 24/7 support available
-            </p>
-          </div>
         </div>
       </div>
     </MobileLayout>
