@@ -217,7 +217,7 @@ const CoinPage = () => {
           </div>
         </div>
 
-        {/* Enhanced Trading Section */}
+        {/* Enhanced Trading Section - Resized Buttons */}
         <div className="px-4 mb-6">
           <div className="bg-gradient-to-r from-gray-800/80 to-gray-900/80 backdrop-blur-sm rounded-2xl border border-gray-700/30 p-6">
             <div className="text-center mb-6">
@@ -229,18 +229,18 @@ const CoinPage = () => {
             <div className="grid grid-cols-2 gap-4">
               <button
                 onClick={() => handleTradeClick('call')}
-                className="group relative overflow-hidden bg-gradient-to-br from-green-500 via-green-600 to-emerald-600 hover:from-green-400 hover:via-green-500 hover:to-emerald-500 text-white font-bold py-4 px-3 rounded-xl shadow-xl transform transition-all duration-300 hover:scale-105 hover:shadow-green-500/25 active:scale-95"
+                className="group relative overflow-hidden bg-gradient-to-br from-green-500 via-green-600 to-emerald-600 hover:from-green-400 hover:via-green-500 hover:to-emerald-500 text-white font-bold py-2 px-2 rounded-lg shadow-lg transform transition-all duration-300 hover:scale-105 hover:shadow-green-500/25 active:scale-95"
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12 translate-x-[-100%] group-hover:translate-x-[200%] transition-transform duration-1000"></div>
-                <div className="relative z-10 flex flex-col items-center gap-2">
-                  <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
-                    <TrendingUp className="w-4 h-4" />
+                <div className="relative z-10 flex flex-col items-center gap-1">
+                  <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center">
+                    <TrendingUp className="w-3 h-3" />
                   </div>
                   <div>
-                    <div className="text-lg font-extrabold">BUY</div>
+                    <div className="text-sm font-extrabold">BUY</div>
                     <div className="text-xs opacity-90">Price will rise</div>
                   </div>
-                  <div className="text-xs bg-white/20 px-2 py-1 rounded-full">
+                  <div className="text-xs bg-white/20 px-2 py-0.5 rounded-full">
                     Up to 85% profit
                   </div>
                 </div>
@@ -248,18 +248,18 @@ const CoinPage = () => {
 
               <button
                 onClick={() => handleTradeClick('put')}
-                className="group relative overflow-hidden bg-gradient-to-br from-red-500 via-red-600 to-rose-600 hover:from-red-400 hover:via-red-500 hover:to-rose-500 text-white font-bold py-4 px-3 rounded-xl shadow-xl transform transition-all duration-300 hover:scale-105 hover:shadow-red-500/25 active:scale-95"
+                className="group relative overflow-hidden bg-gradient-to-br from-red-500 via-red-600 to-rose-600 hover:from-red-400 hover:via-red-500 hover:to-rose-500 text-white font-bold py-2 px-2 rounded-lg shadow-lg transform transition-all duration-300 hover:scale-105 hover:shadow-red-500/25 active:scale-95"
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12 translate-x-[-100%] group-hover:translate-x-[200%] transition-transform duration-1000"></div>
-                <div className="relative z-10 flex flex-col items-center gap-2">
-                  <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
-                    <TrendingDown className="w-4 h-4" />
+                <div className="relative z-10 flex flex-col items-center gap-1">
+                  <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center">
+                    <TrendingDown className="w-3 h-3" />
                   </div>
                   <div>
-                    <div className="text-lg font-extrabold">PUT</div>
+                    <div className="text-sm font-extrabold">PUT</div>
                     <div className="text-xs opacity-90">Price will fall</div>
                   </div>
-                  <div className="text-xs bg-white/20 px-2 py-1 rounded-full">
+                  <div className="text-xs bg-white/20 px-2 py-0.5 rounded-full">
                     Up to 85% profit
                   </div>
                 </div>

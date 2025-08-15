@@ -9,10 +9,10 @@ interface TradeStatusModalProps {
   isOpen: boolean;
   onClose: () => void;
   tradeResult: {
-    status: 'win' | 'loss';
-    win?: number;
+    status?: 'win' | 'loss';
+    profit?: number;
     lost_amount?: number;
-    new_balance: number;
+    new_balance?: number;
     amount: number;
     duration: number;
     symbol: string;
@@ -26,7 +26,7 @@ const TradeStatusModal: React.FC<TradeStatusModalProps> = ({
   onClose,
   tradeResult
 }) => {
-  const { user, refreshUserData } = useAuth();
+  const { refreshUserData } = useAuth();
   const [timeRemaining, setTimeRemaining] = useState(tradeResult.duration);
   const [isCompleted, setIsCompleted] = useState(false);
   const [currentPrice, setCurrentPrice] = useState(tradeResult.entryPrice);
@@ -34,19 +34,28 @@ const TradeStatusModal: React.FC<TradeStatusModalProps> = ({
   useEffect(() => {
     if (!isOpen) return;
 
-    // Reset state when modal opens
+    // If we already have a trade result status, show it immediately
+    if (tradeResult.status) {
+      setIsCompleted(true);
+      setTimeRemaining(0);
+      // Refresh user data to get updated balance
+      refreshUserData();
+      return;
+    }
+
+    // Reset state when modal opens for new trades
     setTimeRemaining(tradeResult.duration);
     setIsCompleted(false);
     setCurrentPrice(tradeResult.entryPrice);
 
     let intervalId: NodeJS.Timeout;
 
-    if (timeRemaining > 0) {
+    if (timeRemaining > 0 && !tradeResult.status) {
       intervalId = setInterval(() => {
         setTimeRemaining(prev => {
           if (prev <= 1) {
             setIsCompleted(true);
-            // Refresh user data to update balance
+            // Refresh user data when trade completes
             refreshUserData();
             return 0;
           }
@@ -54,16 +63,13 @@ const TradeStatusModal: React.FC<TradeStatusModalProps> = ({
         });
 
         // Simulate price changes only during countdown
-        if (!isCompleted) {
+        if (!isCompleted && !tradeResult.status) {
           setCurrentPrice(prev => {
             const change = (Math.random() - 0.5) * 100;
             return prev + change;
           });
         }
       }, 1000);
-    } else {
-      // If duration is 0, show completed immediately
-      setIsCompleted(true);
     }
 
     return () => {
@@ -73,15 +79,18 @@ const TradeStatusModal: React.FC<TradeStatusModalProps> = ({
     };
   }, [isOpen, tradeResult, refreshUserData, timeRemaining, isCompleted]);
 
-  const progress = ((tradeResult.duration - timeRemaining) / tradeResult.duration) * 100;
+  const progress = tradeResult.duration > 0 ? ((tradeResult.duration - timeRemaining) / tradeResult.duration) * 100 : 100;
   const priceDifference = currentPrice - tradeResult.entryPrice;
   const isProfitable = tradeResult.type === 'call' ? priceDifference > 0 : priceDifference < 0;
+
+  // Determine if trade is completed (either by timer or by having status)
+  const tradeCompleted = isCompleted || tradeResult.status;
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md mx-auto w-[90%] bg-gradient-to-br from-gray-900 to-black border border-gray-700/50 p-0 overflow-hidden rounded-2xl">
         <div className="relative p-6">
-          {!isCompleted ? (
+          {!tradeCompleted ? (
             // Trading in progress
             <div className="text-center space-y-6">
               <div className="flex items-center justify-center gap-3 mb-4">
@@ -188,18 +197,20 @@ const TradeStatusModal: React.FC<TradeStatusModalProps> = ({
                     tradeResult.status === 'win' ? 'text-green-400' : 'text-red-400'
                   }`}>
                     {tradeResult.status === 'win' 
-                      ? `+₹${tradeResult.win}` 
-                      : `-₹${tradeResult.lost_amount}`
+                      ? `+₹${tradeResult.profit || 0}` 
+                      : `-₹${tradeResult.lost_amount || 0}`
                     }
                   </span>
                 </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-400">New Balance:</span>
-                  <div className="flex items-center gap-2">
-                    <Wallet className="w-4 h-4 text-gray-400" />
-                    <span className="text-white font-bold">₹{tradeResult.new_balance}</span>
+                {tradeResult.new_balance !== undefined && (
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-400">New Balance:</span>
+                    <div className="flex items-center gap-2">
+                      <Wallet className="w-4 h-4 text-gray-400" />
+                      <span className="text-white font-bold">₹{tradeResult.new_balance}</span>
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
 
               <Button
