@@ -145,9 +145,9 @@ const WithdrawPage = () => {
   
   return (
     <MobileLayout showBackButton title="Withdraw Funds" hideFooter>
-      <div className="min-h-screen bg-gray-900">
+      <div className="min-h-screen bg-gray-900 flex flex-col">
         
-        <div className="px-4 py-6 space-y-4">
+        <div className="flex-1 px-4 py-6 space-y-4 pb-24">
 
           {/* Top Row - Balance and Processing Hours */}
           <div className="grid grid-cols-2 gap-3">
@@ -157,7 +157,7 @@ const WithdrawPage = () => {
                 <Wallet className="w-4 h-4 text-[#00e8be] mr-1" />
                 <h3 className="text-white font-medium text-sm">Balance</h3>
               </div>
-              <div className="text-lg font-bold text-white">₹{availableBalance.toLocaleString()}</div>
+              <div className="text-xl font-bold text-white">₹{availableBalance.toLocaleString()}</div>
               <div className="flex items-center text-xs text-gray-400 mt-1">
                 <Target className="w-3 h-3 mr-1" />
                 <span>Min: ₹{minWithdrawal}</span>
@@ -187,25 +187,25 @@ const WithdrawPage = () => {
             <div className="text-center mb-3">
               <div className="flex items-center justify-center mb-1">
                 <ArrowDown className="w-5 h-5 text-[#00e8be] mr-1" />
-                <h2 className="text-white font-semibold">Withdraw Amount</h2>
+                <h2 className="text-white font-semibold text-lg">Withdraw Amount</h2>
               </div>
-              <p className="text-gray-400 text-xs">Enter amount to withdraw</p>
+              <p className="text-gray-400 text-sm">Enter amount to withdraw</p>
             </div>
             
             <div className="relative mb-2">
-              <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-base">₹</span>
+              <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-lg">₹</span>
               <input
                 type="text"
                 inputMode="decimal"
                 value={amount}
                 onChange={handleAmountChange}
-                className="w-full bg-gray-700/50 border border-gray-600/50 rounded-lg pl-8 pr-4 py-2 text-white placeholder-gray-500 focus:border-[#00e8be] focus:outline-none focus:ring-1 focus:ring-white text-base text-center"
+                className="w-full bg-gray-700/50 border border-gray-600/50 rounded-lg pl-8 pr-4 py-3 text-white placeholder-gray-500 focus:border-[#00e8be] focus:outline-none focus:ring-1 focus:ring-white text-lg text-center"
                 placeholder={`Min ${minWithdrawal}`}
                 maxLength={10}
               />
             </div>
 
-            <div className="flex items-center justify-center text-xs text-gray-400">
+            <div className="flex items-center justify-center text-sm text-gray-400">
               <Banknote className="w-3 h-3 mr-1" />
               <span>Fee: {withdrawalFeePercentage}%</span>
             </div>
@@ -214,7 +214,7 @@ const WithdrawPage = () => {
           {/* Withdraw Summary */}
           {amount && (
             <div className="bg-gradient-to-r from-[#00e8be]/10 to-cyan-400/10 rounded-xl p-4 border border-[#00e8be]/30">
-              <h4 className="text-white font-semibold mb-3 text-center text-sm">Withdrawal Summary</h4>
+              <h4 className="text-white font-semibold mb-3 text-center text-base">Withdrawal Summary</h4>
               <div className="space-y-2">
                 <div className="flex justify-between items-center py-1 border-b border-gray-700/50">
                   <span className="text-gray-300 text-sm">Amount</span>
@@ -229,18 +229,44 @@ const WithdrawPage = () => {
                   <span className="text-gray-200 font-medium text-sm">{bankAccount}</span>
                 </div>
                 <div className="flex justify-between items-center py-1">
-                  <span className="text-[#00e8be] font-semibold">You'll Receive</span>
-                  <span className="text-[#00e8be] font-bold">₹{netAmount.toFixed(2)}</span>
+                  <span className="text-[#00e8be] font-semibold text-base">You'll Receive</span>
+                  <span className="text-[#00e8be] font-bold text-base">₹{netAmount.toFixed(2)}</span>
                 </div>
               </div>
             </div>
           )}
 
-          {/* Confirm Button */}
+          {/* Security Notice */}
+          <div className="bg-gray-800/30 rounded-lg border border-gray-700/30 p-3">
+            <div className="flex items-center mb-2">
+              <Shield className="w-4 h-4 text-green-400 mr-2" />
+              <h4 className="text-green-400 font-medium text-sm">Secure Transaction</h4>
+            </div>
+            <p className="text-gray-400 text-xs leading-relaxed">
+              Your withdrawal is secured with bank-grade encryption. Processing times may vary during peak hours.
+            </p>
+          </div>
+
+          {/* Processing Info */}
+          <div className="bg-blue-900/20 rounded-lg border border-blue-700/30 p-3">
+            <div className="flex items-center mb-2">
+              <Clock className="w-4 h-4 text-blue-400 mr-2" />
+              <h4 className="text-blue-400 font-medium text-sm">Processing Times</h4>
+            </div>
+            <div className="space-y-1">
+              <p className="text-blue-300 text-xs">• Weekdays: 8:00 AM - 10:00 AM</p>
+              <p className="text-blue-300 text-xs">• Weekends: Available all day</p>
+              <p className="text-blue-300 text-xs">• Instant processing for VIP members</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Fixed Bottom Button */}
+        <div className="fixed bottom-0 left-0 right-0 bg-gray-900 border-t border-gray-700/50 p-4">
           <button
             onClick={handleConfirm}
             disabled={!isValidAmount || bankAccount === "Not set" || ifscCode === "Not set"}
-            className={`w-full h-12 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center ${
+            className={`w-full h-12 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center text-base ${
               isValidAmount && bankAccount !== "Not set" && ifscCode !== "Not set"
                 ? "bg-[#00e8be] text-gray-900 hover:shadow-lg hover:shadow-[#00e8be]/25 hover:scale-[1.02] active:scale-[0.98]"
                 : "bg-gray-700/50 text-gray-500 cursor-not-allowed"
@@ -254,7 +280,7 @@ const WithdrawPage = () => {
             ) : (
               <>
                 <Wallet className="w-4 h-4 mr-2" />
-                Process Withdrawal
+                Withdrawal
               </>
             )}
           </button>
