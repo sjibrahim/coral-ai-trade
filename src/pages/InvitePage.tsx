@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
-import { Copy, Share2, Users, ArrowLeft, Check, Gift, Zap, TrendingUp } from "lucide-react";
+import { Copy, Share2, Users, ArrowLeft, Check, Gift, Zap, TrendingUp, Crown, Trophy, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTeam } from "@/hooks/use-team";
 import { useNavigate } from "react-router-dom";
@@ -63,6 +63,8 @@ const InvitePage = () => {
   };
 
   const level1Commission = generalSettings?.level_1_commission || "10";
+  const level2Commission = generalSettings?.level_2_commission || "5";
+  const level3Commission = generalSettings?.level_3_commission || "2";
   
   return (
     <div className="min-h-screen bg-gray-900 text-white pb-20">
@@ -80,23 +82,40 @@ const InvitePage = () => {
           </div>
           <div>
             <h1 className="text-xl font-bold text-white">Invite & Earn</h1>
-            <p className="text-sm text-gray-400">Build your network, earn commissions</p>
+            <p className="text-sm text-gray-400">Share your code and grow your team</p>
           </div>
         </div>
       </div>
 
       <div className="p-4 space-y-6">
-        {/* Hero Section */}
+        {/* Commission Levels Hero */}
         <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-teal-500/20 via-cyan-500/10 to-transparent p-6 text-center border border-gray-800">
           <div className="absolute inset-0 bg-gradient-to-r from-teal-500/5 to-transparent"></div>
           <div className="relative z-10">
             <div className="w-16 h-16 bg-gradient-to-r from-teal-400 to-cyan-500 rounded-full flex items-center justify-center mx-auto mb-4">
               <Gift className="w-8 h-8 text-white" />
             </div>
-            <h2 className="text-2xl font-bold mb-2 text-white">Earn {level1Commission}% Commission</h2>
+            <h2 className="text-2xl font-bold mb-2 text-white">Multi-Level Rewards</h2>
             <p className="text-gray-400 text-sm mb-6">
-              Invite friends and earn commission on every trade they make
+              Invite friends and earn from their success
             </p>
+            
+            {/* Commission Cards */}
+            <div className="grid grid-cols-3 gap-3 mb-6">
+              {[
+                { level: "L1", rate: level1Commission, icon: Crown, color: "from-yellow-400 to-orange-500" },
+                { level: "L2", rate: level2Commission, icon: Trophy, color: "from-blue-400 to-cyan-500" },
+                { level: "L3", rate: level3Commission, icon: Star, color: "from-purple-400 to-pink-500" }
+              ].map((item, idx) => (
+                <div key={idx} className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 shadow-sm rounded-xl p-4 text-center">
+                  <div className={`h-8 w-8 rounded-full bg-gradient-to-br ${item.color} flex items-center justify-center mx-auto mb-2`}>
+                    <item.icon className="h-4 w-4 text-white" />
+                  </div>
+                  <p className="text-xs text-gray-400 mb-1">{item.level}</p>
+                  <p className="text-lg font-bold text-white">{item.rate}%</p>
+                </div>
+              ))}
+            </div>
             
             {/* Stats Cards */}
             <div className="grid grid-cols-2 gap-4">

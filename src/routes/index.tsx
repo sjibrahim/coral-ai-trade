@@ -22,6 +22,7 @@ import SalaryRecordPage from '@/pages/SalaryRecordPage';
 import TransactionRecordsPage from '@/pages/TransactionRecordsPage';
 import SecurityPage from '@/pages/SecurityPage';
 import BankDetailsPage from '@/pages/BankDetailsPage';
+import WithdrawalRecordsPage from '@/pages/WithdrawalRecordsPage';
 
 export const router = createBrowserRouter([
   {
@@ -95,6 +96,14 @@ export const router = createBrowserRouter([
   {
     path: '/bank-details',
     element: <ProtectedRoute><BankDetailsPage /></ProtectedRoute>
+  },
+  {
+    path: '/bank',
+    element: <ProtectedRoute><BankDetailsPage /></ProtectedRoute>
+  },
+  {
+    path: '/withdrawal-records',
+    element: <ProtectedRoute><WithdrawalRecordsPage /></ProtectedRoute>
   },
 ]);
 
