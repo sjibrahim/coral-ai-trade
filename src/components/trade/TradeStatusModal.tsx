@@ -34,15 +34,8 @@ const TradeStatusModal: React.FC<TradeStatusModalProps> = ({
   useEffect(() => {
     if (!isOpen) return;
 
-    // If we already have a trade result status, show it immediately
-    if (tradeResult.status) {
-      setIsCompleted(true);
-      setTimeRemaining(0);
-      refreshUserData();
-      return;
-    }
-
-    // Start countdown for new trades
+    // Always start with countdown, regardless of whether we have a result
+    // This ensures the timer runs for the full duration
     setTimeRemaining(tradeResult.duration);
     setIsCompleted(false);
     setCurrentPrice(tradeResult.entryPrice);
@@ -50,6 +43,7 @@ const TradeStatusModal: React.FC<TradeStatusModalProps> = ({
     const intervalId = setInterval(() => {
       setTimeRemaining(prev => {
         if (prev <= 1) {
+          // Only show result after timer completes
           setIsCompleted(true);
           refreshUserData();
           return 0;
@@ -65,7 +59,7 @@ const TradeStatusModal: React.FC<TradeStatusModalProps> = ({
     }, 1000);
 
     return () => clearInterval(intervalId);
-  }, [isOpen, tradeResult, refreshUserData]);
+  }, [isOpen, tradeResult.duration, tradeResult.entryPrice, refreshUserData]);
 
   const progress = tradeResult.duration > 0 ? ((tradeResult.duration - timeRemaining) / tradeResult.duration) * 100 : 100;
   const priceDifference = currentPrice - tradeResult.entryPrice;
@@ -76,7 +70,7 @@ const TradeStatusModal: React.FC<TradeStatusModalProps> = ({
       <DialogContent className="sm:max-w-md mx-auto w-[90%] bg-gradient-to-br from-gray-900 to-black border border-gray-700/50 p-0 overflow-hidden rounded-2xl">
         <div className="relative p-6">
           {!isCompleted ? (
-            // Trading in progress
+            // Trading in progress - show countdown
             <div className="text-center space-y-6">
               <div className="flex items-center justify-center gap-3 mb-4">
                 <div className={`p-3 rounded-full ${
@@ -148,14 +142,12 @@ const TradeStatusModal: React.FC<TradeStatusModalProps> = ({
               </div>
             </div>
           ) : (
-            // Trade completed - show final result
+            // Trade completed - show final result from API
             <div className="text-center space-y-6">
               <div className={`w-20 h-20 mx-auto rounded-full flex items-center justify-center ${
-                (tradeResult.status === 'win' || (!tradeResult.status && isProfitable)) 
-                  ? 'bg-green-500/20' 
-                  : 'bg-red-500/20'
+                tradeResult.status === 'win' ? 'bg-green-500/20' : 'bg-red-500/20'
               }`}>
-                {(tradeResult.status === 'win' || (!tradeResult.status && isProfitable)) ? (
+                {tradeResult.status === 'win' ? (
                   <CheckCircle className="w-10 h-10 text-green-400" />
                 ) : (
                   <XCircle className="w-10 h-10 text-red-400" />
@@ -164,14 +156,9 @@ const TradeStatusModal: React.FC<TradeStatusModalProps> = ({
 
               <div>
                 <h3 className={`text-2xl font-bold ${
-                  (tradeResult.status === 'win' || (!tradeResult.status && isProfitable)) 
-                    ? 'text-green-400' 
-                    : 'text-red-400'
+                  tradeResult.status === 'win' ? 'text-green-400' : 'text-red-400'
                 }`}>
-                  {(tradeResult.status === 'win' || (!tradeResult.status && isProfitable)) 
-                    ? 'Trade Won!' 
-                    : 'Trade Lost'
-                  }
+                  {tradeResult.status === 'win' ? 'Trade Won!' : 'Trade Lost'}
                 </h3>
                 <p className="text-gray-400 text-sm">
                   {tradeResult.type.toUpperCase()} trade on {tradeResult.symbol}
@@ -190,17 +177,11 @@ const TradeStatusModal: React.FC<TradeStatusModalProps> = ({
                 <div className="flex justify-between">
                   <span className="text-gray-400">Result:</span>
                   <span className={`font-bold ${
-                    (tradeResult.status === 'win' || (!tradeResult.status && isProfitable)) 
-                      ? 'text-green-400' 
-                      : 'text-red-400'
+                    tradeResult.status === 'win' ? 'text-green-400' : 'text-red-400'
                   }`}>
                     {tradeResult.status === 'win' 
                       ? `+₹${tradeResult.profit || 0}` 
-                      : tradeResult.status === 'loss'
-                      ? `-₹${tradeResult.lost_amount || 0}`
-                      : isProfitable 
-                        ? `+₹${(tradeResult.amount * 0.8).toFixed(0)}`
-                        : `-₹${tradeResult.amount}`
+                      : `-₹${tradeResult.lost_amount || 0}`
                     }
                   </span>
                 </div>
