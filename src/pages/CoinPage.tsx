@@ -68,9 +68,10 @@ const CoinPage = () => {
         }
         
         // Try to find in mock data by ID or symbol
+        const coinIdAsNumber = parseInt(coinId);
         const mockCrypto = mockCryptoCurrencies.find(c => 
           String(c.id) === coinId || 
-          c.id === parseInt(coinId) || 
+          (c.id === coinIdAsNumber && !isNaN(coinIdAsNumber)) || 
           c.symbol.toLowerCase() === coinId.toLowerCase() ||
           c.name.toLowerCase() === coinId.toLowerCase()
         );
