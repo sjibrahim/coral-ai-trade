@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import BottomNavigation from "@/components/BottomNavigation";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface TeamMember {
   id: number;
@@ -44,6 +45,7 @@ interface ApiTeamMember {
 
 const TeamPage = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [teamData, setTeamData] = useState<TeamData | null>(null);
   const [apiTeamMembers, setApiTeamMembers] = useState<ApiTeamMember[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -71,7 +73,7 @@ const TeamPage = () => {
               total_members,
               direct_members,
               total_commission,
-              referral_code: "REF12345", // You might need to get this from elsewhere
+              referral_code: user?.referral_code || "REF12345",
               team_members: []
             });
           } else {
@@ -96,11 +98,12 @@ const TeamPage = () => {
     };
 
     fetchTeamData();
-  }, [toast]);
+  }, [toast, user]);
 
   const copyReferralCode = () => {
-    if (teamData?.referral_code) {
-      navigator.clipboard.writeText(`${window.location.origin}/register?ref=${teamData.referral_code}`);
+    const referralCode = user?.referral_code || teamData?.referral_code;
+    if (referralCode) {
+      navigator.clipboard.writeText(`${window.location.origin}/register?ref=${referralCode}`);
       toast({
         title: "Success",
         description: "Referral link copied to clipboard!",
@@ -109,11 +112,12 @@ const TeamPage = () => {
   };
 
   const shareReferralCode = () => {
-    if (teamData?.referral_code && navigator.share) {
+    const referralCode = user?.referral_code || teamData?.referral_code;
+    if (referralCode && navigator.share) {
       navigator.share({
         title: 'Join my trading team',
         text: 'Start trading crypto with my referral link!',
-        url: `${window.location.origin}/register?ref=${teamData.referral_code}`,
+        url: `${window.location.origin}/register?ref=${referralCode}`,
       });
     } else {
       copyReferralCode();
@@ -128,6 +132,8 @@ const TeamPage = () => {
   const handleLevelClick = (level: number) => {
     navigate(`/team-level/${level}`);
   };
+
+  const referralCode = user?.referral_code || teamData?.referral_code;
 
   return (
     <div className="flex flex-col h-screen bg-gray-900 text-white">
@@ -153,14 +159,6 @@ const TeamPage = () => {
           <div className="relative overflow-hidden bg-gradient-to-br from-gray-800 via-gray-900 to-black">
             <div className="absolute inset-0 bg-gradient-to-r from-teal-500/10 to-cyan-500/10"></div>
             <div className="relative px-4 py-6">
-              <div className="text-center mb-6">
-                <div className="w-16 h-16 bg-gradient-to-r from-teal-400 to-cyan-500 rounded-full flex items-center justify-center mx-auto mb-4 shadow-2xl">
-                  <Trophy className="w-8 h-8 text-white" />
-                </div>
-                <h1 className="text-xl font-bold text-white mb-2">Build Your Empire</h1>
-                <p className="text-gray-300 text-sm">Invite friends and earn commissions together</p>
-              </div>
-
               {/* Stats Grid */}
               <div className="grid grid-cols-2 gap-3 mb-6">
                 <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-4 border border-gray-700/50">
@@ -188,7 +186,7 @@ const TeamPage = () => {
               </div>
 
               {/* Referral Code Section */}
-              {teamData?.referral_code && (
+              {referralCode && (
                 <div className="bg-gradient-to-r from-teal-500/20 to-cyan-500/20 rounded-xl p-4 border border-teal-500/30">
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2">
@@ -215,7 +213,7 @@ const TeamPage = () => {
                     </div>
                   </div>
                   <div className="bg-gray-800/50 rounded-lg p-3 font-mono text-center">
-                    <span className="text-teal-400 font-bold text-base tracking-wider break-all">{teamData.referral_code}</span>
+                    <span className="text-teal-400 font-bold text-base tracking-wider break-all">{referralCode}</span>
                   </div>
                 </div>
               )}

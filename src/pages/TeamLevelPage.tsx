@@ -166,19 +166,19 @@ const TeamLevelPage = () => {
                 {teamMembers.map((member, index) => (
                   <Card key={member.id} className="bg-gray-800/50 backdrop-blur-sm border border-gray-700/30">
                     <CardContent className="p-4">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <div className={cn("w-10 h-10 rounded-full flex items-center justify-center bg-gradient-to-r", currentLevelConfig.color)}>
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex items-center gap-3 min-w-0 flex-1">
+                          <div className={cn("w-10 h-10 rounded-full flex items-center justify-center bg-gradient-to-r flex-shrink-0", currentLevelConfig.color)}>
                             <span className="text-white font-semibold text-sm">
                               {index + 1}
                             </span>
                           </div>
                           <div className="min-w-0 flex-1">
                             <div className="flex items-center gap-2 mb-1">
-                              <Phone className="w-4 h-4 text-gray-400" />
-                              <h4 className="font-medium text-white text-sm">{member.phone}</h4>
+                              <Phone className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                              <h4 className="font-medium text-white text-sm truncate">{member.phone}</h4>
                               <span className={cn(
-                                "px-2 py-1 rounded-full text-xs font-medium",
+                                "px-2 py-1 rounded-full text-xs font-medium flex-shrink-0",
                                 member.active_member === "1" 
                                   ? "bg-green-500/20 text-green-400" 
                                   : "bg-red-500/20 text-red-400"
@@ -187,20 +187,20 @@ const TeamLevelPage = () => {
                               </span>
                             </div>
                             <div className="flex items-center gap-4 text-xs text-gray-400">
-                              <span>ID: {member.id}</span>
-                              <span>Invited by: {member.invited_by}</span>
+                              <span className="truncate">ID: {member.id}</span>
+                              <span className="truncate">Invited by: {member.invited_by}</span>
                             </div>
                           </div>
                         </div>
-                        <div className="text-right flex-shrink-0">
-                          <div className="text-sm font-semibold text-green-400">
+                        <div className="text-right flex-shrink-0 min-w-0">
+                          <div className="text-sm font-semibold text-green-400 mb-1">
                             ₹{parseFloat(member.total_deposit || "0").toLocaleString()}
                           </div>
-                          <div className="text-xs text-gray-500">
+                          <div className="text-xs text-gray-500 mb-1">
                             Deposited
                           </div>
                           {parseFloat(member.total_withdraw || "0") > 0 && (
-                            <div className="text-xs text-orange-400 mt-1">
+                            <div className="text-xs text-orange-400">
                               ₹{parseFloat(member.total_withdraw).toLocaleString()} withdrawn
                             </div>
                           )}
