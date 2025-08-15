@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -47,15 +46,20 @@ const QuickTradeModal: React.FC<QuickTradeModalProps> = ({
         duration
       );
 
-      if (response.success && response.data) {
-        // Pass the complete API response to the parent
+      if (response.success) {
+        // Only pass trade setup information - no win/loss results yet
         onTradeComplete({
-          ...response.data,
+          tradeId: response.data?.trade_id || null,
           amount,
           duration,
           symbol: crypto.symbol,
           type: tradeType,
           entryPrice: crypto.price
+        });
+        
+        toast({
+          title: "Trade Placed",
+          description: `${tradeType.toUpperCase()} trade of ₹${amount} placed successfully`,
         });
       } else {
         toast({
