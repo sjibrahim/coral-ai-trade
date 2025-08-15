@@ -85,78 +85,142 @@ const DepositPage = () => {
   
   return (
     <MobileLayout showBackButton title="Recharge" hideFooter>
-      <div className="min-h-screen bg-gray-900 px-4 py-6">
-        {/* Select Channel Section */}
-        <div 
-          className="rounded-lg p-4 border border-gray-800 mb-4"
-          style={{
-            background: 'var(--bg, #1a1a1a)',
-            borderRadius: '.16rem',
-            padding: '.32rem .32rem 0',
-            border: '.02rem solid var(--bg, #2a2a2a)',
-            marginBottom: '.32rem',
-            lineHeight: '1.2'
-          }}
-        >
-          <h2 className="text-gray-300 text-sm mb-3">Select Channel</h2>
-          <div className="pb-3">
-            <Select value={selectedChannel} onValueChange={setSelectedChannel}>
-              <SelectTrigger className="w-full bg-gray-800 border-gray-700 text-gray-200 h-12 rounded-lg">
-                <SelectValue placeholder="Choose payment method" />
-              </SelectTrigger>
-              <SelectContent className="bg-gray-800 border-gray-700 z-50">
-                {paymentMethods.map(method => (
-                  <SelectItem 
-                    key={method.id} 
-                    value={method.id} 
-                    className="text-gray-200 hover:bg-gray-700 focus:bg-gray-700"
-                  >
-                    {method.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+      <div className="min-h-screen bg-gray-900 text-white">
+        
+        {/* Header Info Section */}
+        <div className="px-4 py-4 bg-gray-800/50 border-b border-gray-700/50">
+          <div className="text-center">
+            <h2 className="text-lg font-medium text-gray-200 mb-1">Quick & Secure Deposit</h2>
+            <p className="text-sm text-gray-400">Add funds to your account instantly</p>
           </div>
         </div>
 
-        {/* Enter Amount Section */}
-        <div 
-          className="rounded-lg p-4 border border-gray-800 mb-6"
-          style={{
-            background: 'var(--bg, #1a1a1a)',
-            borderRadius: '.16rem',
-            padding: '.32rem .32rem 0',
-            border: '.02rem solid var(--bg, #2a2a2a)',
-            marginBottom: '.32rem',
-            lineHeight: '1.2'
-          }}
-        >
-          <h2 className="text-gray-300 text-sm mb-3">Enter Amount</h2>
-          <div className="pb-3">
-            <input
-              type="text"
-              inputMode="decimal"
-              value={amount}
-              onChange={handleAmountChange}
-              className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-gray-200 placeholder-gray-500 focus:border-gray-600 focus:outline-none"
-              placeholder={`Min ${minDepositAmount}$`}
-              maxLength={10}
-            />
+        <div className="px-4 py-6 space-y-4">
+          
+          {/* Balance Info */}
+          <div 
+            className="rounded-lg border text-center py-3"
+            style={{
+              background: 'var(--bg, #1a1a1a)',
+              borderRadius: '.16rem',
+              padding: '.32rem',
+              border: '.02rem solid var(--bg, #2a2a2a)',
+              marginBottom: '.32rem',
+              lineHeight: '1.2'
+            }}
+          >
+            <p className="text-xs text-gray-400 mb-1">Current Balance</p>
+            <p className="text-lg font-semibold text-gray-200">${user?.balance || '0.00'}</p>
+          </div>
+
+          {/* Select Channel Section */}
+          <div 
+            className="rounded-lg border"
+            style={{
+              background: 'var(--bg, #1a1a1a)',
+              borderRadius: '.16rem',
+              padding: '.32rem .32rem 0',
+              border: '.02rem solid var(--bg, #2a2a2a)',
+              marginBottom: '.32rem',
+              lineHeight: '1.2'
+            }}
+          >
+            <h3 className="text-gray-300 text-sm mb-3">Select Channel</h3>
+            <div className="pb-3">
+              <Select value={selectedChannel} onValueChange={setSelectedChannel}>
+                <SelectTrigger className="w-full bg-gray-800/50 border-gray-700/50 text-gray-200 h-10 rounded-lg text-sm">
+                  <SelectValue placeholder="Choose payment method" />
+                </SelectTrigger>
+                <SelectContent className="bg-gray-800 border-gray-700 z-50">
+                  {paymentMethods.map(method => (
+                    <SelectItem 
+                      key={method.id} 
+                      value={method.id} 
+                      className="text-gray-200 hover:bg-gray-700 focus:bg-gray-700 text-sm"
+                    >
+                      {method.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          {/* Enter Amount Section */}
+          <div 
+            className="rounded-lg border"
+            style={{
+              background: 'var(--bg, #1a1a1a)',
+              borderRadius: '.16rem',
+              padding: '.32rem .32rem 0',
+              border: '.02rem solid var(--bg, #2a2a2a)',
+              marginBottom: '.32rem',
+              lineHeight: '1.2'
+            }}
+          >
+            <h3 className="text-gray-300 text-sm mb-3">Enter Amount</h3>
+            <div className="pb-3">
+              <input
+                type="text"
+                inputMode="decimal"
+                value={amount}
+                onChange={handleAmountChange}
+                className="w-full bg-gray-800/50 border border-gray-700/50 rounded-lg px-3 py-2 text-gray-200 placeholder-gray-500 focus:border-gray-600 focus:outline-none text-sm"
+                placeholder={`Min $${minDepositAmount}`}
+                maxLength={10}
+              />
+            </div>
+          </div>
+
+          {/* Quick Amount Buttons */}
+          <div 
+            className="rounded-lg border"
+            style={{
+              background: 'var(--bg, #1a1a1a)',
+              borderRadius: '.16rem',
+              padding: '.32rem',
+              border: '.02rem solid var(--bg, #2a2a2a)',
+              marginBottom: '.32rem',
+              lineHeight: '1.2'
+            }}
+          >
+            <h3 className="text-gray-300 text-sm mb-3">Quick Select</h3>
+            <div className="grid grid-cols-4 gap-2">
+              {[100, 500, 1000, 5000].map(quickAmount => (
+                <button
+                  key={quickAmount}
+                  onClick={() => setAmount(quickAmount.toString())}
+                  className="py-2 px-2 bg-gray-800/30 hover:bg-gray-700/50 border border-gray-700/30 rounded text-xs text-gray-300 transition-colors"
+                >
+                  ${quickAmount}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Confirm Button */}
+          <button
+            onClick={handleConfirm}
+            disabled={!isValidAmount || !selectedChannel}
+            className={`w-full h-11 rounded-lg font-medium transition-all text-sm ${
+              isValidAmount && selectedChannel
+                ? "text-white shadow-lg"
+                : "bg-gray-700/50 text-gray-500 cursor-not-allowed"
+            }`}
+            style={{
+              backgroundColor: isValidAmount && selectedChannel ? '#00e8be' : undefined
+            }}
+          >
+            {isLoading ? 'Processing...' : 'Confirm Deposit'}
+          </button>
+
+          {/* Info Note */}
+          <div className="text-center mt-4">
+            <p className="text-xs text-gray-500">
+              Deposits are processed instantly. Contact support if you need help.
+            </p>
           </div>
         </div>
-
-        {/* Confirm Button */}
-        <button
-          onClick={handleConfirm}
-          disabled={!isValidAmount || !selectedChannel}
-          className={`w-full h-12 rounded-lg font-medium transition-all ${
-            isValidAmount && selectedChannel
-              ? "bg-green-600 hover:bg-green-700 text-white"
-              : "bg-gray-700 text-gray-500 cursor-not-allowed"
-          }`}
-        >
-          Confirm
-        </button>
       </div>
     </MobileLayout>
   );
