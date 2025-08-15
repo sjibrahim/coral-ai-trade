@@ -115,44 +115,44 @@ const SecurityPage = () => {
   
   return (
     <MobileLayout showBackButton title="Security Settings">
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-gray-900">
         <div className="p-4">
           {/* Header Card */}
-          <Card className="bg-gradient-to-r from-emerald-500 to-green-600 text-white border-0 shadow-lg mb-6">
+          <Card className="bg-gradient-to-r from-gray-800 to-gray-700 text-white border-gray-600 shadow-2xl mb-6">
             <CardContent className="p-6 text-center">
-              <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3">
-                <Shield className="w-6 h-6 text-white" />
+              <div className="w-16 h-16 bg-gradient-to-r from-emerald-500 to-green-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                <Shield className="w-8 h-8 text-white" />
               </div>
-              <h1 className="text-lg font-bold mb-1">Security Settings</h1>
-              <p className="text-emerald-100 text-sm">Keep your account secure</p>
+              <h1 className="text-xl font-bold mb-2">Security Settings</h1>
+              <p className="text-gray-300 text-sm">Protect your account with a strong password</p>
             </CardContent>
           </Card>
 
           <form onSubmit={handleSubmit} className="space-y-6">
-            <Card className="bg-white shadow-sm">
+            <Card className="bg-gray-800 border-gray-700 shadow-xl">
               <CardContent className="p-6 space-y-6">
                 <div className="text-center mb-6">
-                  <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                    <Key className="w-8 h-8 text-emerald-600" />
+                  <div className="w-20 h-20 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                    <Key className="w-10 h-10 text-white" />
                   </div>
-                  <h2 className="text-lg font-semibold text-gray-900">Change Password</h2>
-                  <p className="text-sm text-gray-600">Update your password to keep your account secure</p>
+                  <h2 className="text-xl font-semibold text-white">Change Password</h2>
+                  <p className="text-gray-400 text-sm mt-2">Update your password to keep your account secure</p>
                 </div>
 
                 <div className="relative">
-                  <label className="block text-gray-700 text-base font-medium mb-2">Current Password</label>
+                  <label className="block text-gray-300 text-base font-medium mb-3">Current Password</label>
                   <input
                     type={showPasswords.current ? "text" : "password"}
                     name="currentPassword"
                     value={formData.currentPassword}
                     onChange={handleChange}
-                    className="w-full bg-gray-50 border border-gray-200 p-4 pr-12 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                    className="w-full bg-gray-700 border border-gray-600 p-4 pr-12 rounded-lg text-base text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200"
                     placeholder="Enter current password"
                     required
                   />
                   <button 
                     type="button"
-                    className="absolute right-4 top-12 text-gray-400 hover:text-gray-600"
+                    className="absolute right-4 top-14 text-gray-400 hover:text-gray-200 transition-colors duration-200"
                     onClick={() => togglePasswordVisibility('current')}
                   >
                     {showPasswords.current ? <EyeOff size={20} /> : <Eye size={20} />}
@@ -160,19 +160,19 @@ const SecurityPage = () => {
                 </div>
                 
                 <div className="relative">
-                  <label className="block text-gray-700 text-base font-medium mb-2">New Password</label>
+                  <label className="block text-gray-300 text-base font-medium mb-3">New Password</label>
                   <input
                     type={showPasswords.new ? "text" : "password"}
                     name="newPassword"
                     value={formData.newPassword}
                     onChange={handleChange}
-                    className="w-full bg-gray-50 border border-gray-200 p-4 pr-12 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                    className="w-full bg-gray-700 border border-gray-600 p-4 pr-12 rounded-lg text-base text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200"
                     placeholder="Enter new password"
                     required
                   />
                   <button 
                     type="button"
-                    className="absolute right-4 top-12 text-gray-400 hover:text-gray-600"
+                    className="absolute right-4 top-14 text-gray-400 hover:text-gray-200 transition-colors duration-200"
                     onClick={() => togglePasswordVisibility('new')}
                   >
                     {showPasswords.new ? <EyeOff size={20} /> : <Eye size={20} />}
@@ -180,34 +180,43 @@ const SecurityPage = () => {
                 </div>
                 
                 <div className="relative">
-                  <label className="block text-gray-700 text-base font-medium mb-2">Confirm New Password</label>
+                  <label className="block text-gray-300 text-base font-medium mb-3">Confirm New Password</label>
                   <input
                     type={showPasswords.confirm ? "text" : "password"}
                     name="confirmPassword"
                     value={formData.confirmPassword}
                     onChange={handleChange}
-                    className="w-full bg-gray-50 border border-gray-200 p-4 pr-12 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                    className="w-full bg-gray-700 border border-gray-600 p-4 pr-12 rounded-lg text-base text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200"
                     placeholder="Confirm new password"
                     required
                   />
                   <button 
                     type="button"
-                    className="absolute right-4 top-12 text-gray-400 hover:text-gray-600"
+                    className="absolute right-4 top-14 text-gray-400 hover:text-gray-200 transition-colors duration-200"
                     onClick={() => togglePasswordVisibility('confirm')}
                   >
                     {showPasswords.confirm ? <EyeOff size={20} /> : <Eye size={20} />}
                   </button>
                 </div>
 
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <div className="bg-gray-700 border border-gray-600 rounded-lg p-5">
                   <div className="flex items-start">
-                    <Lock className="w-5 h-5 text-blue-500 mr-2 mt-0.5" />
+                    <Lock className="w-6 h-6 text-emerald-400 mr-3 mt-1 flex-shrink-0" />
                     <div>
-                      <h3 className="text-sm font-medium text-blue-900 mb-1">Password Requirements</h3>
-                      <ul className="text-sm text-blue-700 space-y-1">
-                        <li>• At least 8 characters long</li>
-                        <li>• Mix of letters and numbers recommended</li>
-                        <li>• Avoid using personal information</li>
+                      <h3 className="text-base font-medium text-white mb-2">Password Requirements</h3>
+                      <ul className="text-sm text-gray-300 space-y-1">
+                        <li className="flex items-center">
+                          <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full mr-2"></span>
+                          At least 8 characters long
+                        </li>
+                        <li className="flex items-center">
+                          <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full mr-2"></span>
+                          Mix of letters and numbers recommended
+                        </li>
+                        <li className="flex items-center">
+                          <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full mr-2"></span>
+                          Avoid using personal information
+                        </li>
                       </ul>
                     </div>
                   </div>
@@ -217,16 +226,19 @@ const SecurityPage = () => {
             
             <button
               type="submit"
-              className="w-full py-4 rounded-lg bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white text-base font-medium shadow-lg transition-all duration-200"
+              className="w-full py-4 rounded-lg bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white text-base font-medium shadow-lg transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
               disabled={isSubmitting}
             >
               {isSubmitting ? (
                 <span className="flex items-center justify-center">
-                  <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></span>
-                  UPDATING...
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                  UPDATING PASSWORD...
                 </span>
               ) : (
-                "UPDATE PASSWORD"
+                <span className="flex items-center justify-center">
+                  <Shield className="w-5 h-5 mr-2" />
+                  UPDATE PASSWORD
+                </span>
               )}
             </button>
           </form>
