@@ -46,21 +46,21 @@ const ActionGrid = () => {
   ];
 
   return (
-    <div className="grid grid-cols-4 gap-4">
+    <div className="grid grid-cols-4 gap-6 p-6">
       {actions.map((action, index) => (
         <Link
           key={index}
           to={action.link}
-          className="group flex flex-col items-center space-y-2 p-3 rounded-xl hover:bg-gray-50/5 transition-all duration-300"
+          className="group flex flex-col items-center space-y-3 p-2 hover:scale-105 transition-all duration-300"
         >
-          <div className="w-12 h-12 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+          <div className="w-14 h-14 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
             <img 
               src={action.iconUrl} 
               alt={action.label}
-              className="w-8 h-8 object-contain"
+              className="w-12 h-12 object-contain"
             />
           </div>
-          <span className="text-xs text-center text-gray-300 font-medium leading-tight">
+          <span className="text-xs text-center text-white font-medium leading-tight max-w-16">
             {action.label}
           </span>
         </Link>
