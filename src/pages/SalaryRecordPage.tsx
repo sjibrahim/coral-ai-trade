@@ -1,10 +1,11 @@
+
 import { useState, useEffect } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { getSalaryRecords } from "@/services/api";
 import { useToast } from "@/hooks/use-toast";
-import { DollarSign, Calendar, CheckCircle, Clock } from "lucide-react";
+import { DollarSign, Calendar, CheckCircle, Clock, Wallet, TrendingUp } from "lucide-react";
 
 interface SalaryRecord {
   id: string;
@@ -36,7 +37,6 @@ const SalaryRecordPage = () => {
             variant: "destructive",
           });
           
-          // Fallback data
           setRecords([
             { id: 'SAL12345', phone: '9876543210', amount: '5000', timestamp: '2023-05-01 12:00:00', status: 'Success' },
             { id: 'SAL12346', phone: '9876543210', amount: '5000', timestamp: '2023-04-01 12:00:00', status: 'Success' },
@@ -50,7 +50,6 @@ const SalaryRecordPage = () => {
           variant: "destructive",
         });
         
-        // Fallback data
         setRecords([
           { id: 'SAL12345', phone: '9876543210', amount: '5000', timestamp: '2023-05-01 12:00:00', status: 'Success' },
           { id: 'SAL12346', phone: '9876543210', amount: '5000', timestamp: '2023-04-01 12:00:00', status: 'Success' },
@@ -74,55 +73,61 @@ const SalaryRecordPage = () => {
     }
   };
   
-  // Calculate total earned
   const totalEarned = records.reduce((total, record) => {
     return total + parseInt(record.amount || '0');
   }, 0);
   
   return (
-    <MobileLayout showBackButton title="Trexo Salary Records">
-      <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-green-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-        <div className="p-4">
-          {/* Header */}
-          <div className="text-center mb-6">
-            <h1 className="text-2xl font-bold text-emerald-600 dark:text-emerald-400 mb-2">Salary History</h1>
-            <p className="text-muted-foreground">Your earnings from Trexo activities</p>
-          </div>
-
-          {/* Total Earned Card */}
-          <Card className="mb-6 bg-gradient-to-br from-emerald-500 to-green-600 border-none shadow-xl overflow-hidden">
-            <CardContent className="p-6 text-white text-center">
-              <div className="flex items-center justify-center mb-2">
-                <DollarSign className="h-6 w-6 mr-2" />
-                <span className="text-emerald-100 text-sm">Total Salary Earned</span>
+    <MobileLayout showBackButton title="Salary">
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-black">
+        {/* Header Section */}
+        <div className="relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-r from-emerald-600/20 to-green-600/20" />
+          <div className="relative px-6 py-8">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-gradient-to-r from-emerald-500 to-green-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                <Wallet className="w-8 h-8 text-white" />
               </div>
-              <p className="text-4xl font-bold mb-2">₹{totalEarned.toLocaleString()}</p>
-              <p className="text-emerald-100 text-sm">From {records.length} salary payments</p>
+              <h1 className="text-2xl font-bold text-white mb-2">Salary History</h1>
+              <p className="text-gray-400">Your earnings from Trexo activities</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="px-6 -mt-4">
+          {/* Total Earned Card */}
+          <Card className="mb-6 bg-gradient-to-br from-emerald-500/20 to-green-600/20 border-emerald-500/30 backdrop-blur-sm">
+            <CardContent className="p-6 text-center">
+              <div className="flex items-center justify-center mb-2">
+                <TrendingUp className="h-6 w-6 mr-2 text-emerald-400" />
+                <span className="text-emerald-300 text-sm">Total Salary Earned</span>
+              </div>
+              <p className="text-4xl font-bold mb-2 text-white">₹{totalEarned.toLocaleString()}</p>
+              <p className="text-emerald-300 text-sm">From {records.length} salary payments</p>
             </CardContent>
           </Card>
           
           {/* Salary Records */}
           {isLoading ? (
-            // Loading skeletons
             <div className="space-y-4">
               {Array(3).fill(0).map((_, idx) => (
-                <Card key={`skeleton-${idx}`} className="bg-white dark:bg-gray-800 border border-emerald-200 dark:border-emerald-800 animate-pulse">
+                <Card key={`skeleton-${idx}`} className="bg-gray-800/50 border-gray-700/50 animate-pulse">
                   <CardContent className="p-5">
                     <div className="flex justify-between mb-2">
-                      <div className="h-5 w-24 bg-emerald-100 dark:bg-emerald-900/30 rounded"></div>
-                      <div className="h-5 w-20 bg-emerald-100 dark:bg-emerald-900/30 rounded"></div>
+                      <div className="h-5 w-24 bg-gray-700 rounded"></div>
+                      <div className="h-5 w-20 bg-gray-700 rounded"></div>
                     </div>
                     <div className="mb-4">
-                      <div className="h-7 w-32 bg-emerald-100 dark:bg-emerald-900/30 rounded"></div>
+                      <div className="h-7 w-32 bg-gray-700 rounded"></div>
                     </div>
                     <div className="flex justify-between">
                       <div>
-                        <div className="h-4 w-16 bg-emerald-100 dark:bg-emerald-900/30 rounded mb-1"></div>
-                        <div className="h-4 w-24 bg-emerald-100 dark:bg-emerald-900/30 rounded"></div>
+                        <div className="h-4 w-16 bg-gray-700 rounded mb-1"></div>
+                        <div className="h-4 w-24 bg-gray-700 rounded"></div>
                       </div>
                       <div className="text-right">
-                        <div className="h-4 w-12 bg-emerald-100 dark:bg-emerald-900/30 rounded mb-1"></div>
-                        <div className="h-4 w-20 bg-emerald-100 dark:bg-emerald-900/30 rounded"></div>
+                        <div className="h-4 w-12 bg-gray-700 rounded mb-1"></div>
+                        <div className="h-4 w-20 bg-gray-700 rounded"></div>
                       </div>
                     </div>
                   </CardContent>
@@ -130,32 +135,32 @@ const SalaryRecordPage = () => {
               ))}
             </div>
           ) : records.length > 0 ? (
-            <div className="space-y-4">
+            <div className="space-y-4 pb-6">
               {records.map((record) => (
                 <Card 
                   key={record.id}
-                  className="bg-white dark:bg-gray-800 border border-emerald-200 dark:border-emerald-800 hover:shadow-md transition-shadow"
+                  className="bg-gray-800/50 border-gray-700/50 hover:bg-gray-800/70 transition-all duration-200 backdrop-blur-sm"
                 >
                   <CardContent className="p-5">
                     <div className="flex justify-between items-center mb-3">
                       <div className="flex items-center">
-                        <div className="w-12 h-12 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center mr-3">
-                          <DollarSign className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
+                        <div className="w-12 h-12 rounded-full bg-gradient-to-r from-emerald-500/20 to-green-500/20 flex items-center justify-center mr-3 border border-emerald-500/30">
+                          <DollarSign className="h-6 w-6 text-emerald-400" />
                         </div>
                         <div>
-                          <p className="text-lg font-semibold text-foreground">Salary #{record.id}</p>
-                          <p className="text-sm text-muted-foreground">Monthly payment</p>
+                          <p className="text-lg font-semibold text-white">Salary #{record.id}</p>
+                          <p className="text-sm text-gray-400">Monthly payment</p>
                         </div>
                       </div>
                       <div className="text-right">
-                        <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">
+                        <p className="text-2xl font-bold text-emerald-400">
                           ₹{parseInt(record.amount).toLocaleString()}
                         </p>
                         <div className={cn(
                           "inline-flex items-center px-2 py-1 rounded-full text-xs font-medium",
                           record.status.toLowerCase() === 'success' 
-                            ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400" 
-                            : "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400"
+                            ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30" 
+                            : "bg-amber-500/20 text-amber-400 border border-amber-500/30"
                         )}>
                           {record.status.toLowerCase() === 'success' ? (
                             <CheckCircle className="h-3 w-3 mr-1" />
@@ -167,25 +172,25 @@ const SalaryRecordPage = () => {
                       </div>
                     </div>
                     
-                    <div className="flex justify-between text-sm text-muted-foreground pt-3 border-t border-emerald-100 dark:border-emerald-800">
+                    <div className="flex justify-between text-sm text-gray-400 pt-3 border-t border-gray-700">
                       <div className="flex items-center">
                         <Calendar className="h-4 w-4 mr-1" />
                         <span>Payment Date</span>
                       </div>
-                      <span className="font-medium">{formatDate(record.timestamp)}</span>
+                      <span className="font-medium text-gray-300">{formatDate(record.timestamp)}</span>
                     </div>
                   </CardContent>
                 </Card>
               ))}
             </div>
           ) : (
-            <Card className="bg-white dark:bg-gray-800 border border-emerald-200 dark:border-emerald-800">
+            <Card className="bg-gray-800/50 border-gray-700/50 backdrop-blur-sm">
               <CardContent className="p-8 text-center">
-                <div className="w-16 h-16 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center mx-auto mb-4">
-                  <DollarSign className="h-8 w-8 text-emerald-600 dark:text-emerald-400" />
+                <div className="w-16 h-16 rounded-full bg-gradient-to-r from-emerald-500/20 to-green-500/20 flex items-center justify-center mx-auto mb-4 border border-emerald-500/30">
+                  <DollarSign className="h-8 w-8 text-emerald-400" />
                 </div>
-                <h3 className="text-lg font-semibold mb-2">No salary records yet</h3>
-                <p className="text-muted-foreground">Complete tasks and activities to earn your first salary on Trexo</p>
+                <h3 className="text-lg font-semibold mb-2 text-white">No salary records yet</h3>
+                <p className="text-gray-400">Complete tasks and activities to earn your first salary on Trexo</p>
               </CardContent>
             </Card>
           )}

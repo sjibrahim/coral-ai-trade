@@ -4,7 +4,7 @@ import MobileLayout from "@/components/layout/MobileLayout";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
-import { FileText, Calendar, CheckCircle, Clock, TrendingUp, TrendingDown } from "lucide-react";
+import { FileText, Calendar, CheckCircle, Clock, TrendingUp, TrendingDown, Target, Zap } from "lucide-react";
 
 interface ContractRecord {
   id: string;
@@ -23,7 +23,6 @@ const ContractRecordsPage = () => {
   useEffect(() => {
     const fetchContractRecords = async () => {
       try {
-        // Simulate API call with mock data
         setTimeout(() => {
           setRecords([
             { id: 'CON12345', type: 'Buy', amount: '10000', timestamp: '2023-05-01 12:00:00', status: 'Success', result: 'Win' },
@@ -58,37 +57,44 @@ const ContractRecordsPage = () => {
   };
   
   return (
-    <MobileLayout showBackButton title="Contract Records">
-      <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-green-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-        <div className="p-4">
-          {/* Header */}
-          <div className="text-center mb-6">
-            <h1 className="text-2xl font-bold text-emerald-600 dark:text-emerald-400 mb-2">Contract History</h1>
-            <p className="text-muted-foreground">Your trading contract records</p>
+    <MobileLayout showBackButton title="Contracts">
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-black">
+        {/* Header Section */}
+        <div className="relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-purple-600/20" />
+          <div className="relative px-6 py-8">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                <Target className="w-8 h-8 text-white" />
+              </div>
+              <h1 className="text-2xl font-bold text-white mb-2">Contract History</h1>
+              <p className="text-gray-400">Your trading contract history</p>
+            </div>
           </div>
+        </div>
 
+        <div className="px-6 -mt-4">
           {/* Contract Records */}
           {isLoading ? (
-            // Loading skeletons
             <div className="space-y-4">
               {Array(3).fill(0).map((_, idx) => (
-                <Card key={`skeleton-${idx}`} className="bg-white dark:bg-gray-800 border border-emerald-200 dark:border-emerald-800 animate-pulse">
+                <Card key={`skeleton-${idx}`} className="bg-gray-800/50 border-gray-700/50 animate-pulse">
                   <CardContent className="p-5">
                     <div className="flex justify-between mb-2">
-                      <div className="h-5 w-24 bg-emerald-100 dark:bg-emerald-900/30 rounded"></div>
-                      <div className="h-5 w-20 bg-emerald-100 dark:bg-emerald-900/30 rounded"></div>
+                      <div className="h-5 w-24 bg-gray-700 rounded"></div>
+                      <div className="h-5 w-20 bg-gray-700 rounded"></div>
                     </div>
                     <div className="mb-4">
-                      <div className="h-7 w-32 bg-emerald-100 dark:bg-emerald-900/30 rounded"></div>
+                      <div className="h-7 w-32 bg-gray-700 rounded"></div>
                     </div>
                     <div className="flex justify-between">
                       <div>
-                        <div className="h-4 w-16 bg-emerald-100 dark:bg-emerald-900/30 rounded mb-1"></div>
-                        <div className="h-4 w-24 bg-emerald-100 dark:bg-emerald-900/30 rounded"></div>
+                        <div className="h-4 w-16 bg-gray-700 rounded mb-1"></div>
+                        <div className="h-4 w-24 bg-gray-700 rounded"></div>
                       </div>
                       <div className="text-right">
-                        <div className="h-4 w-12 bg-emerald-100 dark:bg-emerald-900/30 rounded mb-1"></div>
-                        <div className="h-4 w-20 bg-emerald-100 dark:bg-emerald-900/30 rounded"></div>
+                        <div className="h-4 w-12 bg-gray-700 rounded mb-1"></div>
+                        <div className="h-4 w-20 bg-gray-700 rounded"></div>
                       </div>
                     </div>
                   </CardContent>
@@ -96,36 +102,36 @@ const ContractRecordsPage = () => {
               ))}
             </div>
           ) : records.length > 0 ? (
-            <div className="space-y-4">
+            <div className="space-y-4 pb-6">
               {records.map((record) => (
                 <Card 
                   key={record.id}
-                  className="bg-white dark:bg-gray-800 border border-emerald-200 dark:border-emerald-800 hover:shadow-md transition-shadow"
+                  className="bg-gray-800/50 border-gray-700/50 hover:bg-gray-800/70 transition-all duration-200 backdrop-blur-sm"
                 >
                   <CardContent className="p-5">
                     <div className="flex justify-between items-center mb-3">
                       <div className="flex items-center">
-                        <div className="w-12 h-12 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center mr-3">
+                        <div className="w-12 h-12 rounded-full bg-gradient-to-r from-blue-500/20 to-purple-500/20 flex items-center justify-center mr-3 border border-blue-500/30">
                           {record.type === 'Buy' ? (
-                            <TrendingUp className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
+                            <TrendingUp className="h-6 w-6 text-green-400" />
                           ) : (
-                            <TrendingDown className="h-6 w-6 text-red-600 dark:text-red-400" />
+                            <TrendingDown className="h-6 w-6 text-red-400" />
                           )}
                         </div>
                         <div>
-                          <p className="text-lg font-semibold text-foreground">{record.type} Contract</p>
-                          <p className="text-sm text-muted-foreground">#{record.id}</p>
+                          <p className="text-lg font-semibold text-white">{record.type} Contract</p>
+                          <p className="text-sm text-gray-400">#{record.id}</p>
                         </div>
                       </div>
                       <div className="text-right">
-                        <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">
+                        <p className="text-2xl font-bold text-blue-400">
                           ₹{parseInt(record.amount).toLocaleString()}
                         </p>
                         <div className={cn(
                           "inline-flex items-center px-2 py-1 rounded-full text-xs font-medium",
                           record.result === 'Win' 
-                            ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400" 
-                            : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400"
+                            ? "bg-green-500/20 text-green-400 border border-green-500/30" 
+                            : "bg-red-500/20 text-red-400 border border-red-500/30"
                         )}>
                           {record.result === 'Win' ? (
                             <CheckCircle className="h-3 w-3 mr-1" />
@@ -137,25 +143,25 @@ const ContractRecordsPage = () => {
                       </div>
                     </div>
                     
-                    <div className="flex justify-between text-sm text-muted-foreground pt-3 border-t border-emerald-100 dark:border-emerald-800">
+                    <div className="flex justify-between text-sm text-gray-400 pt-3 border-t border-gray-700">
                       <div className="flex items-center">
                         <Calendar className="h-4 w-4 mr-1" />
                         <span>Contract Date</span>
                       </div>
-                      <span className="font-medium">{formatDate(record.timestamp)}</span>
+                      <span className="font-medium text-gray-300">{formatDate(record.timestamp)}</span>
                     </div>
                   </CardContent>
                 </Card>
               ))}
             </div>
           ) : (
-            <Card className="bg-white dark:bg-gray-800 border border-emerald-200 dark:border-emerald-800">
+            <Card className="bg-gray-800/50 border-gray-700/50 backdrop-blur-sm">
               <CardContent className="p-8 text-center">
-                <div className="w-16 h-16 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center mx-auto mb-4">
-                  <FileText className="h-8 w-8 text-emerald-600 dark:text-emerald-400" />
+                <div className="w-16 h-16 rounded-full bg-gradient-to-r from-blue-500/20 to-purple-500/20 flex items-center justify-center mx-auto mb-4 border border-blue-500/30">
+                  <FileText className="h-8 w-8 text-blue-400" />
                 </div>
-                <h3 className="text-lg font-semibold mb-2">No contract records yet</h3>
-                <p className="text-muted-foreground">Start trading to see your contract history</p>
+                <h3 className="text-lg font-semibold mb-2 text-white">No contracts yet</h3>
+                <p className="text-gray-400">Start trading to see your contract history</p>
               </CardContent>
             </Card>
           )}

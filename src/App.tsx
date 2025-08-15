@@ -56,12 +56,16 @@ const App = () => {
               <Route path="/trade" element={<ProtectedRoute><TradePage /></ProtectedRoute>} />
               <Route path="/coin/:coinId" element={<ProtectedRoute><CoinPage /></ProtectedRoute>} />
               <Route path="/usdt-withdraw" element={<ProtectedRoute><USDTWithdraw /></ProtectedRoute>} />
+              <Route path="/contracts" element={<ProtectedRoute><ContractRecordsPage /></ProtectedRoute>} />
               <Route path="/contract-records" element={<ProtectedRoute><ContractRecordsPage /></ProtectedRoute>} />
+              <Route path="/salary" element={<ProtectedRoute><SalaryRecordPage /></ProtectedRoute>} />
               <Route path="/salary-records" element={<ProtectedRoute><SalaryRecordPage /></ProtectedRoute>} />
+              <Route path="/transactions" element={<ProtectedRoute><TransactionRecordsPage /></ProtectedRoute>} />
               <Route path="/transaction-records" element={<ProtectedRoute><TransactionRecordsPage /></ProtectedRoute>} />
               <Route path="/security" element={<ProtectedRoute><SecurityPage /></ProtectedRoute>} />
               <Route path="/bank-details" element={<ProtectedRoute><BankDetailsPage /></ProtectedRoute>} />
               <Route path="/bank" element={<ProtectedRoute><BankDetailsPage /></ProtectedRoute>} />
+              <Route path="/withdrawals" element={<ProtectedRoute><WithdrawalRecordsPage /></ProtectedRoute>} />
               <Route path="/withdrawal-records" element={<ProtectedRoute><WithdrawalRecordsPage /></ProtectedRoute>} />
             </Routes>
           </TooltipProvider>

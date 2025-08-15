@@ -60,11 +60,11 @@ const TransactionRecordsPage = () => {
   const getStatusIcon = (status: string) => {
     switch (status.toLowerCase()) {
       case 'completed':
-        return <Check className="h-4 w-4 text-emerald-500" />;
+        return <Check className="h-4 w-4 text-emerald-400" />;
       case 'pending':
-        return <Loader2 className="h-4 w-4 text-amber-500 animate-spin" />;
+        return <Loader2 className="h-4 w-4 text-amber-400 animate-spin" />;
       case 'failed':
-        return <AlertTriangle className="h-4 w-4 text-red-500" />;
+        return <AlertTriangle className="h-4 w-4 text-red-400" />;
       default:
         return null;
     }
@@ -78,11 +78,11 @@ const TransactionRecordsPage = () => {
     const isDebit = debitTypes.some(t => type.toLowerCase().includes(t.toLowerCase()));
     
     if (isCredit) {
-      return <TrendingUp className="h-5 w-5 text-emerald-500" />;
+      return <TrendingUp className="h-5 w-5 text-emerald-400" />;
     } else if (isDebit) {
-      return <TrendingDown className="h-5 w-5 text-red-500" />;
+      return <TrendingDown className="h-5 w-5 text-red-400" />;
     } else {
-      return <Activity className="h-5 w-5 text-blue-500" />;
+      return <Activity className="h-5 w-5 text-blue-400" />;
     }
   };
 
@@ -103,79 +103,82 @@ const TransactionRecordsPage = () => {
   };
 
   return (
-    <MobileLayout showBackButton title="Transaction History">
-      <div className="min-h-screen bg-gray-50">
-        <div className="p-4">
-          {/* Header Card */}
-          <Card className="bg-gradient-to-r from-emerald-500 to-green-600 text-white border-0 shadow-lg mb-6">
-            <CardContent className="p-6 text-center">
-              <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3">
-                <Receipt className="w-6 h-6 text-white" />
+    <MobileLayout showBackButton title="Transactions">
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-black">
+        {/* Header Section */}
+        <div className="relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-purple-600/20" />
+          <div className="relative px-6 py-8">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                <Receipt className="w-8 h-8 text-white" />
               </div>
-              <h1 className="text-lg font-bold mb-1">Transaction History</h1>
-              <p className="text-emerald-100 text-sm">Track all your financial activities</p>
-            </CardContent>
-          </Card>
+              <h1 className="text-2xl font-bold text-white mb-2">Transaction History</h1>
+              <p className="text-gray-400">Track all your financial activities</p>
+            </div>
+          </div>
+        </div>
 
+        <div className="px-6 -mt-4">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid grid-cols-3 w-full mb-6 bg-white shadow-sm h-12">
-              <TabsTrigger value="all" className="data-[state=active]:bg-emerald-500 data-[state=active]:text-white text-sm font-medium">All</TabsTrigger>
-              <TabsTrigger value="topup" className="data-[state=active]:bg-emerald-500 data-[state=active]:text-white text-sm font-medium">Deposits</TabsTrigger>
-              <TabsTrigger value="withdraw" className="data-[state=active]:bg-emerald-500 data-[state=active]:text-white text-sm font-medium">Withdrawals</TabsTrigger>
+            <TabsList className="grid grid-cols-3 w-full mb-6 bg-gray-800/50 backdrop-blur-sm h-12 border border-gray-700/50">
+              <TabsTrigger value="all" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-gray-300 text-sm font-medium">All</TabsTrigger>
+              <TabsTrigger value="topup" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-gray-300 text-sm font-medium">Deposits</TabsTrigger>
+              <TabsTrigger value="withdraw" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-gray-300 text-sm font-medium">Withdrawals</TabsTrigger>
             </TabsList>
 
             <TabsContent value={activeTab} className="mt-0">
               {isLoading ? (
                 <div className="space-y-4">
                   {Array(5).fill(0).map((_, idx) => (
-                    <Card key={`skeleton-${idx}`} className="bg-white shadow-sm animate-pulse">
+                    <Card key={`skeleton-${idx}`} className="bg-gray-800/50 border-gray-700/50 animate-pulse">
                       <CardContent className="p-4 space-y-3">
                         <div className="flex justify-between items-center">
-                          <div className="h-4 w-20 bg-gray-200 rounded"></div>
-                          <div className="h-4 w-16 bg-gray-200 rounded"></div>
+                          <div className="h-4 w-20 bg-gray-700 rounded"></div>
+                          <div className="h-4 w-16 bg-gray-700 rounded"></div>
                         </div>
-                        <div className="h-6 w-24 bg-gray-200 rounded"></div>
-                        <div className="h-3 w-32 bg-gray-200 rounded"></div>
+                        <div className="h-6 w-24 bg-gray-700 rounded"></div>
+                        <div className="h-3 w-32 bg-gray-700 rounded"></div>
                       </CardContent>
                     </Card>
                   ))}
                 </div>
               ) : error ? (
-                <Card className="bg-red-50 border-red-200">
+                <Card className="bg-red-500/10 border-red-500/20 backdrop-blur-sm">
                   <CardContent className="flex flex-col items-center justify-center py-12">
-                    <AlertTriangle className="h-12 w-12 text-red-500 mb-4" />
-                    <p className="text-red-600 text-center">{error}</p>
+                    <AlertTriangle className="h-12 w-12 text-red-400 mb-4" />
+                    <p className="text-red-400 text-center">{error}</p>
                   </CardContent>
                 </Card>
               ) : filteredTransactions.length === 0 ? (
-                <Card className="bg-white shadow-sm">
+                <Card className="bg-gray-800/50 border-gray-700/50 backdrop-blur-sm">
                   <CardContent className="flex flex-col items-center justify-center py-16">
-                    <Calendar className="h-16 w-16 text-gray-300 mb-4" />
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">No transactions yet</h3>
-                    <p className="text-gray-500 text-center">Start trading to see your transaction history</p>
+                    <Calendar className="h-16 w-16 text-gray-500 mb-4" />
+                    <h3 className="text-lg font-semibold text-white mb-2">No transactions yet</h3>
+                    <p className="text-gray-400 text-center">Start trading to see your transaction history</p>
                   </CardContent>
                 </Card>
               ) : (
-                <div className="space-y-3 pb-24">
+                <div className="space-y-3 pb-6">
                   {filteredTransactions.map((transaction) => (
-                    <Card key={transaction.txnid} className="bg-white shadow-sm hover:shadow-md transition-shadow duration-200">
+                    <Card key={transaction.txnid} className="bg-gray-800/50 border-gray-700/50 hover:bg-gray-800/70 transition-all duration-200 backdrop-blur-sm">
                       <CardContent className="p-4">
                         <div className="flex items-center justify-between mb-3">
                           <div className="flex items-center">
-                            <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center mr-3">
+                            <div className="w-12 h-12 rounded-full bg-gray-700/50 flex items-center justify-center mr-3 border border-gray-600/50">
                               {getTypeIcon(transaction.txn_type)}
                             </div>
                             <div>
-                              <p className="font-semibold text-gray-900 text-base">
+                              <p className="font-semibold text-white text-base">
                                 {transaction.txn_type.replace(/^\w/, c => c.toUpperCase())}
                               </p>
-                              <p className="text-sm text-gray-500">#{transaction.txnid}</p>
+                              <p className="text-sm text-gray-400">#{transaction.txnid}</p>
                             </div>
                           </div>
                           <div className="text-right">
                             <p className={cn(
                               "font-bold text-lg",
-                              isDebitTransaction(transaction.txn_type) ? "text-red-500" : "text-emerald-500"
+                              isDebitTransaction(transaction.txn_type) ? "text-red-400" : "text-emerald-400"
                             )}>
                               {isDebitTransaction(transaction.txn_type) ? '-' : '+'}₹{transaction.amount.toLocaleString()}
                             </p>
@@ -188,15 +191,15 @@ const TransactionRecordsPage = () => {
                             <span className={cn(
                               "ml-2 px-3 py-1 rounded-full text-sm font-medium",
                               transaction.status.toLowerCase() === 'completed' 
-                                ? "bg-emerald-100 text-emerald-700"
+                                ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
                                 : transaction.status.toLowerCase() === 'pending'
-                                ? "bg-amber-100 text-amber-700"
-                                : "bg-red-100 text-red-700"
+                                ? "bg-amber-500/20 text-amber-400 border border-amber-500/30"
+                                : "bg-red-500/20 text-red-400 border border-red-500/30"
                             )}>
                               {transaction.status}
                             </span>
                           </div>
-                          <div className="text-gray-500 text-sm">
+                          <div className="text-gray-400 text-sm">
                             {formatDate(transaction.created_at)}
                           </div>
                         </div>
