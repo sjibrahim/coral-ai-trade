@@ -13,6 +13,8 @@ import QuickTradeModal from '@/components/trade/QuickTradeModal';
 import TradeStatusModal from '@/components/trade/TradeStatusModal';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from '@/hooks/use-toast';
+import { getCoin } from '@/services/api';
+import { mockCryptoCurrencies } from '@/data/mockData';
 
 interface CryptoData {
   id: string | number;
@@ -38,19 +40,87 @@ const CoinPage = () => {
   const [showTradeStatus, setShowTradeStatus] = useState(false);
   const [tradeType, setTradeType] = useState<'call' | 'put'>('call');
   const [tradeResult, setTradeResult] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
   
-  // Get crypto data from navigation state or use default
-  const crypto: CryptoData = location.state?.crypto || {
-    id: coinId || 'bitcoin',
-    name: 'Bitcoin',
-    symbol: 'BTC',
-    price: 65432.50,
-    change: 2.34,
-    logo: 'https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/128/color/btc.png',
-    market_cap: '$1.2T',
-    volume_24h: '$28.5B',
-    rank: '1'
-  };
+  // Initialize with loading state
+  const [crypto, setCrypto] = useState<CryptoData>({
+    id: coinId || '',
+    name: 'Loading...',
+    symbol: '',
+    price: 0,
+    change: 0,
+    logo: '',
+    market_cap: '',
+    volume_24h: '',
+    rank: ''
+  });
+
+  // Fetch coin data based on coinId
+  useEffect(() => {
+    const fetchCoinData = async () => {
+      if (!coinId) return;
+      
+      try {
+        setIsLoading(true);
+        const token = localStorage.getItem('auth_token');
+        
+        // Try to get from navigation state first
+        const cachedCrypto = location.state?.crypto;
+        if (cachedCrypto && cachedCrypto.id === coinId) {
+          setCrypto(cachedCrypto);
+          setIsLoading(false);
+          return;
+        }
+        
+        // Fetch from API if we have a token
+        if (token) {
+          const response = await getCoin(token, coinId);
+          
+          if (response.status && response.data) {
+            const coinData = response.data;
+            setCrypto({
+              id: coinData.id,
+              name: coinData.name,
+              symbol: coinData.symbol,
+              binance_symbol: coinData.binance_symbol,
+              price: parseFloat(coinData.price),
+              change: 0, // Will be updated by live price feeds
+              logo: coinData.logo,
+              market_cap: coinData.market_cap,
+              volume_24h: coinData.volume_24h,
+              rank: coinData.rank,
+            });
+          } else {
+            // Fallback to mock data
+            const mockCrypto = mockCryptoCurrencies.find(c => c.id === coinId);
+            if (mockCrypto) {
+              setCrypto(mockCrypto);
+            }
+          }
+        } else {
+          // Fallback to mock data if no token
+          const mockCrypto = mockCryptoCurrencies.find(c => c.id === coinId);
+          if (mockCrypto) {
+            setCrypto(mockCrypto);
+          }
+        }
+        
+        setIsLoading(false);
+      } catch (error) {
+        console.error('Error fetching coin data:', error);
+        
+        // Fallback to mock data on error
+        const mockCrypto = mockCryptoCurrencies.find(c => c.id === coinId);
+        if (mockCrypto) {
+          setCrypto(mockCrypto);
+        }
+        
+        setIsLoading(false);
+      }
+    };
+
+    fetchCoinData();
+  }, [coinId, location.state]);
 
   const isPositive = crypto.change >= 0;
 
@@ -74,6 +144,17 @@ const CoinPage = () => {
     setShowQuickTrade(false);
     setShowTradeStatus(true);
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-black text-white flex items-center justify-center">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+          <span className="text-sm text-gray-400">Loading {coinId}...</span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-black text-white pb-24">
@@ -151,7 +232,7 @@ const CoinPage = () => {
           <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl border border-gray-700/30 overflow-hidden shadow-lg">
             <div className="h-80 bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center">
               <iframe
-                src="/trade-graph.html"
+                src={`/trade-graph.html?symbol=${crypto.binance_symbol || crypto.symbol + 'usdt'}&interval=15m`}
                 className="w-full h-full border-0"
                 title="Live Trading Chart"
                 style={{ background: 'transparent' }}
@@ -186,9 +267,9 @@ const CoinPage = () => {
                 <span className="text-xs text-gray-400">24h Volume</span>
               </div>
               <div className="text-xl font-bold text-white">
-                {crypto.volume_24h}
+                {crypto.volume_24h || 'N/A'}
               </div>
-              <div className="text-sm text-gray-400">Market Cap: {crypto.market_cap}</div>
+              <div className="text-sm text-gray-400">Market Cap: {crypto.market_cap || 'N/A'}</div>
             </div>
           </div>
         </div>
@@ -203,7 +284,7 @@ const CoinPage = () => {
             <div className="grid grid-cols-3 gap-4">
               <div className="text-center">
                 <div className="text-xs text-gray-400 mb-1">Rank</div>
-                <div className="text-sm font-bold text-white">#{crypto.rank}</div>
+                <div className="text-sm font-bold text-white">#{crypto.rank || 'N/A'}</div>
               </div>
               <div className="text-center">
                 <div className="text-xs text-gray-400 mb-1">Active Traders</div>
@@ -282,11 +363,11 @@ const CoinPage = () => {
         <div className="grid grid-cols-2 gap-3 max-w-md mx-auto">
           <button
             onClick={() => handleTradeClick('call')}
-            className="group relative overflow-hidden bg-gradient-to-br from-green-500 via-green-600 to-emerald-600 hover:from-green-400 hover:via-green-500 hover:to-emerald-500 text-white font-bold py-3 px-3 rounded-lg shadow-lg transform transition-all duration-300 hover:scale-105 hover:shadow-green-500/25 active:scale-95"
+            className="group relative overflow-hidden bg-gradient-to-br from-green-500 via-green-600 to-emerald-600 hover:from-green-400 hover:via-green-500 hover:to-emerald-500 text-white font-bold py-2 px-3 rounded-lg shadow-lg transform transition-all duration-300 hover:scale-105 hover:shadow-green-500/25 active:scale-95"
           >
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12 translate-x-[-100%] group-hover:translate-x-[200%] transition-transform duration-1000"></div>
             <div className="relative z-10 flex items-center justify-center gap-2">
-              <div className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center">
+              <div className="w-4 h-4 rounded-full bg-white/20 flex items-center justify-center">
                 <TrendingUp className="w-3 h-3" />
               </div>
               <div>
@@ -298,11 +379,11 @@ const CoinPage = () => {
 
           <button
             onClick={() => handleTradeClick('put')}
-            className="group relative overflow-hidden bg-gradient-to-br from-red-500 via-red-600 to-rose-600 hover:from-red-400 hover:via-red-500 hover:to-rose-500 text-white font-bold py-3 px-3 rounded-lg shadow-lg transform transition-all duration-300 hover:scale-105 hover:shadow-red-500/25 active:scale-95"
+            className="group relative overflow-hidden bg-gradient-to-br from-red-500 via-red-600 to-rose-600 hover:from-red-400 hover:via-red-500 hover:to-rose-500 text-white font-bold py-2 px-3 rounded-lg shadow-lg transform transition-all duration-300 hover:scale-105 hover:shadow-red-500/25 active:scale-95"
           >
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12 translate-x-[-100%] group-hover:translate-x-[200%] transition-transform duration-1000"></div>
             <div className="relative z-10 flex items-center justify-center gap-2">
-              <div className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center">
+              <div className="w-4 h-4 rounded-full bg-white/20 flex items-center justify-center">
                 <TrendingDown className="w-3 h-3" />
               </div>
               <div>
