@@ -21,10 +21,12 @@ import CoinPage from '@/pages/CoinPage';
 import USDTWithdraw from '@/pages/USDTWithdraw';
 import ContractRecordsPage from '@/pages/ContractRecordsPage';
 import SalaryRecordPage from '@/pages/SalaryRecordPage';
+import SalaryChartPage from '@/pages/SalaryChartPage';
 import TransactionRecordsPage from '@/pages/TransactionRecordsPage';
 import SecurityPage from '@/pages/SecurityPage';
 import BankDetailsPage from '@/pages/BankDetailsPage';
 import WithdrawalRecordsPage from '@/pages/WithdrawalRecordsPage';
+import CheckinPage from '@/pages/CheckinPage';
 import ProtectedRoute from "@/components/ProtectedRoute";
 
 // Create a new QueryClient outside of the component
@@ -60,6 +62,7 @@ const App = () => {
               <Route path="/contract-records" element={<ProtectedRoute><ContractRecordsPage /></ProtectedRoute>} />
               <Route path="/salary" element={<ProtectedRoute><SalaryRecordPage /></ProtectedRoute>} />
               <Route path="/salary-records" element={<ProtectedRoute><SalaryRecordPage /></ProtectedRoute>} />
+              <Route path="/salary-chart" element={<ProtectedRoute><SalaryChartPage /></ProtectedRoute>} />
               <Route path="/transactions" element={<ProtectedRoute><TransactionRecordsPage /></ProtectedRoute>} />
               <Route path="/transaction-records" element={<ProtectedRoute><TransactionRecordsPage /></ProtectedRoute>} />
               <Route path="/security" element={<ProtectedRoute><SecurityPage /></ProtectedRoute>} />
@@ -67,6 +70,7 @@ const App = () => {
               <Route path="/bank" element={<ProtectedRoute><BankDetailsPage /></ProtectedRoute>} />
               <Route path="/withdrawals" element={<ProtectedRoute><WithdrawalRecordsPage /></ProtectedRoute>} />
               <Route path="/withdrawal-records" element={<ProtectedRoute><WithdrawalRecordsPage /></ProtectedRoute>} />
+              <Route path="/checkin" element={<ProtectedRoute><CheckinPage /></ProtectedRoute>} />
             </Routes>
           </TooltipProvider>
         </AuthProvider>

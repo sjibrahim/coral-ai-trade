@@ -1,85 +1,64 @@
 
-import { Link, useLocation } from "react-router-dom";
-import { cn } from "@/lib/utils";
-import { Home, Users, TrendingUp, BarChart3, User } from "lucide-react";
+import { useNavigate, useLocation } from 'react-router-dom';
+import { Home, BarChart3, Users, User, MessageCircle } from 'lucide-react';
 
 const BottomNavigation = () => {
+  const navigate = useNavigate();
   const location = useLocation();
-  
-  const isActive = (path: string) => {
-    return location.pathname === path;
-  };
 
   const navItems = [
-    {
-      icon: Home,
-      label: "Home",
-      path: "/home",
-      isCenter: false
+    { 
+      icon: Home, 
+      label: 'Home', 
+      path: '/home',
+      onClick: () => navigate('/home')
     },
-    {
-      icon: Users,
-      label: "Team",
-      path: "/team",
-      isCenter: false
+    { 
+      icon: BarChart3, 
+      label: 'Market', 
+      path: '/market',
+      onClick: () => navigate('/market')
     },
-    {
-      icon: TrendingUp,
-      label: "Trade",
-      path: "/trade",
-      isCenter: true
+    { 
+      icon: MessageCircle, 
+      label: 'Telegram', 
+      path: '/telegram',
+      onClick: () => window.open('https://t.me/coraltrading', '_blank')
     },
-    {
-      icon: BarChart3,
-      label: "Invest",
-      path: "/market",
-      isCenter: false
+    { 
+      icon: Users, 
+      label: 'Team', 
+      path: '/team',
+      onClick: () => navigate('/team')
     },
-    {
-      icon: User,
-      label: "Profile",
-      path: "/profile",
-      isCenter: false
-    }
+    { 
+      icon: User, 
+      label: 'Profile', 
+      path: '/profile',
+      onClick: () => navigate('/profile')
+    },
   ];
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 bg-gray-900/95 backdrop-blur-xl border-t border-gray-700">
-      <div className="flex items-center justify-around py-2 px-4">
-        {navItems.map((item, index) => {
-          const IconComponent = item.icon;
+    <div className="fixed bottom-0 left-0 right-0 bg-gray-900/95 backdrop-blur-lg border-t border-gray-800/50 z-50">
+      <div className="flex items-center justify-around px-2 py-2">
+        {navItems.map((item) => {
+          const Icon = item.icon;
+          const isActive = location.pathname === item.path;
+          
           return (
-            <Link
-              key={index}
-              to={item.path}
-              className={cn(
-                "flex flex-col items-center justify-center py-2 px-3 rounded-xl transition-all duration-300",
-                item.isCenter && "relative"
-              )}
+            <button
+              key={item.path}
+              onClick={item.onClick}
+              className={`flex flex-col items-center justify-center p-2 rounded-lg transition-all duration-200 min-w-[60px] ${
+                isActive 
+                  ? 'text-teal-400 bg-teal-400/10' 
+                  : 'text-gray-400 hover:text-gray-300 hover:bg-gray-800/50'
+              }`}
             >
-              {item.isCenter ? (
-                <div className="w-14 h-14 bg-gradient-to-r from-teal-400 to-cyan-500 rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 -mt-6">
-                  <IconComponent className="w-6 h-6 text-white" />
-                </div>
-              ) : (
-                <div className={cn(
-                  "w-6 h-6 mb-1 transition-colors duration-300 flex items-center justify-center",
-                  isActive(item.path) ? "opacity-100" : "opacity-60"
-                )}>
-                  <IconComponent className={cn(
-                    "w-6 h-6",
-                    isActive(item.path) ? "text-white" : "text-gray-400"
-                  )} />
-                </div>
-              )}
-              <span className={cn(
-                "text-xs font-medium transition-colors duration-300",
-                item.isCenter ? "text-white mt-1" : 
-                isActive(item.path) ? "text-teal-400" : "text-gray-400"
-              )}>
-                {item.label}
-              </span>
-            </Link>
+              <Icon className="w-5 h-5 mb-1" />
+              <span className="text-xs font-medium">{item.label}</span>
+            </button>
           );
         })}
       </div>
