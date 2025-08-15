@@ -5,9 +5,9 @@ import MobileLayout from "@/components/layout/MobileLayout";
 import { Button } from "@/components/ui/button";
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from "@/hooks/use-toast";
+import BottomNavigation from "@/components/BottomNavigation";
 import { 
   CreditCard, Lock, Calendar, Gift,
-  Home, Users, Monitor, TrendingUp, User,
   Copy, Check, ArrowRight, ScrollText, Banknote, CreditCard as CardIcon, TrendingDown
 } from "lucide-react";
 
@@ -34,31 +34,9 @@ const ProfilePage = () => {
     setTimeout(() => setCopiedCode(false), 2000);
   };
 
-  const navItems = [
-    { icon: Home, label: "Home", path: "/home" },
-    { icon: Users, label: "Team", path: "/team" },
-    { icon: Monitor, label: "Trade", path: "/trade" },
-    { icon: TrendingUp, label: "Invest", path: "/market" },
-    { icon: User, label: "Profile", path: "/profile", active: true }
-  ];
-
   return (
     <MobileLayout hideNavbar hideFooter>
       <div className="min-h-screen bg-gray-900 text-white relative pb-24">
-        {/* Background Pattern */}
-        <div className="absolute inset-0 bg-gray-900">
-          <div className="absolute inset-0 opacity-10" style={{
-            backgroundImage: `
-              linear-gradient(45deg, #14b8a6 25%, transparent 25%), 
-              linear-gradient(-45deg, #14b8a6 25%, transparent 25%), 
-              linear-gradient(45deg, transparent 75%, #14b8a6 75%), 
-              linear-gradient(-45deg, transparent 75%, #14b8a6 75%)
-            `,
-            backgroundSize: '30px 30px',
-            backgroundPosition: '0 0, 0 15px, 15px -15px, -15px 0px'
-          }}></div>
-        </div>
-
         <div className="relative z-10 p-4">
           {/* Header */}
           <div className="flex items-center justify-between mb-6 pt-8">
@@ -244,34 +222,14 @@ const ProfilePage = () => {
           </div>
         </div>
 
-        {/* Bottom Navigation - Fixed positioning and proper functionality */}
-        <div className="fixed bottom-0 left-0 right-0 bg-gray-900/95 backdrop-blur-xl border-t border-gray-700/50 px-4 z-50">
-          <div className="flex items-center justify-around py-3">
-            {navItems.map((item, index) => (
-              <button
-                key={index}
-                onClick={() => navigate(item.path)}
-                className={`flex flex-col items-center justify-center py-2 px-3 transition-all duration-300 ${
-                  item.active ? 'text-teal-400' : 'text-gray-400 hover:text-teal-300'
-                }`}
-              >
-                {item.path === '/trade' ? (
-                  <div className="w-14 h-14 bg-gradient-to-r from-teal-400 to-cyan-400 rounded-full flex items-center justify-center shadow-lg -mt-6 mb-1">
-                    <item.icon className="w-6 h-6 text-white" />
-                  </div>
-                ) : (
-                  <item.icon className={`w-6 h-6 mb-1 ${item.active ? 'text-teal-400' : 'text-gray-400'}`} />
-                )}
-                <span className={`text-xs font-medium ${
-                  item.path === '/trade' ? 'text-white' : 
-                  item.active ? 'text-teal-400' : 'text-gray-400'
-                }`}>
-                  {item.label}
-                </span>
-              </button>
-            ))}
-          </div>
+        {/* Background decoration */}
+        <div className="fixed inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute -top-32 -right-32 w-64 h-64 bg-gradient-to-br from-teal-500/10 to-cyan-500/10 rounded-full blur-3xl"></div>
+          <div className="absolute -bottom-32 -left-32 w-64 h-64 bg-gradient-to-tr from-blue-500/10 to-teal-500/10 rounded-full blur-3xl"></div>
         </div>
+
+        {/* Bottom Navigation */}
+        <BottomNavigation />
       </div>
     </MobileLayout>
   );

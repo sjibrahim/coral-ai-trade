@@ -1,8 +1,8 @@
+
 import { useState, useEffect } from "react";
 import { Bot, Calendar, Gamepad2, Smartphone } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { getMarketData } from "@/services/api";
-import PromotionalBanner from "@/components/PromotionalBanner";
 import ActionGrid from "@/components/ActionGrid";
 import PromotionalVideo from "@/components/PromotionalVideo";
 import CoinsList from "@/components/CoinsList";
@@ -89,9 +89,6 @@ const HomePage = () => {
 
         {/* Image Slider */}
         <ImageSlider />
-
-        {/* Promotional Banner Carousel */}
-        <PromotionalBanner />
 
         {/* Action Grid with Blur Background */}
         <div className="px-4 mb-6">
