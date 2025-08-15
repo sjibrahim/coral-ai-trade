@@ -58,8 +58,8 @@ const CoinPage = () => {
         const cachedCrypto = location.state?.crypto;
         if (cachedCrypto && (
           String(cachedCrypto.id) === coinId || 
-          cachedCrypto.id === parseInt(coinId) ||
-          String(cachedCrypto.id) === String(parseInt(coinId))
+          String(cachedCrypto.id) === String(parseInt(coinId)) ||
+          cachedCrypto.symbol?.toLowerCase() === coinId.toLowerCase()
         )) {
           console.log('Using cached crypto data:', cachedCrypto);
           setCrypto(cachedCrypto);
@@ -71,7 +71,7 @@ const CoinPage = () => {
         const coinIdAsNumber = parseInt(coinId);
         const mockCrypto = mockCryptoCurrencies.find(c => 
           String(c.id) === coinId || 
-          (c.id === coinIdAsNumber && !isNaN(coinIdAsNumber)) || 
+          (!isNaN(coinIdAsNumber) && c.id === coinIdAsNumber) || 
           c.symbol.toLowerCase() === coinId.toLowerCase() ||
           c.name.toLowerCase() === coinId.toLowerCase()
         );
