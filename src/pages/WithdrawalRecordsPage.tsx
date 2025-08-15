@@ -218,7 +218,7 @@ const WithdrawalRecordsPage = () => {
           </div>
         </div>
 
-        <div className="px-4 py-4 space-y-4">
+        <div className="px-4 py-4 space-y-4 bg-background">
           {/* Status Overview */}
           <div className="grid grid-cols-3 gap-2">
             <div className="text-center p-3 bg-emerald-50 dark:bg-emerald-950/50 rounded-lg border border-emerald-100 dark:border-emerald-800">
