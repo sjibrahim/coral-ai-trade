@@ -2,9 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { TrendingUp, TrendingDown, CheckCircle, XCircle, Wallet, Loader2 } from 'lucide-react';
+import { TrendingUp, TrendingDown, CheckCircle, XCircle, Wallet } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
-import { toast } from '@/hooks/use-toast';
 
 interface TradeStatusModalProps {
   isOpen: boolean;
@@ -16,8 +15,8 @@ interface TradeStatusModalProps {
     symbol: string;
     type: 'call' | 'put';
     entryPrice: number;
-    // API result data
-    apiResult?: {
+    // The immediate API result from the trade placement
+    apiResult: {
       status: 'win' | 'loss';
       profit?: number;
       lost_amount?: number;
@@ -47,7 +46,7 @@ const TradeStatusModal: React.FC<TradeStatusModalProps> = ({
     const intervalId = setInterval(() => {
       setTimeRemaining(prev => {
         if (prev <= 1) {
-          // Timer completed - show the result
+          // Timer completed - show the result (no API call needed)
           setIsCompleted(true);
           refreshUserData(); // Refresh user balance
           return 0;
@@ -57,7 +56,7 @@ const TradeStatusModal: React.FC<TradeStatusModalProps> = ({
 
       // Simulate price changes during countdown
       setCurrentPrice(prev => {
-        const change = (Math.random() - 0.5) * 100;
+        const change = (Math.random() - 0.5) * 2;
         return prev + change;
       });
     }, 1000);
@@ -146,12 +145,12 @@ const TradeStatusModal: React.FC<TradeStatusModalProps> = ({
               </div>
             </div>
           ) : (
-            // Trade completed - show final result
+            // Trade completed - show the final result from API
             <div className="text-center space-y-6">
               <div className={`w-20 h-20 mx-auto rounded-full flex items-center justify-center ${
-                tradeResult.apiResult?.status === 'win' ? 'bg-green-500/20' : 'bg-red-500/20'
+                tradeResult.apiResult.status === 'win' ? 'bg-green-500/20' : 'bg-red-500/20'
               }`}>
-                {tradeResult.apiResult?.status === 'win' ? (
+                {tradeResult.apiResult.status === 'win' ? (
                   <CheckCircle className="w-10 h-10 text-green-400" />
                 ) : (
                   <XCircle className="w-10 h-10 text-red-400" />
@@ -160,9 +159,9 @@ const TradeStatusModal: React.FC<TradeStatusModalProps> = ({
 
               <div>
                 <h3 className={`text-2xl font-bold ${
-                  tradeResult.apiResult?.status === 'win' ? 'text-green-400' : 'text-red-400'
+                  tradeResult.apiResult.status === 'win' ? 'text-green-400' : 'text-red-400'
                 }`}>
-                  {tradeResult.apiResult?.status === 'win' ? 'Trade Won!' : 'Trade Lost'}
+                  {tradeResult.apiResult.status === 'win' ? 'Trade Won!' : 'Trade Lost'}
                 </h3>
                 <p className="text-gray-400 text-sm">
                   {tradeResult.type.toUpperCase()} trade on {tradeResult.symbol}
@@ -181,15 +180,15 @@ const TradeStatusModal: React.FC<TradeStatusModalProps> = ({
                 <div className="flex justify-between">
                   <span className="text-gray-400">Result:</span>
                   <span className={`font-bold ${
-                    tradeResult.apiResult?.status === 'win' ? 'text-green-400' : 'text-red-400'
+                    tradeResult.apiResult.status === 'win' ? 'text-green-400' : 'text-red-400'
                   }`}>
-                    {tradeResult.apiResult?.status === 'win' 
+                    {tradeResult.apiResult.status === 'win' 
                       ? `+₹${tradeResult.apiResult.profit || 0}` 
                       : `-₹${tradeResult.apiResult.lost_amount || 0}`
                     }
                   </span>
                 </div>
-                {tradeResult.apiResult?.new_balance !== undefined && (
+                {tradeResult.apiResult.new_balance !== undefined && (
                   <div className="flex justify-between items-center">
                     <span className="text-gray-400">New Balance:</span>
                     <div className="flex items-center gap-2">
