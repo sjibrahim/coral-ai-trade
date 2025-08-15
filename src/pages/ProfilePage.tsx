@@ -36,7 +36,7 @@ const ProfilePage = () => {
 
   return (
     <MobileLayout hideNavbar hideFooter>
-      <div className="min-h-screen bg-background relative pb-24">
+      <div className="min-h-screen bg-gray-900 text-white relative pb-24">
         <div className="relative z-10 p-4">
           {/* Header */}
           <div className="flex items-center justify-between mb-6 pt-8">
@@ -45,13 +45,13 @@ const ProfilePage = () => {
                 <span className="text-xl font-bold text-white">C</span>
               </div>
               <div>
-                <div className="text-foreground font-medium">Coral</div>
-                <div className="text-muted-foreground text-sm">AI Trading Platform</div>
+                <div className="text-white font-medium">Coral</div>
+                <div className="text-gray-400 text-sm">AI Trading Platform</div>
               </div>
             </div>
             <div className="text-right">
-              <div className="text-2xl font-bold text-foreground">{user?.id || '123456'}</div>
-              <div className="text-xs text-muted-foreground">ID</div>
+              <div className="text-2xl font-bold text-white">{user?.id || '123456'}</div>
+              <div className="text-xs text-gray-400">ID</div>
             </div>
           </div>
 
@@ -79,19 +79,19 @@ const ProfilePage = () => {
 
           {/* Balance Cards */}
           <div className="grid grid-cols-3 gap-3 mb-6">
-            <div className="bg-card rounded-xl p-4 text-center border">
-              <div className="text-2xl font-bold text-foreground mb-1">
+            <div className="bg-gray-800 rounded-xl p-4 text-center">
+              <div className="text-2xl font-bold text-white mb-1">
                 ₹{totalBalance.toLocaleString()}
               </div>
-              <div className="text-muted-foreground text-xs">Total Assets</div>
+              <div className="text-gray-400 text-xs">Total Assets</div>
             </div>
-            <div className="bg-card rounded-xl p-4 text-center border">
-              <div className="text-2xl font-bold text-foreground mb-1">₹0</div>
-              <div className="text-muted-foreground text-xs">Recharge</div>
+            <div className="bg-gray-800 rounded-xl p-4 text-center">
+              <div className="text-2xl font-bold text-white mb-1">₹0</div>
+              <div className="text-gray-400 text-xs">Recharge</div>
             </div>
-            <div className="bg-card rounded-xl p-4 text-center border">
-              <div className="text-2xl font-bold text-foreground mb-1">₹0</div>
-              <div className="text-muted-foreground text-xs">Withdraw</div>
+            <div className="bg-gray-800 rounded-xl p-4 text-center">
+              <div className="text-2xl font-bold text-white mb-1">₹0</div>
+              <div className="text-gray-400 text-xs">Withdraw</div>
             </div>
           </div>
 
@@ -137,87 +137,87 @@ const ProfilePage = () => {
             </div>
           </div>
 
-          {/* Compact Menu Grid with Background */}
+          {/* Menu Grid - Updated with background image */}
           <div 
-            className="rounded-xl p-4 mb-8 relative overflow-hidden bg-cover bg-center bg-no-repeat"
+            className="rounded-2xl p-6 mb-8 relative overflow-hidden bg-cover bg-center bg-no-repeat"
             style={{
               backgroundImage: "url('/uploads/assetsbg-BsWPbjIy.png')"
             }}
           >
             {/* Dark overlay for better text readability */}
-            <div className="absolute inset-0 bg-black/40 rounded-xl"></div>
+            <div className="absolute inset-0 bg-black/30 rounded-2xl"></div>
             
-            <div className="relative z-10 grid grid-cols-2 gap-3">
+            <div className="relative z-10 grid grid-cols-4 gap-4">
               <button 
                 onClick={() => navigate('/bank')}
-                className="flex items-center gap-3 p-3 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20 transition-all hover:bg-white/20"
+                className="flex flex-col items-center p-3 transition-all hover:scale-105"
               >
                 <img 
                   src="https://tnl-icons.duckdns.org/green/dash/upload/20241005/c34a3a2fd6b48b9b1b3a5032b50a7aaa.png" 
                   alt="Bank Card" 
-                  className="w-6 h-6"
+                  className="w-8 h-8 mb-2"
                 />
-                <span className="text-sm text-white font-medium">Bank Card</span>
+                <span className="text-xs text-white text-center font-medium">Bank Card</span>
               </button>
 
               <button 
                 onClick={() => navigate('/security')}
-                className="flex items-center gap-3 p-3 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20 transition-all hover:bg-white/20"
+                className="flex flex-col items-center p-3 transition-all hover:scale-105"
               >
-                <Lock className="w-6 h-6 text-white" />
-                <span className="text-sm text-white font-medium">Security</span>
+                <Lock className="w-8 h-8 text-white mb-2" />
+                <span className="text-xs text-white text-center font-medium">Security</span>
               </button>
 
               <button 
                 onClick={() => navigate('/checkin')}
-                className="flex items-center gap-3 p-3 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20 transition-all hover:bg-white/20"
+                className="flex flex-col items-center p-3 transition-all hover:scale-105"
               >
                 <img 
                   src="https://tnl-icons.duckdns.org/green/dash/upload/20241016/aef64e6784fa317a3baee12d67337107.png" 
                   alt="Check-in" 
-                  className="w-6 h-6"
+                  className="w-8 h-8 mb-2"
                 />
-                <span className="text-sm text-white font-medium">Check-in</span>
+                <span className="text-xs text-white text-center font-medium">Check-in</span>
               </button>
 
               <button 
                 onClick={() => navigate('/gift-code')}
-                className="flex items-center gap-3 p-3 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20 transition-all hover:bg-white/20"
+                className="flex flex-col items-center p-3 transition-all hover:scale-105"
               >
-                <Gift className="w-6 h-6 text-white" />
-                <span className="text-sm text-white font-medium">Gift Code</span>
+                <Gift className="w-8 h-8 text-white mb-2" />
+                <span className="text-xs text-white text-center font-medium">Gift Code</span>
               </button>
 
               <button 
                 onClick={() => navigate('/contract-records')}
-                className="flex items-center gap-3 p-3 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20 transition-all hover:bg-white/20"
+                className="flex flex-col items-center p-3 transition-all hover:scale-105"
               >
-                <ScrollText className="w-6 h-6 text-white" />
-                <span className="text-sm text-white font-medium">Contract Records</span>
+                <ScrollText className="w-8 h-8 text-white mb-2" />
+                <span className="text-xs text-white text-center font-medium">Contract Records</span>
               </button>
 
               <button 
                 onClick={() => navigate('/salary-records')}
-                className="flex items-center gap-3 p-3 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20 transition-all hover:bg-white/20"
+                className="flex flex-col items-center p-3 transition-all hover:scale-105"
               >
-                <Banknote className="w-6 h-6 text-white" />
-                <span className="text-sm text-white font-medium">Salary Records</span>
+                <Banknote className="w-8 h-8 text-white mb-2" />
+                <span className="text-xs text-white text-center font-medium">Salary Records</span>
               </button>
 
               <button 
                 onClick={() => navigate('/transaction-records')}
-                className="flex items-center gap-3 p-3 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20 transition-all hover:bg-white/20"
+                className="flex flex-col items-center p-3 transition-all hover:scale-105"
               >
-                <CardIcon className="w-6 h-6 text-white" />
-                <span className="text-sm text-white font-medium">Transaction Records</span>
+                <CardIcon className="w-8 h-8 text-white mb-2" />
+                <span className="text-xs text-white text-center font-medium">Transaction Records</span>
               </button>
 
               <button 
                 onClick={() => navigate('/withdrawal-records')}
-                className="flex items-center gap-3 p-3 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20 transition-all hover:bg-white/20"
+                className="flex flex-col items-center p-3 transition-all hover:scale-105"
               >
-                <TrendingDown className="w-6 h-6 text-white" />
-                <span className="text-sm text-white font-medium">Withdrawal Records</span>
+                <TrendingDown className="w-8 h-8 text-white mb-2" />
+                <span className="text-xs text-white text-center font-medium">Withdrawal Records</span>
               </button>
             </div>
           </div>
