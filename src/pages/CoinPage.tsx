@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import { 
@@ -40,44 +41,51 @@ const CoinPage = () => {
   const [tradeType, setTradeType] = useState<'call' | 'put'>('call');
   const [tradeResult, setTradeResult] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
-  
-  // Initialize with loading state
-  const [crypto, setCrypto] = useState<CryptoData>({
-    id: coinId || '',
-    name: 'Loading...',
-    symbol: '',
-    price: 0,
-    change: 0,
-    logo: '',
-    market_cap: '',
-    volume_24h: '',
-    rank: ''
-  });
+  const [crypto, setCrypto] = useState<CryptoData | null>(null);
 
   // Fetch coin data based on coinId
   useEffect(() => {
     const fetchCoinData = async () => {
-      if (!coinId) return;
+      if (!coinId) {
+        setIsLoading(false);
+        return;
+      }
       
       try {
         setIsLoading(true);
-        const token = localStorage.getItem('auth_token');
         
         // Try to get from navigation state first
         const cachedCrypto = location.state?.crypto;
-        if (cachedCrypto && cachedCrypto.id === coinId) {
+        if (cachedCrypto && (cachedCrypto.id === coinId || cachedCrypto.id === parseInt(coinId))) {
+          console.log('Using cached crypto data:', cachedCrypto);
           setCrypto(cachedCrypto);
           setIsLoading(false);
           return;
         }
         
-        // Fetch from API if we have a token
+        // Try to find in mock data by ID or symbol
+        const mockCrypto = mockCryptoCurrencies.find(c => 
+          c.id === coinId || 
+          c.id === parseInt(coinId) || 
+          c.symbol.toLowerCase() === coinId.toLowerCase() ||
+          c.name.toLowerCase() === coinId.toLowerCase()
+        );
+        
+        if (mockCrypto) {
+          console.log('Using mock crypto data:', mockCrypto);
+          setCrypto(mockCrypto);
+          setIsLoading(false);
+          return;
+        }
+
+        // Try to fetch from API if we have a token
+        const token = localStorage.getItem('auth_token');
         if (token) {
           const response = await getCoin(token, coinId);
           
           if (response.status && response.data) {
             const coinData = response.data;
-            setCrypto({
+            const processedData = {
               id: coinData.id,
               name: coinData.name,
               symbol: coinData.symbol,
@@ -88,40 +96,55 @@ const CoinPage = () => {
               market_cap: coinData.market_cap,
               volume_24h: coinData.volume_24h,
               rank: coinData.rank,
-            });
-          } else {
-            // Fallback to mock data
-            const mockCrypto = mockCryptoCurrencies.find(c => c.id === coinId);
-            if (mockCrypto) {
-              setCrypto(mockCrypto);
-            }
-          }
-        } else {
-          // Fallback to mock data if no token
-          const mockCrypto = mockCryptoCurrencies.find(c => c.id === coinId);
-          if (mockCrypto) {
-            setCrypto(mockCrypto);
+            };
+            console.log('Using API crypto data:', processedData);
+            setCrypto(processedData);
           }
         }
         
-        setIsLoading(false);
+        // If still no data, create a fallback
+        if (!crypto) {
+          const fallbackCrypto = {
+            id: coinId,
+            name: coinId.charAt(0).toUpperCase() + coinId.slice(1),
+            symbol: coinId.toUpperCase(),
+            price: 50000,
+            change: 2.5,
+            logo: `https://raw.githubusercontent.com/Pymmdrza/CryptoIconsCDN/mainx/PNG/${coinId.toUpperCase()}.png`,
+            market_cap: "N/A",
+            volume_24h: "N/A",
+            rank: "N/A",
+            binance_symbol: `${coinId.toUpperCase()}USDT`
+          };
+          console.log('Using fallback crypto data:', fallbackCrypto);
+          setCrypto(fallbackCrypto);
+        }
+        
       } catch (error) {
         console.error('Error fetching coin data:', error);
         
-        // Fallback to mock data on error
-        const mockCrypto = mockCryptoCurrencies.find(c => c.id === coinId);
-        if (mockCrypto) {
-          setCrypto(mockCrypto);
-        }
+        // Create fallback data on error
+        const fallbackCrypto = {
+          id: coinId,
+          name: coinId.charAt(0).toUpperCase() + coinId.slice(1),
+          symbol: coinId.toUpperCase(),
+          price: 50000,
+          change: 2.5,
+          logo: `https://raw.githubusercontent.com/Pymmdrza/CryptoIconsCDN/mainx/PNG/${coinId.toUpperCase()}.png`,
+          market_cap: "N/A",
+          volume_24h: "N/A",
+          rank: "N/A",
+          binance_symbol: `${coinId.toUpperCase()}USDT`
+        };
+        setCrypto(fallbackCrypto);
         
+      } finally {
         setIsLoading(false);
       }
     };
 
     fetchCoinData();
   }, [coinId, location.state]);
-
-  const isPositive = crypto.change >= 0;
 
   const handleTradeClick = (type: 'call' | 'put') => {
     if (!user) {
@@ -155,6 +178,21 @@ const CoinPage = () => {
     );
   }
 
+  if (!crypto) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-black text-white flex items-center justify-center">
+        <div className="flex flex-col items-center gap-3">
+          <span className="text-sm text-gray-400">Coin not found</span>
+          <Button onClick={() => navigate(-1)} variant="outline">
+            Go Back
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  const isPositive = crypto.change >= 0;
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-black text-white pb-24">
       <div className="pb-4">
@@ -186,7 +224,7 @@ const CoinPage = () => {
                       />
                     </div>
                   </div>
-                  {crypto.rank && (
+                  {crypto.rank && crypto.rank !== "N/A" && (
                     <div className="absolute -top-1 -right-1 bg-blue-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center text-[10px]">
                       #{crypto.rank}
                     </div>
