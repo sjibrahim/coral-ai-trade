@@ -8,7 +8,6 @@ import ActionGrid from "@/components/ActionGrid";
 import PromotionalVideo from "@/components/PromotionalVideo";
 import CoinsList from "@/components/CoinsList";
 import BottomNavigation from "@/components/BottomNavigation";
-import LoadingSpinner from "@/components/LoadingSpinner";
 
 interface CryptoData {
   id: string | number;
@@ -91,10 +90,10 @@ const HomePage = () => {
         {/* Promotional Banner Carousel */}
         <PromotionalBanner />
 
-        {/* Action Grid with Dark Background */}
+        {/* Action Grid with Blur Background */}
         <div className="px-4 mb-6">
-          <div className="bg-gray-800/60 rounded-2xl overflow-hidden backdrop-blur-sm border border-gray-700/20">
-            {loading ? <LoadingSpinner /> : <ActionGrid />}
+          <div className="bg-gray-800/80 rounded-2xl overflow-hidden backdrop-blur-sm border border-gray-700/30 p-4">
+            <ActionGrid />
           </div>
         </div>
 
