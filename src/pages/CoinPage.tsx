@@ -4,7 +4,8 @@ import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import { 
   ArrowLeft, Star, Share, Heart, MoreVertical,
   Zap, Shield, Smartphone, ChevronDown, ChevronUp,
-  TrendingUp, TrendingDown
+  TrendingUp, TrendingDown, Activity, Clock, DollarSign,
+  BarChart3, Users, Globe
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -159,100 +160,163 @@ const CoinPage = () => {
           </div>
         </div>
 
-        {/* Navigation Tabs */}
-        <div className="px-4 mb-4">
-          <div className="flex bg-gray-800/50 rounded-xl p-1 backdrop-blur-sm">
-            {[
-              { id: 'trade', label: 'Trade', icon: Zap },
-              { id: 'stats', label: 'Stats', icon: Shield },
-              { id: 'info', label: 'Info', icon: Smartphone }
-            ].map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id as any)}
-                className={cn(
-                  "flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-lg text-sm font-medium transition-all duration-200",
-                  activeTab === tab.id
-                    ? "bg-blue-600 text-white shadow-lg"
-                    : "text-gray-400 hover:text-white"
-                )}
-              >
-                <tab.icon className="w-4 h-4" />
-                {tab.label}
-              </button>
-            ))}
+        {/* Price Stats Cards */}
+        <div className="px-4 mb-6">
+          <div className="grid grid-cols-2 gap-4">
+            <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl border border-gray-700/30 p-4">
+              <div className="flex items-center gap-2 mb-2">
+                <Activity className="w-4 h-4 text-blue-400" />
+                <span className="text-xs text-gray-400">Current Price</span>
+              </div>
+              <div className="text-xl font-bold text-white">
+                ₹{crypto.price.toLocaleString()}
+              </div>
+              <div className={cn(
+                "text-sm font-medium flex items-center gap-1",
+                isPositive ? "text-green-400" : "text-red-400"
+              )}>
+                {isPositive ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
+                {isPositive ? '+' : ''}{crypto.change.toFixed(2)}%
+              </div>
+            </div>
+            
+            <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl border border-gray-700/30 p-4">
+              <div className="flex items-center gap-2 mb-2">
+                <BarChart3 className="w-4 h-4 text-purple-400" />
+                <span className="text-xs text-gray-400">24h Volume</span>
+              </div>
+              <div className="text-xl font-bold text-white">
+                {crypto.volume_24h}
+              </div>
+              <div className="text-sm text-gray-400">Market Cap: {crypto.market_cap}</div>
+            </div>
           </div>
         </div>
 
-        {/* Tab Content */}
-        <div className="px-4">
-          {activeTab === 'trade' && (
-            <div className="space-y-4">
-              {/* Quick Trade Buttons */}
-              <div className="grid grid-cols-2 gap-4">
-                <Button
-                  onClick={() => handleTradeClick('call')}
-                  className="h-16 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold text-lg rounded-xl shadow-lg flex flex-col items-center justify-center"
-                >
-                  <TrendingUp className="w-6 h-6 mb-1" />
-                  BUY
-                </Button>
-                
-                <Button
-                  onClick={() => handleTradeClick('put')}
-                  className="h-16 bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 text-white font-bold text-lg rounded-xl shadow-lg flex flex-col items-center justify-center"
-                >
-                  <TrendingDown className="w-6 h-6 mb-1" />
-                  PUT
-                </Button>
+        {/* Market Info */}
+        <div className="px-4 mb-6">
+          <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl border border-gray-700/30 p-4">
+            <h3 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
+              <Globe className="w-4 h-4 text-green-400" />
+              Market Information
+            </h3>
+            <div className="grid grid-cols-3 gap-4">
+              <div className="text-center">
+                <div className="text-xs text-gray-400 mb-1">Rank</div>
+                <div className="text-sm font-bold text-white">#{crypto.rank}</div>
+              </div>
+              <div className="text-center">
+                <div className="text-xs text-gray-400 mb-1">Active Traders</div>
+                <div className="text-sm font-bold text-green-400">12.5K</div>
+              </div>
+              <div className="text-center">
+                <div className="text-xs text-gray-400 mb-1">Success Rate</div>
+                <div className="text-sm font-bold text-blue-400">73%</div>
               </div>
             </div>
-          )}
+          </div>
+        </div>
 
-          {activeTab === 'stats' && (
-            <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl border border-gray-700/30 p-6">
-              <h3 className="text-lg font-semibold text-white mb-6">Market Statistics</h3>
-              <div className="space-y-4">
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Market Cap</span>
-                  <span className="text-white font-medium">{crypto.market_cap}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">24h Volume</span>
-                  <span className="text-white font-medium">{crypto.volume_24h}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Rank</span>
-                  <span className="text-white font-medium">#{crypto.rank}</span>
-                </div>
-              </div>
+        {/* Enhanced Trading Section */}
+        <div className="px-4 mb-6">
+          <div className="bg-gradient-to-r from-gray-800/80 to-gray-900/80 backdrop-blur-sm rounded-2xl border border-gray-700/30 p-6">
+            <div className="text-center mb-6">
+              <h2 className="text-xl font-bold text-white mb-2">Start Trading</h2>
+              <p className="text-sm text-gray-400">Predict price movement and earn profits</p>
             </div>
-          )}
+            
+            {/* Enhanced Buy/Put Buttons */}
+            <div className="grid grid-cols-2 gap-4">
+              <button
+                onClick={() => handleTradeClick('call')}
+                className="group relative overflow-hidden bg-gradient-to-br from-green-500 via-green-600 to-emerald-600 hover:from-green-400 hover:via-green-500 hover:to-emerald-500 text-white font-bold py-6 px-4 rounded-2xl shadow-2xl transform transition-all duration-300 hover:scale-105 hover:shadow-green-500/25 active:scale-95"
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12 translate-x-[-100%] group-hover:translate-x-[200%] transition-transform duration-1000"></div>
+                <div className="relative z-10 flex flex-col items-center gap-3">
+                  <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center">
+                    <TrendingUp className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <div className="text-2xl font-extrabold">BUY</div>
+                    <div className="text-xs opacity-90">Price will rise</div>
+                  </div>
+                  <div className="text-xs bg-white/20 px-3 py-1 rounded-full">
+                    Up to 85% profit
+                  </div>
+                </div>
+              </button>
 
-          {activeTab === 'info' && (
-            <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl border border-gray-700/30 p-6">
-              <h3 className="text-lg font-semibold text-white mb-4">About {crypto.name}</h3>
-              <p className="text-gray-300 text-sm leading-relaxed mb-6">
-                {crypto.name} ({crypto.symbol}) is a leading cryptocurrency with strong market presence. 
-                Monitor real-time price movements and execute trades with advanced charting tools.
-              </p>
-              
-              <div className="space-y-3 pt-4 border-t border-gray-700">
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Symbol</span>
-                  <span className="text-white font-medium">{crypto.symbol}</span>
+              <button
+                onClick={() => handleTradeClick('put')}
+                className="group relative overflow-hidden bg-gradient-to-br from-red-500 via-red-600 to-rose-600 hover:from-red-400 hover:via-red-500 hover:to-rose-500 text-white font-bold py-6 px-4 rounded-2xl shadow-2xl transform transition-all duration-300 hover:scale-105 hover:shadow-red-500/25 active:scale-95"
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12 translate-x-[-100%] group-hover:translate-x-[200%] transition-transform duration-1000"></div>
+                <div className="relative z-10 flex flex-col items-center gap-3">
+                  <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center">
+                    <TrendingDown className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <div className="text-2xl font-extrabold">PUT</div>
+                    <div className="text-xs opacity-90">Price will fall</div>
+                  </div>
+                  <div className="text-xs bg-white/20 px-3 py-1 rounded-full">
+                    Up to 85% profit
+                  </div>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Rank</span>
-                  <span className="text-white font-medium">#{crypto.rank}</span>
+              </button>
+            </div>
+
+            {/* Trading Tips */}
+            <div className="mt-6 pt-4 border-t border-gray-700/50">
+              <div className="flex items-center justify-center gap-6 text-xs text-gray-400">
+                <div className="flex items-center gap-1">
+                  <Clock className="w-3 h-3" />
+                  <span>30s - 5min</span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Trading Pair</span>
-                  <span className="text-white font-medium">{crypto.binance_symbol || `${crypto.symbol}USDT`}</span>
+                <div className="flex items-center gap-1">
+                  <DollarSign className="w-3 h-3" />
+                  <span>Min ₹10</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <Users className="w-3 h-3" />
+                  <span>24/7 Trading</span>
                 </div>
               </div>
             </div>
-          )}
+          </div>
+        </div>
+
+        {/* Recent Activity */}
+        <div className="px-4 mb-6">
+          <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl border border-gray-700/30 p-4">
+            <h3 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
+              <Activity className="w-4 h-4 text-blue-400" />
+              Recent Activity
+            </h3>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-2 h-2 rounded-full bg-green-400"></div>
+                  <span className="text-sm text-gray-300">John placed BUY trade</span>
+                </div>
+                <span className="text-xs text-green-400">+₹120</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-2 h-2 rounded-full bg-red-400"></div>
+                  <span className="text-sm text-gray-300">Sarah placed PUT trade</span>
+                </div>
+                <span className="text-xs text-red-400">-₹50</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-2 h-2 rounded-full bg-green-400"></div>
+                  <span className="text-sm text-gray-300">Mike placed BUY trade</span>
+                </div>
+                <span className="text-xs text-green-400">+₹85</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
