@@ -34,30 +34,44 @@ const TradeStatusModal: React.FC<TradeStatusModalProps> = ({
   useEffect(() => {
     if (!isOpen) return;
 
+    // Reset state when modal opens
     setTimeRemaining(tradeResult.duration);
     setIsCompleted(false);
     setCurrentPrice(tradeResult.entryPrice);
 
-    const interval = setInterval(() => {
-      setTimeRemaining(prev => {
-        if (prev <= 1) {
-          setIsCompleted(true);
-          // Refresh user data to update balance
-          refreshUserData();
-          return 0;
+    let intervalId: NodeJS.Timeout;
+
+    if (timeRemaining > 0) {
+      intervalId = setInterval(() => {
+        setTimeRemaining(prev => {
+          if (prev <= 1) {
+            setIsCompleted(true);
+            // Refresh user data to update balance
+            refreshUserData();
+            return 0;
+          }
+          return prev - 1;
+        });
+
+        // Simulate price changes only during countdown
+        if (!isCompleted) {
+          setCurrentPrice(prev => {
+            const change = (Math.random() - 0.5) * 100;
+            return prev + change;
+          });
         }
-        return prev - 1;
-      });
+      }, 1000);
+    } else {
+      // If duration is 0, show completed immediately
+      setIsCompleted(true);
+    }
 
-      // Simulate price changes
-      setCurrentPrice(prev => {
-        const change = (Math.random() - 0.5) * 100;
-        return prev + change;
-      });
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, [isOpen, tradeResult, refreshUserData]);
+    return () => {
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+    };
+  }, [isOpen, tradeResult, refreshUserData, timeRemaining, isCompleted]);
 
   const progress = ((tradeResult.duration - timeRemaining) / tradeResult.duration) * 100;
   const priceDifference = currentPrice - tradeResult.entryPrice;
@@ -140,7 +154,7 @@ const TradeStatusModal: React.FC<TradeStatusModalProps> = ({
               </div>
             </div>
           ) : (
-            // Trade completed
+            // Trade completed - show result from API
             <div className="text-center space-y-6">
               <div className={`w-20 h-20 mx-auto rounded-full flex items-center justify-center ${
                 tradeResult.status === 'win' ? 'bg-green-500/20' : 'bg-red-500/20'

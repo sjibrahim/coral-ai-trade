@@ -225,22 +225,22 @@ const CoinPage = () => {
               <p className="text-sm text-gray-400">Predict price movement and earn profits</p>
             </div>
             
-            {/* Enhanced Buy/Put Buttons */}
+            {/* Resized Buy/Put Buttons */}
             <div className="grid grid-cols-2 gap-4">
               <button
                 onClick={() => handleTradeClick('call')}
-                className="group relative overflow-hidden bg-gradient-to-br from-green-500 via-green-600 to-emerald-600 hover:from-green-400 hover:via-green-500 hover:to-emerald-500 text-white font-bold py-6 px-4 rounded-2xl shadow-2xl transform transition-all duration-300 hover:scale-105 hover:shadow-green-500/25 active:scale-95"
+                className="group relative overflow-hidden bg-gradient-to-br from-green-500 via-green-600 to-emerald-600 hover:from-green-400 hover:via-green-500 hover:to-emerald-500 text-white font-bold py-4 px-3 rounded-xl shadow-xl transform transition-all duration-300 hover:scale-105 hover:shadow-green-500/25 active:scale-95"
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12 translate-x-[-100%] group-hover:translate-x-[200%] transition-transform duration-1000"></div>
-                <div className="relative z-10 flex flex-col items-center gap-3">
-                  <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center">
-                    <TrendingUp className="w-6 h-6" />
+                <div className="relative z-10 flex flex-col items-center gap-2">
+                  <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+                    <TrendingUp className="w-4 h-4" />
                   </div>
                   <div>
-                    <div className="text-2xl font-extrabold">BUY</div>
+                    <div className="text-lg font-extrabold">BUY</div>
                     <div className="text-xs opacity-90">Price will rise</div>
                   </div>
-                  <div className="text-xs bg-white/20 px-3 py-1 rounded-full">
+                  <div className="text-xs bg-white/20 px-2 py-1 rounded-full">
                     Up to 85% profit
                   </div>
                 </div>
@@ -248,18 +248,18 @@ const CoinPage = () => {
 
               <button
                 onClick={() => handleTradeClick('put')}
-                className="group relative overflow-hidden bg-gradient-to-br from-red-500 via-red-600 to-rose-600 hover:from-red-400 hover:via-red-500 hover:to-rose-500 text-white font-bold py-6 px-4 rounded-2xl shadow-2xl transform transition-all duration-300 hover:scale-105 hover:shadow-red-500/25 active:scale-95"
+                className="group relative overflow-hidden bg-gradient-to-br from-red-500 via-red-600 to-rose-600 hover:from-red-400 hover:via-red-500 hover:to-rose-500 text-white font-bold py-4 px-3 rounded-xl shadow-xl transform transition-all duration-300 hover:scale-105 hover:shadow-red-500/25 active:scale-95"
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12 translate-x-[-100%] group-hover:translate-x-[200%] transition-transform duration-1000"></div>
-                <div className="relative z-10 flex flex-col items-center gap-3">
-                  <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center">
-                    <TrendingDown className="w-6 h-6" />
+                <div className="relative z-10 flex flex-col items-center gap-2">
+                  <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+                    <TrendingDown className="w-4 h-4" />
                   </div>
                   <div>
-                    <div className="text-2xl font-extrabold">PUT</div>
+                    <div className="text-lg font-extrabold">PUT</div>
                     <div className="text-xs opacity-90">Price will fall</div>
                   </div>
-                  <div className="text-xs bg-white/20 px-3 py-1 rounded-full">
+                  <div className="text-xs bg-white/20 px-2 py-1 rounded-full">
                     Up to 85% profit
                   </div>
                 </div>
