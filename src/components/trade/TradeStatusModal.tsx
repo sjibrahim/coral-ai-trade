@@ -30,53 +30,34 @@ const TradeStatusModal: React.FC<TradeStatusModalProps> = ({
   const [timeRemaining, setTimeRemaining] = useState(tradeResult.duration);
   const [isCompleted, setIsCompleted] = useState(false);
   const [currentPrice, setCurrentPrice] = useState(tradeResult.entryPrice);
-  const [hasCompletedOnce, setHasCompletedOnce] = useState(false);
 
   useEffect(() => {
     if (!isOpen) return;
 
-    // Only reset if this is a fresh modal open (not already completed)
-    if (!hasCompletedOnce) {
-      setTimeRemaining(tradeResult.duration);
-      setIsCompleted(false);
-      setCurrentPrice(tradeResult.entryPrice);
-    }
-
-    // Don't start new timer if already completed
-    if (isCompleted || hasCompletedOnce) return;
+    setTimeRemaining(tradeResult.duration);
+    setIsCompleted(false);
+    setCurrentPrice(tradeResult.entryPrice);
 
     const interval = setInterval(() => {
       setTimeRemaining(prev => {
         if (prev <= 1) {
           setIsCompleted(true);
-          setHasCompletedOnce(true);
           // Refresh user data to update balance
           refreshUserData();
-          clearInterval(interval);
           return 0;
         }
         return prev - 1;
       });
 
-      // Simulate price changes only if not completed
-      if (!isCompleted) {
-        setCurrentPrice(prev => {
-          const change = (Math.random() - 0.5) * 100;
-          return prev + change;
-        });
-      }
+      // Simulate price changes
+      setCurrentPrice(prev => {
+        const change = (Math.random() - 0.5) * 100;
+        return prev + change;
+      });
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [isOpen, tradeResult, refreshUserData, isCompleted, hasCompletedOnce]);
-
-  // Reset completion state when modal closes
-  useEffect(() => {
-    if (!isOpen) {
-      setHasCompletedOnce(false);
-      setIsCompleted(false);
-    }
-  }, [isOpen]);
+  }, [isOpen, tradeResult, refreshUserData]);
 
   const progress = ((tradeResult.duration - timeRemaining) / tradeResult.duration) * 100;
   const priceDifference = currentPrice - tradeResult.entryPrice;
@@ -159,7 +140,7 @@ const TradeStatusModal: React.FC<TradeStatusModalProps> = ({
               </div>
             </div>
           ) : (
-            // Trade completed - Show results from API response
+            // Trade completed
             <div className="text-center space-y-6">
               <div className={`w-20 h-20 mx-auto rounded-full flex items-center justify-center ${
                 tradeResult.status === 'win' ? 'bg-green-500/20' : 'bg-red-500/20'
