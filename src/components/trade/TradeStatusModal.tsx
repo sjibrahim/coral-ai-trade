@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -62,7 +61,7 @@ const TradeStatusModal: React.FC<TradeStatusModalProps> = ({
     }, 1000);
 
     return () => clearInterval(intervalId);
-  }, [isOpen, tradeResult.duration, tradeResult.entryPrice, refreshUserData]);
+  }, [isOpen]); // Only depend on isOpen to prevent timer restarts
 
   const progress = tradeResult.duration > 0 ? ((tradeResult.duration - timeRemaining) / tradeResult.duration) * 100 : 100;
   const priceDifference = currentPrice - tradeResult.entryPrice;
