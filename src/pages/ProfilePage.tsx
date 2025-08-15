@@ -137,88 +137,89 @@ const ProfilePage = () => {
             </div>
           </div>
 
-          {/* Menu Grid - Updated with new icons */}
-          <div className="grid grid-cols-4 gap-4 mb-8">
-            <button 
-              onClick={() => navigate('/bank')}
-              className="flex flex-col items-center p-4 bg-gray-800/50 rounded-xl hover:bg-gray-800 transition-colors"
-            >
-              <div className="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center mb-2">
-                <CreditCard className="w-6 h-6 text-blue-400" />
-              </div>
-              <span className="text-xs text-gray-300 text-center">Bank Card</span>
-            </button>
+          {/* Menu Grid - Updated with background image */}
+          <div 
+            className="rounded-2xl p-6 mb-8 relative overflow-hidden bg-cover bg-center bg-no-repeat"
+            style={{
+              backgroundImage: "url('/uploads/assetsbg-BsWPbjIy.png')"
+            }}
+          >
+            {/* Dark overlay for better text readability */}
+            <div className="absolute inset-0 bg-black/30 rounded-2xl"></div>
+            
+            <div className="relative z-10 grid grid-cols-4 gap-4">
+              <button 
+                onClick={() => navigate('/bank')}
+                className="flex flex-col items-center p-3 transition-all hover:scale-105"
+              >
+                <img 
+                  src="https://tnl-icons.duckdns.org/green/dash/upload/20241005/c34a3a2fd6b48b9b1b3a5032b50a7aaa.png" 
+                  alt="Bank Card" 
+                  className="w-8 h-8 mb-2"
+                />
+                <span className="text-xs text-white text-center font-medium">Bank Card</span>
+              </button>
 
-            <button 
-              onClick={() => navigate('/security')}
-              className="flex flex-col items-center p-4 bg-gray-800/50 rounded-xl hover:bg-gray-800 transition-colors"
-            >
-              <div className="w-12 h-12 bg-green-500/20 rounded-xl flex items-center justify-center mb-2">
-                <Lock className="w-6 h-6 text-green-400" />
-              </div>
-              <span className="text-xs text-gray-300 text-center">Security</span>
-            </button>
+              <button 
+                onClick={() => navigate('/security')}
+                className="flex flex-col items-center p-3 transition-all hover:scale-105"
+              >
+                <Lock className="w-8 h-8 text-white mb-2" />
+                <span className="text-xs text-white text-center font-medium">Security</span>
+              </button>
 
-            <button 
-              onClick={() => navigate('/checkin')}
-              className="flex flex-col items-center p-4 bg-gray-800/50 rounded-xl hover:bg-gray-800 transition-colors"
-            >
-              <div className="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center mb-2">
-                <Calendar className="w-6 h-6 text-purple-400" />
-              </div>
-              <span className="text-xs text-gray-300 text-center">Check-in</span>
-            </button>
+              <button 
+                onClick={() => navigate('/checkin')}
+                className="flex flex-col items-center p-3 transition-all hover:scale-105"
+              >
+                <img 
+                  src="https://tnl-icons.duckdns.org/green/dash/upload/20241016/aef64e6784fa317a3baee12d67337107.png" 
+                  alt="Check-in" 
+                  className="w-8 h-8 mb-2"
+                />
+                <span className="text-xs text-white text-center font-medium">Check-in</span>
+              </button>
 
-            <button 
-              onClick={() => navigate('/gift-code')}
-              className="flex flex-col items-center p-4 bg-gray-800/50 rounded-xl hover:bg-gray-800 transition-colors"
-            >
-              <div className="w-12 h-12 bg-orange-500/20 rounded-xl flex items-center justify-center mb-2">
-                <Gift className="w-6 h-6 text-orange-400" />
-              </div>
-              <span className="text-xs text-gray-300 text-center">Gift Code</span>
-            </button>
+              <button 
+                onClick={() => navigate('/gift-code')}
+                className="flex flex-col items-center p-3 transition-all hover:scale-105"
+              >
+                <Gift className="w-8 h-8 text-white mb-2" />
+                <span className="text-xs text-white text-center font-medium">Gift Code</span>
+              </button>
 
-            {/* Updated icons for new menu options */}
-            <button 
-              onClick={() => navigate('/contract-records')}
-              className="flex flex-col items-center p-4 bg-gray-800/50 rounded-xl hover:bg-gray-800 transition-colors"
-            >
-              <div className="w-12 h-12 bg-teal-500/20 rounded-xl flex items-center justify-center mb-2">
-                <ScrollText className="w-6 h-6 text-teal-400" />
-              </div>
-              <span className="text-xs text-gray-300 text-center">Contract Records</span>
-            </button>
+              <button 
+                onClick={() => navigate('/contract-records')}
+                className="flex flex-col items-center p-3 transition-all hover:scale-105"
+              >
+                <ScrollText className="w-8 h-8 text-white mb-2" />
+                <span className="text-xs text-white text-center font-medium">Contract Records</span>
+              </button>
 
-            <button 
-              onClick={() => navigate('/salary-records')}
-              className="flex flex-col items-center p-4 bg-gray-800/50 rounded-xl hover:bg-gray-800 transition-colors"
-            >
-              <div className="w-12 h-12 bg-cyan-500/20 rounded-xl flex items-center justify-center mb-2">
-                <Banknote className="w-6 h-6 text-cyan-400" />
-              </div>
-              <span className="text-xs text-gray-300 text-center">Salary Records</span>
-            </button>
+              <button 
+                onClick={() => navigate('/salary-records')}
+                className="flex flex-col items-center p-3 transition-all hover:scale-105"
+              >
+                <Banknote className="w-8 h-8 text-white mb-2" />
+                <span className="text-xs text-white text-center font-medium">Salary Records</span>
+              </button>
 
-            <button 
-              onClick={() => navigate('/transaction-records')}
-              className="flex flex-col items-center p-4 bg-gray-800/50 rounded-xl hover:bg-gray-800 transition-colors"
-            >
-              <div className="w-12 h-12 bg-indigo-500/20 rounded-xl flex items-center justify-center mb-2">
-                <CardIcon className="w-6 h-6 text-indigo-400" />
-              </div>
-              <span className="text-xs text-gray-300 text-center">Transaction Records</span>
-            </button>
+              <button 
+                onClick={() => navigate('/transaction-records')}
+                className="flex flex-col items-center p-3 transition-all hover:scale-105"
+              >
+                <CardIcon className="w-8 h-8 text-white mb-2" />
+                <span className="text-xs text-white text-center font-medium">Transaction Records</span>
+              </button>
 
-            <button 
-              onClick={() => navigate('/withdrawal-records')}
-              className="flex flex-col items-center p-4 bg-gray-800/50 rounded-xl hover:bg-gray-800 transition-colors"
-            >
-              <div className="w-12 h-12 bg-red-500/20 rounded-xl flex items-center justify-center mb-2">
-                <TrendingDown className="w-6 h-6 text-red-400" />
-              </div>
-              <span className="text-xs text-gray-300 text-center">Withdrawal Records</span>
-            </button>
+              <button 
+                onClick={() => navigate('/withdrawal-records')}
+                className="flex flex-col items-center p-3 transition-all hover:scale-105"
+              >
+                <TrendingDown className="w-8 h-8 text-white mb-2" />
+                <span className="text-xs text-white text-center font-medium">Withdrawal Records</span>
+              </button>
+            </div>
           </div>
         </div>
 
