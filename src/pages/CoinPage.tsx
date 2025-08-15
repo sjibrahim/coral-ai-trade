@@ -40,6 +40,7 @@ const CoinPage = () => {
   const [tradeType, setTradeType] = useState<'call' | 'put'>('call');
   const [tradeResult, setTradeResult] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [chartError, setChartError] = useState(false);
   
   // Initialize with loading state
   const [crypto, setCrypto] = useState<CryptoData>({
@@ -59,59 +60,86 @@ const CoinPage = () => {
     const fetchCoinData = async () => {
       if (!coinId) return;
       
+      console.log('CoinPage: Starting data fetch for coinId:', coinId);
+      console.log('CoinPage: Navigation state:', location.state);
+      
       try {
         setIsLoading(true);
         const token = localStorage.getItem('auth_token');
         
         // Try to get from navigation state first
         const cachedCrypto = location.state?.crypto;
-        if (cachedCrypto && cachedCrypto.id === coinId) {
-          setCrypto(cachedCrypto);
+        console.log('CoinPage: Cached crypto from navigation:', cachedCrypto);
+        
+        if (cachedCrypto && String(cachedCrypto.id) === String(coinId)) {
+          // Ensure binance_symbol is properly set
+          const safeBinanceSymbol = cachedCrypto.binance_symbol || `${cachedCrypto.symbol?.toUpperCase() || 'BTC'}USDT`;
+          
+          const enhancedCrypto = {
+            ...cachedCrypto,
+            binance_symbol: safeBinanceSymbol,
+            symbol: cachedCrypto.symbol?.toLowerCase() || 'btc'
+          };
+          
+          console.log('CoinPage: Using cached crypto with enhanced data:', enhancedCrypto);
+          setCrypto(enhancedCrypto);
           setIsLoading(false);
           return;
         }
         
+        console.log('CoinPage: No valid cached data, fetching from API or fallback');
+        
         // Fetch from API if we have a token
         if (token) {
+          console.log('CoinPage: Fetching from API');
           const response = await getCoin(token, coinId);
           
           if (response.status && response.data) {
             const coinData = response.data;
-            setCrypto({
+            const safeBinanceSymbol = coinData.binance_symbol || `${coinData.symbol?.toUpperCase() || 'BTC'}USDT`;
+            
+            const apiCrypto = {
               id: coinData.id,
               name: coinData.name,
-              symbol: coinData.symbol,
-              binance_symbol: coinData.binance_symbol,
+              symbol: coinData.symbol?.toLowerCase() || 'btc',
+              binance_symbol: safeBinanceSymbol,
               price: parseFloat(coinData.price),
               change: 0, // Will be updated by live price feeds
               logo: coinData.logo,
               market_cap: coinData.market_cap,
               volume_24h: coinData.volume_24h,
               rank: coinData.rank,
-            });
+            };
+            
+            console.log('CoinPage: API data processed:', apiCrypto);
+            setCrypto(apiCrypto);
           } else {
-            // Fallback to mock data
-            const mockCrypto = mockCryptoCurrencies.find(c => c.id === coinId);
-            if (mockCrypto) {
-              setCrypto(mockCrypto);
-            }
+            throw new Error('API response invalid');
           }
         } else {
-          // Fallback to mock data if no token
-          const mockCrypto = mockCryptoCurrencies.find(c => c.id === coinId);
-          if (mockCrypto) {
-            setCrypto(mockCrypto);
-          }
+          throw new Error('No auth token');
         }
         
         setIsLoading(false);
       } catch (error) {
-        console.error('Error fetching coin data:', error);
+        console.error('CoinPage: Error fetching coin data:', error);
         
-        // Fallback to mock data on error
-        const mockCrypto = mockCryptoCurrencies.find(c => c.id === coinId);
+        // Fallback to mock data
+        console.log('CoinPage: Falling back to mock data');
+        const mockCrypto = mockCryptoCurrencies.find(c => String(c.id) === String(coinId) || c.symbol.toLowerCase() === String(coinId).toLowerCase());
+        
         if (mockCrypto) {
-          setCrypto(mockCrypto);
+          const safeBinanceSymbol = mockCrypto.binance_symbol || `${mockCrypto.symbol.toUpperCase()}USDT`;
+          const enhancedMockCrypto = {
+            ...mockCrypto,
+            binance_symbol: safeBinanceSymbol
+          };
+          
+          console.log('CoinPage: Using mock crypto:', enhancedMockCrypto);
+          setCrypto(enhancedMockCrypto);
+        } else {
+          console.error('CoinPage: No mock data found for coinId:', coinId);
+          setChartError(true);
         }
         
         setIsLoading(false);
@@ -155,6 +183,10 @@ const CoinPage = () => {
     );
   }
 
+  // Determine the chart symbol to use
+  const chartSymbol = crypto.binance_symbol || `${crypto.symbol?.toUpperCase() || 'BTC'}USDT`;
+  console.log('CoinPage: Chart symbol determined as:', chartSymbol);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-black text-white pb-24">
       <div className="pb-4">
@@ -186,7 +218,7 @@ const CoinPage = () => {
                       />
                     </div>
                   </div>
-                  {crypto.rank && (
+                  {crypto.rank && crypto.rank !== 'N/A' && (
                     <div className="absolute -top-1 -right-1 bg-blue-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center text-[10px]">
                       #{crypto.rank}
                     </div>
@@ -223,12 +255,24 @@ const CoinPage = () => {
         <div className="px-4 mb-6">
           <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl border border-gray-700/30 overflow-hidden shadow-lg">
             <div className="h-80 bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center">
-              <iframe
-                src={`/trade-graph.html?symbol=${crypto.binance_symbol || crypto.symbol + 'usdt'}&interval=15m`}
-                className="w-full h-full border-0"
-                title="Live Trading Chart"
-                style={{ background: 'transparent' }}
-              />
+              {chartError ? (
+                <div className="text-center">
+                  <Activity className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+                  <p className="text-gray-400 text-sm">Chart temporarily unavailable</p>
+                  <p className="text-gray-500 text-xs">Symbol: {chartSymbol}</p>
+                </div>
+              ) : (
+                <iframe
+                  src={`/trade-graph.html?symbol=${chartSymbol}&interval=15m`}
+                  className="w-full h-full border-0"
+                  title="Live Trading Chart"
+                  style={{ background: 'transparent' }}
+                  onError={() => {
+                    console.error('Chart iframe failed to load for symbol:', chartSymbol);
+                    setChartError(true);
+                  }}
+                />
+              )}
             </div>
           </div>
         </div>

@@ -33,20 +33,32 @@ const CryptoCard = ({
   const navigate = useNavigate();
   
   const handleCardClick = () => {
-    // Navigate to coin detail page and pass the full crypto object as state
+    // Ensure we always have a proper binance_symbol
+    const safeBinanceSymbol = binance_symbol || `${symbol.toUpperCase()}USDT`;
+    
+    console.log('CryptoCard navigation:', { 
+      id, 
+      name, 
+      symbol, 
+      binance_symbol: safeBinanceSymbol,
+      price,
+      change 
+    });
+    
+    // Navigate to coin detail page and pass the complete crypto object as state
     navigate(`/coin/${id}`, { 
       state: { 
         crypto: {
-          id,
+          id: String(id), // Ensure id is always a string
           name,
-          symbol,
-          binance_symbol: binance_symbol || `${symbol.toUpperCase()}USDT`,
+          symbol: symbol.toLowerCase(),
+          binance_symbol: safeBinanceSymbol,
           price,
           change,
           logo,
-          market_cap,
-          volume_24h,
-          rank
+          market_cap: market_cap || 'N/A',
+          volume_24h: volume_24h || 'N/A',
+          rank: rank || 'N/A'
         }
       }
     });
