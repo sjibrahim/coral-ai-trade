@@ -17,6 +17,14 @@ import TeamPage from "@/pages/TeamPage";
 import TeamLevelPage from "@/pages/TeamLevelPage";
 import MarketPage from "@/pages/MarketPage";
 import TradePage from '@/pages/TradePage';
+import CoinPage from '@/pages/CoinPage';
+import USDTWithdraw from '@/pages/USDTWithdraw';
+import ContractRecordsPage from '@/pages/ContractRecordsPage';
+import SalaryRecordPage from '@/pages/SalaryRecordPage';
+import TransactionRecordsPage from '@/pages/TransactionRecordsPage';
+import SecurityPage from '@/pages/SecurityPage';
+import BankDetailsPage from '@/pages/BankDetailsPage';
+import WithdrawalRecordsPage from '@/pages/WithdrawalRecordsPage';
 import ProtectedRoute from "@/components/ProtectedRoute";
 
 // Create a new QueryClient outside of the component
@@ -46,6 +54,15 @@ const App = () => {
               <Route path="/team-level/:level" element={<ProtectedRoute><TeamLevelPage /></ProtectedRoute>} />
               <Route path="/market" element={<ProtectedRoute><MarketPage /></ProtectedRoute>} />
               <Route path="/trade" element={<ProtectedRoute><TradePage /></ProtectedRoute>} />
+              <Route path="/coin/:coinId" element={<ProtectedRoute><CoinPage /></ProtectedRoute>} />
+              <Route path="/usdt-withdraw" element={<ProtectedRoute><USDTWithdraw /></ProtectedRoute>} />
+              <Route path="/contract-records" element={<ProtectedRoute><ContractRecordsPage /></ProtectedRoute>} />
+              <Route path="/salary-records" element={<ProtectedRoute><SalaryRecordPage /></ProtectedRoute>} />
+              <Route path="/transaction-records" element={<ProtectedRoute><TransactionRecordsPage /></ProtectedRoute>} />
+              <Route path="/security" element={<ProtectedRoute><SecurityPage /></ProtectedRoute>} />
+              <Route path="/bank-details" element={<ProtectedRoute><BankDetailsPage /></ProtectedRoute>} />
+              <Route path="/bank" element={<ProtectedRoute><BankDetailsPage /></ProtectedRoute>} />
+              <Route path="/withdrawal-records" element={<ProtectedRoute><WithdrawalRecordsPage /></ProtectedRoute>} />
             </Routes>
           </TooltipProvider>
         </AuthProvider>
