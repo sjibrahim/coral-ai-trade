@@ -20,16 +20,16 @@ const MobileNavbar = ({ showBackButton = false, title = "Trexo" }: MobileNavbarP
   };
 
   if (showBackButton) {
-    // Show header with back button instead of bottom navigation
+    // Show dark header with back button instead of bottom navigation
     return (
-      <header className="bg-white border-b border-gray-200 px-4 py-3 flex items-center">
+      <header className="bg-gray-900 border-b border-gray-700/50 px-4 py-3 flex items-center">
         <button 
           onClick={() => window.history.back()}
-          className="mr-3 p-1 rounded-full hover:bg-gray-100"
+          className="mr-3 p-2 rounded-full hover:bg-gray-800 transition-colors"
         >
-          <ChevronLeft className="h-6 w-6 text-gray-600" />
+          <ChevronLeft className="h-6 w-6 text-gray-300" />
         </button>
-        <h1 className="text-lg font-semibold text-gray-900">{title}</h1>
+        <h1 className="text-lg font-semibold text-white">{title}</h1>
       </header>
     );
   }
