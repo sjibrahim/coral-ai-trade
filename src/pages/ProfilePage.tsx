@@ -35,7 +35,7 @@ const ProfilePage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white overflow-y-auto">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white overflow-y-auto">
       {/* Scrollable content container */}
       <div className="pb-24 min-h-screen relative"> 
         {/* Header */}
@@ -143,10 +143,19 @@ const ProfilePage = () => {
           </div>
         </div>
 
-        {/* Main Menu Section - 3x2 Grid */}
+        {/* Main Menu Section - 3x2 Grid with Background */}
         <div className="px-4 mb-4">
-          <div className="bg-gray-800/80 rounded-2xl overflow-hidden backdrop-blur-sm border border-gray-700/30 p-4">
-            <div className="grid grid-cols-3 gap-3">
+          <div 
+            className="rounded-2xl overflow-hidden backdrop-blur-sm border border-gray-700/30 p-4 relative"
+            style={{
+              backgroundImage: "url('/uploads/assetsbg-BsWPbjIy.png')",
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              backgroundRepeat: "no-repeat"
+            }}
+          >
+            <div className="absolute inset-0 bg-gray-900/60 backdrop-blur-sm"></div>
+            <div className="relative z-10 grid grid-cols-3 gap-3">
               <button 
                 onClick={() => navigate('/bank')}
                 className="flex flex-col items-center p-2 transition-all hover:scale-105"
@@ -206,10 +215,19 @@ const ProfilePage = () => {
           </div>
         </div>
 
-        {/* Additional Menu Section - 1x2 Grid */}
+        {/* Transaction Records Section - 1x2 Grid with Background */}
         <div className="px-4 mb-8">
-          <div className="bg-gray-800/80 rounded-2xl overflow-hidden backdrop-blur-sm border border-gray-700/30 p-4">
-            <div className="grid grid-cols-2 gap-3 justify-center">
+          <div 
+            className="rounded-2xl overflow-hidden backdrop-blur-sm border border-gray-700/30 p-4 relative"
+            style={{
+              backgroundImage: "url('/uploads/assetsbg-BsWPbjIy.png')",
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              backgroundRepeat: "no-repeat"
+            }}
+          >
+            <div className="absolute inset-0 bg-gray-900/60 backdrop-blur-sm"></div>
+            <div className="relative z-10 grid grid-cols-2 gap-3 justify-center">
               <button 
                 onClick={() => navigate('/transaction-records')}
                 className="flex flex-col items-center p-2 transition-all hover:scale-105"
@@ -229,7 +247,7 @@ const ProfilePage = () => {
           </div>
         </div>
 
-        {/* Background decoration - same as HomePage */}
+        {/* Background decoration */}
         <div className="fixed inset-0 overflow-hidden pointer-events-none">
           <div className="absolute -top-32 -right-32 w-64 h-64 bg-gradient-to-br from-teal-500/10 to-cyan-500/10 rounded-full blur-3xl"></div>
           <div className="absolute -bottom-32 -left-32 w-64 h-64 bg-gradient-to-tr from-blue-500/10 to-teal-500/10 rounded-full blur-3xl"></div>
