@@ -110,7 +110,7 @@ const DepositPage = () => {
             }}
           >
             <p className="text-xs text-gray-400 mb-1">Current Balance</p>
-            <p className="text-lg font-semibold text-gray-200">${user?.balance || '0.00'}</p>
+            <p className="text-lg font-semibold text-gray-200">${user?.wallet || '0.00'}</p>
           </div>
 
           {/* Select Channel Section */}
