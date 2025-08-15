@@ -57,7 +57,13 @@ const CoinPage = () => {
   // Fetch coin data based on coinId
   useEffect(() => {
     const fetchCoinData = async () => {
-      if (!coinId) return;
+      if (!coinId) {
+        console.error('No coinId provided');
+        return;
+      }
+      
+      console.log('CoinPage - coinId:', coinId);
+      console.log('CoinPage - location.state:', location.state);
       
       try {
         setIsLoading(true);
@@ -66,55 +72,80 @@ const CoinPage = () => {
         // Try to get from navigation state first
         const cachedCrypto = location.state?.crypto;
         if (cachedCrypto && cachedCrypto.id === coinId) {
-          setCrypto(cachedCrypto);
+          console.log('Using cached crypto data:', cachedCrypto);
+          setCrypto({
+            ...cachedCrypto,
+            binance_symbol: cachedCrypto.binance_symbol || `${cachedCrypto.symbol?.toUpperCase() || 'BTC'}USDT`
+          });
           setIsLoading(false);
           return;
         }
         
         // Fetch from API if we have a token
         if (token) {
+          console.log('Fetching coin data from API for:', coinId);
           const response = await getCoin(token, coinId);
           
           if (response.status && response.data) {
             const coinData = response.data;
-            setCrypto({
+            console.log('API response data:', coinData);
+            
+            const formattedCrypto = {
               id: coinData.id,
               name: coinData.name,
               symbol: coinData.symbol,
-              binance_symbol: coinData.binance_symbol,
+              binance_symbol: coinData.binance_symbol || `${coinData.symbol?.toUpperCase() || 'BTC'}USDT`,
               price: parseFloat(coinData.price),
               change: 0, // Will be updated by live price feeds
               logo: coinData.logo,
-              market_cap: coinData.market_cap,
-              volume_24h: coinData.volume_24h,
-              rank: coinData.rank,
-            });
+              market_cap: coinData.market_cap || 'N/A',
+              volume_24h: coinData.volume_24h || 'N/A',
+              rank: coinData.rank || 'N/A',
+            };
+            
+            console.log('Formatted crypto data:', formattedCrypto);
+            setCrypto(formattedCrypto);
           } else {
-            // Fallback to mock data
-            const mockCrypto = mockCryptoCurrencies.find(c => c.id === coinId);
-            if (mockCrypto) {
-              setCrypto(mockCrypto);
-            }
+            console.log('API response failed, falling back to mock data');
+            fallbackToMockData();
           }
         } else {
-          // Fallback to mock data if no token
-          const mockCrypto = mockCryptoCurrencies.find(c => c.id === coinId);
-          if (mockCrypto) {
-            setCrypto(mockCrypto);
-          }
+          console.log('No token, falling back to mock data');
+          fallbackToMockData();
         }
         
         setIsLoading(false);
       } catch (error) {
         console.error('Error fetching coin data:', error);
-        
-        // Fallback to mock data on error
+        fallbackToMockData();
+        setIsLoading(false);
+      }
+    };
+
+    const fallbackToMockData = () => {
+      console.log('Falling back to mock data for coinId:', coinId);
+      
+      if (coinId) {
         const mockCrypto = mockCryptoCurrencies.find(c => c.id === coinId);
         if (mockCrypto) {
-          setCrypto(mockCrypto);
+          console.log('Found mock crypto:', mockCrypto);
+          setCrypto({
+            ...mockCrypto,
+            binance_symbol: mockCrypto.binance_symbol || `${mockCrypto.symbol?.toUpperCase() || 'BTC'}USDT`
+          });
+        } else {
+          console.log('No matching mock crypto found, using first mock crypto');
+          setCrypto({
+            ...mockCryptoCurrencies[0],
+            binance_symbol: mockCryptoCurrencies[0].binance_symbol || `${mockCryptoCurrencies[0].symbol?.toUpperCase() || 'BTC'}USDT`
+          });
         }
-        
-        setIsLoading(false);
+      } else {
+        console.log('No coinId, using first mock crypto');
+        setCrypto({
+          ...mockCryptoCurrencies[0],
+          binance_symbol: mockCryptoCurrencies[0].binance_symbol || `${mockCryptoCurrencies[0].symbol?.toUpperCase() || 'BTC'}USDT`
+        });
       }
     };
 
@@ -143,6 +174,14 @@ const CoinPage = () => {
     setShowQuickTrade(false);
     setShowTradeStatus(true);
   };
+
+  // Log the final crypto data and chart URL for debugging
+  useEffect(() => {
+    if (!isLoading) {
+      console.log('Final crypto data for chart:', crypto);
+      console.log('Chart URL will be:', `/trade-graph.html?symbol=${crypto.binance_symbol || crypto.symbol + 'usdt'}&interval=15m`);
+    }
+  }, [crypto, isLoading]);
 
   if (isLoading) {
     return (

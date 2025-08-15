@@ -29,20 +29,37 @@ const CoinsList = ({ marketData = [], loading = false }: CoinsListProps) => {
 
   // Use live market data if available, otherwise use mock data
   useEffect(() => {
+    console.log('CoinsList received marketData:', marketData);
+    
     if (marketData && marketData.length > 0) {
       // Filter to only show coins where home = "1" or home = 1
       const homeCoins = marketData.filter(coin => 
         coin.home === "1" || coin.home === 1
       );
       
-      // Map the filtered market data to match our expected format
-      const formattedData: CryptoData[] = homeCoins.map((coin) => ({
-        ...coin,
-        id: String(coin.id), // Ensure id is always a string
-        change: coin.change || 0, // Provide default value for change
-        binance_symbol: coin.binance_symbol || (coin.symbol ? `${coin.symbol.toUpperCase()}USDT` : 'BTCUSDT')
-      }));
+      console.log('Filtered home coins:', homeCoins);
+      
+      // Map the filtered market data to match our expected format with proper defaults
+      const formattedData: CryptoData[] = homeCoins.map((coin) => {
+        const formattedCoin = {
+          ...coin,
+          id: String(coin.id), // Ensure id is always a string
+          change: coin.change || 0, // Provide default value for change
+          binance_symbol: coin.binance_symbol || `${coin.symbol?.toUpperCase() || 'BTC'}USDT`,
+          market_cap: coin.market_cap || 'N/A',
+          volume_24h: coin.volume_24h || 'N/A',
+          rank: coin.rank || 'N/A',
+          price: typeof coin.price === 'number' ? coin.price : parseFloat(coin.price) || 0
+        };
+        
+        console.log('Formatted coin data:', formattedCoin);
+        return formattedCoin;
+      });
+      
       setCryptoData(formattedData);
+    } else {
+      console.log('Using mock data as fallback');
+      setCryptoData(mockCryptoCurrencies);
     }
   }, [marketData]);
 
@@ -72,6 +89,9 @@ const CoinsList = ({ marketData = [], loading = false }: CoinsListProps) => {
                 change={crypto.change || 0}
                 logo={crypto.logo}
                 binance_symbol={crypto.binance_symbol}
+                market_cap={crypto.market_cap}
+                volume_24h={crypto.volume_24h}
+                rank={crypto.rank}
                 animationDelay={index * 100}
               />
             ))}
