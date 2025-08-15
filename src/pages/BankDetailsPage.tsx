@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
 import { toast } from "@/components/ui/use-toast";
@@ -7,8 +8,6 @@ import { Loader2, CreditCard, Building, User, Hash, CheckCircle, Edit3, Shield }
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent } from "@/components/ui/card";
-import { motion } from "framer-motion";
 
 interface IFSCResponse {
   BRANCH?: string;
@@ -225,233 +224,202 @@ const BankDetailsPage = () => {
   };
   
   return (
-    <MobileLayout showBackButton title="Bank Details">
-      <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-green-50 relative overflow-hidden">
-        {/* Background Elements */}
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-0 right-0 w-72 h-72 bg-emerald-400/20 rounded-full blur-3xl animate-pulse"></div>
-          <div className="absolute bottom-0 left-0 w-72 h-72 bg-green-400/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
-        </div>
-
-        <div className="relative z-10 p-4 space-y-4">
-          {/* Header Card */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-center py-4"
-          >
-            <Card className="bg-gradient-to-r from-emerald-600 via-emerald-700 to-green-600 text-white border-0 shadow-xl">
-              <CardContent className="p-4">
-                <div className="flex items-center justify-center mb-3">
-                  <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mr-3">
-                    <CreditCard className="w-6 h-6 text-white" />
-                  </div>
-                  <div>
-                    <h1 className="text-lg font-bold">Bank Account</h1>
-                    <p className="text-xs text-emerald-100">Secure your withdrawal destination</p>
-                  </div>
-                </div>
-                
-                <div className="flex justify-center items-center gap-4 text-xs">
-                  <div className="flex items-center text-green-200">
-                    <Shield className="w-3 h-3 mr-1" />
-                    <span>256-bit Encrypted</span>
-                  </div>
-                  <div className="flex items-center text-emerald-200">
-                    <CheckCircle className="w-3 h-3 mr-1" />
-                    <span>Bank Verified</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
-
-          {isLoading ? (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="flex justify-center items-center py-20"
-            >
-              <Loader2 className="w-8 h-8 animate-spin text-emerald-500" />
-            </motion.div>
-          ) : isEditing ? (
-            <motion.form 
-              onSubmit={handleSubmit} 
-              className="space-y-4"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-            >
-              {/* Form Fields */}
-              <Card className="bg-white/90 backdrop-blur-sm border border-emerald-200/50 shadow-lg">
-                <CardContent className="p-4 space-y-4">
-                  {/* Account Holder Name */}
-                  <div>
-                    <Label htmlFor="account_holder_name" className="text-gray-700 text-xs mb-1 flex items-center">
-                      <User className="w-3 h-3 mr-1" />
-                      Account Holder Name
-                    </Label>
-                    <Input
-                      id="account_holder_name"
-                      name="account_holder_name"
-                      value={formData.account_holder_name}
-                      onChange={handleChange}
-                      className="bg-white border-gray-200 text-gray-900 text-sm"
-                      required
-                    />
-                  </div>
-
-                  {/* Account Number */}
-                  <div>
-                    <Label htmlFor="account_number" className="text-gray-700 text-xs mb-1 flex items-center">
-                      <Hash className="w-3 h-3 mr-1" />
-                      Account Number
-                    </Label>
-                    <Input
-                      id="account_number"
-                      name="account_number"
-                      value={formData.account_number}
-                      onChange={handleChange}
-                      className="bg-white border-gray-200 text-gray-900 text-sm"
-                      required
-                    />
-                  </div>
-                  
-                  {/* IFSC Code */}
-                  <div>
-                    <div className="flex items-center justify-between mb-1">
-                      <Label htmlFor="account_ifsc" className="text-gray-700 text-xs flex items-center">
-                        <Hash className="w-3 h-3 mr-1" />
-                        IFSC Code
-                      </Label>
-                      <Button 
-                        type="button"
-                        onClick={verifyIFSC}
-                        variant="outline"
-                        size="sm"
-                        className={`text-xs px-2 py-1 h-6 ${
-                          isIfscVerified 
-                            ? "bg-green-50 text-green-700 border-green-200" 
-                            : "bg-emerald-50 text-emerald-700 border-emerald-200"
-                        }`}
-                        disabled={ifscVerifying || !formData.account_ifsc}
-                      >
-                        {ifscVerifying ? (
-                          <span className="flex items-center">
-                            <Loader2 size={10} className="animate-spin mr-1" />
-                            Verifying...
-                          </span>
-                        ) : isIfscVerified ? "Verified ✓" : "Verify IFSC"}
-                      </Button>
-                    </div>
-                    <Input
-                      id="account_ifsc"
-                      name="account_ifsc"
-                      value={formData.account_ifsc}
-                      onChange={handleChange}
-                      className="bg-white border-gray-200 text-gray-900 text-sm"
-                      required
-                    />
-                    
-                    {/* IFSC Verification Results */}
-                    {ifscError && (
-                      <div className="mt-2 p-2 bg-red-50 border border-red-200 rounded-lg">
-                        <p className="text-red-600 text-xs">{ifscError}</p>
-                      </div>
-                    )}
-                  </div>
-                  
-                  {/* Bank Name */}
-                  <div>
-                    <Label htmlFor="bank_name" className="text-gray-700 text-xs mb-1 flex items-center">
-                      <Building className="w-3 h-3 mr-1" />
-                      Bank Name
-                    </Label>
-                    <Input
-                      id="bank_name"
-                      name="bank_name"
-                      value={formData.bank_name}
-                      onChange={handleChange}
-                      className="bg-gray-50 border-gray-200 text-gray-600 text-sm"
-                      required
-                      readOnly
-                      placeholder="Will be fetched automatically on IFSC verification"
-                    />
-                  </div>
-                </CardContent>
-              </Card>
-              
-              {/* Action Buttons */}
-              <div className="grid grid-cols-2 gap-3">
-                <Button
-                  type="button"
-                  onClick={() => setIsEditing(false)}
-                  variant="outline"
-                  className="bg-white border-gray-200 text-gray-700 hover:bg-gray-50 text-sm"
-                  disabled={isSubmitting}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  type="submit"
-                  className="bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white border-0 text-sm"
-                  disabled={isSubmitting || !validateForm()}
-                >
-                  {isSubmitting ? (
-                    <span className="flex items-center justify-center">
-                      <Loader2 className="w-3 h-3 animate-spin mr-1" />
-                      Saving...
-                    </span>
-                  ) : (
-                    "Save Details"
-                  )}
-                </Button>
-              </div>
-            </motion.form>
-          ) : (
-            /* Display Mode */
-            <motion.div 
-              className="space-y-4"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-            >
-              <Card className="bg-white/90 backdrop-blur-sm border border-emerald-200/50 shadow-lg">
-                <CardContent className="p-4 space-y-4">
-                  {[
-                    { icon: User, label: "Account Holder", value: accountDetails.account_holder_name },
-                    { icon: Hash, label: "Account Number", value: accountDetails.account_number },
-                    { icon: Hash, label: "IFSC Code", value: accountDetails.account_ifsc },
-                    { icon: Building, label: "Bank Name", value: accountDetails.bank_name }
-                  ].map((detail, idx) => (
-                    <div key={idx} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                      <div className="flex items-center">
-                        <div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-green-600 rounded-lg flex items-center justify-center mr-3">
-                          <detail.icon className="w-4 h-4 text-white" />
-                        </div>
-                        <div>
-                          <p className="text-gray-600 text-xs">{detail.label}</p>
-                          <p className="text-gray-900 font-medium text-sm">{detail.value || 'Not set'}</p>
-                        </div>
-                      </div>
-                      {detail.value && (
-                        <CheckCircle className="w-4 h-4 text-green-500" />
-                      )}
-                    </div>
-                  ))}
-                </CardContent>
-              </Card>
-              
-              <Button
-                onClick={() => setIsEditing(true)}
-                className="w-full h-12 bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white font-bold rounded-xl shadow-lg border-0"
-              >
-                <Edit3 className="w-4 h-4 mr-2" />
-                {accountDetails.account_number ? 'Edit Bank Details' : 'Add Bank Details'}
-              </Button>
-            </motion.div>
-          )}
+    <div className="min-h-screen bg-gray-900 text-white pb-20">
+      {/* Header */}
+      <div className="sticky top-0 bg-gray-900/95 backdrop-blur-sm border-b border-gray-800 p-4">
+        <div className="flex items-center space-x-3">
+          <div className="w-10 h-10 bg-gradient-to-r from-teal-400 to-cyan-500 rounded-lg flex items-center justify-center">
+            <CreditCard className="w-5 h-5 text-white" />
+          </div>
+          <div>
+            <h1 className="text-xl font-bold text-white">Bank Details</h1>
+            <p className="text-sm text-gray-400">Secure withdrawal destination</p>
+          </div>
         </div>
       </div>
-    </MobileLayout>
+
+      <div className="p-4 space-y-6">
+        {isLoading ? (
+          <div className="flex justify-center items-center py-20">
+            <Loader2 className="w-8 h-8 animate-spin text-teal-400" />
+          </div>
+        ) : isEditing ? (
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Form Fields */}
+            <div className="bg-gray-800/50 rounded-xl p-4 space-y-4">
+              {/* Account Holder Name */}
+              <div>
+                <Label className="text-gray-300 text-sm mb-2 flex items-center">
+                  <User className="w-4 h-4 mr-2" />
+                  Account Holder Name
+                </Label>
+                <Input
+                  name="account_holder_name"
+                  value={formData.account_holder_name}
+                  onChange={handleChange}
+                  className="bg-gray-700 border-gray-600 text-white placeholder-gray-400"
+                  required
+                />
+              </div>
+
+              {/* Account Number */}
+              <div>
+                <Label className="text-gray-300 text-sm mb-2 flex items-center">
+                  <Hash className="w-4 h-4 mr-2" />
+                  Account Number
+                </Label>
+                <Input
+                  name="account_number"
+                  value={formData.account_number}
+                  onChange={handleChange}
+                  className="bg-gray-700 border-gray-600 text-white placeholder-gray-400"
+                  required
+                />
+              </div>
+              
+              {/* IFSC Code */}
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <Label className="text-gray-300 text-sm flex items-center">
+                    <Hash className="w-4 h-4 mr-2" />
+                    IFSC Code
+                  </Label>
+                  <Button 
+                    type="button"
+                    onClick={verifyIFSC}
+                    variant="outline"
+                    size="sm"
+                    className={`text-xs px-3 py-1 h-7 ${
+                      isIfscVerified 
+                        ? "bg-green-500/20 text-green-400 border-green-500/30" 
+                        : "bg-teal-500/20 text-teal-400 border-teal-500/30"
+                    }`}
+                    disabled={ifscVerifying || !formData.account_ifsc}
+                  >
+                    {ifscVerifying ? (
+                      <span className="flex items-center">
+                        <Loader2 size={12} className="animate-spin mr-1" />
+                        Verifying...
+                      </span>
+                    ) : isIfscVerified ? "Verified ✓" : "Verify IFSC"}
+                  </Button>
+                </div>
+                <Input
+                  name="account_ifsc"
+                  value={formData.account_ifsc}
+                  onChange={handleChange}
+                  className="bg-gray-700 border-gray-600 text-white placeholder-gray-400"
+                  required
+                />
+                
+                {/* IFSC Verification Results */}
+                {ifscError && (
+                  <div className="mt-2 p-3 bg-red-500/10 border border-red-500/30 rounded-lg">
+                    <p className="text-red-400 text-sm">{ifscError}</p>
+                  </div>
+                )}
+              </div>
+              
+              {/* Bank Name */}
+              <div>
+                <Label className="text-gray-300 text-sm mb-2 flex items-center">
+                  <Building className="w-4 h-4 mr-2" />
+                  Bank Name
+                </Label>
+                <Input
+                  name="bank_name"
+                  value={formData.bank_name}
+                  onChange={handleChange}
+                  className="bg-gray-600 border-gray-500 text-gray-300"
+                  required
+                  readOnly
+                  placeholder="Will be fetched automatically on IFSC verification"
+                />
+              </div>
+            </div>
+            
+            {/* Action Buttons */}
+            <div className="grid grid-cols-2 gap-3">
+              <Button
+                type="button"
+                onClick={() => setIsEditing(false)}
+                variant="outline"
+                className="bg-gray-700 border-gray-600 text-gray-300 hover:bg-gray-600"
+                disabled={isSubmitting}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                className="bg-gradient-to-r from-teal-400 to-cyan-500 hover:from-teal-500 hover:to-cyan-600 text-white border-0"
+                disabled={isSubmitting || !validateForm()}
+              >
+                {isSubmitting ? (
+                  <span className="flex items-center justify-center">
+                    <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                    Saving...
+                  </span>
+                ) : (
+                  "Save Details"
+                )}
+              </Button>
+            </div>
+          </form>
+        ) : (
+          /* Display Mode */
+          <div className="space-y-4">
+            <div className="bg-gray-800/50 rounded-xl p-4 space-y-4">
+              {[
+                { icon: User, label: "Account Holder", value: accountDetails.account_holder_name },
+                { icon: Hash, label: "Account Number", value: accountDetails.account_number },
+                { icon: Hash, label: "IFSC Code", value: accountDetails.account_ifsc },
+                { icon: Building, label: "Bank Name", value: accountDetails.bank_name }
+              ].map((detail, idx) => (
+                <div key={idx} className="flex items-center justify-between p-3 bg-gray-700/50 rounded-lg">
+                  <div className="flex items-center">
+                    <div className="w-8 h-8 bg-gradient-to-r from-teal-400 to-cyan-500 rounded-lg flex items-center justify-center mr-3">
+                      <detail.icon className="w-4 h-4 text-white" />
+                    </div>
+                    <div>
+                      <p className="text-gray-400 text-sm">{detail.label}</p>
+                      <p className="text-white font-medium">{detail.value || 'Not set'}</p>
+                    </div>
+                  </div>
+                  {detail.value && (
+                    <CheckCircle className="w-5 h-5 text-green-400" />
+                  )}
+                </div>
+              ))}
+            </div>
+            
+            <Button
+              onClick={() => setIsEditing(true)}
+              className="w-full h-12 bg-gradient-to-r from-teal-400 to-cyan-500 hover:from-teal-500 hover:to-cyan-600 text-white font-medium rounded-xl"
+            >
+              <Edit3 className="w-4 h-4 mr-2" />
+              {accountDetails.account_number ? 'Edit Bank Details' : 'Add Bank Details'}
+            </Button>
+
+            {/* Security Notice */}
+            <div className="bg-gray-800/30 rounded-xl p-4 mt-6">
+              <div className="flex items-center mb-2">
+                <Shield className="w-4 h-4 text-teal-400 mr-2" />
+                <span className="text-sm font-medium text-gray-300">Security Notice</span>
+              </div>
+              <p className="text-xs text-gray-400">
+                Your bank details are encrypted and securely stored. Only you can view and modify this information.
+              </p>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Background decoration */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-32 -right-32 w-64 h-64 bg-gradient-to-br from-teal-500/10 to-cyan-500/10 rounded-full blur-3xl"></div>
+        <div className="absolute -bottom-32 -left-32 w-64 h-64 bg-gradient-to-tr from-blue-500/10 to-teal-500/10 rounded-full blur-3xl"></div>
+      </div>
+    </div>
   );
 };
 
