@@ -82,7 +82,6 @@ const InvitePage = () => {
           </div>
           <div>
             <h1 className="text-xl font-bold text-white">Invite & Earn</h1>
-            <p className="text-sm text-gray-400">Share your code and grow your team</p>
           </div>
         </div>
       </div>
@@ -95,10 +94,6 @@ const InvitePage = () => {
             <div className="w-16 h-16 bg-gradient-to-r from-teal-400 to-cyan-500 rounded-full flex items-center justify-center mx-auto mb-4">
               <Gift className="w-8 h-8 text-white" />
             </div>
-            <h2 className="text-2xl font-bold mb-2 text-white">Multi-Level Rewards</h2>
-            <p className="text-gray-400 text-sm mb-6">
-              Invite friends and earn from their success
-            </p>
             
             {/* Commission Cards */}
             <div className="grid grid-cols-3 gap-3 mb-6">
