@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import MobileLayout from "@/components/layout/MobileLayout";
@@ -46,7 +45,7 @@ const BankDetailsPage = () => {
         account_holder_name: user.account_holder_name || '',
         account_number: user.account_number || '',
         account_ifsc: user.account_ifsc || '',
-        bank_name: user.bank_name || '',
+        bank_name: '', // Remove reference to user.bank_name since it doesn't exist in User type
         usdt_address: user.usdt_address || ''
       });
     }
