@@ -56,7 +56,11 @@ const CoinPage = () => {
         
         // Try to get from navigation state first
         const cachedCrypto = location.state?.crypto;
-        if (cachedCrypto && (cachedCrypto.id === coinId || cachedCrypto.id === parseInt(coinId))) {
+        if (cachedCrypto && (
+          String(cachedCrypto.id) === coinId || 
+          cachedCrypto.id === parseInt(coinId) ||
+          String(cachedCrypto.id) === String(parseInt(coinId))
+        )) {
           console.log('Using cached crypto data:', cachedCrypto);
           setCrypto(cachedCrypto);
           setIsLoading(false);
@@ -65,7 +69,7 @@ const CoinPage = () => {
         
         // Try to find in mock data by ID or symbol
         const mockCrypto = mockCryptoCurrencies.find(c => 
-          c.id === coinId || 
+          String(c.id) === coinId || 
           c.id === parseInt(coinId) || 
           c.symbol.toLowerCase() === coinId.toLowerCase() ||
           c.name.toLowerCase() === coinId.toLowerCase()
