@@ -1,13 +1,12 @@
-
 import { useState, useEffect } from "react";
-import MobileLayout from "@/components/layout/MobileLayout";
 import { toast } from "@/components/ui/use-toast";
 import { updateBankDetails } from "@/services/api";
 import { useAuth } from "@/contexts/AuthContext";
-import { Loader2, CreditCard, Building, User, Hash, CheckCircle, Edit3, Shield } from "lucide-react";
+import { Loader2, CreditCard, Building, User, Hash, CheckCircle, Edit3, Shield, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useNavigate } from "react-router-dom";
 
 interface IFSCResponse {
   BRANCH?: string;
@@ -21,6 +20,7 @@ interface IFSCResponse {
 }
 
 const BankDetailsPage = () => {
+  const navigate = useNavigate();
   const { user, updateProfile } = useAuth();
   const [accountDetails, setAccountDetails] = useState({
     account_holder_name: '',
@@ -42,20 +42,20 @@ const BankDetailsPage = () => {
   
   // Load user bank details when component mounts
   useEffect(() => {
+    console.log("BankDetailsPage: User data:", user);
+    
     if (user) {
-      setAccountDetails({
+      const details = {
         account_holder_name: user.account_holder_name || '',
         account_number: user.account_number || '',
         account_ifsc: user.account_ifsc || '',
         bank_name: (user as any).bank_name || ''
-      });
+      };
       
-      setFormData({
-        account_holder_name: user.account_holder_name || '',
-        account_number: user.account_number || '',
-        account_ifsc: user.account_ifsc || '',
-        bank_name: (user as any).bank_name || '' 
-      });
+      console.log("BankDetailsPage: Setting account details:", details);
+      
+      setAccountDetails(details);
+      setFormData(details);
       
       // Set IFSC as verified if it exists
       if (user.account_ifsc) {
@@ -63,9 +63,12 @@ const BankDetailsPage = () => {
       }
       
       setIsLoading(false);
+    } else {
+      console.log("BankDetailsPage: No user data available");
+      setIsLoading(false);
     }
   }, [user]);
-  
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
@@ -223,11 +226,25 @@ const BankDetailsPage = () => {
     }
   };
   
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-teal-400" />
+      </div>
+    );
+  }
+  
   return (
     <div className="min-h-screen bg-gray-900 text-white pb-20">
       {/* Header */}
       <div className="sticky top-0 bg-gray-900/95 backdrop-blur-sm border-b border-gray-800 p-4">
         <div className="flex items-center space-x-3">
+          <button 
+            onClick={() => navigate(-1)}
+            className="p-2 rounded-full hover:bg-gray-800 transition-colors"
+          >
+            <ArrowLeft className="w-5 h-5 text-gray-300" />
+          </button>
           <div className="w-10 h-10 bg-gradient-to-r from-teal-400 to-cyan-500 rounded-lg flex items-center justify-center">
             <CreditCard className="w-5 h-5 text-white" />
           </div>
@@ -239,11 +256,7 @@ const BankDetailsPage = () => {
       </div>
 
       <div className="p-4 space-y-6">
-        {isLoading ? (
-          <div className="flex justify-center items-center py-20">
-            <Loader2 className="w-8 h-8 animate-spin text-teal-400" />
-          </div>
-        ) : isEditing ? (
+        {isEditing ? (
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Form Fields */}
             <div className="bg-gray-800/50 rounded-xl p-4 space-y-4">
@@ -412,12 +425,6 @@ const BankDetailsPage = () => {
             </div>
           </div>
         )}
-      </div>
-
-      {/* Background decoration */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-32 -right-32 w-64 h-64 bg-gradient-to-br from-teal-500/10 to-cyan-500/10 rounded-full blur-3xl"></div>
-        <div className="absolute -bottom-32 -left-32 w-64 h-64 bg-gradient-to-tr from-blue-500/10 to-teal-500/10 rounded-full blur-3xl"></div>
       </div>
     </div>
   );
