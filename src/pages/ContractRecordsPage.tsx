@@ -84,26 +84,26 @@ const ContractRecordsPage = () => {
   };
   
   return (
-    <MobileLayout showBackButton title="Trading History">
+    <MobileLayout showBackButton title="Trading History" hideFooter>
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-black">
-        <div className="p-4">
+        <div className="p-3 pb-4">
           {/* Contract Records */}
           {isLoading ? (
             <div className="space-y-3">
               {Array(4).fill(0).map((_, idx) => (
                 <Card key={`skeleton-${idx}`} className="bg-gray-800/60 border-gray-700/50 animate-pulse backdrop-blur-sm">
-                  <CardContent className="p-4">
+                  <CardContent className="p-3">
                     <div className="flex items-center gap-3 mb-3">
-                      <div className="w-10 h-10 bg-gray-700 rounded-full"></div>
+                      <div className="w-8 h-8 bg-gray-700 rounded-full"></div>
                       <div className="flex-1">
-                        <div className="h-4 w-20 bg-gray-700 rounded mb-2"></div>
-                        <div className="h-3 w-12 bg-gray-700 rounded"></div>
+                        <div className="h-3 w-16 bg-gray-700 rounded mb-2"></div>
+                        <div className="h-2 w-10 bg-gray-700 rounded"></div>
                       </div>
-                      <div className="h-5 w-16 bg-gray-700 rounded-full"></div>
+                      <div className="h-4 w-12 bg-gray-700 rounded-full"></div>
                     </div>
-                    <div className="grid grid-cols-2 gap-3">
-                      <div className="h-16 bg-gray-700/50 rounded-lg"></div>
-                      <div className="h-16 bg-gray-700/50 rounded-lg"></div>
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="h-12 bg-gray-700/50 rounded-lg"></div>
+                      <div className="h-12 bg-gray-700/50 rounded-lg"></div>
                     </div>
                   </CardContent>
                 </Card>
@@ -121,16 +121,16 @@ const ContractRecordsPage = () => {
                   <Card 
                     className="bg-gray-800/60 border-gray-700/50 hover:bg-gray-800/80 transition-all duration-300 backdrop-blur-sm shadow-lg"
                   >
-                    <CardContent className="p-4">
+                    <CardContent className="p-3">
                       {/* Header with Asset Info */}
-                      <div className="flex items-center gap-3 mb-4">
+                      <div className="flex items-center gap-3 mb-3">
                         <div className="relative">
-                          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500/20 to-purple-500/20 flex items-center justify-center border border-blue-500/30">
+                          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500/20 to-purple-500/20 flex items-center justify-center border border-blue-500/30">
                             {record.logo ? (
                               <img 
                                 src={record.logo} 
                                 alt={record.asset_name} 
-                                className="w-6 h-6 rounded-full" 
+                                className="w-5 h-5 rounded-full" 
                                 onError={(e) => {
                                   const target = e.target as HTMLImageElement;
                                   target.style.display = 'none';
@@ -138,60 +138,60 @@ const ContractRecordsPage = () => {
                                 }}
                               />
                             ) : (
-                              <span className="font-bold text-blue-400 text-sm">{record.asset_symbol.slice(0, 2)}</span>
+                              <span className="font-bold text-blue-400 text-xs">{record.asset_symbol.slice(0, 2)}</span>
                             )}
                           </div>
-                          <div className="absolute -top-0.5 -right-0.5 w-3 h-3 bg-gradient-to-r from-green-400 to-emerald-400 rounded-full flex items-center justify-center">
-                            <Zap className="w-2 h-2 text-white" />
+                          <div className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-gradient-to-r from-green-400 to-emerald-400 rounded-full flex items-center justify-center">
+                            <Zap className="w-1 h-1 text-white" />
                           </div>
                         </div>
                         
                         <div className="flex-1">
-                          <h3 className="text-lg font-bold text-white mb-0.5">{record.asset_name}</h3>
-                          <p className="text-gray-400 text-sm font-medium">{record.asset_symbol}/USDT</p>
+                          <h3 className="text-sm font-bold text-white mb-0.5">{record.asset_name}</h3>
+                          <p className="text-gray-400 text-xs font-medium">{record.asset_symbol}/USDT</p>
                         </div>
                         
                         <div className={cn(
-                          "px-3 py-1.5 rounded-xl font-bold flex items-center gap-1.5 text-sm shadow-lg",
+                          "px-2 py-1 rounded-lg font-bold flex items-center gap-1 text-xs shadow-lg",
                           record.pnl_type === "Profit" 
                             ? "bg-gradient-to-r from-green-500/20 to-emerald-500/20 text-green-400 border border-green-500/30" 
                             : "bg-gradient-to-r from-red-500/20 to-rose-500/20 text-red-400 border border-red-500/30"
                         )}>
                           {record.pnl_type === "Profit" ? 
-                            <ArrowUpRight className="w-3 h-3" /> : 
-                            <ArrowDownRight className="w-3 h-3" />
+                            <ArrowUpRight className="w-2 h-2" /> : 
+                            <ArrowDownRight className="w-2 h-2" />
                           }
                           ₹{record.pnl_amount}
                         </div>
                       </div>
                       
                       {/* Trade Details Grid */}
-                      <div className="grid grid-cols-2 gap-3">
-                        <div className="bg-gradient-to-br from-emerald-500/10 to-green-500/10 rounded-xl p-3 border border-emerald-500/20">
-                          <div className="flex items-center text-emerald-400 text-xs font-semibold mb-2">
-                            <TrendingUp className="w-3 h-3 mr-1.5" />
-                            <span>BUY ORDER</span>
+                      <div className="grid grid-cols-2 gap-2">
+                        <div className="bg-gradient-to-br from-emerald-500/10 to-green-500/10 rounded-lg p-2 border border-emerald-500/20">
+                          <div className="flex items-center text-emerald-400 text-xs font-semibold mb-1">
+                            <TrendingUp className="w-2 h-2 mr-1" />
+                            <span>BUY</span>
                           </div>
-                          <div className="space-y-1">
-                            <p className="text-lg font-bold text-white">₹{record.amount_inr}</p>
+                          <div className="space-y-0.5">
+                            <p className="text-sm font-bold text-white">₹{record.amount_inr}</p>
                             <p className="text-emerald-300 font-mono text-xs">@ {parseFloat(record.obtained_price).toFixed(4)}</p>
                             <div className="flex items-center text-gray-400 text-xs">
-                              <Calendar className="w-2.5 h-2.5 mr-1" />
+                              <Calendar className="w-2 h-2 mr-1" />
                               <span className="text-xs">{formatDate(record.buy_time)} {formatTime(record.buy_time)}</span>
                             </div>
                           </div>
                         </div>
                         
-                        <div className="bg-gradient-to-br from-blue-500/10 to-cyan-500/10 rounded-xl p-3 border border-blue-500/20">
-                          <div className="flex items-center text-blue-400 text-xs font-semibold mb-2">
-                            <TrendingDown className="w-3 h-3 mr-1.5" />
-                            <span>SELL ORDER</span>
+                        <div className="bg-gradient-to-br from-blue-500/10 to-cyan-500/10 rounded-lg p-2 border border-blue-500/20">
+                          <div className="flex items-center text-blue-400 text-xs font-semibold mb-1">
+                            <TrendingDown className="w-2 h-2 mr-1" />
+                            <span>SELL</span>
                           </div>
-                          <div className="space-y-1">
-                            <p className="text-lg font-bold text-white">₹{record.current_balance}</p>
+                          <div className="space-y-0.5">
+                            <p className="text-sm font-bold text-white">₹{record.current_balance}</p>
                             <p className="text-blue-300 font-mono text-xs">@ {parseFloat(record.closure_price).toFixed(4)}</p>
                             <div className="flex items-center text-gray-400 text-xs">
-                              <Calendar className="w-2.5 h-2.5 mr-1" />
+                              <Calendar className="w-2 h-2 mr-1" />
                               <span className="text-xs">{formatDate(record.sell_time)} {formatTime(record.sell_time)}</span>
                             </div>
                           </div>
@@ -199,11 +199,11 @@ const ContractRecordsPage = () => {
                       </div>
 
                       {/* Status Bar */}
-                      <div className="mt-3 pt-3 border-t border-gray-700/50">
+                      <div className="mt-2 pt-2 border-t border-gray-700/50">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center text-gray-400 text-xs">
-                            <Target className="w-3 h-3 mr-1.5" />
-                            <span>Contract #{record.id}</span>
+                            <Target className="w-2 h-2 mr-1" />
+                            <span>#{record.id}</span>
                           </div>
                           <div className={cn(
                             "text-xs font-semibold",
@@ -224,12 +224,12 @@ const ContractRecordsPage = () => {
               animate={{ opacity: 1, scale: 1 }}
             >
               <Card className="bg-gray-800/60 border-gray-700/50 backdrop-blur-sm shadow-lg">
-                <CardContent className="p-8 text-center">
-                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-r from-blue-500/20 to-purple-500/20 flex items-center justify-center mx-auto mb-4 border border-blue-500/30">
-                    <Activity className="h-8 w-8 text-blue-400" />
+                <CardContent className="p-6 text-center">
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-blue-500/20 to-purple-500/20 flex items-center justify-center mx-auto mb-3 border border-blue-500/30">
+                    <Activity className="h-6 w-6 text-blue-400" />
                   </div>
-                  <h3 className="text-xl font-bold mb-2 text-white">No Trading History</h3>
-                  <p className="text-gray-400">Start trading crypto contracts to see your history here</p>
+                  <h3 className="text-lg font-bold mb-2 text-white">No Trading History</h3>
+                  <p className="text-gray-400 text-sm">Start trading crypto contracts to see your history here</p>
                 </CardContent>
               </Card>
             </motion.div>

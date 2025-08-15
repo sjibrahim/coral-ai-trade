@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { getSalaryRecords } from "@/services/api";
 import { useToast } from "@/hooks/use-toast";
@@ -78,56 +78,42 @@ const SalaryRecordPage = () => {
   }, 0);
   
   return (
-    <MobileLayout showBackButton title="Salary">
+    <MobileLayout showBackButton title="Salary" hideFooter>
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-black">
-        {/* Header Section */}
-        <div className="relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-emerald-600/20 to-green-600/20" />
-          <div className="relative px-6 py-8">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-gradient-to-r from-emerald-500 to-green-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
-                <Wallet className="w-8 h-8 text-white" />
-              </div>
-              <h1 className="text-2xl font-bold text-white mb-2">Salary History</h1>
-              <p className="text-gray-400">Your earnings from Trexo activities</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="px-6 -mt-4">
+        <div className="p-3 pb-4">
           {/* Total Earned Card */}
-          <Card className="mb-6 bg-gradient-to-br from-emerald-500/20 to-green-600/20 border-emerald-500/30 backdrop-blur-sm">
-            <CardContent className="p-6 text-center">
+          <Card className="mb-4 bg-gradient-to-br from-emerald-500/20 to-green-600/20 border-emerald-500/30 backdrop-blur-sm">
+            <CardContent className="p-4 text-center">
               <div className="flex items-center justify-center mb-2">
-                <TrendingUp className="h-6 w-6 mr-2 text-emerald-400" />
+                <TrendingUp className="h-5 w-5 mr-2 text-emerald-400" />
                 <span className="text-emerald-300 text-sm">Total Salary Earned</span>
               </div>
-              <p className="text-4xl font-bold mb-2 text-white">₹{totalEarned.toLocaleString()}</p>
-              <p className="text-emerald-300 text-sm">From {records.length} salary payments</p>
+              <p className="text-3xl font-bold mb-1 text-white">₹{totalEarned.toLocaleString()}</p>
+              <p className="text-emerald-300 text-xs">From {records.length} salary payments</p>
             </CardContent>
           </Card>
           
           {/* Salary Records */}
           {isLoading ? (
-            <div className="space-y-4">
+            <div className="space-y-3">
               {Array(3).fill(0).map((_, idx) => (
                 <Card key={`skeleton-${idx}`} className="bg-gray-800/50 border-gray-700/50 animate-pulse">
-                  <CardContent className="p-5">
+                  <CardContent className="p-4">
                     <div className="flex justify-between mb-2">
-                      <div className="h-5 w-24 bg-gray-700 rounded"></div>
-                      <div className="h-5 w-20 bg-gray-700 rounded"></div>
+                      <div className="h-4 w-20 bg-gray-700 rounded"></div>
+                      <div className="h-4 w-16 bg-gray-700 rounded"></div>
                     </div>
-                    <div className="mb-4">
-                      <div className="h-7 w-32 bg-gray-700 rounded"></div>
+                    <div className="mb-3">
+                      <div className="h-6 w-28 bg-gray-700 rounded"></div>
                     </div>
                     <div className="flex justify-between">
                       <div>
-                        <div className="h-4 w-16 bg-gray-700 rounded mb-1"></div>
-                        <div className="h-4 w-24 bg-gray-700 rounded"></div>
+                        <div className="h-3 w-14 bg-gray-700 rounded mb-1"></div>
+                        <div className="h-3 w-20 bg-gray-700 rounded"></div>
                       </div>
                       <div className="text-right">
-                        <div className="h-4 w-12 bg-gray-700 rounded mb-1"></div>
-                        <div className="h-4 w-20 bg-gray-700 rounded"></div>
+                        <div className="h-3 w-10 bg-gray-700 rounded mb-1"></div>
+                        <div className="h-3 w-16 bg-gray-700 rounded"></div>
                       </div>
                     </div>
                   </CardContent>
@@ -135,25 +121,25 @@ const SalaryRecordPage = () => {
               ))}
             </div>
           ) : records.length > 0 ? (
-            <div className="space-y-4 pb-6">
+            <div className="space-y-3">
               {records.map((record) => (
                 <Card 
                   key={record.id}
                   className="bg-gray-800/50 border-gray-700/50 hover:bg-gray-800/70 transition-all duration-200 backdrop-blur-sm"
                 >
-                  <CardContent className="p-5">
+                  <CardContent className="p-4">
                     <div className="flex justify-between items-center mb-3">
                       <div className="flex items-center">
-                        <div className="w-12 h-12 rounded-full bg-gradient-to-r from-emerald-500/20 to-green-500/20 flex items-center justify-center mr-3 border border-emerald-500/30">
-                          <DollarSign className="h-6 w-6 text-emerald-400" />
+                        <div className="w-10 h-10 rounded-full bg-gradient-to-r from-emerald-500/20 to-green-500/20 flex items-center justify-center mr-3 border border-emerald-500/30">
+                          <DollarSign className="h-5 w-5 text-emerald-400" />
                         </div>
                         <div>
-                          <p className="text-lg font-semibold text-white">Salary #{record.id}</p>
-                          <p className="text-sm text-gray-400">Monthly payment</p>
+                          <p className="text-base font-semibold text-white">Salary #{record.id}</p>
+                          <p className="text-xs text-gray-400">Monthly payment</p>
                         </div>
                       </div>
                       <div className="text-right">
-                        <p className="text-2xl font-bold text-emerald-400">
+                        <p className="text-xl font-bold text-emerald-400">
                           ₹{parseInt(record.amount).toLocaleString()}
                         </p>
                         <div className={cn(
@@ -163,18 +149,18 @@ const SalaryRecordPage = () => {
                             : "bg-amber-500/20 text-amber-400 border border-amber-500/30"
                         )}>
                           {record.status.toLowerCase() === 'success' ? (
-                            <CheckCircle className="h-3 w-3 mr-1" />
+                            <CheckCircle className="h-2 w-2 mr-1" />
                           ) : (
-                            <Clock className="h-3 w-3 mr-1" />
+                            <Clock className="h-2 w-2 mr-1" />
                           )}
                           {record.status.toUpperCase()}
                         </div>
                       </div>
                     </div>
                     
-                    <div className="flex justify-between text-sm text-gray-400 pt-3 border-t border-gray-700">
+                    <div className="flex justify-between text-xs text-gray-400 pt-2 border-t border-gray-700">
                       <div className="flex items-center">
-                        <Calendar className="h-4 w-4 mr-1" />
+                        <Calendar className="h-3 w-3 mr-1" />
                         <span>Payment Date</span>
                       </div>
                       <span className="font-medium text-gray-300">{formatDate(record.timestamp)}</span>
@@ -185,12 +171,12 @@ const SalaryRecordPage = () => {
             </div>
           ) : (
             <Card className="bg-gray-800/50 border-gray-700/50 backdrop-blur-sm">
-              <CardContent className="p-8 text-center">
-                <div className="w-16 h-16 rounded-full bg-gradient-to-r from-emerald-500/20 to-green-500/20 flex items-center justify-center mx-auto mb-4 border border-emerald-500/30">
-                  <DollarSign className="h-8 w-8 text-emerald-400" />
+              <CardContent className="p-6 text-center">
+                <div className="w-12 h-12 rounded-full bg-gradient-to-r from-emerald-500/20 to-green-500/20 flex items-center justify-center mx-auto mb-3 border border-emerald-500/30">
+                  <DollarSign className="h-6 w-6 text-emerald-400" />
                 </div>
-                <h3 className="text-lg font-semibold mb-2 text-white">No salary records yet</h3>
-                <p className="text-gray-400">Complete tasks and activities to earn your first salary on Trexo</p>
+                <h3 className="text-base font-semibold mb-2 text-white">No salary records yet</h3>
+                <p className="text-gray-400 text-sm">Complete tasks and activities to earn your first salary on Trexo</p>
               </CardContent>
             </Card>
           )}
