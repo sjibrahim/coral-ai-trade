@@ -27,7 +27,7 @@ const TradeStatusModal: React.FC<TradeStatusModalProps> = ({
   tradeResult
 }) => {
   const { refreshUserData } = useAuth();
-  const [timeRemaining, setTimeRemaining] = useState(tradeResult.duration);
+  const [timeRemaining, setTimeRemaining] = useState(0);
   const [isCompleted, setIsCompleted] = useState(false);
   const [currentPrice, setCurrentPrice] = useState(tradeResult.entryPrice);
 
@@ -38,59 +38,44 @@ const TradeStatusModal: React.FC<TradeStatusModalProps> = ({
     if (tradeResult.status) {
       setIsCompleted(true);
       setTimeRemaining(0);
-      // Refresh user data to get updated balance
       refreshUserData();
       return;
     }
 
-    // Reset state when modal opens for new trades
+    // Start countdown for new trades
     setTimeRemaining(tradeResult.duration);
     setIsCompleted(false);
     setCurrentPrice(tradeResult.entryPrice);
 
-    let intervalId: NodeJS.Timeout;
-
-    if (timeRemaining > 0 && !tradeResult.status) {
-      intervalId = setInterval(() => {
-        setTimeRemaining(prev => {
-          if (prev <= 1) {
-            setIsCompleted(true);
-            // Refresh user data when trade completes
-            refreshUserData();
-            return 0;
-          }
-          return prev - 1;
-        });
-
-        // Simulate price changes only during countdown
-        if (!isCompleted && !tradeResult.status) {
-          setCurrentPrice(prev => {
-            const change = (Math.random() - 0.5) * 100;
-            return prev + change;
-          });
+    const intervalId = setInterval(() => {
+      setTimeRemaining(prev => {
+        if (prev <= 1) {
+          setIsCompleted(true);
+          refreshUserData();
+          return 0;
         }
-      }, 1000);
-    }
+        return prev - 1;
+      });
 
-    return () => {
-      if (intervalId) {
-        clearInterval(intervalId);
-      }
-    };
-  }, [isOpen, tradeResult, refreshUserData, timeRemaining, isCompleted]);
+      // Simulate price changes during countdown
+      setCurrentPrice(prev => {
+        const change = (Math.random() - 0.5) * 100;
+        return prev + change;
+      });
+    }, 1000);
+
+    return () => clearInterval(intervalId);
+  }, [isOpen, tradeResult, refreshUserData]);
 
   const progress = tradeResult.duration > 0 ? ((tradeResult.duration - timeRemaining) / tradeResult.duration) * 100 : 100;
   const priceDifference = currentPrice - tradeResult.entryPrice;
   const isProfitable = tradeResult.type === 'call' ? priceDifference > 0 : priceDifference < 0;
 
-  // Determine if trade is completed (either by timer or by having status)
-  const tradeCompleted = isCompleted || tradeResult.status;
-
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md mx-auto w-[90%] bg-gradient-to-br from-gray-900 to-black border border-gray-700/50 p-0 overflow-hidden rounded-2xl">
         <div className="relative p-6">
-          {!tradeCompleted ? (
+          {!isCompleted ? (
             // Trading in progress
             <div className="text-center space-y-6">
               <div className="flex items-center justify-center gap-3 mb-4">
@@ -163,12 +148,14 @@ const TradeStatusModal: React.FC<TradeStatusModalProps> = ({
               </div>
             </div>
           ) : (
-            // Trade completed - show result from API
+            // Trade completed - show final result
             <div className="text-center space-y-6">
               <div className={`w-20 h-20 mx-auto rounded-full flex items-center justify-center ${
-                tradeResult.status === 'win' ? 'bg-green-500/20' : 'bg-red-500/20'
+                (tradeResult.status === 'win' || (!tradeResult.status && isProfitable)) 
+                  ? 'bg-green-500/20' 
+                  : 'bg-red-500/20'
               }`}>
-                {tradeResult.status === 'win' ? (
+                {(tradeResult.status === 'win' || (!tradeResult.status && isProfitable)) ? (
                   <CheckCircle className="w-10 h-10 text-green-400" />
                 ) : (
                   <XCircle className="w-10 h-10 text-red-400" />
@@ -177,9 +164,14 @@ const TradeStatusModal: React.FC<TradeStatusModalProps> = ({
 
               <div>
                 <h3 className={`text-2xl font-bold ${
-                  tradeResult.status === 'win' ? 'text-green-400' : 'text-red-400'
+                  (tradeResult.status === 'win' || (!tradeResult.status && isProfitable)) 
+                    ? 'text-green-400' 
+                    : 'text-red-400'
                 }`}>
-                  {tradeResult.status === 'win' ? 'Trade Won!' : 'Trade Lost'}
+                  {(tradeResult.status === 'win' || (!tradeResult.status && isProfitable)) 
+                    ? 'Trade Won!' 
+                    : 'Trade Lost'
+                  }
                 </h3>
                 <p className="text-gray-400 text-sm">
                   {tradeResult.type.toUpperCase()} trade on {tradeResult.symbol}
@@ -192,13 +184,23 @@ const TradeStatusModal: React.FC<TradeStatusModalProps> = ({
                   <span className="text-white font-medium">₹{tradeResult.amount}</span>
                 </div>
                 <div className="flex justify-between">
+                  <span className="text-gray-400">Final Price:</span>
+                  <span className="text-white font-medium">₹{currentPrice.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between">
                   <span className="text-gray-400">Result:</span>
                   <span className={`font-bold ${
-                    tradeResult.status === 'win' ? 'text-green-400' : 'text-red-400'
+                    (tradeResult.status === 'win' || (!tradeResult.status && isProfitable)) 
+                      ? 'text-green-400' 
+                      : 'text-red-400'
                   }`}>
                     {tradeResult.status === 'win' 
                       ? `+₹${tradeResult.profit || 0}` 
-                      : `-₹${tradeResult.lost_amount || 0}`
+                      : tradeResult.status === 'loss'
+                      ? `-₹${tradeResult.lost_amount || 0}`
+                      : isProfitable 
+                        ? `+₹${(tradeResult.amount * 0.8).toFixed(0)}`
+                        : `-₹${tradeResult.amount}`
                     }
                   </span>
                 </div>

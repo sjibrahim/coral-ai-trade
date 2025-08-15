@@ -76,7 +76,7 @@ const CoinPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-black text-white">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-black text-white pb-24">
       <div className="pb-4">
         {/* Header */}
         <div className="sticky top-0 z-40 bg-gray-900/95 backdrop-blur-xl border-b border-gray-800/50">
@@ -217,7 +217,7 @@ const CoinPage = () => {
           </div>
         </div>
 
-        {/* Enhanced Trading Section - Resized Buttons */}
+        {/* Trading Information Section */}
         <div className="px-4 mb-6">
           <div className="bg-gradient-to-r from-gray-800/80 to-gray-900/80 backdrop-blur-sm rounded-2xl border border-gray-700/30 p-6">
             <div className="text-center mb-6">
@@ -225,62 +225,19 @@ const CoinPage = () => {
               <p className="text-sm text-gray-400">Predict price movement and earn profits</p>
             </div>
             
-            {/* Resized Buy/Put Buttons */}
-            <div className="grid grid-cols-2 gap-4">
-              <button
-                onClick={() => handleTradeClick('call')}
-                className="group relative overflow-hidden bg-gradient-to-br from-green-500 via-green-600 to-emerald-600 hover:from-green-400 hover:via-green-500 hover:to-emerald-500 text-white font-bold py-2 px-2 rounded-lg shadow-lg transform transition-all duration-300 hover:scale-105 hover:shadow-green-500/25 active:scale-95"
-              >
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12 translate-x-[-100%] group-hover:translate-x-[200%] transition-transform duration-1000"></div>
-                <div className="relative z-10 flex flex-col items-center gap-1">
-                  <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center">
-                    <TrendingUp className="w-3 h-3" />
-                  </div>
-                  <div>
-                    <div className="text-sm font-extrabold">BUY</div>
-                    <div className="text-xs opacity-90">Price will rise</div>
-                  </div>
-                  <div className="text-xs bg-white/20 px-2 py-0.5 rounded-full">
-                    Up to 85% profit
-                  </div>
-                </div>
-              </button>
-
-              <button
-                onClick={() => handleTradeClick('put')}
-                className="group relative overflow-hidden bg-gradient-to-br from-red-500 via-red-600 to-rose-600 hover:from-red-400 hover:via-red-500 hover:to-rose-500 text-white font-bold py-2 px-2 rounded-lg shadow-lg transform transition-all duration-300 hover:scale-105 hover:shadow-red-500/25 active:scale-95"
-              >
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12 translate-x-[-100%] group-hover:translate-x-[200%] transition-transform duration-1000"></div>
-                <div className="relative z-10 flex flex-col items-center gap-1">
-                  <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center">
-                    <TrendingDown className="w-3 h-3" />
-                  </div>
-                  <div>
-                    <div className="text-sm font-extrabold">PUT</div>
-                    <div className="text-xs opacity-90">Price will fall</div>
-                  </div>
-                  <div className="text-xs bg-white/20 px-2 py-0.5 rounded-full">
-                    Up to 85% profit
-                  </div>
-                </div>
-              </button>
-            </div>
-
             {/* Trading Tips */}
-            <div className="mt-6 pt-4 border-t border-gray-700/50">
-              <div className="flex items-center justify-center gap-6 text-xs text-gray-400">
-                <div className="flex items-center gap-1">
-                  <Clock className="w-3 h-3" />
-                  <span>30s - 5min</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <DollarSign className="w-3 h-3" />
-                  <span>Min ₹10</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <Users className="w-3 h-3" />
-                  <span>24/7 Trading</span>
-                </div>
+            <div className="flex items-center justify-center gap-6 text-xs text-gray-400">
+              <div className="flex items-center gap-1">
+                <Clock className="w-3 h-3" />
+                <span>30s - 5min</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <DollarSign className="w-3 h-3" />
+                <span>Min ₹10</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <Users className="w-3 h-3" />
+                <span>24/7 Trading</span>
               </div>
             </div>
           </div>
@@ -317,6 +274,43 @@ const CoinPage = () => {
               </div>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Fixed Buy/Put Buttons at Bottom */}
+      <div className="fixed bottom-0 left-0 right-0 z-50 bg-gradient-to-t from-black via-gray-900/95 to-transparent backdrop-blur-xl border-t border-gray-800/50 p-4">
+        <div className="grid grid-cols-2 gap-3 max-w-md mx-auto">
+          <button
+            onClick={() => handleTradeClick('call')}
+            className="group relative overflow-hidden bg-gradient-to-br from-green-500 via-green-600 to-emerald-600 hover:from-green-400 hover:via-green-500 hover:to-emerald-500 text-white font-bold py-3 px-3 rounded-lg shadow-lg transform transition-all duration-300 hover:scale-105 hover:shadow-green-500/25 active:scale-95"
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12 translate-x-[-100%] group-hover:translate-x-[200%] transition-transform duration-1000"></div>
+            <div className="relative z-10 flex items-center justify-center gap-2">
+              <div className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center">
+                <TrendingUp className="w-3 h-3" />
+              </div>
+              <div>
+                <div className="text-sm font-extrabold">BUY</div>
+                <div className="text-xs opacity-90">Price will rise</div>
+              </div>
+            </div>
+          </button>
+
+          <button
+            onClick={() => handleTradeClick('put')}
+            className="group relative overflow-hidden bg-gradient-to-br from-red-500 via-red-600 to-rose-600 hover:from-red-400 hover:via-red-500 hover:to-rose-500 text-white font-bold py-3 px-3 rounded-lg shadow-lg transform transition-all duration-300 hover:scale-105 hover:shadow-red-500/25 active:scale-95"
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12 translate-x-[-100%] group-hover:translate-x-[200%] transition-transform duration-1000"></div>
+            <div className="relative z-10 flex items-center justify-center gap-2">
+              <div className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center">
+                <TrendingDown className="w-3 h-3" />
+              </div>
+              <div>
+                <div className="text-sm font-extrabold">PUT</div>
+                <div className="text-xs opacity-90">Price will fall</div>
+              </div>
+            </div>
+          </button>
         </div>
       </div>
 
