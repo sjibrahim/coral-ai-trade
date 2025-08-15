@@ -7,9 +7,11 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { mockCryptoCurrencies } from '@/data/mockData';
-import { ArrowUp, ArrowDown, TrendingUp, X, IndianRupee, Maximize2, Timer, Coins, Star, ZoomIn, ZoomOut } from 'lucide-react';
+import { ArrowUp, ArrowDown, TrendingUp, TrendingDown, X, IndianRupee, Maximize2, Timer, Coins, Star, ZoomIn, ZoomOut, Activity, Clock, Users, BarChart3, Info } from 'lucide-react';
 import { getBinancePrice, getBinanceKlines, getMarketData, getCoin, placeTrade } from '@/services/api';
 import { useToast } from '@/hooks/use-toast';
+import QuickTradeModal from '@/components/trade/QuickTradeModal';
+import TradeStatusModal from '@/components/trade/TradeStatusModal';
 
 const CoinDetailPage = () => {
   const { toast } = useToast();
@@ -53,6 +55,7 @@ const CoinDetailPage = () => {
   const [tradeApiResponse, setTradeApiResponse] = useState<any>(null);
   const [isQuickTradeOpen, setIsQuickTradeOpen] = useState(false);
   const [selectedTradeType, setSelectedTradeType] = useState<'call' | 'put' | null>(null);
+  const [isTradeStatusOpen, setIsTradeStatusOpen] = useState(false);
 
   // Update trade amount when user balance changes
   useEffect(() => {
@@ -294,6 +297,79 @@ const CoinDetailPage = () => {
     }
   };
 
+  const handleQuickTrade = async (tradeData: { amount: string; duration: string; type: 'call' | 'put' }) => {
+    try {
+      const token = localStorage.getItem('auth_token');
+      if (!token) {
+        toast({
+          title: "Authentication Error",
+          description: "Please log in to place trades",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const timeInSeconds = tradeData.duration === '1min' ? 60 : tradeData.duration === '3min' ? 180 : 300;
+      
+      setIsQuickTradeOpen(false);
+      
+      setStartingTradePrice(livePrice);
+      setTradeTimer(timeInSeconds);
+      setDirection(tradeData.type === 'call' ? 'Call' : 'Put');
+      
+      // Extract base symbol before sending to API
+      const baseSymbol = crypto.binance_symbol ? 
+        crypto.binance_symbol.replace(/USDT$/, '').replace(/usdt$/, '') : 
+        crypto.symbol.toUpperCase();
+      
+      // Map UI direction to API direction
+      const apiDirection = tradeData.type === 'call' ? 'buy' : 'put';
+      
+      const response = await placeTrade(
+        token,
+        parseFloat(tradeData.amount),
+        baseSymbol,
+        apiDirection,
+        livePrice,
+        timeInSeconds
+      );
+      
+      if (response.success || response.status) {
+        // Store the complete response data for the timer
+        setTradeApiResponse(response.data);
+        setIsTradeStatusOpen(true);
+        
+        toast({
+          title: "Trade Placed",
+          description: `${tradeData.type.toUpperCase()} trade of ₹${tradeData.amount} placed successfully`,
+        });
+      } else {
+        // Handle specific error messages
+        if (response.message === "Only one trade is allowed per day.") {
+          toast({
+            title: "Daily Trade Limit",
+            description: "You can only place one trade per day. Please try again tomorrow.",
+            variant: "destructive",
+          });
+        } else {
+          toast({
+            title: "Trade Failed",
+            description: response.message || "Failed to place trade",
+            variant: "destructive",
+          });
+        }
+      }
+    } catch (error) {
+      console.error('Trade error:', error);
+      
+      toast({
+        title: "Trade Error",
+        description: "An error occurred while placing the trade",
+        variant: "destructive",
+      });
+    }
+  };
+
   const predefinedAmounts = ['600', '1000', '2000', '3000', '5000', '10000'];
   
   const handleTradeComplete = (finalPrice: number) => {
@@ -394,7 +470,7 @@ const CoinDetailPage = () => {
 
   return (
     <MobileLayout showBackButton title={crypto.name || "Trading"} noScroll={true} hideFooter={true}>
-      <div className="h-screen flex flex-col bg-white">
+      <div className="h-screen flex flex-col bg-gray-50">
         {/* Header */}
         <div className="bg-white px-4 py-3 border-b border-gray-100 flex-shrink-0">
           <div className="flex items-center justify-between">
@@ -434,8 +510,19 @@ const CoinDetailPage = () => {
           </div>
         </div>
 
+        {/* Available Balance */}
+        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 mx-4 mt-3 rounded-xl p-3 border border-blue-200/50">
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-medium text-blue-700">Available Balance</span>
+            <span className="text-lg font-bold text-blue-800 flex items-center">
+              <IndianRupee className="w-4 h-4 mr-1" />
+              {availableBalance.toFixed(2)}
+            </span>
+          </div>
+        </div>
+
         {/* Timeframe Selector */}
-        <div className="bg-white px-4 py-2 border-b border-gray-100 flex-shrink-0">
+        <div className="bg-white px-4 py-2 border-b border-gray-100 flex-shrink-0 mt-3 mx-4 rounded-lg">
           <div className="flex space-x-1 overflow-x-auto">
             {timeframes.map((timeframe) => (
               <button
@@ -454,11 +541,11 @@ const CoinDetailPage = () => {
         </div>
 
         {/* Chart Container - Fixed dimensions */}
-        <div className="flex-1 relative bg-white" style={{ height: '400px', minHeight: '400px', maxHeight: '400px' }}>
+        <div className="flex-1 relative bg-white mx-4 mt-3 rounded-lg overflow-hidden" style={{ height: '300px', minHeight: '300px', maxHeight: '300px' }}>
           <iframe
             src={`/trade-graph.html?symbol=${crypto.binance_symbol || crypto.symbol + 'usdt'}&interval=${selectedTimeframe}`}
             className="w-full h-full"
-            style={{ width: '100%', height: '400px' }}
+            style={{ width: '100%', height: '300px' }}
             title="Trading Chart"
             frameBorder="0"
           />
@@ -492,21 +579,49 @@ const CoinDetailPage = () => {
           </div>
         </div>
 
-        {/* Trading Action Buttons - Resized to be smaller */}
-        <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
-          <div className="flex gap-3">
+        {/* Market Stats */}
+        <div className="px-4 py-3">
+          <div className="grid grid-cols-2 gap-3">
+            <div className="bg-white rounded-lg p-3 border border-gray-100">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <BarChart3 className="h-4 w-4 text-blue-500 mr-2" />
+                  <span className="text-xs text-gray-600">24h Volume</span>
+                </div>
+                <span className="text-sm font-bold text-gray-800">
+                  {crypto.volume_24h ? `$${(crypto.volume_24h / 1000000).toFixed(1)}M` : '$245.2M'}
+                </span>
+              </div>
+            </div>
+            <div className="bg-white rounded-lg p-3 border border-gray-100">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <Users className="h-4 w-4 text-green-500 mr-2" />
+                  <span className="text-xs text-gray-600">Market Cap</span>
+                </div>
+                <span className="text-sm font-bold text-gray-800">
+                  {crypto.market_cap ? `$${(crypto.market_cap / 1000000000).toFixed(1)}B` : '$45.2B'}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Trading Action Buttons - Smaller size */}
+        <div className="bg-white rounded-xl p-3 shadow-sm border border-gray-100 mx-4 mb-3">
+          <div className="flex gap-2">
             <button
               onClick={() => {
                 setSelectedTradeType('call');
                 setIsQuickTradeOpen(true);
               }}
-              className="flex-1 relative overflow-hidden bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold py-3 px-4 rounded-xl transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl group"
+              className="flex-1 relative overflow-hidden bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold py-2.5 px-3 rounded-lg transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-md hover:shadow-lg group"
             >
               <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12 transform -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
               <div className="relative flex items-center justify-center gap-2">
-                <TrendingUp className="w-5 h-5" />
-                <span className="text-base font-bold">BUY</span>
+                <TrendingUp className="w-4 h-4" />
+                <span className="text-sm font-bold">BUY</span>
               </div>
             </button>
 
@@ -515,15 +630,63 @@ const CoinDetailPage = () => {
                 setSelectedTradeType('put');
                 setIsQuickTradeOpen(true);
               }}
-              className="flex-1 relative overflow-hidden bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 text-white font-bold py-3 px-4 rounded-xl transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl group"
+              className="flex-1 relative overflow-hidden bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 text-white font-bold py-2.5 px-3 rounded-lg transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-md hover:shadow-lg group"
             >
               <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12 transform -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
               <div className="relative flex items-center justify-center gap-2">
-                <TrendingDown className="w-5 h-5" />
-                <span className="text-base font-bold">PUT</span>
+                <TrendingDown className="w-4 h-4" />
+                <span className="text-sm font-bold">PUT</span>
               </div>
             </button>
+          </div>
+        </div>
+
+        {/* Trading Tips */}
+        <div className="px-4 pb-3">
+          <div className="bg-gradient-to-r from-amber-50 to-orange-50 rounded-lg p-3 border border-amber-200/50">
+            <div className="flex items-start">
+              <Info className="h-4 w-4 text-amber-600 mr-2 mt-0.5 flex-shrink-0" />
+              <div>
+                <h4 className="text-sm font-semibold text-amber-800 mb-1">Trading Tips</h4>
+                <p className="text-xs text-amber-700">
+                  Analyze price trends and market volume before placing trades. Start with smaller amounts to manage risk effectively.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Recent Activity */}
+        <div className="px-4 pb-4">
+          <div className="bg-white rounded-lg p-3 border border-gray-100">
+            <div className="flex items-center mb-2">
+              <Activity className="h-4 w-4 text-purple-500 mr-2" />
+              <h4 className="text-sm font-semibold text-gray-800">Recent Activity</h4>
+            </div>
+            <div className="space-y-2">
+              <div className="flex items-center justify-between text-xs">
+                <div className="flex items-center">
+                  <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                  <span className="text-gray-600">BUY Trade - 2min ago</span>
+                </div>
+                <span className="text-green-600 font-medium">+₹85</span>
+              </div>
+              <div className="flex items-center justify-between text-xs">
+                <div className="flex items-center">
+                  <div className="w-2 h-2 bg-red-500 rounded-full mr-2"></div>
+                  <span className="text-gray-600">PUT Trade - 5min ago</span>
+                </div>
+                <span className="text-red-600 font-medium">-₹45</span>
+              </div>
+              <div className="flex items-center justify-between text-xs">
+                <div className="flex items-center">
+                  <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                  <span className="text-gray-600">BUY Trade - 8min ago</span>
+                </div>
+                <span className="text-green-600 font-medium">+₹120</span>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -590,7 +753,29 @@ const CoinDetailPage = () => {
           </DialogContent>
         </Dialog>
 
-        {/* Trade Modal */}
+        {/* Quick Trade Modal */}
+        <QuickTradeModal
+          open={isQuickTradeOpen}
+          onClose={() => setIsQuickTradeOpen(false)}
+          onTrade={handleQuickTrade}
+          tradeType={selectedTradeType}
+          currentPrice={livePrice}
+          availableBalance={availableBalance}
+          crypto={crypto}
+        />
+
+        {/* Trade Status Modal */}
+        <TradeStatusModal
+          open={isTradeStatusOpen}
+          onClose={() => setIsTradeStatusOpen(false)}
+          currentPrice={livePrice}
+          startPrice={startingTradePrice}
+          direction={direction}
+          duration={tradeTimer}
+          tradeApiResponse={tradeApiResponse}
+        />
+
+        {/* Legacy Trade Modal */}
         <Dialog open={isBuyModalOpen || isSellModalOpen} onOpenChange={closeModal}>
           <DialogContent className="w-[95vw] max-w-sm mx-auto bg-white rounded-2xl p-0 overflow-hidden">
             <div className={`px-6 py-4 text-white ${
