@@ -74,7 +74,7 @@ const CoinDetailPage = () => {
         if (token && coinId) {
           const response = await getCoin(token, coinId);
           
-          if (response.status && response.data) {
+          if (response.success && response.data) {
             const coinData = response.data;
             
             setCrypto({
@@ -334,7 +334,7 @@ const CoinDetailPage = () => {
         timeInSeconds
       );
       
-      if (response.success || response.status) {
+      if (response.success) {
         // Store the complete response data for the timer
         setTradeApiResponse(response.data);
         setIsTradeStatusOpen(true);
@@ -589,7 +589,7 @@ const CoinDetailPage = () => {
                   <span className="text-xs text-gray-600">24h Volume</span>
                 </div>
                 <span className="text-sm font-bold text-gray-800">
-                  {crypto.volume_24h ? `$${(crypto.volume_24h / 1000000).toFixed(1)}M` : '$245.2M'}
+                  {crypto.volume_24h ? `$${(Number(crypto.volume_24h) / 1000000).toFixed(1)}M` : '$245.2M'}
                 </span>
               </div>
             </div>
@@ -600,7 +600,7 @@ const CoinDetailPage = () => {
                   <span className="text-xs text-gray-600">Market Cap</span>
                 </div>
                 <span className="text-sm font-bold text-gray-800">
-                  {crypto.market_cap ? `$${(crypto.market_cap / 1000000000).toFixed(1)}B` : '$45.2B'}
+                  {crypto.market_cap ? `$${(Number(crypto.market_cap) / 1000000000).toFixed(1)}B` : '$45.2B'}
                 </span>
               </div>
             </div>
@@ -755,24 +755,28 @@ const CoinDetailPage = () => {
 
         {/* Quick Trade Modal */}
         <QuickTradeModal
-          open={isQuickTradeOpen}
+          isOpen={isQuickTradeOpen}
           onClose={() => setIsQuickTradeOpen(false)}
-          onTrade={handleQuickTrade}
-          tradeType={selectedTradeType}
-          currentPrice={livePrice}
-          availableBalance={availableBalance}
+          tradeType={selectedTradeType || 'call'}
           crypto={crypto}
+          onTradeComplete={handleQuickTrade}
         />
 
         {/* Trade Status Modal */}
         <TradeStatusModal
-          open={isTradeStatusOpen}
+          isOpen={isTradeStatusOpen}
           onClose={() => setIsTradeStatusOpen(false)}
-          currentPrice={livePrice}
-          startPrice={startingTradePrice}
-          direction={direction}
-          duration={tradeTimer}
-          tradeApiResponse={tradeApiResponse}
+          tradeResult={{
+            status: tradeApiResponse?.status === 'win' ? 'win' : 'loss',
+            win: tradeApiResponse?.win,
+            lost_amount: tradeApiResponse?.lost_amount,
+            new_balance: tradeApiResponse?.new_balance || 0,
+            amount: parseFloat(tradeAmount),
+            duration: tradeTimer,
+            symbol: crypto.symbol,
+            type: direction === 'Call' ? 'call' : 'put',
+            entryPrice: startingTradePrice
+          }}
         />
 
         {/* Legacy Trade Modal */}
