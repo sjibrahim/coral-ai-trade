@@ -3,7 +3,7 @@ import { useState } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
 import { useAuth } from "@/contexts/AuthContext";
 import { createTopupOrder } from "@/services/api";
-import { toast } from "@/components/ui/use-toast";
+import { toast } from "@/hooks/use-toast";
 import { useGeneralSettings } from "@/hooks/use-general-settings";
 import {
   Select,
@@ -70,30 +70,46 @@ const DepositPage = () => {
       setIsLoading(false);
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="fixed inset-0 bg-gray-900 flex items-center justify-center z-50">
+        <img 
+          src="/uploads/out.gif" 
+          alt="Loading" 
+          className="w-16 h-16"
+        />
+      </div>
+    );
+  }
   
   return (
-    <MobileLayout showBackButton title="Recharge Wallet" hideFooter>
-      <div className="min-h-screen bg-gray-900 text-white">
-        {/* Main Content */}
-        <div className="px-4 py-6 space-y-6">
-          {/* Header Card */}
-          <div className="bg-gray-800/60 backdrop-blur-sm rounded-2xl p-6 border border-gray-700/30">
-            <h1 className="text-xl font-medium text-white">Recharge Wallet</h1>
-          </div>
-
-          {/* Select Channel Section */}
-          <div className="bg-gray-800/60 backdrop-blur-sm rounded-2xl p-6 border border-gray-700/30">
-            <h2 className="text-white font-medium mb-4">Select Channel</h2>
+    <MobileLayout showBackButton title="Recharge" hideFooter>
+      <div className="min-h-screen bg-gray-900 px-4 py-6">
+        {/* Select Channel Section */}
+        <div 
+          className="rounded-lg p-4 border border-gray-800 mb-4"
+          style={{
+            background: 'var(--bg, #1a1a1a)',
+            borderRadius: '.16rem',
+            padding: '.32rem .32rem 0',
+            border: '.02rem solid var(--bg, #2a2a2a)',
+            marginBottom: '.32rem',
+            lineHeight: '1.2'
+          }}
+        >
+          <h2 className="text-gray-300 text-sm mb-3">Select Channel</h2>
+          <div className="pb-3">
             <Select value={selectedChannel} onValueChange={setSelectedChannel}>
-              <SelectTrigger className="w-full bg-white/95 border-0 text-gray-900 h-14 rounded-xl font-medium">
-                <SelectValue placeholder="Select Channel" className="text-gray-500" />
+              <SelectTrigger className="w-full bg-gray-800 border-gray-700 text-gray-200 h-12 rounded-lg">
+                <SelectValue placeholder="Choose payment method" />
               </SelectTrigger>
-              <SelectContent className="bg-white border-gray-200 rounded-xl">
+              <SelectContent className="bg-gray-800 border-gray-700 z-50">
                 {paymentMethods.map(method => (
                   <SelectItem 
                     key={method.id} 
                     value={method.id} 
-                    className="text-gray-900 hover:bg-gray-100 rounded-lg mx-1 my-0.5"
+                    className="text-gray-200 hover:bg-gray-700 focus:bg-gray-700"
                   >
                     {method.name}
                   </SelectItem>
@@ -101,55 +117,46 @@ const DepositPage = () => {
               </SelectContent>
             </Select>
           </div>
+        </div>
 
-          {/* Enter Amount Section */}
-          <div className="bg-gray-800/60 backdrop-blur-sm rounded-2xl p-6 border border-gray-700/30">
-            <h2 className="text-white font-medium mb-4">Enter Amount</h2>
-            <div className="relative">
-              <input
-                type="text"
-                inputMode="decimal"
-                value={amount}
-                onChange={handleAmountChange}
-                className="w-full bg-gray-700/50 border border-gray-600/50 rounded-xl px-4 py-4 text-white placeholder-gray-400 focus:border-teal-400 focus:ring-1 focus:ring-teal-400 focus:outline-none transition-colors text-lg"
-                placeholder={`Enter Amount Min ${minDepositAmount}$`}
-                maxLength={10}
-              />
-            </div>
+        {/* Enter Amount Section */}
+        <div 
+          className="rounded-lg p-4 border border-gray-800 mb-6"
+          style={{
+            background: 'var(--bg, #1a1a1a)',
+            borderRadius: '.16rem',
+            padding: '.32rem .32rem 0',
+            border: '.02rem solid var(--bg, #2a2a2a)',
+            marginBottom: '.32rem',
+            lineHeight: '1.2'
+          }}
+        >
+          <h2 className="text-gray-300 text-sm mb-3">Enter Amount</h2>
+          <div className="pb-3">
+            <input
+              type="text"
+              inputMode="decimal"
+              value={amount}
+              onChange={handleAmountChange}
+              className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-gray-200 placeholder-gray-500 focus:border-gray-600 focus:outline-none"
+              placeholder={`Min ${minDepositAmount}$`}
+              maxLength={10}
+            />
           </div>
         </div>
 
-        {/* Fixed Bottom Confirm Button */}
-        <div className="fixed bottom-0 left-0 right-0 bg-gray-900/95 backdrop-blur-sm p-6 z-50">
-          <button
-            onClick={handleConfirm}
-            disabled={!isValidAmount || !selectedChannel || isLoading}
-            className={`w-full h-14 rounded-2xl font-semibold text-lg transition-all ${
-              isValidAmount && selectedChannel && !isLoading
-                ? "bg-gradient-to-r from-green-400 to-emerald-400 hover:from-green-500 hover:to-emerald-500 text-gray-900 shadow-lg"
-                : "bg-gray-700/50 text-gray-500 cursor-not-allowed"
-            }`}
-          >
-            {isLoading ? (
-              <div className="flex items-center justify-center">
-                <img 
-                  src="/uploads/out.gif" 
-                  alt="Loading" 
-                  className="w-6 h-6 mr-2"
-                />
-                Processing...
-              </div>
-            ) : (
-              "Confirm"
-            )}
-          </button>
-        </div>
-
-        {/* Background decorations */}
-        <div className="fixed inset-0 overflow-hidden pointer-events-none -z-10">
-          <div className="absolute -top-32 -right-32 w-64 h-64 bg-gradient-to-br from-teal-500/5 to-cyan-500/5 rounded-full blur-3xl"></div>
-          <div className="absolute -bottom-32 -left-32 w-64 h-64 bg-gradient-to-tr from-blue-500/5 to-teal-500/5 rounded-full blur-3xl"></div>
-        </div>
+        {/* Confirm Button */}
+        <button
+          onClick={handleConfirm}
+          disabled={!isValidAmount || !selectedChannel}
+          className={`w-full h-12 rounded-lg font-medium transition-all ${
+            isValidAmount && selectedChannel
+              ? "bg-green-600 hover:bg-green-700 text-white"
+              : "bg-gray-700 text-gray-500 cursor-not-allowed"
+          }`}
+        >
+          Confirm
+        </button>
       </div>
     </MobileLayout>
   );
