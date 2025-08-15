@@ -188,7 +188,7 @@ export const isUsdtWithdrawal = (transaction: any): boolean => {
   return transaction && transaction.method === "USDT";
 };
 
-// Updated function for placing trades with better error handling and symbol extraction
+// Updated function for placing trades with better error handling and immediate result handling
 export const placeTrade = async (
   token: string, 
   trade_amount: number, 
@@ -229,12 +229,13 @@ export const placeTrade = async (
     
     console.log('Trade API response:', result);
     
-    // Check if the response indicates success - also check for status: true format
-    if (result.success || result.status === true) {
+    // Check if the response indicates success
+    if (result.status === true) {
       return {
         success: true,
-        message: result.message || result.msg || "Trade placed successfully",
-        data: result.data
+        message: result.msg || "Trade placed successfully",
+        // Return the immediate trade result data
+        data: result.data // This contains { status: "win/loss", profit/lost_amount, new_balance }
       };
     } else {
       // Handle specific error messages

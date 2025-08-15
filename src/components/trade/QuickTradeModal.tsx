@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -47,20 +48,29 @@ const QuickTradeModal: React.FC<QuickTradeModalProps> = ({
       );
 
       if (response.success) {
-        // Only pass trade setup information - no win/loss results yet
+        // Pass both trade setup info and the immediate API result
         onTradeComplete({
           tradeId: response.data?.trade_id || null,
           amount,
           duration,
           symbol: crypto.symbol,
           type: tradeType,
-          entryPrice: crypto.price
+          entryPrice: crypto.price,
+          // Include the immediate API result from the trade response
+          apiResult: response.data ? {
+            status: response.data.status,
+            profit: response.data.profit,
+            lost_amount: response.data.lost_amount,
+            new_balance: response.data.new_balance
+          } : null
         });
         
         toast({
           title: "Trade Placed",
           description: `${tradeType.toUpperCase()} trade of ₹${amount} placed successfully`,
         });
+        
+        onClose();
       } else {
         toast({
           title: "Trade Failed",
@@ -107,7 +117,7 @@ const QuickTradeModal: React.FC<QuickTradeModalProps> = ({
                 <h3 className="text-xl font-bold text-white">
                   {tradeType === 'call' ? 'BUY' : 'PUT'} {crypto.symbol}
                 </h3>
-                <p className="text-gray-400 text-sm">₹{crypto.price.toFixed(2)}</p>
+                <p className="text-gray-400 text-sm">${crypto.price.toFixed(2)}</p>
               </div>
             </div>
 

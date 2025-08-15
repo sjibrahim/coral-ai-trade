@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import { 
@@ -216,13 +215,6 @@ const CoinPage = () => {
               >
                 <Heart className={cn("w-4 h-4", isBookmarked && "text-red-400 fill-current")} />
               </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="p-2 rounded-full hover:bg-gray-800 text-white"
-              >
-                <Share className="w-4 h-4" />
-              </Button>
             </div>
           </div>
         </div>
@@ -250,7 +242,7 @@ const CoinPage = () => {
                 <span className="text-xs text-gray-400">Current Price</span>
               </div>
               <div className="text-xl font-bold text-white">
-                ₹{crypto.price.toLocaleString()}
+                ${crypto.price.toLocaleString()}
               </div>
               <div className={cn(
                 "text-sm font-medium flex items-center gap-1",
