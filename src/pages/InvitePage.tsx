@@ -87,51 +87,7 @@ const InvitePage = () => {
       </div>
 
       <div className="p-4 space-y-6">
-        {/* Commission Levels Hero */}
-        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-teal-500/20 via-cyan-500/10 to-transparent p-6 text-center border border-gray-800">
-          <div className="absolute inset-0 bg-gradient-to-r from-teal-500/5 to-transparent"></div>
-          <div className="relative z-10">
-            <div className="w-16 h-16 bg-gradient-to-r from-teal-400 to-cyan-500 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Gift className="w-8 h-8 text-white" />
-            </div>
-            
-            {/* Commission Cards */}
-            <div className="grid grid-cols-3 gap-3 mb-6">
-              {[
-                { level: "L1", rate: level1Commission, icon: Crown, color: "from-yellow-400 to-orange-500" },
-                { level: "L2", rate: level2Commission, icon: Trophy, color: "from-blue-400 to-cyan-500" },
-                { level: "L3", rate: level3Commission, icon: Star, color: "from-purple-400 to-pink-500" }
-              ].map((item, idx) => (
-                <div key={idx} className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 shadow-sm rounded-xl p-4 text-center">
-                  <div className={`h-8 w-8 rounded-full bg-gradient-to-br ${item.color} flex items-center justify-center mx-auto mb-2`}>
-                    <item.icon className="h-4 w-4 text-white" />
-                  </div>
-                  <p className="text-xs text-gray-400 mb-1">{item.level}</p>
-                  <p className="text-lg font-bold text-white">{item.rate}%</p>
-                </div>
-              ))}
-            </div>
-            
-            {/* Stats Cards */}
-            <div className="grid grid-cols-2 gap-4">
-              <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-4 border border-gray-700">
-                <div className="flex items-center justify-center mb-2">
-                  <Users className="w-5 h-5 text-teal-400 mr-2" />
-                  <span className="text-sm text-gray-400">Total Team</span>
-                </div>
-                <p className="text-2xl font-bold text-teal-400">{totalTeamSize || 0}</p>
-              </div>
-              <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-4 border border-gray-700">
-                <div className="flex items-center justify-center mb-2">
-                  <TrendingUp className="w-5 h-5 text-green-400 mr-2" />
-                  <span className="text-sm text-gray-400">Active</span>
-                </div>
-                <p className="text-2xl font-bold text-green-400">{totalActiveMembers || 0}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
+        
         {/* Referral Code Section */}
         <div className="bg-gray-800/50 rounded-2xl p-6 border border-gray-700">
           <div className="text-center mb-4">
