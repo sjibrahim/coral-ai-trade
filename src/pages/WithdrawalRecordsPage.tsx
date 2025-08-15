@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
 import { cn } from "@/lib/utils";
@@ -107,13 +106,13 @@ const WithdrawalRecordsPage = () => {
     switch(status.toLowerCase()) {
       case 'completed':
       case 'success':
-        return "text-emerald-600 bg-emerald-50 border-emerald-200 dark:text-emerald-400 dark:bg-emerald-950 dark:border-emerald-800";
+        return "text-emerald-600 bg-emerald-50 border-emerald-200 dark:text-emerald-400 dark:bg-emerald-950/50 dark:border-emerald-800";
       case 'processing':
       case 'pending':
-        return "text-amber-600 bg-amber-50 border-amber-200 dark:text-amber-400 dark:bg-amber-950 dark:border-amber-800";
+        return "text-amber-600 bg-amber-50 border-amber-200 dark:text-amber-400 dark:bg-amber-950/50 dark:border-amber-800";
       case 'rejected':
       case 'failed':
-        return "text-red-600 bg-red-50 border-red-200 dark:text-red-400 dark:bg-red-950 dark:border-red-800";
+        return "text-red-600 bg-red-50 border-red-200 dark:text-red-400 dark:bg-red-950/50 dark:border-red-800";
       default:
         return "text-muted-foreground bg-muted border-border";
     }
@@ -178,12 +177,12 @@ const WithdrawalRecordsPage = () => {
     <MobileLayout showBackButton title="Withdrawal Records">
       <div className="min-h-screen bg-background">
         
-        {/* Compact Header */}
+        {/* Header */}
         <div className="bg-card shadow-sm border-b border-border">
           <div className="px-4 py-4">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-emerald-100 dark:bg-emerald-950 rounded-lg flex items-center justify-center">
+                <div className="w-8 h-8 bg-emerald-100 dark:bg-emerald-950/50 rounded-lg flex items-center justify-center">
                   <ArrowDownCircle className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
                 </div>
                 <div>
@@ -193,14 +192,14 @@ const WithdrawalRecordsPage = () => {
               </div>
               <button 
                 onClick={() => setHideAmounts(!hideAmounts)}
-                className="p-2 bg-muted rounded-lg hover:bg-muted/80 transition-colors"
+                className="p-2 bg-muted hover:bg-muted/80 rounded-lg transition-colors"
               >
                 {hideAmounts ? <EyeOff className="h-4 w-4 text-muted-foreground" /> : <Eye className="h-4 w-4 text-muted-foreground" />}
               </button>
             </div>
             
             <div className="grid grid-cols-2 gap-3">
-              <div className="bg-emerald-50 dark:bg-emerald-950 rounded-lg p-3">
+              <div className="bg-emerald-50 dark:bg-emerald-950/50 rounded-lg p-3 border border-emerald-200 dark:border-emerald-800">
                 <p className="text-xs text-emerald-700 dark:text-emerald-400 mb-1">Total Withdrawn</p>
                 <div className="flex items-center gap-1">
                   <IndianRupee className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
@@ -209,7 +208,7 @@ const WithdrawalRecordsPage = () => {
                   </span>
                 </div>
               </div>
-              <div className="bg-blue-50 dark:bg-blue-950 rounded-lg p-3">
+              <div className="bg-blue-50 dark:bg-blue-950/50 rounded-lg p-3 border border-blue-200 dark:border-blue-800">
                 <p className="text-xs text-blue-700 dark:text-blue-400 mb-1">Success Rate</p>
                 <p className="text-lg font-bold text-blue-900 dark:text-blue-300">
                   {records.length > 0 ? Math.round((statusCounts.completed / records.length) * 100) : 0}%
@@ -219,24 +218,24 @@ const WithdrawalRecordsPage = () => {
           </div>
         </div>
 
-        <div className="px-4 py-4 space-y-4 pb-6">
+        <div className="px-4 py-4 space-y-4">
           {/* Status Overview */}
           <div className="grid grid-cols-3 gap-2">
-            <div className="text-center p-3 bg-emerald-50 dark:bg-emerald-950 rounded-lg border border-emerald-100 dark:border-emerald-800">
+            <div className="text-center p-3 bg-emerald-50 dark:bg-emerald-950/50 rounded-lg border border-emerald-100 dark:border-emerald-800">
               <div className="w-6 h-6 bg-emerald-500 rounded-md flex items-center justify-center mx-auto mb-1">
                 <CheckCircle className="h-3 w-3 text-white" />
               </div>
               <p className="text-lg font-bold text-emerald-600 dark:text-emerald-400">{statusCounts.completed}</p>
               <p className="text-xs text-emerald-600 dark:text-emerald-400">Success</p>
             </div>
-            <div className="text-center p-3 bg-amber-50 dark:bg-amber-950 rounded-lg border border-amber-100 dark:border-amber-800">
+            <div className="text-center p-3 bg-amber-50 dark:bg-amber-950/50 rounded-lg border border-amber-100 dark:border-amber-800">
               <div className="w-6 h-6 bg-amber-500 rounded-md flex items-center justify-center mx-auto mb-1">
                 <Clock className="h-3 w-3 text-white" />
               </div>
               <p className="text-lg font-bold text-amber-600 dark:text-amber-400">{statusCounts.pending}</p>
               <p className="text-xs text-amber-600 dark:text-amber-400">Pending</p>
             </div>
-            <div className="text-center p-3 bg-red-50 dark:bg-red-950 rounded-lg border border-red-100 dark:border-red-800">
+            <div className="text-center p-3 bg-red-50 dark:bg-red-950/50 rounded-lg border border-red-100 dark:border-red-800">
               <div className="w-6 h-6 bg-red-500 rounded-md flex items-center justify-center mx-auto mb-1">
                 <XCircle className="h-3 w-3 text-white" />
               </div>
@@ -250,7 +249,7 @@ const WithdrawalRecordsPage = () => {
             <div className="space-y-3">
               {Array(4).fill(0).map((_, idx) => (
                 <div key={`skeleton-${idx}`} className="animate-pulse">
-                  <div className="bg-card rounded-lg p-4 shadow-sm space-y-3">
+                  <div className="bg-card rounded-lg p-4 shadow-sm border border-border space-y-3">
                     <div className="flex justify-between items-start">
                       <div className="flex items-center space-x-3">
                         <div className="w-10 h-10 bg-muted rounded-lg"></div>
@@ -362,7 +361,7 @@ const WithdrawalRecordsPage = () => {
               <p className="text-muted-foreground text-sm mb-4">
                 Your withdrawal history will appear here once you make your first withdrawal.
               </p>
-              <div className="bg-blue-50 dark:bg-blue-950 rounded-lg p-4 border border-blue-100 dark:border-blue-800">
+              <div className="bg-blue-50 dark:bg-blue-950/50 rounded-lg p-4 border border-blue-100 dark:border-blue-800">
                 <p className="text-sm text-blue-700 dark:text-blue-400">
                   <strong>Tip:</strong> You can withdraw your earnings anytime from the Withdraw page.
                 </p>
