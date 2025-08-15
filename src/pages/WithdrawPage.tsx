@@ -147,37 +147,32 @@ const WithdrawPage = () => {
     <MobileLayout showBackButton title="Withdraw Funds" hideFooter>
       <div className="min-h-screen bg-gray-900">
         
-        <div className="px-4 py-6 space-y-6">
+        <div className="px-4 py-6 space-y-4">
 
-          {/* Balance Display */}
-          <div className="bg-gray-800/50 rounded-xl border border-gray-700/50 p-4">
-            <div className="flex items-center mb-4">
-              <Wallet className="w-5 h-5 text-[#00e8be] mr-2" />
-              <h3 className="text-white font-medium">Available Balance</h3>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-white mb-2">₹{availableBalance.toLocaleString()}</div>
-              <div className="flex justify-center space-x-4 text-sm">
-                <div className="flex items-center text-gray-400">
-                  <Target className="w-4 h-4 mr-1" />
-                  <span>Min: ₹{minWithdrawal}</span>
-                </div>
-                <div className="flex items-center text-gray-400">
-                  <Banknote className="w-4 h-4 mr-1" />
-                  <span>Fee: {withdrawalFeePercentage}%</span>
-                </div>
+          {/* Top Row - Balance and Processing Hours */}
+          <div className="grid grid-cols-2 gap-3">
+            {/* Available Balance - Compact */}
+            <div className="bg-gray-800/50 rounded-lg border border-gray-700/50 p-3">
+              <div className="flex items-center mb-1">
+                <Wallet className="w-4 h-4 text-[#00e8be] mr-1" />
+                <h3 className="text-white font-medium text-sm">Balance</h3>
+              </div>
+              <div className="text-lg font-bold text-white">₹{availableBalance.toLocaleString()}</div>
+              <div className="flex items-center text-xs text-gray-400 mt-1">
+                <Target className="w-3 h-3 mr-1" />
+                <span>Min: ₹{minWithdrawal}</span>
               </div>
             </div>
-          </div>
 
-          {/* Processing Time Notice */}
-          <div className="bg-blue-900/30 rounded-xl border border-blue-700/50 p-4">
-            <div className="flex items-center mb-2">
-              <Clock className="w-5 h-5 text-blue-400 mr-2" />
-              <h3 className="text-blue-300 font-medium">Processing Hours</h3>
+            {/* Processing Hours - Compact */}
+            <div className="bg-blue-900/30 rounded-lg border border-blue-700/50 p-3">
+              <div className="flex items-center mb-1">
+                <Clock className="w-4 h-4 text-blue-400 mr-1" />
+                <h3 className="text-blue-300 font-medium text-sm">Processing</h3>
+              </div>
+              <p className="text-blue-200 text-sm font-medium">8:00 AM - 10:00 AM</p>
+              <p className="text-blue-300 text-xs">Full weekend available</p>
             </div>
-            <p className="text-blue-200 text-sm">Daily: 8:00 AM - 10:00 AM</p>
-            <p className="text-blue-300 text-xs">Available full weekend (No holidays)</p>
           </div>
 
           {/* Error Display */}
@@ -187,59 +182,51 @@ const WithdrawPage = () => {
             </div>
           )}
 
-          {/* Enter Amount */}
-          <div className="bg-gray-800/50 rounded-xl border border-gray-700/50 p-4">
-            <div className="flex items-center mb-4">
-              <ArrowDown className="w-5 h-5 text-[#00e8be] mr-2" />
-              <h3 className="text-white font-medium">Withdrawal Amount</h3>
+          {/* Main Section - Withdraw Amount */}
+          <div className="bg-gray-800/50 rounded-xl border border-gray-700/50 p-6">
+            <div className="text-center mb-6">
+              <div className="flex items-center justify-center mb-2">
+                <ArrowDown className="w-6 h-6 text-[#00e8be] mr-2" />
+                <h2 className="text-white font-semibold text-lg">Withdraw Amount</h2>
+              </div>
+              <p className="text-gray-400 text-sm">Enter the amount you want to withdraw</p>
             </div>
-            <div className="relative">
-              <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-lg">₹</span>
+            
+            <div className="relative mb-4">
+              <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 text-xl">₹</span>
               <input
                 type="text"
                 inputMode="decimal"
                 value={amount}
                 onChange={handleAmountChange}
-                className="w-full bg-gray-700/50 border border-gray-600/50 rounded-lg pl-8 pr-4 py-3 text-white placeholder-gray-500 focus:border-[#00e8be] focus:outline-none focus:ring-1 focus:ring-white text-lg"
-                placeholder={`Min ${minWithdrawal}`}
+                className="w-full bg-gray-700/50 border border-gray-600/50 rounded-lg pl-10 pr-4 py-4 text-white placeholder-gray-500 focus:border-[#00e8be] focus:outline-none focus:ring-1 focus:ring-white text-xl text-center"
+                placeholder={`Minimum ${minWithdrawal}`}
                 maxLength={10}
               />
             </div>
-            
-            {/* Quick Amount Selection */}
-            <div className="mt-4">
-              <p className="text-gray-400 text-sm mb-3">Quick Select</p>
-              <div className="grid grid-cols-4 gap-2">
-                {[1000, 2500, 5000, 10000].map(quickAmount => (
-                  <button
-                    key={quickAmount}
-                    onClick={() => setAmount(quickAmount.toString())}
-                    className="py-2 px-3 bg-gray-700/30 hover:bg-[#00e8be]/20 border border-gray-600/30 hover:border-[#00e8be]/50 rounded-lg text-sm text-gray-300 hover:text-[#00e8be] transition-all duration-200"
-                  >
-                    ₹{quickAmount}
-                  </button>
-                ))}
-              </div>
+
+            <div className="flex items-center justify-center text-sm text-gray-400">
+              <Banknote className="w-4 h-4 mr-1" />
+              <span>Processing Fee: {withdrawalFeePercentage}%</span>
             </div>
           </div>
 
-          {/* Transaction Summary */}
+          {/* Withdraw Summary */}
           {amount && (
-            <div className="bg-gradient-to-r from-[#00e8be]/5 to-cyan-400/5 rounded-xl p-4 border border-[#00e8be]/20">
-              <h4 className="text-white font-medium mb-3">Transaction Summary</h4>
-              <div className="space-y-2">
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-400">Withdrawal Amount:</span>
+            <div className="bg-gradient-to-r from-[#00e8be]/10 to-cyan-400/10 rounded-xl p-4 border border-[#00e8be]/30">
+              <h4 className="text-white font-semibold mb-4 text-center">Withdrawal Summary</h4>
+              <div className="space-y-3">
+                <div className="flex justify-between items-center py-2 border-b border-gray-700/50">
+                  <span className="text-gray-300">Withdrawal Amount</span>
                   <span className="text-white font-medium">₹{amount}</span>
                 </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-400">Processing Fee ({withdrawalFeePercentage}%):</span>
+                <div className="flex justify-between items-center py-2 border-b border-gray-700/50">
+                  <span className="text-gray-300">Processing Fee ({withdrawalFeePercentage}%)</span>
                   <span className="text-red-400 font-medium">-₹{withdrawalFeeAmount.toFixed(2)}</span>
                 </div>
-                <div className="h-px bg-gray-700"></div>
-                <div className="flex justify-between">
-                  <span className="text-white font-semibold">Net Amount:</span>
-                  <span className="text-[#00e8be] font-bold">₹{netAmount.toFixed(2)}</span>
+                <div className="flex justify-between items-center py-2">
+                  <span className="text-[#00e8be] font-semibold text-lg">You'll Receive</span>
+                  <span className="text-[#00e8be] font-bold text-lg">₹{netAmount.toFixed(2)}</span>
                 </div>
               </div>
             </div>
@@ -249,7 +236,7 @@ const WithdrawPage = () => {
           <div className="bg-gray-800/50 rounded-xl border border-gray-700/50 p-4">
             <div className="flex items-center mb-4">
               <CreditCard className="w-5 h-5 text-[#00e8be] mr-2" />
-              <h3 className="text-white font-medium">Destination Bank</h3>
+              <h3 className="text-white font-medium">Bank Details</h3>
             </div>
             
             <div className="bg-gray-700/30 rounded-lg p-3 space-y-2">
