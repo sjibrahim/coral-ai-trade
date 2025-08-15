@@ -108,20 +108,20 @@ const SecurityPage = () => {
   };
   
   return (
-    <MobileLayout showBackButton title="Change Password" noScroll>
+    <MobileLayout showBackButton title="Change Password" hideFooter>
       <div className="min-h-screen bg-gray-900 flex flex-col">
-        <div className="flex-1 p-4">
+        <div className="flex-1 p-4 pb-24">
           {/* Header */}
-          <div className="text-center mb-6 pt-2">
-            <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-3">
+          <div className="text-center mb-8 pt-2">
+            <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
               <Lock className="w-8 h-8 text-white" />
             </div>
-            <h1 className="text-xl font-bold text-white mb-1">Change Password</h1>
+            <h1 className="text-xl font-bold text-white mb-2">Change Password</h1>
             <p className="text-gray-400 text-sm">Enter your current and new password</p>
           </div>
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-6">
             {/* Current Password */}
             <div className="relative">
               <label className="block text-gray-300 text-sm font-medium mb-2">Current Password</label>
@@ -130,16 +130,16 @@ const SecurityPage = () => {
                 name="currentPassword"
                 value={formData.currentPassword}
                 onChange={handleChange}
-                className="w-full bg-gray-800 border border-gray-700 p-3 pr-12 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full bg-gray-800 border border-gray-700 p-4 pr-12 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="Enter current password"
                 required
               />
               <button 
                 type="button"
-                className="absolute right-3 top-10 text-gray-400 hover:text-gray-200"
+                className="absolute right-3 top-11 text-gray-400 hover:text-gray-200"
                 onClick={() => togglePasswordVisibility('current')}
               >
-                {showPasswords.current ? <EyeOff size={18} /> : <Eye size={18} />}
+                {showPasswords.current ? <EyeOff size={20} /> : <Eye size={20} />}
               </button>
             </div>
             
@@ -151,16 +151,16 @@ const SecurityPage = () => {
                 name="newPassword"
                 value={formData.newPassword}
                 onChange={handleChange}
-                className="w-full bg-gray-800 border border-gray-700 p-3 pr-12 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full bg-gray-800 border border-gray-700 p-4 pr-12 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="Enter new password"
                 required
               />
               <button 
                 type="button"
-                className="absolute right-3 top-10 text-gray-400 hover:text-gray-200"
+                className="absolute right-3 top-11 text-gray-400 hover:text-gray-200"
                 onClick={() => togglePasswordVisibility('new')}
               >
-                {showPasswords.new ? <EyeOff size={18} /> : <Eye size={18} />}
+                {showPasswords.new ? <EyeOff size={20} /> : <Eye size={20} />}
               </button>
             </div>
             
@@ -172,45 +172,57 @@ const SecurityPage = () => {
                 name="confirmPassword"
                 value={formData.confirmPassword}
                 onChange={handleChange}
-                className="w-full bg-gray-800 border border-gray-700 p-3 pr-12 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full bg-gray-800 border border-gray-700 p-4 pr-12 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="Confirm new password"
                 required
               />
               <button 
                 type="button"
-                className="absolute right-3 top-10 text-gray-400 hover:text-gray-200"
+                className="absolute right-3 top-11 text-gray-400 hover:text-gray-200"
                 onClick={() => togglePasswordVisibility('confirm')}
               >
-                {showPasswords.confirm ? <EyeOff size={18} /> : <Eye size={18} />}
+                {showPasswords.confirm ? <EyeOff size={20} /> : <Eye size={20} />}
               </button>
             </div>
 
             {/* Password Requirements */}
-            <div className="bg-gray-800 border border-gray-700 rounded-lg p-4 mt-4">
-              <p className="text-gray-300 text-sm mb-2">Password Requirements:</p>
-              <ul className="text-gray-400 text-xs space-y-1">
-                <li>• At least 8 characters long</li>
-                <li>• Mix of letters and numbers recommended</li>
-                <li>• Avoid using personal information</li>
+            <div className="bg-gray-800 border border-gray-700 rounded-lg p-4">
+              <p className="text-gray-300 text-sm font-medium mb-3">Password Requirements:</p>
+              <ul className="text-gray-400 text-sm space-y-2">
+                <li className="flex items-center">
+                  <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-3"></div>
+                  At least 8 characters long
+                </li>
+                <li className="flex items-center">
+                  <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-3"></div>
+                  Mix of letters and numbers recommended
+                </li>
+                <li className="flex items-center">
+                  <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-3"></div>
+                  Avoid using personal information
+                </li>
               </ul>
             </div>
-            
-            {/* Submit Button */}
-            <button
-              type="submit"
-              className="w-full py-3 rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-medium shadow-lg transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none mt-6"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? (
-                <span className="flex items-center justify-center">
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-                  Updating...
-                </span>
-              ) : (
-                "Update Password"
-              )}
-            </button>
           </form>
+        </div>
+
+        {/* Fixed Bottom Button */}
+        <div className="fixed bottom-0 left-0 right-0 bg-gray-900 border-t border-gray-800 p-4">
+          <button
+            type="submit"
+            onClick={handleSubmit}
+            className="w-full py-4 rounded-xl bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold shadow-lg transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? (
+              <span className="flex items-center justify-center">
+                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                Updating Password...
+              </span>
+            ) : (
+              "Update Password"
+            )}
+          </button>
         </div>
       </div>
     </MobileLayout>
