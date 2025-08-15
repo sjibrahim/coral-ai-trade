@@ -8,7 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import BottomNavigation from "@/components/BottomNavigation";
 import { 
   CreditCard, Lock, Calendar, Gift,
-  Copy, Check, ArrowRight, ScrollText, Banknote, CreditCard as CardIcon, TrendingDown, Share2, Crown
+  Copy, Check, ArrowRight, ScrollText, Banknote, CreditCard as CardIcon, TrendingDown
 } from "lucide-react";
 
 const ProfilePage = () => {
@@ -45,14 +45,7 @@ const ProfilePage = () => {
               <span className="text-xl font-bold text-white">C</span>
             </div>
             <div>
-              <div className="flex items-center gap-2">
-                <div className="text-white font-medium">Coral</div>
-                {/* VIP Badge */}
-                <div className="bg-gradient-to-r from-amber-400 to-orange-500 px-2 py-0.5 rounded-full flex items-center gap-1">
-                  <Crown className="w-3 h-3 text-white" />
-                  <span className="text-xs text-white font-semibold">VIP</span>
-                </div>
-              </div>
+              <div className="text-white font-medium">Coral</div>
               <div className="text-gray-400 text-sm">AI Trading Platform</div>
             </div>
           </div>
@@ -109,7 +102,7 @@ const ProfilePage = () => {
         {/* Action Cards */}
         <div className="px-4 mb-6">
           <div className="grid grid-cols-2 gap-4">
-            {/* Invite Friends Card - Updated from Contest */}
+            {/* Invite Friends Card */}
             <div className="bg-gradient-to-br from-teal-400 via-teal-500 to-cyan-500 rounded-2xl p-4 relative overflow-hidden">
               <div className="absolute top-0 right-0 w-16 h-16 bg-white/10 rounded-full -mr-8 -mt-8"></div>
               <div className="relative">
@@ -132,17 +125,17 @@ const ProfilePage = () => {
               </div>
             </div>
 
-            {/* Invite Section Card */}
-            <div 
-              className="bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl p-4 relative overflow-hidden cursor-pointer"
-              onClick={() => navigate('/invite')}
-            >
+            {/* Contest Card */}
+            <div className="bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl p-4 relative overflow-hidden">
               <div className="absolute bottom-0 left-0 w-12 h-12 bg-white/10 rounded-full -ml-6 -mb-6"></div>
               <div className="relative">
-                <div className="text-white font-bold text-base mb-2">Invite Section</div>
-                <div className="text-white/80 text-xs mb-3">Manage invitations</div>
+                <div className="text-white font-bold text-base mb-2">Contest</div>
+                <div className="text-white/80 text-xs mb-3">Win rewards daily</div>
                 <div className="flex items-center justify-between">
-                  <Share2 className="w-5 h-5 text-white/60" />
+                  <div className="flex gap-1">
+                    <div className="w-4 h-4 bg-white/20 rounded-full"></div>
+                    <div className="w-4 h-4 bg-white/30 rounded-full"></div>
+                  </div>
                   <ArrowRight className="w-4 h-4 text-white/60" />
                 </div>
               </div>
@@ -212,11 +205,11 @@ const ProfilePage = () => {
               </button>
 
               <button 
-                onClick={() => navigate('/salary-chart')}
+                onClick={() => navigate('/salary-records')}
                 className="flex flex-col items-center p-2 transition-all hover:scale-105"
               >
                 <Banknote className="w-6 h-6 text-white mb-1" />
-                <span className="text-[10px] text-white text-center font-medium leading-tight">Salary Chart</span>
+                <span className="text-[10px] text-white text-center font-medium leading-tight">Salary Records</span>
               </button>
             </div>
           </div>
