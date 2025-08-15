@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import MobileLayout from "@/components/layout/MobileLayout";
-import { Check, Wallet, ArrowDown, CreditCard, Clock, Shield, Banknote, TrendingDown, Target, Zap } from "lucide-react";
+import { Check, Wallet, ArrowDown, Clock, Shield, Banknote, TrendingDown, Target, Zap } from "lucide-react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -193,13 +193,13 @@ const WithdrawPage = () => {
             </div>
             
             <div className="relative mb-2">
-              <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-lg">₹</span>
+              <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-base">₹</span>
               <input
                 type="text"
                 inputMode="decimal"
                 value={amount}
                 onChange={handleAmountChange}
-                className="w-full bg-gray-700/50 border border-gray-600/50 rounded-lg pl-8 pr-4 py-3 text-white placeholder-gray-500 focus:border-[#00e8be] focus:outline-none focus:ring-1 focus:ring-white text-lg text-center"
+                className="w-full bg-gray-700/50 border border-gray-600/50 rounded-lg pl-8 pr-4 py-2 text-white placeholder-gray-500 focus:border-[#00e8be] focus:outline-none focus:ring-1 focus:ring-white text-base text-center"
                 placeholder={`Min ${minWithdrawal}`}
                 maxLength={10}
               />
@@ -224,6 +224,10 @@ const WithdrawPage = () => {
                   <span className="text-gray-300 text-sm">Fee ({withdrawalFeePercentage}%)</span>
                   <span className="text-red-400 font-medium text-sm">-₹{withdrawalFeeAmount.toFixed(2)}</span>
                 </div>
+                <div className="flex justify-between items-center py-1 border-b border-gray-700/50">
+                  <span className="text-gray-300 text-sm">Account Number</span>
+                  <span className="text-gray-200 font-medium text-sm">{bankAccount}</span>
+                </div>
                 <div className="flex justify-between items-center py-1">
                   <span className="text-[#00e8be] font-semibold">You'll Receive</span>
                   <span className="text-[#00e8be] font-bold">₹{netAmount.toFixed(2)}</span>
@@ -231,28 +235,6 @@ const WithdrawPage = () => {
               </div>
             </div>
           )}
-
-          {/* Bank Details */}
-          <div className="bg-gray-800/50 rounded-xl border border-gray-700/50 p-4">
-            <div className="flex items-center mb-3">
-              <CreditCard className="w-4 h-4 text-[#00e8be] mr-2" />
-              <h3 className="text-white font-medium text-sm">Bank Details</h3>
-            </div>
-            
-            <div className="bg-gray-700/30 rounded-lg p-3 space-y-1.5">
-              {[
-                { label: "Account Holder", value: accountName },
-                { label: "Account Number", value: bankAccount },
-                { label: "IFSC Code", value: ifscCode },
-                { label: "Bank Name", value: bankName }
-              ].map((detail, idx) => (
-                <div key={idx} className="flex justify-between items-center text-xs">
-                  <span className="text-gray-400">{detail.label}</span>
-                  <span className="text-gray-200 font-medium">{detail.value}</span>
-                </div>
-              ))}
-            </div>
-          </div>
 
           {/* Confirm Button */}
           <button
