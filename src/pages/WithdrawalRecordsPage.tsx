@@ -107,15 +107,15 @@ const WithdrawalRecordsPage = () => {
     switch(status.toLowerCase()) {
       case 'completed':
       case 'success':
-        return "text-emerald-600 bg-emerald-50 border-emerald-200";
+        return "text-emerald-600 bg-emerald-50 border-emerald-200 dark:text-emerald-400 dark:bg-emerald-950 dark:border-emerald-800";
       case 'processing':
       case 'pending':
-        return "text-amber-600 bg-amber-50 border-amber-200";
+        return "text-amber-600 bg-amber-50 border-amber-200 dark:text-amber-400 dark:bg-amber-950 dark:border-amber-800";
       case 'rejected':
       case 'failed':
-        return "text-red-600 bg-red-50 border-red-200";
+        return "text-red-600 bg-red-50 border-red-200 dark:text-red-400 dark:bg-red-950 dark:border-red-800";
       default:
-        return "text-gray-600 bg-gray-50 border-gray-200";
+        return "text-muted-foreground bg-muted border-border";
     }
   };
   
@@ -176,42 +176,42 @@ const WithdrawalRecordsPage = () => {
 
   return (
     <MobileLayout showBackButton title="Withdrawal Records">
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-background">
         
         {/* Compact Header */}
-        <div className="bg-white shadow-sm border-b">
+        <div className="bg-card shadow-sm border-b border-border">
           <div className="px-4 py-4">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
-                  <ArrowDownCircle className="h-4 w-4 text-emerald-600" />
+                <div className="w-8 h-8 bg-emerald-100 dark:bg-emerald-950 rounded-lg flex items-center justify-center">
+                  <ArrowDownCircle className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
                 </div>
                 <div>
-                  <h1 className="text-lg font-semibold text-gray-900">Withdrawals</h1>
-                  <p className="text-xs text-gray-500">{records.length} records</p>
+                  <h1 className="text-lg font-semibold text-foreground">Withdrawals</h1>
+                  <p className="text-xs text-muted-foreground">{records.length} records</p>
                 </div>
               </div>
               <button 
                 onClick={() => setHideAmounts(!hideAmounts)}
-                className="p-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                className="p-2 bg-muted rounded-lg hover:bg-muted/80 transition-colors"
               >
-                {hideAmounts ? <EyeOff className="h-4 w-4 text-gray-600" /> : <Eye className="h-4 w-4 text-gray-600" />}
+                {hideAmounts ? <EyeOff className="h-4 w-4 text-muted-foreground" /> : <Eye className="h-4 w-4 text-muted-foreground" />}
               </button>
             </div>
             
             <div className="grid grid-cols-2 gap-3">
-              <div className="bg-emerald-50 rounded-lg p-3">
-                <p className="text-xs text-emerald-700 mb-1">Total Withdrawn</p>
+              <div className="bg-emerald-50 dark:bg-emerald-950 rounded-lg p-3">
+                <p className="text-xs text-emerald-700 dark:text-emerald-400 mb-1">Total Withdrawn</p>
                 <div className="flex items-center gap-1">
-                  <IndianRupee className="h-4 w-4 text-emerald-600" />
-                  <span className="text-lg font-bold text-emerald-900">
+                  <IndianRupee className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+                  <span className="text-lg font-bold text-emerald-900 dark:text-emerald-300">
                     {formatAmount(totalWithdrawn)}
                   </span>
                 </div>
               </div>
-              <div className="bg-blue-50 rounded-lg p-3">
-                <p className="text-xs text-blue-700 mb-1">Success Rate</p>
-                <p className="text-lg font-bold text-blue-900">
+              <div className="bg-blue-50 dark:bg-blue-950 rounded-lg p-3">
+                <p className="text-xs text-blue-700 dark:text-blue-400 mb-1">Success Rate</p>
+                <p className="text-lg font-bold text-blue-900 dark:text-blue-300">
                   {records.length > 0 ? Math.round((statusCounts.completed / records.length) * 100) : 0}%
                 </p>
               </div>
@@ -219,29 +219,29 @@ const WithdrawalRecordsPage = () => {
           </div>
         </div>
 
-        <div className="px-4 py-4 space-y-4">
+        <div className="px-4 py-4 space-y-4 pb-6">
           {/* Status Overview */}
           <div className="grid grid-cols-3 gap-2">
-            <div className="text-center p-3 bg-emerald-50 rounded-lg border border-emerald-100">
+            <div className="text-center p-3 bg-emerald-50 dark:bg-emerald-950 rounded-lg border border-emerald-100 dark:border-emerald-800">
               <div className="w-6 h-6 bg-emerald-500 rounded-md flex items-center justify-center mx-auto mb-1">
                 <CheckCircle className="h-3 w-3 text-white" />
               </div>
-              <p className="text-lg font-bold text-emerald-600">{statusCounts.completed}</p>
-              <p className="text-xs text-emerald-600">Success</p>
+              <p className="text-lg font-bold text-emerald-600 dark:text-emerald-400">{statusCounts.completed}</p>
+              <p className="text-xs text-emerald-600 dark:text-emerald-400">Success</p>
             </div>
-            <div className="text-center p-3 bg-amber-50 rounded-lg border border-amber-100">
+            <div className="text-center p-3 bg-amber-50 dark:bg-amber-950 rounded-lg border border-amber-100 dark:border-amber-800">
               <div className="w-6 h-6 bg-amber-500 rounded-md flex items-center justify-center mx-auto mb-1">
                 <Clock className="h-3 w-3 text-white" />
               </div>
-              <p className="text-lg font-bold text-amber-600">{statusCounts.pending}</p>
-              <p className="text-xs text-amber-600">Pending</p>
+              <p className="text-lg font-bold text-amber-600 dark:text-amber-400">{statusCounts.pending}</p>
+              <p className="text-xs text-amber-600 dark:text-amber-400">Pending</p>
             </div>
-            <div className="text-center p-3 bg-red-50 rounded-lg border border-red-100">
+            <div className="text-center p-3 bg-red-50 dark:bg-red-950 rounded-lg border border-red-100 dark:border-red-800">
               <div className="w-6 h-6 bg-red-500 rounded-md flex items-center justify-center mx-auto mb-1">
                 <XCircle className="h-3 w-3 text-white" />
               </div>
-              <p className="text-lg font-bold text-red-600">{statusCounts.failed}</p>
-              <p className="text-xs text-red-600">Failed</p>
+              <p className="text-lg font-bold text-red-600 dark:text-red-400">{statusCounts.failed}</p>
+              <p className="text-xs text-red-600 dark:text-red-400">Failed</p>
             </div>
           </div>
 
@@ -250,20 +250,20 @@ const WithdrawalRecordsPage = () => {
             <div className="space-y-3">
               {Array(4).fill(0).map((_, idx) => (
                 <div key={`skeleton-${idx}`} className="animate-pulse">
-                  <div className="bg-white rounded-lg p-4 shadow-sm space-y-3">
+                  <div className="bg-card rounded-lg p-4 shadow-sm space-y-3">
                     <div className="flex justify-between items-start">
                       <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 bg-gray-200 rounded-lg"></div>
+                        <div className="w-10 h-10 bg-muted rounded-lg"></div>
                         <div className="space-y-2">
-                          <div className="h-4 w-20 bg-gray-200 rounded"></div>
-                          <div className="h-3 w-16 bg-gray-200 rounded"></div>
+                          <div className="h-4 w-20 bg-muted rounded"></div>
+                          <div className="h-3 w-16 bg-muted rounded"></div>
                         </div>
                       </div>
-                      <div className="h-5 w-16 bg-gray-200 rounded"></div>
+                      <div className="h-5 w-16 bg-muted rounded"></div>
                     </div>
                     <div className="grid grid-cols-2 gap-4">
-                      <div className="h-3 w-16 bg-gray-200 rounded"></div>
-                      <div className="h-3 w-20 bg-gray-200 rounded"></div>
+                      <div className="h-3 w-16 bg-muted rounded"></div>
+                      <div className="h-3 w-20 bg-muted rounded"></div>
                     </div>
                   </div>
                 </div>
@@ -277,7 +277,7 @@ const WithdrawalRecordsPage = () => {
                                 (record.net_amount as number) || 0;
                 
                 return (
-                  <div key={record.id} className="bg-white rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+                  <div key={record.id} className="bg-card rounded-lg shadow-sm border border-border hover:shadow-md transition-shadow">
                     <div className="p-4">
                       <div className="flex justify-between items-start mb-3">
                         <div className="flex items-center space-x-3">
@@ -286,11 +286,11 @@ const WithdrawalRecordsPage = () => {
                           </div>
                           <div>
                             <div className="flex items-center gap-2 mb-1">
-                              <span className="text-lg font-bold text-gray-900">
+                              <span className="text-lg font-bold text-foreground">
                                 {formatAmount(record.amount)}
                               </span>
                             </div>
-                            <div className="flex items-center gap-1 text-xs text-gray-500">
+                            <div className="flex items-center gap-1 text-xs text-muted-foreground">
                               <Timer className="h-3 w-3" />
                               <span>{formatDate(record.date)}</span>
                             </div>
@@ -309,41 +309,41 @@ const WithdrawalRecordsPage = () => {
 
                       <div className="grid grid-cols-2 gap-4 text-xs">
                         <div>
-                          <div className="flex items-center gap-1 text-gray-500 mb-1">
+                          <div className="flex items-center gap-1 text-muted-foreground mb-1">
                             <Building2 className="h-3 w-3" />
                             <span>Bank Account</span>
                           </div>
-                          <p className="text-gray-700 font-mono">
+                          <p className="text-foreground font-mono">
                             {maskBankAccount(user?.account_number)}
                           </p>
                         </div>
                         
                         <div>
-                          <div className="flex items-center gap-1 text-gray-500 mb-1">
+                          <div className="flex items-center gap-1 text-muted-foreground mb-1">
                             <Banknote className="h-3 w-3" />
                             <span>Net Amount</span>
                           </div>
-                          <p className="text-emerald-600 font-semibold">
+                          <p className="text-emerald-600 dark:text-emerald-400 font-semibold">
                             {formatAmount(netAmount)}
                           </p>
                         </div>
                         
                         <div>
-                          <div className="flex items-center gap-1 text-gray-500 mb-1">
+                          <div className="flex items-center gap-1 text-muted-foreground mb-1">
                             <Hash className="h-3 w-3" />
                             <span>Transaction ID</span>
                           </div>
-                          <p className="text-gray-700 font-mono truncate">
+                          <p className="text-foreground font-mono truncate">
                             {record.id}
                           </p>
                         </div>
                         
                         <div>
-                          <div className="flex items-center gap-1 text-gray-500 mb-1">
+                          <div className="flex items-center gap-1 text-muted-foreground mb-1">
                             <Receipt className="h-3 w-3" />
                             <span>Fee ({withdrawalFeePercentage}%)</span>
                           </div>
-                          <p className="text-red-600 font-semibold">
+                          <p className="text-red-600 dark:text-red-400 font-semibold">
                             {formatAmount(charges)}
                           </p>
                         </div>
@@ -355,15 +355,15 @@ const WithdrawalRecordsPage = () => {
             </div>
           ) : (
             <div className="text-center py-12">
-              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <ArrowDownCircle className="h-8 w-8 text-gray-400" />
+              <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
+                <ArrowDownCircle className="h-8 w-8 text-muted-foreground" />
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">No Withdrawals Yet</h3>
-              <p className="text-gray-500 text-sm mb-4">
+              <h3 className="text-lg font-semibold text-foreground mb-2">No Withdrawals Yet</h3>
+              <p className="text-muted-foreground text-sm mb-4">
                 Your withdrawal history will appear here once you make your first withdrawal.
               </p>
-              <div className="bg-blue-50 rounded-lg p-4 border border-blue-100">
-                <p className="text-sm text-blue-700">
+              <div className="bg-blue-50 dark:bg-blue-950 rounded-lg p-4 border border-blue-100 dark:border-blue-800">
+                <p className="text-sm text-blue-700 dark:text-blue-400">
                   <strong>Tip:</strong> You can withdraw your earnings anytime from the Withdraw page.
                 </p>
               </div>
