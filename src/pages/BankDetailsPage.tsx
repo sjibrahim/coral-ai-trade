@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
-import { getUserProfile, updateUserProfile } from "@/services/api";
+import { updateBankDetails } from "@/services/api";
 import { useToast } from "@/hooks/use-toast";
 import { 
   Building2, 
@@ -20,11 +20,13 @@ import {
   AlertCircle,
   Landmark,
   Hash,
-  MapPin
+  MapPin,
+  Sparkles,
+  ArrowRight
 } from "lucide-react";
 
 const BankDetailsPage = () => {
-  const { user } = useAuth();
+  const { user, updateProfile } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
@@ -33,37 +35,22 @@ const BankDetailsPage = () => {
   const [formData, setFormData] = useState({
     account_holder_name: '',
     account_number: '',
-    ifsc_code: '',
+    account_ifsc: '',
     bank_name: '',
-    branch_name: ''
+    usdt_address: ''
   });
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      if (!user?.token) return;
-      
-      try {
-        setIsLoading(true);
-        const response = await getUserProfile(user.token);
-        
-        if (response.status && response.data) {
-          setFormData({
-            account_holder_name: response.data.account_holder_name || '',
-            account_number: response.data.account_number || '',
-            ifsc_code: response.data.ifsc_code || '',
-            bank_name: response.data.bank_name || '',
-            branch_name: response.data.branch_name || ''
-          });
-        }
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchUserData();
-  }, [user?.token]);
+    if (user) {
+      setFormData({
+        account_holder_name: user.account_holder_name || '',
+        account_number: user.account_number || '',
+        account_ifsc: user.account_ifsc || '',
+        bank_name: user.bank_name || '',
+        usdt_address: user.usdt_address || ''
+      });
+    }
+  }, [user]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -77,7 +64,7 @@ const BankDetailsPage = () => {
     if (!user?.token) return;
 
     // Validate required fields
-    if (!formData.account_holder_name || !formData.account_number || !formData.ifsc_code || !formData.bank_name) {
+    if (!formData.account_holder_name || !formData.account_number || !formData.account_ifsc || !formData.bank_name) {
       toast({
         title: "Validation Error",
         description: "Please fill in all required fields",
@@ -88,9 +75,11 @@ const BankDetailsPage = () => {
 
     try {
       setIsSaving(true);
-      const response = await updateUserProfile(user.token, formData);
+      const response = await updateBankDetails(user.token, formData);
       
       if (response.status) {
+        // Update user profile to get latest data
+        await updateProfile();
         toast({
           title: "Success",
           description: "Bank details updated successfully",
@@ -115,34 +104,50 @@ const BankDetailsPage = () => {
 
   return (
     <MobileLayout showBackButton title="Bank Details">
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-black">
+      <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-black">
+        {/* Animated Background Elements */}
+        <div className="fixed inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl animate-pulse" />
+          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-500/10 rounded-full blur-3xl animate-pulse delay-1000" />
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-60 h-60 bg-emerald-500/5 rounded-full blur-3xl animate-pulse delay-500" />
+        </div>
+
         {/* Header Section */}
         <div className="relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-purple-600/20" />
-          <div className="relative px-6 py-8">
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-purple-600/10" />
+          <div className="relative px-6 py-12">
             <div className="text-center">
-              <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
-                <Landmark className="w-8 h-8 text-white" />
+              <div className="relative w-20 h-20 mx-auto mb-6">
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-3xl blur-lg opacity-60 animate-pulse" />
+                <div className="relative w-20 h-20 bg-gradient-to-r from-blue-500 to-purple-500 rounded-3xl flex items-center justify-center shadow-2xl">
+                  <Landmark className="w-10 h-10 text-white" />
+                </div>
               </div>
-              <h1 className="text-2xl font-bold text-white mb-2">Bank Account</h1>
-              <p className="text-gray-400">Secure your financial information</p>
+              <h1 className="text-3xl font-bold text-white mb-3 tracking-tight">Bank Account</h1>
+              <p className="text-gray-400 text-lg">Secure your financial gateway</p>
             </div>
           </div>
         </div>
 
         {/* Security Notice */}
-        <div className="px-6 -mt-4 mb-6">
-          <Card className="bg-gradient-to-r from-emerald-500/10 to-blue-500/10 border-emerald-500/20 backdrop-blur-sm">
-            <CardContent className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-emerald-500/20 rounded-lg flex items-center justify-center">
-                  <Shield className="w-5 h-5 text-emerald-400" />
+        <div className="px-6 -mt-6 mb-8">
+          <Card className="bg-gradient-to-r from-emerald-500/10 via-blue-500/10 to-purple-500/10 border-emerald-500/20 backdrop-blur-xl shadow-2xl">
+            <CardContent className="p-6">
+              <div className="flex items-center gap-4">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-emerald-500/20 rounded-2xl blur-lg animate-pulse" />
+                  <div className="relative w-14 h-14 bg-emerald-500/20 rounded-2xl flex items-center justify-center">
+                    <Shield className="w-7 h-7 text-emerald-400" />
+                  </div>
                 </div>
                 <div className="flex-1">
-                  <p className="text-sm font-medium text-white">Bank details are encrypted</p>
-                  <p className="text-xs text-gray-400">Your information is protected with advanced security</p>
+                  <p className="text-lg font-semibold text-white flex items-center gap-2">
+                    Bank details are encrypted
+                    <Sparkles className="w-4 h-4 text-emerald-400 animate-pulse" />
+                  </p>
+                  <p className="text-gray-400 mt-1">Protected with military-grade security</p>
                 </div>
-                <Lock className="w-4 h-4 text-emerald-400" />
+                <Lock className="w-6 h-6 text-emerald-400 animate-pulse" />
               </div>
             </CardContent>
           </Card>
@@ -150,12 +155,14 @@ const BankDetailsPage = () => {
 
         <div className="px-6 space-y-6">
           {/* Account Holder Name */}
-          <Card className="bg-gray-800/50 border-gray-700/50 backdrop-blur-sm">
+          <Card className="bg-gray-900/40 border-gray-700/30 backdrop-blur-xl shadow-2xl hover:bg-gray-900/50 transition-all duration-300">
             <CardContent className="p-6">
-              <div className="space-y-3">
-                <div className="flex items-center gap-2">
-                  <User className="w-4 h-4 text-blue-400" />
-                  <Label htmlFor="account_holder_name" className="text-sm font-medium text-gray-300">
+              <div className="space-y-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-blue-500/20 rounded-xl flex items-center justify-center">
+                    <User className="w-5 h-5 text-blue-400" />
+                  </div>
+                  <Label htmlFor="account_holder_name" className="text-lg font-medium text-gray-200">
                     Account Holder Name *
                   </Label>
                 </div>
@@ -166,7 +173,7 @@ const BankDetailsPage = () => {
                   placeholder="Enter full name as per bank records"
                   value={formData.account_holder_name}
                   onChange={handleInputChange}
-                  className="bg-gray-900/50 border-gray-600 text-white placeholder:text-gray-500 focus:border-blue-500 focus:ring-blue-500/20"
+                  className="h-14 bg-gray-950/50 border-gray-600/50 text-white text-lg placeholder:text-gray-500 focus:border-blue-500 focus:ring-blue-500/20 rounded-xl shadow-inner"
                   disabled={isLoading}
                 />
               </div>
@@ -174,12 +181,14 @@ const BankDetailsPage = () => {
           </Card>
 
           {/* Account Number */}
-          <Card className="bg-gray-800/50 border-gray-700/50 backdrop-blur-sm">
+          <Card className="bg-gray-900/40 border-gray-700/30 backdrop-blur-xl shadow-2xl hover:bg-gray-900/50 transition-all duration-300">
             <CardContent className="p-6">
-              <div className="space-y-3">
-                <div className="flex items-center gap-2">
-                  <Hash className="w-4 h-4 text-purple-400" />
-                  <Label htmlFor="account_number" className="text-sm font-medium text-gray-300">
+              <div className="space-y-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-purple-500/20 rounded-xl flex items-center justify-center">
+                    <Hash className="w-5 h-5 text-purple-400" />
+                  </div>
+                  <Label htmlFor="account_number" className="text-lg font-medium text-gray-200">
                     Account Number *
                   </Label>
                 </div>
@@ -190,7 +199,7 @@ const BankDetailsPage = () => {
                   placeholder="Enter your bank account number"
                   value={formData.account_number}
                   onChange={handleInputChange}
-                  className="bg-gray-900/50 border-gray-600 text-white placeholder:text-gray-500 focus:border-purple-500 focus:ring-purple-500/20"
+                  className="h-14 bg-gray-950/50 border-gray-600/50 text-white text-lg placeholder:text-gray-500 focus:border-purple-500 focus:ring-purple-500/20 rounded-xl shadow-inner"
                   disabled={isLoading}
                 />
               </div>
@@ -198,23 +207,25 @@ const BankDetailsPage = () => {
           </Card>
 
           {/* IFSC Code */}
-          <Card className="bg-gray-800/50 border-gray-700/50 backdrop-blur-sm">
+          <Card className="bg-gray-900/40 border-gray-700/30 backdrop-blur-xl shadow-2xl hover:bg-gray-900/50 transition-all duration-300">
             <CardContent className="p-6">
-              <div className="space-y-3">
-                <div className="flex items-center gap-2">
-                  <CreditCard className="w-4 h-4 text-emerald-400" />
-                  <Label htmlFor="ifsc_code" className="text-sm font-medium text-gray-300">
+              <div className="space-y-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-emerald-500/20 rounded-xl flex items-center justify-center">
+                    <CreditCard className="w-5 h-5 text-emerald-400" />
+                  </div>
+                  <Label htmlFor="account_ifsc" className="text-lg font-medium text-gray-200">
                     IFSC Code *
                   </Label>
                 </div>
                 <Input
-                  id="ifsc_code"
-                  name="ifsc_code"
+                  id="account_ifsc"
+                  name="account_ifsc"
                   type="text"
                   placeholder="Enter IFSC code (e.g., SBIN0001234)"
-                  value={formData.ifsc_code}
+                  value={formData.account_ifsc}
                   onChange={handleInputChange}
-                  className="bg-gray-900/50 border-gray-600 text-white placeholder:text-gray-500 focus:border-emerald-500 focus:ring-emerald-500/20"
+                  className="h-14 bg-gray-950/50 border-gray-600/50 text-white text-lg placeholder:text-gray-500 focus:border-emerald-500 focus:ring-emerald-500/20 rounded-xl shadow-inner"
                   disabled={isLoading}
                 />
               </div>
@@ -222,12 +233,14 @@ const BankDetailsPage = () => {
           </Card>
 
           {/* Bank Name */}
-          <Card className="bg-gray-800/50 border-gray-700/50 backdrop-blur-sm">
+          <Card className="bg-gray-900/40 border-gray-700/30 backdrop-blur-xl shadow-2xl hover:bg-gray-900/50 transition-all duration-300">
             <CardContent className="p-6">
-              <div className="space-y-3">
-                <div className="flex items-center gap-2">
-                  <Building2 className="w-4 h-4 text-orange-400" />
-                  <Label htmlFor="bank_name" className="text-sm font-medium text-gray-300">
+              <div className="space-y-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-orange-500/20 rounded-xl flex items-center justify-center">
+                    <Building2 className="w-5 h-5 text-orange-400" />
+                  </div>
+                  <Label htmlFor="bank_name" className="text-lg font-medium text-gray-200">
                     Bank Name *
                   </Label>
                 </div>
@@ -238,31 +251,33 @@ const BankDetailsPage = () => {
                   placeholder="Enter your bank name"
                   value={formData.bank_name}
                   onChange={handleInputChange}
-                  className="bg-gray-900/50 border-gray-600 text-white placeholder:text-gray-500 focus:border-orange-500 focus:ring-orange-500/20"
+                  className="h-14 bg-gray-950/50 border-gray-600/50 text-white text-lg placeholder:text-gray-500 focus:border-orange-500 focus:ring-orange-500/20 rounded-xl shadow-inner"
                   disabled={isLoading}
                 />
               </div>
             </CardContent>
           </Card>
 
-          {/* Branch Name */}
-          <Card className="bg-gray-800/50 border-gray-700/50 backdrop-blur-sm">
+          {/* USDT Address */}
+          <Card className="bg-gray-900/40 border-gray-700/30 backdrop-blur-xl shadow-2xl hover:bg-gray-900/50 transition-all duration-300">
             <CardContent className="p-6">
-              <div className="space-y-3">
-                <div className="flex items-center gap-2">
-                  <MapPin className="w-4 h-4 text-pink-400" />
-                  <Label htmlFor="branch_name" className="text-sm font-medium text-gray-300">
-                    Branch Name
+              <div className="space-y-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-yellow-500/20 rounded-xl flex items-center justify-center">
+                    <MapPin className="w-5 h-5 text-yellow-400" />
+                  </div>
+                  <Label htmlFor="usdt_address" className="text-lg font-medium text-gray-200">
+                    USDT Address
                   </Label>
                 </div>
                 <Input
-                  id="branch_name"
-                  name="branch_name"
+                  id="usdt_address"
+                  name="usdt_address"
                   type="text"
-                  placeholder="Enter branch name (optional)"
-                  value={formData.branch_name}
+                  placeholder="Enter USDT wallet address (optional)"
+                  value={formData.usdt_address}
                   onChange={handleInputChange}
-                  className="bg-gray-900/50 border-gray-600 text-white placeholder:text-gray-500 focus:border-pink-500 focus:ring-pink-500/20"
+                  className="h-14 bg-gray-950/50 border-gray-600/50 text-white text-lg placeholder:text-gray-500 focus:border-yellow-500 focus:ring-yellow-500/20 rounded-xl shadow-inner"
                   disabled={isLoading}
                 />
               </div>
@@ -274,17 +289,19 @@ const BankDetailsPage = () => {
             <Button
               onClick={handleSave}
               disabled={isSaving || isLoading}
-              className="w-full h-14 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold rounded-xl shadow-lg disabled:opacity-50"
+              className="w-full h-16 bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 hover:from-blue-700 hover:via-purple-700 hover:to-blue-700 text-white font-bold text-lg rounded-2xl shadow-2xl disabled:opacity-50 transform hover:scale-[1.02] transition-all duration-300 relative overflow-hidden"
             >
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-400/20 to-purple-400/20 animate-pulse" />
               {isSaving ? (
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  Saving...
+                <div className="flex items-center gap-3 relative z-10">
+                  <div className="w-6 h-6 border-3 border-white/30 border-t-white rounded-full animate-spin" />
+                  Saving Changes...
                 </div>
               ) : (
-                <div className="flex items-center gap-2">
-                  <Save className="w-5 h-5" />
+                <div className="flex items-center gap-3 relative z-10">
+                  <Save className="w-6 h-6" />
                   Save Bank Details
+                  <ArrowRight className="w-5 h-5 animate-pulse" />
                 </div>
               )}
             </Button>
