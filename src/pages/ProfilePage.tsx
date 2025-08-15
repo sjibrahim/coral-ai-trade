@@ -35,28 +35,29 @@ const ProfilePage = () => {
   };
 
   return (
-    <MobileLayout hideNavbar hideFooter>
-      <div className="min-h-screen bg-background text-foreground relative pb-24">
-        <div className="relative z-10 p-4">
-          {/* Header */}
-          <div className="flex items-center justify-between mb-6 pt-8">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-gradient-to-r from-teal-400 to-cyan-400 rounded-full flex items-center justify-center">
-                <span className="text-xl font-bold text-white">C</span>
-              </div>
-              <div>
-                <div className="text-foreground font-medium">Coral</div>
-                <div className="text-muted-foreground text-sm">AI Trading Platform</div>
-              </div>
+    <div className="min-h-screen bg-gray-900 text-white overflow-y-auto">
+      {/* Scrollable content container */}
+      <div className="pb-24 min-h-screen relative"> 
+        {/* Header */}
+        <div className="flex items-center justify-between mb-6 pt-8 px-4">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 bg-gradient-to-r from-teal-400 to-cyan-400 rounded-full flex items-center justify-center">
+              <span className="text-xl font-bold text-white">C</span>
             </div>
-            <div className="text-right">
-              <div className="text-2xl font-bold text-foreground">{user?.id || '123456'}</div>
-              <div className="text-xs text-muted-foreground">ID</div>
+            <div>
+              <div className="text-white font-medium">Coral</div>
+              <div className="text-gray-400 text-sm">AI Trading Platform</div>
             </div>
           </div>
+          <div className="text-right">
+            <div className="text-2xl font-bold text-white">{user?.id || '123456'}</div>
+            <div className="text-xs text-gray-400">ID</div>
+          </div>
+        </div>
 
-          {/* VIP Card */}
-          <div className="bg-gradient-to-r from-amber-500 to-orange-500 rounded-2xl p-4 mb-6 relative overflow-hidden">
+        {/* VIP Card */}
+        <div className="px-4 mb-6">
+          <div className="bg-gradient-to-r from-amber-500 to-orange-500 rounded-2xl p-4 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-20 h-20 bg-white/10 rounded-full -mr-10 -mt-10"></div>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -76,27 +77,31 @@ const ProfilePage = () => {
               </Button>
             </div>
           </div>
+        </div>
 
-          {/* Balance Cards */}
-          <div className="grid grid-cols-3 gap-3 mb-6">
-            <div className="bg-card rounded-xl p-4 text-center border border-border">
-              <div className="text-2xl font-bold text-foreground mb-1">
+        {/* Balance Cards */}
+        <div className="px-4 mb-6">
+          <div className="grid grid-cols-3 gap-3">
+            <div className="bg-gray-800/80 rounded-xl p-4 text-center border border-gray-700/30 backdrop-blur-sm">
+              <div className="text-2xl font-bold text-white mb-1">
                 ₹{totalBalance.toLocaleString()}
               </div>
-              <div className="text-muted-foreground text-xs">Total Assets</div>
+              <div className="text-gray-400 text-xs">Total Assets</div>
             </div>
-            <div className="bg-card rounded-xl p-4 text-center border border-border">
-              <div className="text-2xl font-bold text-foreground mb-1">₹0</div>
-              <div className="text-muted-foreground text-xs">Recharge</div>
+            <div className="bg-gray-800/80 rounded-xl p-4 text-center border border-gray-700/30 backdrop-blur-sm">
+              <div className="text-2xl font-bold text-white mb-1">₹0</div>
+              <div className="text-gray-400 text-xs">Recharge</div>
             </div>
-            <div className="bg-card rounded-xl p-4 text-center border border-border">
-              <div className="text-2xl font-bold text-foreground mb-1">₹0</div>
-              <div className="text-muted-foreground text-xs">Withdraw</div>
+            <div className="bg-gray-800/80 rounded-xl p-4 text-center border border-gray-700/30 backdrop-blur-sm">
+              <div className="text-2xl font-bold text-white mb-1">₹0</div>
+              <div className="text-gray-400 text-xs">Withdraw</div>
             </div>
           </div>
+        </div>
 
-          {/* Action Cards */}
-          <div className="grid grid-cols-2 gap-4 mb-6">
+        {/* Action Cards */}
+        <div className="px-4 mb-6">
+          <div className="grid grid-cols-2 gap-4">
             {/* Invite Friends Card */}
             <div className="bg-gradient-to-br from-teal-400 via-teal-500 to-cyan-500 rounded-2xl p-4 relative overflow-hidden">
               <div className="absolute top-0 right-0 w-16 h-16 bg-white/10 rounded-full -mr-8 -mt-8"></div>
@@ -136,18 +141,12 @@ const ProfilePage = () => {
               </div>
             </div>
           </div>
+        </div>
 
-          {/* Main Menu Section - 3x2 Grid */}
-          <div 
-            className="rounded-xl p-4 mb-4 relative overflow-hidden bg-cover bg-center bg-no-repeat"
-            style={{
-              backgroundImage: "url('/uploads/assetsbg-BsWPbjIy.png')"
-            }}
-          >
-            {/* Dark overlay for better text readability */}
-            <div className="absolute inset-0 bg-black/30 rounded-xl"></div>
-            
-            <div className="relative z-10 grid grid-cols-3 gap-3">
+        {/* Main Menu Section - 3x2 Grid */}
+        <div className="px-4 mb-4">
+          <div className="bg-gray-800/80 rounded-2xl overflow-hidden backdrop-blur-sm border border-gray-700/30 p-4">
+            <div className="grid grid-cols-3 gap-3">
               <button 
                 onClick={() => navigate('/bank')}
                 className="flex flex-col items-center p-2 transition-all hover:scale-105"
@@ -205,18 +204,12 @@ const ProfilePage = () => {
               </button>
             </div>
           </div>
+        </div>
 
-          {/* Additional Menu Section - 1x2 Grid */}
-          <div 
-            className="rounded-xl p-4 mb-8 relative overflow-hidden bg-cover bg-center bg-no-repeat"
-            style={{
-              backgroundImage: "url('/uploads/assetsbg-BsWPbjIy.png')"
-            }}
-          >
-            {/* Dark overlay for better text readability */}
-            <div className="absolute inset-0 bg-black/30 rounded-xl"></div>
-            
-            <div className="relative z-10 grid grid-cols-2 gap-3 justify-center">
+        {/* Additional Menu Section - 1x2 Grid */}
+        <div className="px-4 mb-8">
+          <div className="bg-gray-800/80 rounded-2xl overflow-hidden backdrop-blur-sm border border-gray-700/30 p-4">
+            <div className="grid grid-cols-2 gap-3 justify-center">
               <button 
                 onClick={() => navigate('/transaction-records')}
                 className="flex flex-col items-center p-2 transition-all hover:scale-105"
@@ -236,10 +229,16 @@ const ProfilePage = () => {
           </div>
         </div>
 
-        {/* Bottom Navigation */}
-        <BottomNavigation />
+        {/* Background decoration - same as HomePage */}
+        <div className="fixed inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute -top-32 -right-32 w-64 h-64 bg-gradient-to-br from-teal-500/10 to-cyan-500/10 rounded-full blur-3xl"></div>
+          <div className="absolute -bottom-32 -left-32 w-64 h-64 bg-gradient-to-tr from-blue-500/10 to-teal-500/10 rounded-full blur-3xl"></div>
+        </div>
       </div>
-    </MobileLayout>
+
+      {/* Bottom Navigation */}
+      <BottomNavigation />
+    </div>
   );
 };
 
