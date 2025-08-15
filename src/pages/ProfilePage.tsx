@@ -36,7 +36,7 @@ const ProfilePage = () => {
 
   return (
     <MobileLayout hideNavbar hideFooter>
-      <div className="min-h-screen bg-gray-900 text-white relative pb-24">
+      <div className="min-h-screen bg-background text-foreground relative pb-24">
         <div className="relative z-10 p-4">
           {/* Header */}
           <div className="flex items-center justify-between mb-6 pt-8">
@@ -45,13 +45,13 @@ const ProfilePage = () => {
                 <span className="text-xl font-bold text-white">C</span>
               </div>
               <div>
-                <div className="text-white font-medium">Coral</div>
-                <div className="text-gray-400 text-sm">AI Trading Platform</div>
+                <div className="text-foreground font-medium">Coral</div>
+                <div className="text-muted-foreground text-sm">AI Trading Platform</div>
               </div>
             </div>
             <div className="text-right">
-              <div className="text-2xl font-bold text-white">{user?.id || '123456'}</div>
-              <div className="text-xs text-gray-400">ID</div>
+              <div className="text-2xl font-bold text-foreground">{user?.id || '123456'}</div>
+              <div className="text-xs text-muted-foreground">ID</div>
             </div>
           </div>
 
@@ -79,19 +79,19 @@ const ProfilePage = () => {
 
           {/* Balance Cards */}
           <div className="grid grid-cols-3 gap-3 mb-6">
-            <div className="bg-gray-800 rounded-xl p-4 text-center">
-              <div className="text-2xl font-bold text-white mb-1">
+            <div className="bg-card rounded-xl p-4 text-center border border-border">
+              <div className="text-2xl font-bold text-foreground mb-1">
                 ₹{totalBalance.toLocaleString()}
               </div>
-              <div className="text-gray-400 text-xs">Total Assets</div>
+              <div className="text-muted-foreground text-xs">Total Assets</div>
             </div>
-            <div className="bg-gray-800 rounded-xl p-4 text-center">
-              <div className="text-2xl font-bold text-white mb-1">₹0</div>
-              <div className="text-gray-400 text-xs">Recharge</div>
+            <div className="bg-card rounded-xl p-4 text-center border border-border">
+              <div className="text-2xl font-bold text-foreground mb-1">₹0</div>
+              <div className="text-muted-foreground text-xs">Recharge</div>
             </div>
-            <div className="bg-gray-800 rounded-xl p-4 text-center">
-              <div className="text-2xl font-bold text-white mb-1">₹0</div>
-              <div className="text-gray-400 text-xs">Withdraw</div>
+            <div className="bg-card rounded-xl p-4 text-center border border-border">
+              <div className="text-2xl font-bold text-foreground mb-1">₹0</div>
+              <div className="text-muted-foreground text-xs">Withdraw</div>
             </div>
           </div>
 
@@ -137,96 +137,103 @@ const ProfilePage = () => {
             </div>
           </div>
 
-          {/* Menu Grid - Updated with background image */}
+          {/* Main Menu Section - 3x2 Grid */}
           <div 
-            className="rounded-2xl p-6 mb-8 relative overflow-hidden bg-cover bg-center bg-no-repeat"
+            className="rounded-xl p-4 mb-4 relative overflow-hidden bg-cover bg-center bg-no-repeat"
             style={{
               backgroundImage: "url('/uploads/assetsbg-BsWPbjIy.png')"
             }}
           >
             {/* Dark overlay for better text readability */}
-            <div className="absolute inset-0 bg-black/30 rounded-2xl"></div>
+            <div className="absolute inset-0 bg-black/30 rounded-xl"></div>
             
-            <div className="relative z-10 grid grid-cols-4 gap-4">
+            <div className="relative z-10 grid grid-cols-3 gap-3">
               <button 
                 onClick={() => navigate('/bank')}
-                className="flex flex-col items-center p-3 transition-all hover:scale-105"
+                className="flex flex-col items-center p-2 transition-all hover:scale-105"
               >
                 <img 
                   src="https://tnl-icons.duckdns.org/green/dash/upload/20241005/c34a3a2fd6b48b9b1b3a5032b50a7aaa.png" 
                   alt="Bank Card" 
-                  className="w-8 h-8 mb-2"
+                  className="w-6 h-6 mb-1"
                 />
-                <span className="text-xs text-white text-center font-medium">Bank Card</span>
+                <span className="text-[10px] text-white text-center font-medium leading-tight">Bank Card</span>
               </button>
 
               <button 
                 onClick={() => navigate('/security')}
-                className="flex flex-col items-center p-3 transition-all hover:scale-105"
+                className="flex flex-col items-center p-2 transition-all hover:scale-105"
               >
-                <Lock className="w-8 h-8 text-white mb-2" />
-                <span className="text-xs text-white text-center font-medium">Security</span>
+                <Lock className="w-6 h-6 text-white mb-1" />
+                <span className="text-[10px] text-white text-center font-medium leading-tight">Security</span>
               </button>
 
               <button 
                 onClick={() => navigate('/checkin')}
-                className="flex flex-col items-center p-3 transition-all hover:scale-105"
+                className="flex flex-col items-center p-2 transition-all hover:scale-105"
               >
                 <img 
                   src="https://tnl-icons.duckdns.org/green/dash/upload/20241016/aef64e6784fa317a3baee12d67337107.png" 
                   alt="Check-in" 
-                  className="w-8 h-8 mb-2"
+                  className="w-6 h-6 mb-1"
                 />
-                <span className="text-xs text-white text-center font-medium">Check-in</span>
+                <span className="text-[10px] text-white text-center font-medium leading-tight">Check-in</span>
               </button>
 
               <button 
                 onClick={() => navigate('/gift-code')}
-                className="flex flex-col items-center p-3 transition-all hover:scale-105"
+                className="flex flex-col items-center p-2 transition-all hover:scale-105"
               >
-                <Gift className="w-8 h-8 text-white mb-2" />
-                <span className="text-xs text-white text-center font-medium">Gift Code</span>
+                <Gift className="w-6 h-6 text-white mb-1" />
+                <span className="text-[10px] text-white text-center font-medium leading-tight">Gift Code</span>
               </button>
 
               <button 
                 onClick={() => navigate('/contract-records')}
-                className="flex flex-col items-center p-3 transition-all hover:scale-105"
+                className="flex flex-col items-center p-2 transition-all hover:scale-105"
               >
-                <ScrollText className="w-8 h-8 text-white mb-2" />
-                <span className="text-xs text-white text-center font-medium">Contract Records</span>
+                <ScrollText className="w-6 h-6 text-white mb-1" />
+                <span className="text-[10px] text-white text-center font-medium leading-tight">Contract Records</span>
               </button>
 
               <button 
                 onClick={() => navigate('/salary-records')}
-                className="flex flex-col items-center p-3 transition-all hover:scale-105"
+                className="flex flex-col items-center p-2 transition-all hover:scale-105"
               >
-                <Banknote className="w-8 h-8 text-white mb-2" />
-                <span className="text-xs text-white text-center font-medium">Salary Records</span>
+                <Banknote className="w-6 h-6 text-white mb-1" />
+                <span className="text-[10px] text-white text-center font-medium leading-tight">Salary Records</span>
               </button>
+            </div>
+          </div>
 
+          {/* Additional Menu Section - 1x2 Grid */}
+          <div 
+            className="rounded-xl p-4 mb-8 relative overflow-hidden bg-cover bg-center bg-no-repeat"
+            style={{
+              backgroundImage: "url('/uploads/assetsbg-BsWPbjIy.png')"
+            }}
+          >
+            {/* Dark overlay for better text readability */}
+            <div className="absolute inset-0 bg-black/30 rounded-xl"></div>
+            
+            <div className="relative z-10 grid grid-cols-2 gap-3 justify-center">
               <button 
                 onClick={() => navigate('/transaction-records')}
-                className="flex flex-col items-center p-3 transition-all hover:scale-105"
+                className="flex flex-col items-center p-2 transition-all hover:scale-105"
               >
-                <CardIcon className="w-8 h-8 text-white mb-2" />
-                <span className="text-xs text-white text-center font-medium">Transaction Records</span>
+                <CardIcon className="w-6 h-6 text-white mb-1" />
+                <span className="text-[10px] text-white text-center font-medium leading-tight">Transaction Records</span>
               </button>
 
               <button 
                 onClick={() => navigate('/withdrawal-records')}
-                className="flex flex-col items-center p-3 transition-all hover:scale-105"
+                className="flex flex-col items-center p-2 transition-all hover:scale-105"
               >
-                <TrendingDown className="w-8 h-8 text-white mb-2" />
-                <span className="text-xs text-white text-center font-medium">Withdrawal Records</span>
+                <TrendingDown className="w-6 h-6 text-white mb-1" />
+                <span className="text-[10px] text-white text-center font-medium leading-tight">Withdrawal Records</span>
               </button>
             </div>
           </div>
-        </div>
-
-        {/* Background decoration */}
-        <div className="fixed inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute -top-32 -right-32 w-64 h-64 bg-gradient-to-br from-teal-500/10 to-cyan-500/10 rounded-full blur-3xl"></div>
-          <div className="absolute -bottom-32 -left-32 w-64 h-64 bg-gradient-to-tr from-blue-500/10 to-teal-500/10 rounded-full blur-3xl"></div>
         </div>
 
         {/* Bottom Navigation */}
