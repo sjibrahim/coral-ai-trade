@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Bot, Calendar, Gamepad2, Smartphone } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
@@ -8,6 +7,7 @@ import ActionGrid from "@/components/ActionGrid";
 import PromotionalVideo from "@/components/PromotionalVideo";
 import CoinsList from "@/components/CoinsList";
 import BottomNavigation from "@/components/BottomNavigation";
+import ImageSlider from "@/components/ImageSlider";
 
 interface CryptoData {
   id: string | number;
@@ -86,6 +86,9 @@ const HomePage = () => {
             For the future and intelligently control every risk
           </p>
         </div>
+
+        {/* Image Slider */}
+        <ImageSlider />
 
         {/* Promotional Banner Carousel */}
         <PromotionalBanner />
