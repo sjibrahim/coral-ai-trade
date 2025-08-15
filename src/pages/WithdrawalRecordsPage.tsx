@@ -174,7 +174,7 @@ const WithdrawalRecordsPage = () => {
   const statusCounts = getRecordsByStatus();
 
   return (
-    <MobileLayout showBackButton title="Withdrawal Records">
+    <MobileLayout showBackButton title="Withdrawal Records" hideFooter>
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-black">
         
         {/* Header */}
@@ -218,9 +218,9 @@ const WithdrawalRecordsPage = () => {
           </div>
         </div>
 
-        <div className="px-4 py-6 space-y-4">
+        <div className="p-3 pb-4">
           {/* Status Overview */}
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-3 gap-2 mb-4">
             <div className="text-center p-3 bg-emerald-500/20 rounded-lg border border-emerald-500/30">
               <div className="w-6 h-6 bg-emerald-500 rounded-md flex items-center justify-center mx-auto mb-1">
                 <CheckCircle className="h-3 w-3 text-white" />
