@@ -21,6 +21,7 @@ import ContractRecordsPage from '@/pages/ContractRecordsPage';
 import SalaryRecordPage from '@/pages/SalaryRecordPage';
 import TransactionRecordsPage from '@/pages/TransactionRecordsPage';
 import SecurityPage from '@/pages/SecurityPage';
+import BankDetailsPage from '@/pages/BankDetailsPage';
 
 export const router = createBrowserRouter([
   {
@@ -90,6 +91,10 @@ export const router = createBrowserRouter([
   {
     path: '/security',
     element: <ProtectedRoute><SecurityPage /></ProtectedRoute>
+  },
+  {
+    path: '/bank-details',
+    element: <ProtectedRoute><BankDetailsPage /></ProtectedRoute>
   },
 ]);
 
