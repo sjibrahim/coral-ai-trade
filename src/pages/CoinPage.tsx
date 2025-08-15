@@ -8,7 +8,8 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import BottomNavigation from '@/components/BottomNavigation';
+import PopupModal from '@/components/trade/PopupModal';
+import TradeStatusModal from '@/components/trade/TradeStatusModal';
 
 interface CryptoData {
   id: string | number;
@@ -32,6 +33,9 @@ const CoinPage = () => {
   const [tradeType, setTradeType] = useState<'call' | 'put'>('call');
   const [amount, setAmount] = useState(100);
   const [duration, setDuration] = useState(60);
+  const [showPopup, setShowPopup] = useState(false);
+  const [showTradeStatus, setShowTradeStatus] = useState(false);
+  const [tradeData, setTradeData] = useState<any>(null);
   
   // Get crypto data from navigation state or use default
   const crypto: CryptoData = location.state?.crypto || {
@@ -49,12 +53,22 @@ const CoinPage = () => {
   const isPositive = crypto.change >= 0;
 
   const handleTrade = () => {
-    console.log(`${tradeType.toUpperCase()} trade:`, { amount, duration, symbol: crypto.symbol });
+    const newTradeData = {
+      type: tradeType,
+      amount,
+      duration,
+      symbol: crypto.symbol,
+      entryPrice: crypto.price
+    };
+    
+    setTradeData(newTradeData);
+    setShowTradeStatus(true);
+    console.log(`${tradeType.toUpperCase()} trade:`, newTradeData);
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-black text-white">
-      <div className="pb-20">
+      <div className="pb-4">
         {/* Header */}
         <div className="sticky top-0 z-40 bg-gray-900/95 backdrop-blur-xl border-b border-gray-800/50">
           <div className="flex items-center justify-between p-4">
@@ -114,24 +128,6 @@ const CoinPage = () => {
                 <Share className="w-4 h-4" />
               </Button>
             </div>
-          </div>
-        </div>
-
-        {/* Price Display */}
-        <div className="px-4 py-6 text-center">
-          <div className="text-4xl font-bold mb-2 text-white">
-            ₹{crypto.price.toLocaleString(undefined, {minimumFractionDigits: 2})}
-          </div>
-          <div className={cn(
-            "inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium",
-            isPositive 
-              ? "bg-green-500/20 text-green-400 border border-green-500/30" 
-              : "bg-red-500/20 text-red-400 border border-red-500/30"
-          )}>
-            {isPositive ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />}
-            <span>
-              {isPositive ? '+' : ''}{crypto.change.toFixed(2)}% (24h)
-            </span>
           </div>
         </div>
 
@@ -321,7 +317,22 @@ const CoinPage = () => {
         </div>
       </div>
 
-      <BottomNavigation />
+      {/* Modals */}
+      <PopupModal
+        isOpen={showPopup}
+        onClose={() => setShowPopup(false)}
+        type="info"
+        title="Trade Information"
+        message="Your trade has been submitted successfully!"
+      />
+
+      {tradeData && (
+        <TradeStatusModal
+          isOpen={showTradeStatus}
+          onClose={() => setShowTradeStatus(false)}
+          tradeData={tradeData}
+        />
+      )}
     </div>
   );
 };
