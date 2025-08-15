@@ -10,6 +10,8 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import PopupModal from '@/components/trade/PopupModal';
 import TradeStatusModal from '@/components/trade/TradeStatusModal';
+import { useAuth } from '@/contexts/AuthContext';
+import { toast } from '@/hooks/use-toast';
 
 interface CryptoData {
   id: string | number;
@@ -28,6 +30,7 @@ const CoinPage = () => {
   const { coinId } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [activeTab, setActiveTab] = useState<'trade' | 'stats' | 'info'>('trade');
   const [tradeType, setTradeType] = useState<'call' | 'put'>('call');
@@ -53,6 +56,16 @@ const CoinPage = () => {
   const isPositive = crypto.change >= 0;
 
   const handleTrade = () => {
+    if (!user) {
+      toast({
+        title: "Please Login",
+        description: "You need to be logged in to place trades",
+        variant: "destructive",
+      });
+      navigate('/login');
+      return;
+    }
+
     const newTradeData = {
       type: tradeType,
       amount,
