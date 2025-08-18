@@ -55,7 +55,7 @@ const ProfilePage = () => {
   };
 
   const handleTelegramClick = () => {
-    window.open('https://t.me/your_channel', '_blank');
+    window.open('https://t.me/coral_offical', '_blank');
   };
 
   return (
@@ -79,7 +79,6 @@ const ProfilePage = () => {
                   </div>
                 )}
               </div>
-              <div className="text-gray-400 text-sm">AI Trading Platform</div>
               {user?.phone && (
                 <div className="flex items-center gap-2 mt-1">
                   <div className="bg-gray-800/60 border border-gray-700/50 rounded-lg px-2 py-1 flex items-center gap-2">
