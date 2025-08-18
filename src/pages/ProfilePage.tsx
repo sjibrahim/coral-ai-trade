@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MobileLayout from "@/components/layout/MobileLayout";
@@ -67,6 +68,10 @@ const ProfilePage = () => {
               </div>
               <div className="text-gray-400 text-sm">AI Trading Platform</div>
             </div>
+          </div>
+          <div className="text-right">
+            <div className="text-2xl font-bold text-white">{user?.id || '123456'}</div>
+            <div className="text-xs text-gray-400">ID</div>
           </div>
         </div>
 
