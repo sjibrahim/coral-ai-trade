@@ -143,7 +143,7 @@ const DepositPage = () => {
                     onClick={() => setAmount(quickAmount.toString())}
                     className="py-2 px-3 bg-gray-700/30 hover:bg-[#00e8be]/20 border border-gray-600/30 hover:border-[#00e8be]/50 rounded-lg text-sm text-gray-300 hover:text-[#00e8be] transition-all duration-200"
                   >
-                    ₹{quickAmount >= 1000 ? `${quickAmount/1000}K` : quickAmount}
+                    ₹{quickAmount}
                   </button>
                 ))}
               </div>
