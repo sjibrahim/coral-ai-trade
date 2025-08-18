@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { TrendingUp, TrendingDown, X, Wallet } from 'lucide-react';
@@ -31,6 +30,16 @@ const QuickTradeModal: React.FC<QuickTradeModalProps> = ({
   const [amount, setAmount] = useState(100);
   const [duration, setDuration] = useState(60);
   const [isPlacing, setIsPlacing] = useState(false);
+
+  // Calculate total balance from wallet and balance
+  const totalBalance = (parseFloat(user?.wallet || '0') + parseFloat(user?.balance || '0'));
+
+  // Auto-fill amount with balance when modal opens
+  useEffect(() => {
+    if (isOpen && totalBalance > 0) {
+      setAmount(Math.floor(totalBalance));
+    }
+  }, [isOpen, totalBalance]);
 
   const handleTrade = async () => {
     if (!user?.token) return;
@@ -126,7 +135,7 @@ const QuickTradeModal: React.FC<QuickTradeModalProps> = ({
               <div className="bg-gray-800/50 rounded-xl p-3 flex items-center justify-center gap-2">
                 <Wallet className="w-4 h-4 text-gray-400" />
                 <span className="text-gray-400 text-sm">Balance:</span>
-                <span className="text-white font-semibold">₹{user.wallet || '0'}</span>
+                <span className="text-white font-semibold">₹{totalBalance.toFixed(2)}</span>
               </div>
             )}
 

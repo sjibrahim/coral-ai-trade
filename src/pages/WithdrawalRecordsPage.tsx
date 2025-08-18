@@ -148,6 +148,18 @@ const WithdrawalRecordsPage = () => {
         return <Clock className="h-3 w-3" />;
     }
   };
+
+  const getStatusDisplayText = (status: string) => {
+    switch(status.toLowerCase()) {
+      case 'pending':
+        return 'PROCESSING';
+      case 'completed':
+      case 'success':
+        return 'SUCCESSFUL';
+      default:
+        return status.toUpperCase();
+    }
+  };
   
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -388,7 +400,7 @@ const WithdrawalRecordsPage = () => {
                         >
                           <div className="flex items-center gap-1">
                             {getStatusIcon(record.status)}
-                            {record.status.charAt(0).toUpperCase() + record.status.slice(1)}
+                            {getStatusDisplayText(record.status)}
                           </div>
                         </Badge>
                       </div>

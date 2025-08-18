@@ -137,13 +137,13 @@ const DepositPage = () => {
             <div className="mt-4">
               <p className="text-gray-400 text-sm mb-3">Quick Select</p>
               <div className="grid grid-cols-4 gap-2">
-                {[100, 500, 1000, 5000].map(quickAmount => (
+                {[600, 1000, 2000, 3000, 5000, 8000, 10000, 15000, 30000, 50000, 100000].map(quickAmount => (
                   <button
                     key={quickAmount}
                     onClick={() => setAmount(quickAmount.toString())}
                     className="py-2 px-3 bg-gray-700/30 hover:bg-[#00e8be]/20 border border-gray-600/30 hover:border-[#00e8be]/50 rounded-lg text-sm text-gray-300 hover:text-[#00e8be] transition-all duration-200"
                   >
-                    ₹{quickAmount}
+                    ₹{quickAmount >= 1000 ? `${quickAmount/1000}K` : quickAmount}
                   </button>
                 ))}
               </div>
