@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MobileLayout from "@/components/layout/MobileLayout";
@@ -9,7 +8,7 @@ import { useTeam } from '@/hooks/use-team';
 import BottomNavigation from "@/components/BottomNavigation";
 import { 
   CreditCard, Lock, Calendar, 
-  Copy, Check, ArrowRight, ScrollText, Banknote, CreditCard as CardIcon, TrendingDown, Users, MessageCircle, Crown
+  Copy, Check, ArrowRight, ScrollText, Banknote, CreditCard as CardIcon, TrendingDown, Users, MessageCircle, Crown, LogOut
 } from "lucide-react";
 
 const ProfilePage = () => {
@@ -58,6 +57,11 @@ const ProfilePage = () => {
     window.open('https://t.me/coral_official', '_blank');
   };
 
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white overflow-y-auto">
       {/* Scrollable content container */}
@@ -94,6 +98,15 @@ const ProfilePage = () => {
               )}
             </div>
           </div>
+          
+          {/* Logout Button */}
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-2 bg-red-600/20 hover:bg-red-600/30 border border-red-500/30 text-red-400 hover:text-red-300 px-3 py-2 rounded-lg transition-all duration-200"
+          >
+            <LogOut className="w-4 h-4" />
+            <span className="text-sm">Logout</span>
+          </button>
         </div>
 
         {/* Balance Cards */}
