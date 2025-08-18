@@ -137,7 +137,7 @@ const DepositPage = () => {
             <div className="mt-4">
               <p className="text-gray-400 text-sm mb-3">Quick Select</p>
               <div className="grid grid-cols-4 gap-2">
-                {[600, 1000, 2000, 3000, 5000, 8000, 10000, 15000, 30000, 50000, 100000].map(quickAmount => (
+                {[600, 1000, 2000, 3000, 5000, 8000, 10000, 15000, 20000, 30000, 50000, 100000].map(quickAmount => (
                   <button
                     key={quickAmount}
                     onClick={() => setAmount(quickAmount.toString())}

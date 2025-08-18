@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MobileLayout from "@/components/layout/MobileLayout";
@@ -16,6 +17,7 @@ const ProfilePage = () => {
   const { toast } = useToast();
   const { totalTeamSize, level1Members, level2Members, level3Members, fetchTeamDetails } = useTeam();
   const [copiedCode, setCopiedCode] = useState(false);
+  const [copiedPhone, setCopiedPhone] = useState(false);
   const navigate = useNavigate();
 
   // Fetch team details when component mounts
@@ -38,6 +40,18 @@ const ProfilePage = () => {
       description: "Invite code copied to clipboard",
     });
     setTimeout(() => setCopiedCode(false), 2000);
+  };
+
+  const handleCopyPhone = () => {
+    if (user?.phone) {
+      navigator.clipboard.writeText(user.phone);
+      setCopiedPhone(true);
+      toast({
+        title: "Copied!",
+        description: "Phone number copied to clipboard",
+      });
+      setTimeout(() => setCopiedPhone(false), 2000);
+    }
   };
 
   const handleTelegramClick = () => {
@@ -67,7 +81,17 @@ const ProfilePage = () => {
               </div>
               <div className="text-gray-400 text-sm">AI Trading Platform</div>
               {user?.phone && (
-                <div className="text-gray-500 text-xs">{user.phone}</div>
+                <div className="flex items-center gap-2 mt-1">
+                  <div className="bg-gray-800/60 border border-gray-700/50 rounded-lg px-2 py-1 flex items-center gap-2">
+                    <span className="text-gray-300 text-xs font-mono">{user.phone}</span>
+                    <button 
+                      onClick={handleCopyPhone} 
+                      className="text-gray-400 hover:text-white transition-colors"
+                    >
+                      {copiedPhone ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+                    </button>
+                  </div>
+                </div>
               )}
             </div>
           </div>
