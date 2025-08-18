@@ -13,13 +13,21 @@ import {
   Hash,
   Timer,
   Banknote,
-  Receipt
+  Receipt,
+  Filter
 } from "lucide-react";
 import { getTransactions, getGeneralSettings } from "@/services/api";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent } from "@/components/ui/card";
 import { useAuth } from "@/contexts/AuthContext";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface WithdrawalRecord {
   id: string;
@@ -41,6 +49,7 @@ const WithdrawalRecordsPage = () => {
   const [totalWithdrawn, setTotalWithdrawn] = useState(0);
   const [hideAmounts, setHideAmounts] = useState(false);
   const [withdrawalFeePercentage, setWithdrawalFeePercentage] = useState(2);
+  const [statusFilter, setStatusFilter] = useState("all");
   const { toast } = useToast();
   const { user } = useAuth();
 
@@ -101,6 +110,12 @@ const WithdrawalRecordsPage = () => {
     
     fetchData();
   }, [toast]);
+
+  // Filter records based on status
+  const filteredRecords = records.filter(record => {
+    if (statusFilter === "all") return true;
+    return record.status.toLowerCase() === statusFilter.toLowerCase();
+  });
   
   const getStatusColor = (status: string) => {
     switch(status.toLowerCase()) {
@@ -164,17 +179,89 @@ const WithdrawalRecordsPage = () => {
   };
 
   const getRecordsByStatus = () => {
-    const completed = records.filter(r => r.status.toLowerCase() === 'completed' || r.status.toLowerCase() === 'success').length;
-    const pending = records.filter(r => r.status.toLowerCase() === 'processing' || r.status.toLowerCase() === 'pending').length;
-    const failed = records.filter(r => r.status.toLowerCase() === 'rejected' || r.status.toLowerCase() === 'failed').length;
+    const completed = filteredRecords.filter(r => r.status.toLowerCase() === 'completed' || r.status.toLowerCase() === 'success').length;
+    const pending = filteredRecords.filter(r => r.status.toLowerCase() === 'processing' || r.status.toLowerCase() === 'pending').length;
+    const failed = filteredRecords.filter(r => r.status.toLowerCase() === 'rejected' || r.status.toLowerCase() === 'failed').length;
     
     return { completed, pending, failed };
   };
 
   const statusCounts = getRecordsByStatus();
 
+  const getStatusFilterLabel = () => {
+    switch (statusFilter) {
+      case 'pending':
+        return 'Pending';
+      case 'processing':
+        return 'Processing';
+      case 'completed':
+      case 'success':
+        return 'Success';
+      case 'failed':
+        return 'Failed';
+      default:
+        return 'Filter';
+    }
+  };
+
+  const FilterDropdown = () => (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button
+          variant="outline"
+          size="sm"
+          className="bg-gray-800/50 border-gray-700/50 text-gray-300 hover:bg-gray-700/50 hover:text-white h-8"
+        >
+          <Filter className="h-4 w-4 mr-1" />
+          {getStatusFilterLabel()}
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="bg-gray-800 border-gray-700 text-white z-50">
+        <DropdownMenuItem 
+          onClick={() => setStatusFilter("all")}
+          className="hover:bg-gray-700 focus:bg-gray-700"
+        >
+          All Status
+        </DropdownMenuItem>
+        <DropdownMenuItem 
+          onClick={() => setStatusFilter("pending")}
+          className="hover:bg-gray-700 focus:bg-gray-700"
+        >
+          <Clock className="h-4 w-4 mr-2 text-amber-400" />
+          Pending
+        </DropdownMenuItem>
+        <DropdownMenuItem 
+          onClick={() => setStatusFilter("processing")}
+          className="hover:bg-gray-700 focus:bg-gray-700"
+        >
+          <Clock className="h-4 w-4 mr-2 text-blue-400" />
+          Processing
+        </DropdownMenuItem>
+        <DropdownMenuItem 
+          onClick={() => setStatusFilter("completed")}
+          className="hover:bg-gray-700 focus:bg-gray-700"
+        >
+          <CheckCircle className="h-4 w-4 mr-2 text-emerald-400" />
+          Success
+        </DropdownMenuItem>
+        <DropdownMenuItem 
+          onClick={() => setStatusFilter("failed")}
+          className="hover:bg-gray-700 focus:bg-gray-700"
+        >
+          <XCircle className="h-4 w-4 mr-2 text-red-400" />
+          Failed
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+
   return (
-    <MobileLayout showBackButton title="Withdrawal Records" hideFooter>
+    <MobileLayout 
+      showBackButton 
+      title="Withdrawal Records" 
+      hideFooter
+      headerAction={<FilterDropdown />}
+    >
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-black">
         
         {/* Header */}
@@ -187,7 +274,7 @@ const WithdrawalRecordsPage = () => {
                 </div>
                 <div>
                   <h1 className="text-lg font-semibold text-white">Withdrawals</h1>
-                  <p className="text-xs text-gray-400">{records.length} records</p>
+                  <p className="text-xs text-gray-400">{filteredRecords.length} records</p>
                 </div>
               </div>
               <button 
@@ -268,9 +355,9 @@ const WithdrawalRecordsPage = () => {
                 </div>
               ))}
             </div>
-          ) : records.length > 0 ? (
+          ) : filteredRecords.length > 0 ? (
             <div className="space-y-3">
-              {records.map((record) => {
+              {filteredRecords.map((record) => {
                 const charges = typeof record.charges === 'string' ? parseFloat(record.charges) : record.charges || 0;
                 const netAmount = typeof record.net_amount === 'string' ? parseFloat(record.net_amount) : 
                                 (record.net_amount as number) || 0;
@@ -357,15 +444,22 @@ const WithdrawalRecordsPage = () => {
               <div className="w-16 h-16 bg-gray-700/50 rounded-full flex items-center justify-center mx-auto mb-4">
                 <ArrowDownCircle className="h-8 w-8 text-gray-400" />
               </div>
-              <h3 className="text-lg font-semibold text-white mb-2">No Withdrawals Yet</h3>
+              <h3 className="text-lg font-semibold text-white mb-2">
+                {statusFilter !== "all" ? `No ${getStatusFilterLabel().toLowerCase()} withdrawals` : "No Withdrawals Yet"}
+              </h3>
               <p className="text-gray-400 text-sm mb-4">
-                Your withdrawal history will appear here once you make your first withdrawal.
+                {statusFilter !== "all" 
+                  ? `No ${getStatusFilterLabel().toLowerCase()} withdrawal records found.`
+                  : "Your withdrawal history will appear here once you make your first withdrawal."
+                }
               </p>
-              <div className="bg-blue-500/20 rounded-lg p-4 border border-blue-500/30">
-                <p className="text-sm text-blue-400">
-                  <strong>Tip:</strong> You can withdraw your earnings anytime from the Withdraw page.
-                </p>
-              </div>
+              {statusFilter === "all" && (
+                <div className="bg-blue-500/20 rounded-lg p-4 border border-blue-500/30">
+                  <p className="text-sm text-blue-400">
+                    <strong>Tip:</strong> You can withdraw your earnings anytime from the Withdraw page.
+                  </p>
+                </div>
+              )}
             </div>
           )}
         </div>

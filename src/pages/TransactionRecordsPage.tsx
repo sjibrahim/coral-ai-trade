@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
 import { useAuth } from "@/contexts/AuthContext";
@@ -130,67 +129,70 @@ const TransactionRecordsPage = () => {
       case 'failed':
         return 'Failed';
       default:
-        return 'All Status';
+        return 'Filter';
     }
   };
 
+  const FilterDropdown = () => (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button
+          variant="outline"
+          size="sm"
+          className="bg-gray-800/50 border-gray-700/50 text-gray-300 hover:bg-gray-700/50 hover:text-white h-8"
+        >
+          <Filter className="h-4 w-4 mr-1" />
+          {getStatusFilterLabel()}
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="bg-gray-800 border-gray-700 text-white z-50">
+        <DropdownMenuItem 
+          onClick={() => setStatusFilter("all")}
+          className="hover:bg-gray-700 focus:bg-gray-700"
+        >
+          All Status
+        </DropdownMenuItem>
+        <DropdownMenuItem 
+          onClick={() => setStatusFilter("pending")}
+          className="hover:bg-gray-700 focus:bg-gray-700"
+        >
+          <Loader2 className="h-4 w-4 mr-2 text-amber-400" />
+          Pending
+        </DropdownMenuItem>
+        <DropdownMenuItem 
+          onClick={() => setStatusFilter("processing")}
+          className="hover:bg-gray-700 focus:bg-gray-700"
+        >
+          <Loader2 className="h-4 w-4 mr-2 text-blue-400" />
+          Processing
+        </DropdownMenuItem>
+        <DropdownMenuItem 
+          onClick={() => setStatusFilter("completed")}
+          className="hover:bg-gray-700 focus:bg-gray-700"
+        >
+          <Check className="h-4 w-4 mr-2 text-emerald-400" />
+          Success
+        </DropdownMenuItem>
+        <DropdownMenuItem 
+          onClick={() => setStatusFilter("failed")}
+          className="hover:bg-gray-700 focus:bg-gray-700"
+        >
+          <AlertTriangle className="h-4 w-4 mr-2 text-red-400" />
+          Failed
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+
   return (
-    <MobileLayout showBackButton title="Transactions" hideFooter>
+    <MobileLayout 
+      showBackButton 
+      title="Transactions" 
+      hideFooter
+      headerAction={<FilterDropdown />}
+    >
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-black">
         <div className="p-3 pb-4">
-          {/* Filter Header */}
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-lg font-semibold text-white">Transaction History</h2>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="bg-gray-800/50 border-gray-700/50 text-gray-300 hover:bg-gray-700/50 hover:text-white"
-                >
-                  <Filter className="h-4 w-4 mr-2" />
-                  {getStatusFilterLabel()}
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="bg-gray-800 border-gray-700 text-white">
-                <DropdownMenuItem 
-                  onClick={() => setStatusFilter("all")}
-                  className="hover:bg-gray-700 focus:bg-gray-700"
-                >
-                  All Status
-                </DropdownMenuItem>
-                <DropdownMenuItem 
-                  onClick={() => setStatusFilter("pending")}
-                  className="hover:bg-gray-700 focus:bg-gray-700"
-                >
-                  <Loader2 className="h-4 w-4 mr-2 text-amber-400" />
-                  Pending
-                </DropdownMenuItem>
-                <DropdownMenuItem 
-                  onClick={() => setStatusFilter("processing")}
-                  className="hover:bg-gray-700 focus:bg-gray-700"
-                >
-                  <Loader2 className="h-4 w-4 mr-2 text-blue-400" />
-                  Processing
-                </DropdownMenuItem>
-                <DropdownMenuItem 
-                  onClick={() => setStatusFilter("completed")}
-                  className="hover:bg-gray-700 focus:bg-gray-700"
-                >
-                  <Check className="h-4 w-4 mr-2 text-emerald-400" />
-                  Success
-                </DropdownMenuItem>
-                <DropdownMenuItem 
-                  onClick={() => setStatusFilter("failed")}
-                  className="hover:bg-gray-700 focus:bg-gray-700"
-                >
-                  <AlertTriangle className="h-4 w-4 mr-2 text-red-400" />
-                  Failed
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="grid grid-cols-3 w-full mb-4 bg-gray-800/50 backdrop-blur-sm h-10 border border-gray-700/50">
               <TabsTrigger value="all" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-gray-300 text-xs font-medium">All</TabsTrigger>
