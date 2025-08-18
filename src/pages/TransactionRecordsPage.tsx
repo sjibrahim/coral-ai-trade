@@ -5,8 +5,15 @@ import { useAuth } from "@/contexts/AuthContext";
 import { getTransactions } from "@/services/api";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
-import { Check, AlertTriangle, Loader2, TrendingUp, TrendingDown, Activity, Calendar } from "lucide-react";
+import { Check, AlertTriangle, Loader2, TrendingUp, TrendingDown, Activity, Calendar, Filter } from "lucide-react";
 
 interface Transaction {
   txnid: string;
@@ -26,6 +33,7 @@ const TransactionRecordsPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState("all");
+  const [statusFilter, setStatusFilter] = useState("all");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -53,16 +61,24 @@ const TransactionRecordsPage = () => {
   }, [user?.token]);
 
   const filteredTransactions = transactions.filter(transaction => {
-    if (activeTab === "all") return true;
-    return transaction.txn_type.toLowerCase() === activeTab.toLowerCase();
+    // Filter by transaction type
+    const typeMatch = activeTab === "all" || transaction.txn_type.toLowerCase() === activeTab.toLowerCase();
+    
+    // Filter by status
+    const statusMatch = statusFilter === "all" || transaction.status.toLowerCase() === statusFilter.toLowerCase();
+    
+    return typeMatch && statusMatch;
   });
 
   const getStatusIcon = (status: string) => {
     switch (status.toLowerCase()) {
       case 'completed':
+      case 'success':
         return <Check className="h-3 w-3 text-emerald-400" />;
       case 'pending':
         return <Loader2 className="h-3 w-3 text-amber-400 animate-spin" />;
+      case 'processing':
+        return <Loader2 className="h-3 w-3 text-blue-400 animate-spin" />;
       case 'failed':
         return <AlertTriangle className="h-3 w-3 text-red-400" />;
       default:
@@ -102,10 +118,79 @@ const TransactionRecordsPage = () => {
     }).format(date);
   };
 
+  const getStatusFilterLabel = () => {
+    switch (statusFilter) {
+      case 'pending':
+        return 'Pending';
+      case 'processing':
+        return 'Processing';
+      case 'completed':
+      case 'success':
+        return 'Success';
+      case 'failed':
+        return 'Failed';
+      default:
+        return 'All Status';
+    }
+  };
+
   return (
     <MobileLayout showBackButton title="Transactions" hideFooter>
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-black">
         <div className="p-3 pb-4">
+          {/* Filter Header */}
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-lg font-semibold text-white">Transaction History</h2>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="bg-gray-800/50 border-gray-700/50 text-gray-300 hover:bg-gray-700/50 hover:text-white"
+                >
+                  <Filter className="h-4 w-4 mr-2" />
+                  {getStatusFilterLabel()}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="bg-gray-800 border-gray-700 text-white">
+                <DropdownMenuItem 
+                  onClick={() => setStatusFilter("all")}
+                  className="hover:bg-gray-700 focus:bg-gray-700"
+                >
+                  All Status
+                </DropdownMenuItem>
+                <DropdownMenuItem 
+                  onClick={() => setStatusFilter("pending")}
+                  className="hover:bg-gray-700 focus:bg-gray-700"
+                >
+                  <Loader2 className="h-4 w-4 mr-2 text-amber-400" />
+                  Pending
+                </DropdownMenuItem>
+                <DropdownMenuItem 
+                  onClick={() => setStatusFilter("processing")}
+                  className="hover:bg-gray-700 focus:bg-gray-700"
+                >
+                  <Loader2 className="h-4 w-4 mr-2 text-blue-400" />
+                  Processing
+                </DropdownMenuItem>
+                <DropdownMenuItem 
+                  onClick={() => setStatusFilter("completed")}
+                  className="hover:bg-gray-700 focus:bg-gray-700"
+                >
+                  <Check className="h-4 w-4 mr-2 text-emerald-400" />
+                  Success
+                </DropdownMenuItem>
+                <DropdownMenuItem 
+                  onClick={() => setStatusFilter("failed")}
+                  className="hover:bg-gray-700 focus:bg-gray-700"
+                >
+                  <AlertTriangle className="h-4 w-4 mr-2 text-red-400" />
+                  Failed
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="grid grid-cols-3 w-full mb-4 bg-gray-800/50 backdrop-blur-sm h-10 border border-gray-700/50">
               <TabsTrigger value="all" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-gray-300 text-xs font-medium">All</TabsTrigger>
@@ -140,8 +225,10 @@ const TransactionRecordsPage = () => {
                 <Card className="bg-gray-800/50 border-gray-700/50 backdrop-blur-sm">
                   <CardContent className="flex flex-col items-center justify-center py-12">
                     <Calendar className="h-12 w-12 text-gray-500 mb-3" />
-                    <h3 className="text-base font-semibold text-white mb-2">No transactions yet</h3>
-                    <p className="text-gray-400 text-center text-sm">Start trading to see your transaction history</p>
+                    <h3 className="text-base font-semibold text-white mb-2">No transactions found</h3>
+                    <p className="text-gray-400 text-center text-sm">
+                      {statusFilter !== "all" ? `No ${getStatusFilterLabel().toLowerCase()} transactions found` : "Start trading to see your transaction history"}
+                    </p>
                   </CardContent>
                 </Card>
               ) : (
@@ -176,10 +263,12 @@ const TransactionRecordsPage = () => {
                             {getStatusIcon(transaction.status)}
                             <span className={cn(
                               "ml-2 px-2 py-0.5 rounded-full text-xs font-medium",
-                              transaction.status.toLowerCase() === 'completed' 
+                              transaction.status.toLowerCase() === 'completed' || transaction.status.toLowerCase() === 'success'
                                 ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
                                 : transaction.status.toLowerCase() === 'pending'
                                 ? "bg-amber-500/20 text-amber-400 border border-amber-500/30"
+                                : transaction.status.toLowerCase() === 'processing'
+                                ? "bg-blue-500/20 text-blue-400 border border-blue-500/30"
                                 : "bg-red-500/20 text-red-400 border border-red-500/30"
                             )}>
                               {transaction.status}
