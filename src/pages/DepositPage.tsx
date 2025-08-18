@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
 import { useAuth } from "@/contexts/AuthContext";
@@ -86,7 +85,7 @@ const DepositPage = () => {
   
   return (
     <MobileLayout showBackButton title="Recharge Wallet" hideFooter>
-      <div className="min-h-screen bg-gray-900">
+      <div className="min-h-screen bg-gray-900 pb-24">
         
         <div className="px-4 py-6 space-y-6">
 
@@ -183,30 +182,32 @@ const DepositPage = () => {
               <p>3. If the payment is successful but the funds are not shown in your account, please provide a screenshot of the successful UTR payment and contact the website customer service to resolve the issue.</p>
             </div>
           </div>
-
-          {/* Confirm Button */}
-          <button
-            onClick={handleConfirm}
-            disabled={!isValidAmount || !selectedChannel}
-            className={`w-full h-14 rounded-xl font-semibold transition-all duration-300 text-lg flex items-center justify-center ${
-              isValidAmount && selectedChannel
-                ? "bg-[#00e8be] text-gray-900 hover:shadow-lg hover:shadow-[#00e8be]/25 hover:scale-[1.02] active:scale-[0.98]"
-                : "bg-gray-700/50 text-gray-500 cursor-not-allowed"
-            }`}
-          >
-            {isLoading ? (
-              <>
-                <div className="w-5 h-5 border-2 border-gray-600 border-t-transparent rounded-full animate-spin mr-2"></div>
-                Processing...
-              </>
-            ) : (
-              <>
-                <Wallet className="w-5 h-5 mr-2" />
-                Confirm Deposit
-              </>
-            )}
-          </button>
         </div>
+      </div>
+
+      {/* Fixed Confirm Button */}
+      <div className="fixed bottom-0 left-0 right-0 p-4 bg-gray-900 border-t border-gray-700/50">
+        <button
+          onClick={handleConfirm}
+          disabled={!isValidAmount || !selectedChannel}
+          className={`w-full h-14 rounded-xl font-semibold transition-all duration-300 text-lg flex items-center justify-center ${
+            isValidAmount && selectedChannel
+              ? "bg-[#00e8be] text-gray-900 hover:shadow-lg hover:shadow-[#00e8be]/25 hover:scale-[1.02] active:scale-[0.98]"
+              : "bg-gray-700/50 text-gray-500 cursor-not-allowed"
+          }`}
+        >
+          {isLoading ? (
+            <>
+              <div className="w-5 h-5 border-2 border-gray-600 border-t-transparent rounded-full animate-spin mr-2"></div>
+              Processing...
+            </>
+          ) : (
+            <>
+              <Wallet className="w-5 h-5 mr-2" />
+              Confirm Deposit
+            </>
+          )}
+        </button>
       </div>
     </MobileLayout>
   );
