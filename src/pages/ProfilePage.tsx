@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MobileLayout from "@/components/layout/MobileLayout";
 import { Button } from "@/components/ui/button";
@@ -15,9 +15,14 @@ import {
 const ProfilePage = () => {
   const { user, logout } = useAuth();
   const { toast } = useToast();
-  const { totalTeamSize } = useTeam();
+  const { totalTeamSize, level1Members, level2Members, level3Members, fetchTeamDetails } = useTeam();
   const [copiedCode, setCopiedCode] = useState(false);
   const navigate = useNavigate();
+
+  // Fetch team details when component mounts
+  useEffect(() => {
+    fetchTeamDetails();
+  }, [fetchTeamDetails]);
 
   const walletAmount = user?.wallet ? parseFloat(user.wallet) : 0;
   const incomeAmount = user?.income ? parseFloat(user.income) : 0;
@@ -53,11 +58,13 @@ const ProfilePage = () => {
             <div>
               <div className="text-white font-medium flex items-center gap-2">
                 Coral
-                {/* VIP Badge */}
-                <div className="flex items-center gap-1 bg-gradient-to-r from-amber-500 to-orange-500 px-2 py-1 rounded-full text-xs">
-                  <Crown className="w-3 h-3" />
-                  <span>VIP</span>
-                </div>
+                {/* VIP Badge with user rank */}
+                {user?.rank && (
+                  <div className="flex items-center gap-1 bg-gradient-to-r from-amber-500 to-orange-500 px-2 py-1 rounded-full text-xs">
+                    <Crown className="w-3 h-3" />
+                    <span>{user.rank}</span>
+                  </div>
+                )}
               </div>
               <div className="text-gray-400 text-sm">AI Trading Platform</div>
             </div>
@@ -114,12 +121,17 @@ const ProfilePage = () => {
               </div>
             </div>
 
-            {/* Team Size Card */}
+            {/* Team Size Card with level breakdown */}
             <div className="bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl p-4 relative overflow-hidden">
               <div className="absolute bottom-0 left-0 w-12 h-12 bg-white/10 rounded-full -ml-6 -mb-6"></div>
               <div className="relative">
                 <div className="text-white font-bold text-base mb-2">Team Size</div>
                 <div className="text-white text-2xl font-bold mb-1">{totalTeamSize}</div>
+                <div className="flex items-center justify-between text-xs text-white/80 mb-1">
+                  <span>L1: {level1Members.length}</span>
+                  <span>L2: {level2Members.length}</span>
+                  <span>L3: {level3Members.length}</span>
+                </div>
                 <div className="flex items-center justify-between">
                   <div className="text-white/80 text-xs">Total Members</div>
                   <Users className="w-4 h-4 text-white/60" />
