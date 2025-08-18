@@ -5,15 +5,17 @@ import MobileLayout from "@/components/layout/MobileLayout";
 import { Button } from "@/components/ui/button";
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from "@/hooks/use-toast";
+import { useTeam } from '@/hooks/use-team';
 import BottomNavigation from "@/components/BottomNavigation";
 import { 
-  CreditCard, Lock, Calendar, Gift,
-  Copy, Check, ArrowRight, ScrollText, Banknote, CreditCard as CardIcon, TrendingDown
+  CreditCard, Lock, Calendar, 
+  Copy, Check, ArrowRight, ScrollText, Banknote, CreditCard as CardIcon, TrendingDown, Users, MessageCircle, Crown
 } from "lucide-react";
 
 const ProfilePage = () => {
   const { user, logout } = useAuth();
   const { toast } = useToast();
+  const { totalTeamSize } = useTeam();
   const [copiedCode, setCopiedCode] = useState(false);
   const navigate = useNavigate();
 
@@ -34,6 +36,10 @@ const ProfilePage = () => {
     setTimeout(() => setCopiedCode(false), 2000);
   };
 
+  const handleTelegramClick = () => {
+    window.open('https://t.me/your_channel', '_blank');
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white overflow-y-auto">
       {/* Scrollable content container */}
@@ -45,37 +51,20 @@ const ProfilePage = () => {
               <span className="text-xl font-bold text-white">C</span>
             </div>
             <div>
-              <div className="text-white font-medium">Coral</div>
+              <div className="text-white font-medium flex items-center gap-2">
+                Coral
+                {/* VIP Badge */}
+                <div className="flex items-center gap-1 bg-gradient-to-r from-amber-500 to-orange-500 px-2 py-1 rounded-full text-xs">
+                  <Crown className="w-3 h-3" />
+                  <span>VIP</span>
+                </div>
+              </div>
               <div className="text-gray-400 text-sm">AI Trading Platform</div>
             </div>
           </div>
           <div className="text-right">
             <div className="text-2xl font-bold text-white">{user?.id || '123456'}</div>
             <div className="text-xs text-gray-400">ID</div>
-          </div>
-        </div>
-
-        {/* VIP Card */}
-        <div className="px-4 mb-6">
-          <div className="bg-gradient-to-r from-amber-500 to-orange-500 rounded-2xl p-4 relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-20 h-20 bg-white/10 rounded-full -mr-10 -mt-10"></div>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
-                  <div className="w-6 h-6 bg-white/40 rounded-full"></div>
-                </div>
-                <div>
-                  <div className="text-white font-semibold">VIP Member</div>
-                  <div className="text-white/80 text-sm">Premium Benefits</div>
-                </div>
-              </div>
-              <Button 
-                className="bg-white text-orange-500 hover:bg-gray-100 px-6 py-2 rounded-full font-semibold"
-                onClick={() => navigate('/vip')}
-              >
-                Upgrade
-              </Button>
-            </div>
           </div>
         </div>
 
@@ -125,18 +114,15 @@ const ProfilePage = () => {
               </div>
             </div>
 
-            {/* Contest Card */}
+            {/* Team Size Card */}
             <div className="bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl p-4 relative overflow-hidden">
               <div className="absolute bottom-0 left-0 w-12 h-12 bg-white/10 rounded-full -ml-6 -mb-6"></div>
               <div className="relative">
-                <div className="text-white font-bold text-base mb-2">Contest</div>
-                <div className="text-white/80 text-xs mb-3">Win rewards daily</div>
+                <div className="text-white font-bold text-base mb-2">Team Size</div>
+                <div className="text-white text-2xl font-bold mb-1">{totalTeamSize}</div>
                 <div className="flex items-center justify-between">
-                  <div className="flex gap-1">
-                    <div className="w-4 h-4 bg-white/20 rounded-full"></div>
-                    <div className="w-4 h-4 bg-white/30 rounded-full"></div>
-                  </div>
-                  <ArrowRight className="w-4 h-4 text-white/60" />
+                  <div className="text-white/80 text-xs">Total Members</div>
+                  <Users className="w-4 h-4 text-white/60" />
                 </div>
               </div>
             </div>
@@ -189,11 +175,11 @@ const ProfilePage = () => {
               </button>
 
               <button 
-                onClick={() => navigate('/gift-code')}
+                onClick={handleTelegramClick}
                 className="flex flex-col items-center p-2 transition-all hover:scale-105"
               >
-                <Gift className="w-6 h-6 text-white mb-1" />
-                <span className="text-[10px] text-white text-center font-medium leading-tight">Gift Code</span>
+                <MessageCircle className="w-6 h-6 text-white mb-1" />
+                <span className="text-[10px] text-white text-center font-medium leading-tight">Telegram</span>
               </button>
 
               <button 

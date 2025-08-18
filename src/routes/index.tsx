@@ -1,4 +1,3 @@
-
 import {
   createBrowserRouter,
   Route,
@@ -23,6 +22,7 @@ import TransactionRecordsPage from '@/pages/TransactionRecordsPage';
 import SecurityPage from '@/pages/SecurityPage';
 import BankDetailsPage from '@/pages/BankDetailsPage';
 import WithdrawalRecordsPage from '@/pages/WithdrawalRecordsPage';
+import CheckinPage from '@/pages/CheckinPage';
 
 export const router = createBrowserRouter([
   {
@@ -104,6 +104,10 @@ export const router = createBrowserRouter([
   {
     path: '/withdrawal-records',
     element: <ProtectedRoute><WithdrawalRecordsPage /></ProtectedRoute>
+  },
+  {
+    path: "/checkin",
+    element: <ProtectedRoute><CheckinPage /></ProtectedRoute>
   },
 ]);
 
