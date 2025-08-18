@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -31,8 +32,8 @@ const QuickTradeModal: React.FC<QuickTradeModalProps> = ({
   const [duration, setDuration] = useState(60);
   const [isPlacing, setIsPlacing] = useState(false);
 
-  // Calculate total balance from wallet and balance
-  const totalBalance = (parseFloat(user?.wallet || '0') + parseFloat(user?.balance || '0'));
+  // Calculate total balance from wallet and income
+  const totalBalance = (parseFloat(user?.wallet || '0') + parseFloat(user?.income || '0'));
 
   // Auto-fill amount with balance when modal opens
   useEffect(() => {
