@@ -1,26 +1,6 @@
 import { useState, useEffect } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
 import { cn } from "@/lib/utils";
-import { 
-  ArrowDownCircle, 
-  IndianRupee, 
-  CheckCircle, 
-  Clock, 
-  XCircle, 
-  Eye,
-  EyeOff,
-  Building2,
-  Hash,
-  Timer,
-  Banknote,
-  Receipt,
-  Filter
-} from "lucide-react";
-import { getTransactions, getGeneralSettings } from "@/services/api";
-import { useToast } from "@/hooks/use-toast";
-import { Card, CardContent } from "@/components/ui/card";
-import { useAuth } from "@/contexts/AuthContext";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -28,6 +8,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Check, AlertTriangle, Loader2, Calendar, Filter, X, Clock } from "lucide-react";
+import { getTransactions, getGeneralSettings } from "@/services/api";
+import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
+import { Card, CardContent } from "@/components/ui/card";
 
 interface WithdrawalRecord {
   id: string;
@@ -35,9 +20,7 @@ interface WithdrawalRecord {
   date: string;
   status: string;
   account: string;
-  transaction_id?: string;
-  created_at?: string;
-  type?: string;
+  type: "inr";
   method?: string;
   charges?: string | number;
   net_amount?: string | number;
@@ -46,12 +29,10 @@ interface WithdrawalRecord {
 const WithdrawalRecordsPage = () => {
   const [records, setRecords] = useState<WithdrawalRecord[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [totalWithdrawn, setTotalWithdrawn] = useState(0);
-  const [hideAmounts, setHideAmounts] = useState(false);
-  const [withdrawalFeePercentage, setWithdrawalFeePercentage] = useState(2);
   const [statusFilter, setStatusFilter] = useState("all");
-  const { toast } = useToast();
+  const [withdrawalFeePercentage, setWithdrawalFeePercentage] = useState(2);
   const { user } = useAuth();
+  const { toast } = useToast();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -59,13 +40,13 @@ const WithdrawalRecordsPage = () => {
         const token = localStorage.getItem('auth_token');
         if (!token) return;
 
+        // Fetch general settings for withdrawal fee
         const settingsResponse = await getGeneralSettings(token);
         if (settingsResponse.status && settingsResponse.data) {
           setWithdrawalFeePercentage(parseFloat(settingsResponse.data.withdrawal_fee) || 2);
         }
 
         const response = await getTransactions(token);
-        
         if (response.status && Array.isArray(response.data)) {
           const withdrawals = response.data
             .filter((tx: any) => tx.txn_type === "WITHDRAW")
@@ -75,20 +56,13 @@ const WithdrawalRecordsPage = () => {
               date: tx.created_at || new Date().toISOString().split('T')[0],
               status: tx.status || "processing",
               account: tx.bank_number || "******6413",
-              transaction_id: tx.txnid || "",
-              created_at: tx.created_at || "",
-              type: tx.method || "BANK",
+              type: "inr",
               method: tx.method || "BANK",
               charges: tx.charges || "10",
               net_amount: tx.net_amount || tx.amount
             }));
-          
+
           setRecords(withdrawals);
-          
-          const total = withdrawals
-            .filter((record: WithdrawalRecord) => record.status.toLowerCase() === 'completed' || record.status.toLowerCase() === 'success')
-            .reduce((sum: number, record: WithdrawalRecord) => sum + record.amount, 0);
-          setTotalWithdrawn(total);
         } else {
           toast({
             title: "Error",
@@ -103,100 +77,87 @@ const WithdrawalRecordsPage = () => {
           description: "Failed to fetch withdrawal records. Please try again.",
           variant: "destructive",
         });
+        setRecords([]);
       } finally {
         setIsLoading(false);
       }
     };
-    
+
     fetchData();
   }, [toast]);
 
-  // Filter records based on status
   const filteredRecords = records.filter(record => {
-    if (statusFilter === "all") return true;
-    return record.status.toLowerCase() === statusFilter.toLowerCase();
+    const statusMatch = statusFilter === "all" || record.status.toLowerCase() === statusFilter.toLowerCase();
+    return statusMatch;
   });
-  
-  const getStatusColor = (status: string) => {
-    switch(status.toLowerCase()) {
+
+  const getStatusStyles = (status: string) => {
+    const normalizedStatus = status.toLowerCase();
+    switch(normalizedStatus) {
       case 'completed':
       case 'success':
-        return "text-emerald-600 bg-emerald-50 border-emerald-200 dark:text-emerald-400 dark:bg-emerald-950/50 dark:border-emerald-800";
+        return "bg-emerald-100 text-emerald-700";
       case 'processing':
       case 'pending':
-        return "text-amber-600 bg-amber-50 border-amber-200 dark:text-amber-400 dark:bg-amber-950/50 dark:border-amber-800";
+        return "bg-amber-100 text-amber-700";
       case 'rejected':
       case 'failed':
-        return "text-red-600 bg-red-50 border-red-200 dark:text-red-400 dark:bg-red-950/50 dark:border-red-800";
+        return "bg-red-100 text-red-700";
       default:
-        return "text-muted-foreground bg-muted border-border";
+        return "bg-gray-100 text-gray-700";
     }
   };
   
   const getStatusIcon = (status: string) => {
-    switch(status.toLowerCase()) {
+    const normalizedStatus = status.toLowerCase();
+    switch(normalizedStatus) {
       case 'completed':
       case 'success':
-        return <CheckCircle className="h-3 w-3" />;
+        return <Check className="h-4 w-4" />;
       case 'processing':
       case 'pending':
-        return <Clock className="h-3 w-3" />;
+        return <Loader2 className="h-4 w-4" />;
       case 'rejected':
       case 'failed':
-        return <XCircle className="h-3 w-3" />;
+        return <X className="h-4 w-4" />;
       default:
-        return <Clock className="h-3 w-3" />;
+        return <Clock className="h-4 w-4" />;
     }
   };
-  
+
+  const getDisplayStatus = (status: string) => {
+    const normalizedStatus = status.toLowerCase();
+    switch(normalizedStatus) {
+      case 'pending':
+        return 'PROCESSING';
+      case 'completed':
+      case 'success':
+        return 'SUCCESSFUL';
+      case 'processing':
+        return 'PROCESSING';
+      case 'failed':
+      case 'rejected':
+        return 'FAILED';
+      default:
+        return status.toUpperCase();
+    }
+  };
+
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     if (isNaN(date.getTime())) return dateString;
-    
-    const today = new Date();
-    const yesterday = new Date(today);
-    yesterday.setDate(yesterday.getDate() - 1);
-    
-    if (date.toDateString() === today.toDateString()) {
-      return "Today, " + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-    } else if (date.toDateString() === yesterday.toDateString()) {
-      return "Yesterday, " + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-    } else {
-      return date.toLocaleDateString('en-GB', { 
-        day: '2-digit', 
-        month: 'short'
-      }) + " at " + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-    }
+    return date.toLocaleDateString() + " " + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
   };
-
-  const formatAmount = (amount: number) => {
-    return hideAmounts ? "••••••" : `₹${amount.toLocaleString()}`;
-  };
-
-  const maskBankAccount = (account: string | undefined) => {
-    if (!account) return "••••••••••";
-    return "••••••••" + account.slice(-4);
-  };
-
-  const getRecordsByStatus = () => {
-    const completed = filteredRecords.filter(r => r.status.toLowerCase() === 'completed' || r.status.toLowerCase() === 'success').length;
-    const pending = filteredRecords.filter(r => r.status.toLowerCase() === 'processing' || r.status.toLowerCase() === 'pending').length;
-    const failed = filteredRecords.filter(r => r.status.toLowerCase() === 'rejected' || r.status.toLowerCase() === 'failed').length;
-    
-    return { completed, pending, failed };
-  };
-
-  const statusCounts = getRecordsByStatus();
 
   const getStatusFilterLabel = () => {
     switch (statusFilter) {
       case 'pending':
-        return 'Pending';
+        return 'Processing';
       case 'processing':
         return 'Processing';
       case 'completed':
       case 'success':
-        return 'Success';
+        return 'Successful';
       case 'failed':
         return 'Failed';
       default:
@@ -227,28 +188,21 @@ const WithdrawalRecordsPage = () => {
           onClick={() => setStatusFilter("pending")}
           className="hover:bg-gray-700 focus:bg-gray-700"
         >
-          <Clock className="h-4 w-4 mr-2 text-amber-400" />
-          Pending
-        </DropdownMenuItem>
-        <DropdownMenuItem 
-          onClick={() => setStatusFilter("processing")}
-          className="hover:bg-gray-700 focus:bg-gray-700"
-        >
-          <Clock className="h-4 w-4 mr-2 text-blue-400" />
+          <Loader2 className="h-4 w-4 mr-2 text-amber-400" />
           Processing
         </DropdownMenuItem>
         <DropdownMenuItem 
           onClick={() => setStatusFilter("completed")}
           className="hover:bg-gray-700 focus:bg-gray-700"
         >
-          <CheckCircle className="h-4 w-4 mr-2 text-emerald-400" />
-          Success
+          <Check className="h-4 w-4 mr-2 text-emerald-400" />
+          Successful
         </DropdownMenuItem>
         <DropdownMenuItem 
           onClick={() => setStatusFilter("failed")}
           className="hover:bg-gray-700 focus:bg-gray-700"
         >
-          <XCircle className="h-4 w-4 mr-2 text-red-400" />
+          <AlertTriangle className="h-4 w-4 mr-2 text-red-400" />
           Failed
         </DropdownMenuItem>
       </DropdownMenuContent>
@@ -263,204 +217,61 @@ const WithdrawalRecordsPage = () => {
       headerAction={<FilterDropdown />}
     >
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-black">
-        
-        {/* Header */}
-        <div className="bg-gray-800/50 border-gray-700/50 backdrop-blur-sm border-b">
-          <div className="px-4 py-4">
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-emerald-500/20 rounded-lg flex items-center justify-center border border-emerald-500/30">
-                  <ArrowDownCircle className="h-4 w-4 text-emerald-400" />
-                </div>
-                <div>
-                  <h1 className="text-lg font-semibold text-white">Withdrawals</h1>
-                  <p className="text-xs text-gray-400">{filteredRecords.length} records</p>
-                </div>
-              </div>
-              <button 
-                onClick={() => setHideAmounts(!hideAmounts)}
-                className="p-2 bg-gray-700/50 hover:bg-gray-700/70 rounded-lg transition-colors"
-              >
-                {hideAmounts ? <EyeOff className="h-4 w-4 text-gray-400" /> : <Eye className="h-4 w-4 text-gray-400" />}
-              </button>
-            </div>
-            
-            <div className="grid grid-cols-2 gap-3">
-              <div className="bg-emerald-500/20 rounded-lg p-3 border border-emerald-500/30">
-                <p className="text-xs text-emerald-400 mb-1">Total Withdrawn</p>
-                <div className="flex items-center gap-1">
-                  <IndianRupee className="h-4 w-4 text-emerald-400" />
-                  <span className="text-lg font-bold text-white">
-                    {formatAmount(totalWithdrawn)}
-                  </span>
-                </div>
-              </div>
-              <div className="bg-blue-500/20 rounded-lg p-3 border border-blue-500/30">
-                <p className="text-xs text-blue-400 mb-1">Success Rate</p>
-                <p className="text-lg font-bold text-white">
-                  {records.length > 0 ? Math.round((statusCounts.completed / records.length) * 100) : 0}%
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-
         <div className="p-3 pb-4">
-          {/* Status Overview */}
-          <div className="grid grid-cols-3 gap-2 mb-4">
-            <div className="text-center p-3 bg-emerald-500/20 rounded-lg border border-emerald-500/30">
-              <div className="w-6 h-6 bg-emerald-500 rounded-md flex items-center justify-center mx-auto mb-1">
-                <CheckCircle className="h-3 w-3 text-white" />
-              </div>
-              <p className="text-lg font-bold text-emerald-400">{statusCounts.completed}</p>
-              <p className="text-xs text-emerald-400">Success</p>
-            </div>
-            <div className="text-center p-3 bg-amber-500/20 rounded-lg border border-amber-500/30">
-              <div className="w-6 h-6 bg-amber-500 rounded-md flex items-center justify-center mx-auto mb-1">
-                <Clock className="h-3 w-3 text-white" />
-              </div>
-              <p className="text-lg font-bold text-amber-400">{statusCounts.pending}</p>
-              <p className="text-xs text-amber-400">Pending</p>
-            </div>
-            <div className="text-center p-3 bg-red-500/20 rounded-lg border border-red-500/30">
-              <div className="w-6 h-6 bg-red-500 rounded-md flex items-center justify-center mx-auto mb-1">
-                <XCircle className="h-3 w-3 text-white" />
-              </div>
-              <p className="text-lg font-bold text-red-400">{statusCounts.failed}</p>
-              <p className="text-xs text-red-400">Failed</p>
-            </div>
-          </div>
-
-          {/* Transactions List */}
           {isLoading ? (
+            <Card className="bg-gray-800/50 border-gray-700/50 backdrop-blur-sm">
+              <CardContent className="flex flex-col items-center justify-center py-12">
+                <Loader2 className="h-12 w-12 text-gray-500 animate-spin mb-3" />
+                <h3 className="text-base font-semibold text-white mb-2">Loading withdrawals...</h3>
+                <p className="text-gray-400 text-center text-sm">Fetching your withdrawal history</p>
+              </CardContent>
+            </Card>
+          ) : records.length > 0 ? (
             <div className="space-y-3">
-              {Array(4).fill(0).map((_, idx) => (
-                <div key={`skeleton-${idx}`} className="animate-pulse">
-                  <div className="bg-gray-800/50 rounded-lg p-4 border border-gray-700/50 space-y-3">
-                    <div className="flex justify-between items-start">
+              {filteredRecords.map((record) => (
+                <Card key={record.id} className="bg-gray-800/50 border-gray-700/50 hover:bg-gray-800/70 transition-all duration-200 backdrop-blur-sm">
+                  <CardContent className="p-3">
+                    <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 bg-gray-700 rounded-lg"></div>
-                        <div className="space-y-2">
-                          <div className="h-4 w-20 bg-gray-700 rounded"></div>
-                          <div className="h-3 w-16 bg-gray-700 rounded"></div>
-                        </div>
+                        <span className="text-base font-medium text-white">{record.id}</span>
                       </div>
-                      <div className="h-5 w-16 bg-gray-700 rounded"></div>
+                      <div className={cn(
+                        "px-3 py-1 rounded-full text-sm font-medium flex items-center space-x-1",
+                        getStatusStyles(record.status)
+                      )}>
+                        {getStatusIcon(record.status)}
+                        <span>{getDisplayStatus(record.status)}</span>
+                      </div>
                     </div>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="h-3 w-16 bg-gray-700 rounded"></div>
-                      <div className="h-3 w-20 bg-gray-700 rounded"></div>
+                    
+                    <div className="mb-2">
+                      <div className="flex items-center">
+                        <span className="text-2xl font-bold text-white">₹{record.amount.toLocaleString()}</span>
+                      </div>
                     </div>
-                  </div>
-                </div>
+                    
+                    <div className="flex justify-between text-sm text-gray-400">
+                      <div>
+                        <p className="mb-1">Method</p>
+                        <p>{record.method || 'BANK'}</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="mb-1">Date</p>
+                        <p>{formatDate(record.date)}</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
               ))}
             </div>
-          ) : filteredRecords.length > 0 ? (
-            <div className="space-y-3">
-              {filteredRecords.map((record) => {
-                const charges = typeof record.charges === 'string' ? parseFloat(record.charges) : record.charges || 0;
-                const netAmount = typeof record.net_amount === 'string' ? parseFloat(record.net_amount) : 
-                                (record.net_amount as number) || 0;
-                
-                return (
-                  <div key={record.id} className="bg-gray-800/50 rounded-lg border border-gray-700/50 hover:bg-gray-800/70 transition-all duration-200 backdrop-blur-sm">
-                    <div className="p-4">
-                      <div className="flex justify-between items-start mb-3">
-                        <div className="flex items-center space-x-3">
-                          <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-green-600 rounded-lg flex items-center justify-center">
-                            <ArrowDownCircle className="h-5 w-5 text-white" />
-                          </div>
-                          <div>
-                            <div className="flex items-center gap-2 mb-1">
-                              <span className="text-lg font-bold text-white">
-                                {formatAmount(record.amount)}
-                              </span>
-                            </div>
-                            <div className="flex items-center gap-1 text-xs text-gray-400">
-                              <Timer className="h-3 w-3" />
-                              <span>{formatDate(record.date)}</span>
-                            </div>
-                          </div>
-                        </div>
-                        <Badge 
-                          variant="outline" 
-                          className={cn("text-xs", getStatusColor(record.status))}
-                        >
-                          <div className="flex items-center gap-1">
-                            {getStatusIcon(record.status)}
-                            {record.status.charAt(0).toUpperCase() + record.status.slice(1)}
-                          </div>
-                        </Badge>
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-4 text-xs">
-                        <div>
-                          <div className="flex items-center gap-1 text-gray-400 mb-1">
-                            <Building2 className="h-3 w-3" />
-                            <span>Bank Account</span>
-                          </div>
-                          <p className="text-white font-mono">
-                            {maskBankAccount(user?.account_number)}
-                          </p>
-                        </div>
-                        
-                        <div>
-                          <div className="flex items-center gap-1 text-gray-400 mb-1">
-                            <Banknote className="h-3 w-3" />
-                            <span>Net Amount</span>
-                          </div>
-                          <p className="text-emerald-400 font-semibold">
-                            {formatAmount(netAmount)}
-                          </p>
-                        </div>
-                        
-                        <div>
-                          <div className="flex items-center gap-1 text-gray-400 mb-1">
-                            <Hash className="h-3 w-3" />
-                            <span>Transaction ID</span>
-                          </div>
-                          <p className="text-white font-mono truncate">
-                            {record.id}
-                          </p>
-                        </div>
-                        
-                        <div>
-                          <div className="flex items-center gap-1 text-gray-400 mb-1">
-                            <Receipt className="h-3 w-3" />
-                            <span>Fee ({withdrawalFeePercentage}%)</span>
-                          </div>
-                          <p className="text-red-400 font-semibold">
-                            {formatAmount(charges)}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
           ) : (
-            <div className="text-center py-12">
-              <div className="w-16 h-16 bg-gray-700/50 rounded-full flex items-center justify-center mx-auto mb-4">
-                <ArrowDownCircle className="h-8 w-8 text-gray-400" />
-              </div>
-              <h3 className="text-lg font-semibold text-white mb-2">
-                {statusFilter !== "all" ? `No ${getStatusFilterLabel().toLowerCase()} withdrawals` : "No Withdrawals Yet"}
-              </h3>
-              <p className="text-gray-400 text-sm mb-4">
-                {statusFilter !== "all" 
-                  ? `No ${getStatusFilterLabel().toLowerCase()} withdrawal records found.`
-                  : "Your withdrawal history will appear here once you make your first withdrawal."
-                }
-              </p>
-              {statusFilter === "all" && (
-                <div className="bg-blue-500/20 rounded-lg p-4 border border-blue-500/30">
-                  <p className="text-sm text-blue-400">
-                    <strong>Tip:</strong> You can withdraw your earnings anytime from the Withdraw page.
-                  </p>
-                </div>
-              )}
-            </div>
+            <Card className="bg-gray-800/50 border-gray-700/50 backdrop-blur-sm">
+              <CardContent className="flex flex-col items-center justify-center py-12">
+                <Calendar className="h-12 w-12 text-gray-500 mb-3" />
+                <h3 className="text-base font-semibold text-white mb-2">No withdrawal records found</h3>
+                <p className="text-gray-400 text-center text-sm">No withdrawals have been made yet.</p>
+              </CardContent>
+            </Card>
           )}
         </div>
       </div>
