@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
 import { useAuth } from "@/contexts/AuthContext";
@@ -89,19 +90,6 @@ const DepositPage = () => {
         
         <div className="px-4 py-6 space-y-6">
 
-          {/* Important Information */}
-          <div className="bg-blue-800/30 rounded-xl border border-blue-700/50 p-4">
-            <div className="flex items-center mb-3">
-              <Info className="w-5 h-5 text-blue-400 mr-2" />
-              <h3 className="text-white font-medium">Important Information</h3>
-            </div>
-            <div className="space-y-2 text-sm text-gray-300">
-              <p>1. The minimum recharge is 600, and you can recharge unlimited times</p>
-              <p>2. When you encounter payment failure, please change other recharge channels (PAY-1, PAY-2, PAY-3, PAY-4) to pay, or change other wallet software to pay, or adjust the recharge amount (such as 603, 1012, 2007) for payment</p>
-              <p>3. If the payment is successful but the funds are not shown in your account, please provide a screenshot of the successful UTR payment and contact the website customer service to resolve the issue.</p>
-            </div>
-          </div>
-
           {/* Select Payment Channel */}
           <div className="bg-gray-800/50 rounded-xl border border-gray-700/50 p-4">
             <div className="flex items-center mb-4">
@@ -182,6 +170,19 @@ const DepositPage = () => {
               </div>
             </div>
           )}
+
+          {/* Important Information */}
+          <div className="bg-blue-800/30 rounded-xl border border-blue-700/50 p-4">
+            <div className="flex items-center mb-3">
+              <Info className="w-5 h-5 text-blue-400 mr-2" />
+              <h3 className="text-white font-medium">Important Information</h3>
+            </div>
+            <div className="space-y-2 text-sm text-gray-300">
+              <p>1. The minimum recharge is 600, and you can recharge unlimited times</p>
+              <p>2. When you encounter payment failure, please change other recharge channels (PAY-1, PAY-2, PAY-3, PAY-4) to pay, or change other wallet software to pay, or adjust the recharge amount (such as 603, 1012, 2007) for payment</p>
+              <p>3. If the payment is successful but the funds are not shown in your account, please provide a screenshot of the successful UTR payment and contact the website customer service to resolve the issue.</p>
+            </div>
+          </div>
 
           {/* Confirm Button */}
           <button
