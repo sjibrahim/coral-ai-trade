@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MobileLayout from "@/components/layout/MobileLayout";
@@ -67,6 +66,9 @@ const ProfilePage = () => {
                 )}
               </div>
               <div className="text-gray-400 text-sm">AI Trading Platform</div>
+              {user?.phone && (
+                <div className="text-gray-500 text-xs">{user.phone}</div>
+              )}
             </div>
           </div>
         </div>
