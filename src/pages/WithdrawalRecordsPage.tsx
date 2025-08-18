@@ -13,13 +13,11 @@ import {
   Hash,
   Timer,
   Banknote,
-  Receipt,
-  Filter
+  Receipt
 } from "lucide-react";
 import { getTransactions, getGeneralSettings } from "@/services/api";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useAuth } from "@/contexts/AuthContext";
 import { Badge } from "@/components/ui/badge";
 
@@ -42,7 +40,6 @@ const WithdrawalRecordsPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [totalWithdrawn, setTotalWithdrawn] = useState(0);
   const [hideAmounts, setHideAmounts] = useState(false);
-  const [statusFilter, setStatusFilter] = useState("all");
   const [withdrawalFeePercentage, setWithdrawalFeePercentage] = useState(2);
   const { toast } = useToast();
   const { user } = useAuth();
@@ -104,12 +101,7 @@ const WithdrawalRecordsPage = () => {
     
     fetchData();
   }, [toast]);
-
-  const filteredRecords = records.filter(record => {
-    if (statusFilter === "all") return true;
-    return record.status.toLowerCase() === statusFilter.toLowerCase();
-  });
-
+  
   const getStatusColor = (status: string) => {
     switch(status.toLowerCase()) {
       case 'completed':
@@ -172,9 +164,9 @@ const WithdrawalRecordsPage = () => {
   };
 
   const getRecordsByStatus = () => {
-    const completed = filteredRecords.filter(r => r.status.toLowerCase() === 'completed' || r.status.toLowerCase() === 'success').length;
-    const pending = filteredRecords.filter(r => r.status.toLowerCase() === 'processing' || r.status.toLowerCase() === 'pending').length;
-    const failed = filteredRecords.filter(r => r.status.toLowerCase() === 'rejected' || r.status.toLowerCase() === 'failed').length;
+    const completed = records.filter(r => r.status.toLowerCase() === 'completed' || r.status.toLowerCase() === 'success').length;
+    const pending = records.filter(r => r.status.toLowerCase() === 'processing' || r.status.toLowerCase() === 'pending').length;
+    const failed = records.filter(r => r.status.toLowerCase() === 'rejected' || r.status.toLowerCase() === 'failed').length;
     
     return { completed, pending, failed };
   };
@@ -195,7 +187,7 @@ const WithdrawalRecordsPage = () => {
                 </div>
                 <div>
                   <h1 className="text-lg font-semibold text-white">Withdrawals</h1>
-                  <p className="text-xs text-gray-400">{filteredRecords.length} records</p>
+                  <p className="text-xs text-gray-400">{records.length} records</p>
                 </div>
               </div>
               <button 
@@ -227,28 +219,6 @@ const WithdrawalRecordsPage = () => {
         </div>
 
         <div className="p-3 pb-4">
-          {/* Status Filter */}
-          <div className="mb-4">
-            <div className="flex items-center gap-2 mb-2">
-              <Filter className="h-4 w-4 text-gray-400" />
-              <span className="text-sm text-gray-400">Filter by Status</span>
-            </div>
-            <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="bg-gray-800/50 border-gray-700/50 text-white">
-                <SelectValue placeholder="Select status" />
-              </SelectTrigger>
-              <SelectContent className="bg-gray-800 border-gray-700">
-                <SelectItem value="all" className="text-white">All Status</SelectItem>
-                <SelectItem value="pending" className="text-white">Pending</SelectItem>
-                <SelectItem value="processing" className="text-white">Processing</SelectItem>
-                <SelectItem value="completed" className="text-white">Success</SelectItem>
-                <SelectItem value="success" className="text-white">Success</SelectItem>
-                <SelectItem value="failed" className="text-white">Failed</SelectItem>
-                <SelectItem value="rejected" className="text-white">Rejected</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
           {/* Status Overview */}
           <div className="grid grid-cols-3 gap-2 mb-4">
             <div className="text-center p-3 bg-emerald-500/20 rounded-lg border border-emerald-500/30">
@@ -272,11 +242,6 @@ const WithdrawalRecordsPage = () => {
               <p className="text-lg font-bold text-red-400">{statusCounts.failed}</p>
               <p className="text-xs text-red-400">Failed</p>
             </div>
-          </div>
-
-          {/* Show filtered count */}
-          <div className="mb-3 text-xs text-gray-400">
-            Showing {filteredRecords.length} of {records.length} withdrawals
           </div>
 
           {/* Transactions List */}
@@ -303,9 +268,9 @@ const WithdrawalRecordsPage = () => {
                 </div>
               ))}
             </div>
-          ) : filteredRecords.length > 0 ? (
+          ) : records.length > 0 ? (
             <div className="space-y-3">
-              {filteredRecords.map((record) => {
+              {records.map((record) => {
                 const charges = typeof record.charges === 'string' ? parseFloat(record.charges) : record.charges || 0;
                 const netAmount = typeof record.net_amount === 'string' ? parseFloat(record.net_amount) : 
                                 (record.net_amount as number) || 0;
@@ -392,14 +357,9 @@ const WithdrawalRecordsPage = () => {
               <div className="w-16 h-16 bg-gray-700/50 rounded-full flex items-center justify-center mx-auto mb-4">
                 <ArrowDownCircle className="h-8 w-8 text-gray-400" />
               </div>
-              <h3 className="text-lg font-semibold text-white mb-2">
-                {statusFilter !== "all" ? "No Records Found" : "No Withdrawals Yet"}
-              </h3>
+              <h3 className="text-lg font-semibold text-white mb-2">No Withdrawals Yet</h3>
               <p className="text-gray-400 text-sm mb-4">
-                {statusFilter !== "all" 
-                  ? "No withdrawal records match the selected status filter."
-                  : "Your withdrawal history will appear here once you make your first withdrawal."
-                }
+                Your withdrawal history will appear here once you make your first withdrawal.
               </p>
               <div className="bg-blue-500/20 rounded-lg p-4 border border-blue-500/30">
                 <p className="text-sm text-blue-400">

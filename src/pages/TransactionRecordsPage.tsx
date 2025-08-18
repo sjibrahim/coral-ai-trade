@@ -1,12 +1,12 @@
+
 import { useState, useEffect } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
 import { useAuth } from "@/contexts/AuthContext";
 import { getTransactions } from "@/services/api";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
-import { Check, AlertTriangle, Loader2, TrendingUp, TrendingDown, Activity, Calendar, Filter } from "lucide-react";
+import { Check, AlertTriangle, Loader2, TrendingUp, TrendingDown, Activity, Calendar } from "lucide-react";
 
 interface Transaction {
   txnid: string;
@@ -26,7 +26,6 @@ const TransactionRecordsPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState("all");
-  const [statusFilter, setStatusFilter] = useState("all");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -54,12 +53,11 @@ const TransactionRecordsPage = () => {
   }, [user?.token]);
 
   const filteredTransactions = transactions.filter(transaction => {
-    const typeMatch = activeTab === "all" || transaction.txn_type.toLowerCase() === activeTab.toLowerCase();
-    const statusMatch = statusFilter === "all" || transaction.status.toLowerCase() === statusFilter.toLowerCase();
-    return typeMatch && statusMatch;
+    if (activeTab === "all") return true;
+    return transaction.txn_type.toLowerCase() === activeTab.toLowerCase();
   });
 
-  function getStatusIcon(status: string) {
+  const getStatusIcon = (status: string) => {
     switch (status.toLowerCase()) {
       case 'completed':
         return <Check className="h-3 w-3 text-emerald-400" />;
@@ -70,9 +68,9 @@ const TransactionRecordsPage = () => {
       default:
         return null;
     }
-  }
+  };
 
-  function getTypeIcon(type: string) {
+  const getTypeIcon = (type: string) => {
     const creditTypes = ["topup", "checkin", "mission", "invite reward", "team commission", "salary"];
     const debitTypes = ["withdraw", "purchase", "trade"];
     
@@ -86,14 +84,14 @@ const TransactionRecordsPage = () => {
     } else {
       return <Activity className="h-4 w-4 text-blue-400" />;
     }
-  }
+  };
 
-  function isDebitTransaction(type: string) {
+  const isDebitTransaction = (type: string) => {
     const debitTypes = ["withdraw", "purchase", "trade"];
     return debitTypes.some(t => type.toLowerCase().includes(t.toLowerCase()));
-  }
+  };
 
-  function formatDate(dateString: string) {
+  const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return new Intl.DateTimeFormat('en-IN', { 
       day: '2-digit',
@@ -102,32 +100,12 @@ const TransactionRecordsPage = () => {
       hour: '2-digit',
       minute: '2-digit'
     }).format(date);
-  }
+  };
 
   return (
     <MobileLayout showBackButton title="Transactions" hideFooter>
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-black">
         <div className="p-3 pb-4">
-          {/* Status Filter */}
-          <div className="mb-4">
-            <div className="flex items-center gap-2 mb-2">
-              <Filter className="h-4 w-4 text-gray-400" />
-              <span className="text-sm text-gray-400">Filter by Status</span>
-            </div>
-            <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="bg-gray-800/50 border-gray-700/50 text-white">
-                <SelectValue placeholder="Select status" />
-              </SelectTrigger>
-              <SelectContent className="bg-gray-800 border-gray-700">
-                <SelectItem value="all" className="text-white">All Status</SelectItem>
-                <SelectItem value="pending" className="text-white">Pending</SelectItem>
-                <SelectItem value="processing" className="text-white">Processing</SelectItem>
-                <SelectItem value="completed" className="text-white">Success</SelectItem>
-                <SelectItem value="failed" className="text-white">Failed</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="grid grid-cols-3 w-full mb-4 bg-gray-800/50 backdrop-blur-sm h-10 border border-gray-700/50">
               <TabsTrigger value="all" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-gray-300 text-xs font-medium">All</TabsTrigger>
@@ -136,11 +114,6 @@ const TransactionRecordsPage = () => {
             </TabsList>
 
             <TabsContent value={activeTab} className="mt-0">
-              {/* Show filtered count */}
-              <div className="mb-3 text-xs text-gray-400">
-                Showing {filteredTransactions.length} of {transactions.length} transactions
-              </div>
-
               {isLoading ? (
                 <div className="space-y-3">
                   {Array(5).fill(0).map((_, idx) => (
@@ -167,10 +140,8 @@ const TransactionRecordsPage = () => {
                 <Card className="bg-gray-800/50 border-gray-700/50 backdrop-blur-sm">
                   <CardContent className="flex flex-col items-center justify-center py-12">
                     <Calendar className="h-12 w-12 text-gray-500 mb-3" />
-                    <h3 className="text-base font-semibold text-white mb-2">No transactions found</h3>
-                    <p className="text-gray-400 text-center text-sm">
-                      {statusFilter !== "all" ? "No transactions match the selected filters" : "Start trading to see your transaction history"}
-                    </p>
+                    <h3 className="text-base font-semibold text-white mb-2">No transactions yet</h3>
+                    <p className="text-gray-400 text-center text-sm">Start trading to see your transaction history</p>
                   </CardContent>
                 </Card>
               ) : (
