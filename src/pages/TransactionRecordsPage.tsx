@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import MobileLayout from "@/components/layout/MobileLayout";
 import { useAuth } from "@/contexts/AuthContext";
@@ -12,7 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
-import { Check, AlertTriangle, Loader2, TrendingUp, TrendingDown, Activity, Calendar, Filter } from "lucide-react";
+import { Check, AlertTriangle, Loader2, Calendar, Filter } from "lucide-react";
 
 interface Transaction {
   txnid: string;
@@ -82,22 +83,6 @@ const TransactionRecordsPage = () => {
         return <AlertTriangle className="h-3 w-3 text-red-400" />;
       default:
         return null;
-    }
-  };
-
-  const getTypeIcon = (type: string) => {
-    const creditTypes = ["topup", "checkin", "mission", "invite reward", "team commission", "salary"];
-    const debitTypes = ["withdraw", "purchase", "trade"];
-    
-    const isCredit = creditTypes.some(t => type.toLowerCase().includes(t.toLowerCase()));
-    const isDebit = debitTypes.some(t => type.toLowerCase().includes(t.toLowerCase()));
-    
-    if (isCredit) {
-      return <TrendingUp className="h-4 w-4 text-emerald-400" />;
-    } else if (isDebit) {
-      return <TrendingDown className="h-4 w-4 text-red-400" />;
-    } else {
-      return <Activity className="h-4 w-4 text-blue-400" />;
     }
   };
 
@@ -240,14 +225,10 @@ const TransactionRecordsPage = () => {
                       <CardContent className="p-3">
                         <div className="flex items-center justify-between mb-2">
                           <div className="flex items-center">
-                            <div className="w-8 h-8 rounded-full bg-gray-700/50 flex items-center justify-center mr-3 border border-gray-600/50">
-                              {getTypeIcon(transaction.txn_type)}
-                            </div>
                             <div>
                               <p className="font-semibold text-white text-sm">
                                 {transaction.txn_type.replace(/^\w/, c => c.toUpperCase())}
                               </p>
-                              <p className="text-xs text-gray-400">#{transaction.txnid}</p>
                             </div>
                           </div>
                           <div className="text-right">
