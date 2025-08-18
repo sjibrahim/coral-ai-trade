@@ -7,7 +7,6 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from "@/hooks/use-toast";
 import { useTeam } from '@/hooks/use-team';
 import BottomNavigation from "@/components/BottomNavigation";
-import TeamStatsCard from "@/components/team/TeamStatsCard";
 import { 
   CreditCard, Lock, Calendar, 
   Copy, Check, ArrowRight, ScrollText, Banknote, CreditCard as CardIcon, TrendingDown, Users, MessageCircle, Crown
@@ -16,15 +15,7 @@ import {
 const ProfilePage = () => {
   const { user, logout } = useAuth();
   const { toast } = useToast();
-  const { 
-    totalTeamSize, 
-    level1Members, 
-    level2Members, 
-    level3Members,
-    activeLevel1,
-    activeLevel2,
-    activeLevel3
-  } = useTeam();
+  const { totalTeamSize } = useTeam();
   const [copiedCode, setCopiedCode] = useState(false);
   const navigate = useNavigate();
 
@@ -62,13 +53,11 @@ const ProfilePage = () => {
             <div>
               <div className="text-white font-medium flex items-center gap-2">
                 Coral
-                {/* VIP Badge with user rank */}
-                {user?.rank && (
-                  <div className="flex items-center gap-1 bg-gradient-to-r from-amber-500 to-orange-500 px-2 py-1 rounded-full text-xs">
-                    <Crown className="w-3 h-3" />
-                    <span>VIP{user.rank}</span>
-                  </div>
-                )}
+                {/* VIP Badge */}
+                <div className="flex items-center gap-1 bg-gradient-to-r from-amber-500 to-orange-500 px-2 py-1 rounded-full text-xs">
+                  <Crown className="w-3 h-3" />
+                  <span>VIP</span>
+                </div>
               </div>
               <div className="text-gray-400 text-sm">AI Trading Platform</div>
             </div>
@@ -125,17 +114,12 @@ const ProfilePage = () => {
               </div>
             </div>
 
-            {/* Team Size Card with Level Details */}
+            {/* Team Size Card */}
             <div className="bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl p-4 relative overflow-hidden">
               <div className="absolute bottom-0 left-0 w-12 h-12 bg-white/10 rounded-full -ml-6 -mb-6"></div>
               <div className="relative">
                 <div className="text-white font-bold text-base mb-2">Team Size</div>
                 <div className="text-white text-2xl font-bold mb-1">{totalTeamSize}</div>
-                <div className="flex items-center justify-between text-xs text-white/80 mb-1">
-                  <span>L1: {level1Members.length}</span>
-                  <span>L2: {level2Members.length}</span>
-                  <span>L3: {level3Members.length}</span>
-                </div>
                 <div className="flex items-center justify-between">
                   <div className="text-white/80 text-xs">Total Members</div>
                   <Users className="w-4 h-4 text-white/60" />
@@ -143,18 +127,6 @@ const ProfilePage = () => {
               </div>
             </div>
           </div>
-        </div>
-
-        {/* Team Stats Card */}
-        <div className="px-4 mb-6">
-          <TeamStatsCard
-            activeLevel1={activeLevel1}
-            activeLevel2={activeLevel2}
-            activeLevel3={activeLevel3}
-            level1Total={level1Members.length}
-            level2Total={level2Members.length}
-            level3Total={level3Members.length}
-          />
         </div>
 
         {/* Main Menu Section - 3x2 Grid with Background */}
