@@ -55,7 +55,7 @@ const ProfilePage = () => {
   };
 
   const handleTelegramClick = () => {
-    window.open('https://t.me/coral_offical', '_blank');
+    window.open('https://t.me/coral_official', '_blank');
   };
 
   return (
