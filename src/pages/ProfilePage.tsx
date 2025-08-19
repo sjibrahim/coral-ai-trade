@@ -16,7 +16,6 @@ const ProfilePage = () => {
   const { user, logout } = useAuth();
   const { toast } = useToast();
   const { totalTeamSize, level1Members, level2Members, level3Members, fetchTeamDetails } = useTeam();
-  const [copiedCode, setCopiedCode] = useState(false);
   const [copiedPhone, setCopiedPhone] = useState(false);
   const navigate = useNavigate();
 
@@ -28,19 +27,6 @@ const ProfilePage = () => {
   const walletAmount = user?.wallet ? parseFloat(user.wallet) : 0;
   const incomeAmount = user?.income ? parseFloat(user.income) : 0;
   const totalBalance = walletAmount + incomeAmount;
-
-  // Generate invite code
-  const inviteCode = user?.invite_code || user?.referral_code || user?.id || "CORAL123";
-
-  const handleCopyCode = () => {
-    navigator.clipboard.writeText(inviteCode);
-    setCopiedCode(true);
-    toast({
-      title: "Copied!",
-      description: "Invite code copied to clipboard",
-    });
-    setTimeout(() => setCopiedCode(false), 2000);
-  };
 
   const handleCopyPhone = () => {
     if (user?.phone) {
@@ -146,47 +132,43 @@ const ProfilePage = () => {
           </div>
         </div>
 
-        {/* Invite Code Section */}
+        {/* New Invite Section */}
         <div className="px-4 mb-6">
-          <div className="bg-gradient-to-br from-teal-400 via-teal-500 to-cyan-500 rounded-2xl p-4 relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-16 h-16 bg-white/10 rounded-full -mr-8 -mt-8"></div>
-            <div className="relative">
-              <div className="text-white font-bold text-base mb-2">Invite Friends</div>
-              <div className="flex items-center gap-2 mb-3">
-                <span className="text-white/90 text-sm font-mono bg-white/20 px-2 py-1 rounded">
-                  {inviteCode}
-                </span>
-                <button 
-                  onClick={handleCopyCode} 
-                  className="text-white/80 hover:text-white transition-colors"
+          <div 
+            className="rounded-2xl overflow-hidden backdrop-blur-sm border border-gray-700/30 relative"
+            style={{
+              backgroundImage: "url('/uploads/invitebg-CWO27YAL.png')",
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              backgroundRepeat: "no-repeat"
+            }}
+          >
+            <div className="absolute inset-0 bg-gray-900/50 backdrop-blur-sm"></div>
+            <div className="relative z-10 p-4">
+              <ul className="flex flex-col gap-3">
+                <li 
+                  onClick={() => navigate('/invite')}
+                  className="cursor-pointer hover:bg-white/10 rounded-lg p-3 transition-all"
                 >
-                  {copiedCode ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-                </button>
-              </div>
-              <div className="flex items-center justify-between">
-                <div className="text-white/80 text-xs">Share & Earn</div>
-                <ArrowRight className="w-4 h-4 text-white/60" />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Team Size Card */}
-        <div className="px-4 mb-6">
-          <div className="bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl p-4 relative overflow-hidden">
-            <div className="absolute bottom-0 left-0 w-12 h-12 bg-white/10 rounded-full -ml-6 -mb-6"></div>
-            <div className="relative">
-              <div className="text-white font-bold text-base mb-2">Team Size</div>
-              <div className="text-white text-2xl font-bold mb-1">{totalTeamSize}</div>
-              <div className="flex items-center justify-between text-xs text-white/80 mb-1">
-                <span>L1: {level1Members.length}</span>
-                <span>L2: {level2Members.length}</span>
-                <span>L3: {level3Members.length}</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <div className="text-white/80 text-xs">Total Members</div>
-                <Users className="w-4 h-4 text-white/60" />
-              </div>
+                  <div>
+                    <div className="text">
+                      <h3 className="text-white font-semibold text-base mb-1">Invite Friends</h3>
+                      <p className="text-gray-300 text-sm">Share Tcpatel Quantitative Bonus</p>
+                    </div>
+                  </div>
+                </li>
+                <li 
+                  onClick={() => navigate('/rewards')}
+                  className="cursor-pointer hover:bg-white/10 rounded-lg p-3 transition-all"
+                >
+                  <div>
+                    <div className="text">
+                      <h3 className="text-white font-semibold text-base mb-1">Wealth Contest</h3>
+                      <p className="text-gray-300 text-sm">Participate in the event and get rewards</p>
+                    </div>
+                  </div>
+                </li>
+              </ul>
             </div>
           </div>
         </div>
