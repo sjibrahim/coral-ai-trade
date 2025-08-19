@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MobileLayout from "@/components/layout/MobileLayout";
@@ -109,67 +110,82 @@ const ProfilePage = () => {
           </button>
         </div>
 
-        {/* Balance Cards */}
+        {/* New Balance Section */}
         <div className="px-4 mb-6">
-          <div className="grid grid-cols-3 gap-3">
-            <div className="bg-gray-800/80 rounded-xl p-4 text-center border border-gray-700/30 backdrop-blur-sm">
-              <div className="text-2xl font-bold text-white mb-1">
-                ₹{totalBalance.toLocaleString()}
+          <div 
+            className="rounded-2xl overflow-hidden border border-gray-700/30 relative"
+            style={{
+              padding: '.32rem .24rem',
+              boxSizing: 'border-box',
+              background: '#0c16154d',
+              WebkitBackdropFilter: 'blur(.08rem)',
+              backdropFilter: 'blur(.08rem)',
+              backgroundImage: "url('/uploads/assetsbg-BsWPbjIy.png')",
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              backgroundRepeat: "no-repeat"
+            }}
+          >
+            <div className="absolute inset-0 bg-gray-900/40"></div>
+            <div className="relative z-10 grid grid-cols-3 gap-3 p-4">
+              <div className="text-center">
+                <div className="text-2xl font-bold text-white mb-1">
+                  ₹{totalBalance.toLocaleString()}
+                </div>
+                <div className="text-gray-300 text-xs">Total Assets</div>
               </div>
-              <div className="text-gray-400 text-xs">Total Assets</div>
-            </div>
-            <div className="bg-gray-800/80 rounded-xl p-4 text-center border border-gray-700/30 backdrop-blur-sm">
-              <div className="text-2xl font-bold text-white mb-1">₹0</div>
-              <div className="text-gray-400 text-xs">Recharge</div>
-            </div>
-            <div className="bg-gray-800/80 rounded-xl p-4 text-center border border-gray-700/30 backdrop-blur-sm">
-              <div className="text-2xl font-bold text-white mb-1">₹0</div>
-              <div className="text-gray-400 text-xs">Withdraw</div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-white mb-1">₹0</div>
+                <div className="text-gray-300 text-xs">Recharge</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-white mb-1">₹0</div>
+                <div className="text-gray-300 text-xs">Withdraw</div>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Action Cards */}
+        {/* Invite Code Section */}
         <div className="px-4 mb-6">
-          <div className="grid grid-cols-2 gap-4">
-            {/* Invite Friends Card */}
-            <div className="bg-gradient-to-br from-teal-400 via-teal-500 to-cyan-500 rounded-2xl p-4 relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-16 h-16 bg-white/10 rounded-full -mr-8 -mt-8"></div>
-              <div className="relative">
-                <div className="text-white font-bold text-base mb-2">Invite Friends</div>
-                <div className="flex items-center gap-2 mb-3">
-                  <span className="text-white/90 text-sm font-mono bg-white/20 px-2 py-1 rounded">
-                    {inviteCode}
-                  </span>
-                  <button 
-                    onClick={handleCopyCode} 
-                    className="text-white/80 hover:text-white transition-colors"
-                  >
-                    {copiedCode ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-                  </button>
-                </div>
-                <div className="flex items-center justify-between">
-                  <div className="text-white/80 text-xs">Share & Earn</div>
-                  <ArrowRight className="w-4 h-4 text-white/60" />
-                </div>
+          <div className="bg-gradient-to-br from-teal-400 via-teal-500 to-cyan-500 rounded-2xl p-4 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-16 h-16 bg-white/10 rounded-full -mr-8 -mt-8"></div>
+            <div className="relative">
+              <div className="text-white font-bold text-base mb-2">Invite Friends</div>
+              <div className="flex items-center gap-2 mb-3">
+                <span className="text-white/90 text-sm font-mono bg-white/20 px-2 py-1 rounded">
+                  {inviteCode}
+                </span>
+                <button 
+                  onClick={handleCopyCode} 
+                  className="text-white/80 hover:text-white transition-colors"
+                >
+                  {copiedCode ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                </button>
+              </div>
+              <div className="flex items-center justify-between">
+                <div className="text-white/80 text-xs">Share & Earn</div>
+                <ArrowRight className="w-4 h-4 text-white/60" />
               </div>
             </div>
+          </div>
+        </div>
 
-            {/* Team Size Card with level breakdown */}
-            <div className="bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl p-4 relative overflow-hidden">
-              <div className="absolute bottom-0 left-0 w-12 h-12 bg-white/10 rounded-full -ml-6 -mb-6"></div>
-              <div className="relative">
-                <div className="text-white font-bold text-base mb-2">Team Size</div>
-                <div className="text-white text-2xl font-bold mb-1">{totalTeamSize}</div>
-                <div className="flex items-center justify-between text-xs text-white/80 mb-1">
-                  <span>L1: {level1Members.length}</span>
-                  <span>L2: {level2Members.length}</span>
-                  <span>L3: {level3Members.length}</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <div className="text-white/80 text-xs">Total Members</div>
-                  <Users className="w-4 h-4 text-white/60" />
-                </div>
+        {/* Team Size Card */}
+        <div className="px-4 mb-6">
+          <div className="bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl p-4 relative overflow-hidden">
+            <div className="absolute bottom-0 left-0 w-12 h-12 bg-white/10 rounded-full -ml-6 -mb-6"></div>
+            <div className="relative">
+              <div className="text-white font-bold text-base mb-2">Team Size</div>
+              <div className="text-white text-2xl font-bold mb-1">{totalTeamSize}</div>
+              <div className="flex items-center justify-between text-xs text-white/80 mb-1">
+                <span>L1: {level1Members.length}</span>
+                <span>L2: {level2Members.length}</span>
+                <span>L3: {level3Members.length}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <div className="text-white/80 text-xs">Total Members</div>
+                <Users className="w-4 h-4 text-white/60" />
               </div>
             </div>
           </div>
