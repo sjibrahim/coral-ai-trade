@@ -134,7 +134,7 @@ const ProfilePage = () => {
         {/* Compact Invite Section - Matching reference image dimensions */}
         <div className="px-4 mb-6">
           <div 
-            className="rounded-lg overflow-hidden backdrop-blur-sm border border-gray-700/30 relative h-[105px]"
+            className="rounded-lg overflow-hidden border border-gray-700/30 relative h-[105px]"
             style={{
               backgroundImage: "url('/uploads/invitebg-CWO27YAL.png')",
               backgroundSize: "cover",
