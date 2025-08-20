@@ -132,43 +132,61 @@ const ProfilePage = () => {
           </div>
         </div>
 
-        {/* New Invite Section */}
+        {/* New Invite Section - Matching the design */}
         <div className="px-4 mb-6">
-          <div 
-            className="rounded-2xl overflow-hidden backdrop-blur-sm border border-gray-700/30 relative"
-            style={{
-              backgroundImage: "url('/uploads/invitebg-CWO27YAL.png')",
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-              backgroundRepeat: "no-repeat"
-            }}
-          >
-            <div className="absolute inset-0 bg-gray-900/50 backdrop-blur-sm"></div>
-            <div className="relative z-10 p-4">
-              <ul className="flex flex-col gap-3">
-                <li 
+          <div className="rounded-2xl overflow-hidden backdrop-blur-sm border border-gray-700/30 relative">
+            <div 
+              className="absolute inset-0"
+              style={{
+                backgroundImage: "url('/uploads/invitebg-CWO27YAL.png')",
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                backgroundRepeat: "no-repeat"
+              }}
+            ></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-teal-500/20 to-blue-500/20 backdrop-blur-sm"></div>
+            <div className="relative z-10 p-0">
+              <div className="grid grid-cols-2">
+                {/* Invite Friends Section */}
+                <div 
                   onClick={() => navigate('/invite')}
-                  className="cursor-pointer hover:bg-white/10 rounded-lg p-3 transition-all"
+                  className="cursor-pointer hover:bg-white/10 transition-all p-6 flex flex-col justify-between min-h-[120px] border-r border-white/10"
                 >
                   <div>
-                    <div className="text">
-                      <h3 className="text-white font-semibold text-base mb-1">Invite Friends</h3>
-                      <p className="text-gray-300 text-sm">Share Tcpatel Quantitative Bonus</p>
+                    <h3 className="text-white font-bold text-lg mb-2">Invite Friends</h3>
+                    <p className="text-teal-200 text-sm mb-3">
+                      Share Tcpatel<br />
+                      Quantitative<br />
+                      Bonus
+                    </p>
+                  </div>
+                  <div className="flex justify-end">
+                    <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+                      <ArrowRight className="w-4 h-4 text-white" />
                     </div>
                   </div>
-                </li>
-                <li 
+                </div>
+
+                {/* Wealth Contest Section */}
+                <div 
                   onClick={() => navigate('/rewards')}
-                  className="cursor-pointer hover:bg-white/10 rounded-lg p-3 transition-all"
+                  className="cursor-pointer hover:bg-white/10 transition-all p-6 flex flex-col justify-between min-h-[120px] bg-gradient-to-r from-gray-800/30 to-gray-700/30"
                 >
                   <div>
-                    <div className="text">
-                      <h3 className="text-white font-semibold text-base mb-1">Wealth Contest</h3>
-                      <p className="text-gray-300 text-sm">Participate in the event and get rewards</p>
+                    <h3 className="text-white font-bold text-lg mb-2">Wealth Contest</h3>
+                    <p className="text-gray-300 text-sm mb-3">
+                      Participate in the<br />
+                      event and get<br />
+                      rewards
+                    </p>
+                  </div>
+                  <div className="flex justify-end">
+                    <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+                      <ArrowRight className="w-4 h-4 text-white" />
                     </div>
                   </div>
-                </li>
-              </ul>
+                </div>
+              </div>
             </div>
           </div>
         </div>
