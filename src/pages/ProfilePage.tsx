@@ -159,7 +159,7 @@ const ProfilePage = () => {
 
                 {/* Wealth Contest Section */}
                 <div 
-                  onClick={() => navigate('/rewards')}
+                  onClick={() => navigate('/invite')}
                   className="cursor-pointer hover:bg-white/10 transition-all flex-1 flex flex-col justify-center px-4 py-3"
                 >
                   <h3 className="text-white font-bold text-sm mb-1">Wealth Contest</h3>
