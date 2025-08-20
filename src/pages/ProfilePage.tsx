@@ -155,11 +155,6 @@ const ProfilePage = () => {
                     Share Tcpatel<br />
                     Quantitative Bonus
                   </p>
-                  <div className="flex justify-end mt-2">
-                    <div className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center">
-                      <ArrowRight className="w-3 h-3 text-white" />
-                    </div>
-                  </div>
                 </div>
 
                 {/* Wealth Contest Section */}
@@ -172,11 +167,6 @@ const ProfilePage = () => {
                     Participate in the<br />
                     event and get rewards
                   </p>
-                  <div className="flex justify-end mt-2">
-                    <div className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center">
-                      <ArrowRight className="w-3 h-3 text-white" />
-                    </div>
-                  </div>
                 </div>
               </div>
             </div>
