@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MobileLayout from "@/components/layout/MobileLayout";
@@ -132,37 +131,33 @@ const ProfilePage = () => {
           </div>
         </div>
 
-        {/* New Invite Section - Matching the design */}
+        {/* Compact Invite Section - Matching reference image dimensions */}
         <div className="px-4 mb-6">
-          <div className="rounded-2xl overflow-hidden backdrop-blur-sm border border-gray-700/30 relative">
-            <div 
-              className="absolute inset-0"
-              style={{
-                backgroundImage: "url('/uploads/invitebg-CWO27YAL.png')",
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-                backgroundRepeat: "no-repeat"
-              }}
-            ></div>
+          <div 
+            className="rounded-lg overflow-hidden backdrop-blur-sm border border-gray-700/30 relative h-[105px]"
+            style={{
+              backgroundImage: "url('/uploads/invitebg-CWO27YAL.png')",
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              backgroundRepeat: "no-repeat"
+            }}
+          >
             <div className="absolute inset-0 bg-gradient-to-r from-teal-500/20 to-blue-500/20 backdrop-blur-sm"></div>
-            <div className="relative z-10 p-0">
-              <div className="grid grid-cols-2">
+            <div className="relative z-10 h-full">
+              <div className="flex h-full">
                 {/* Invite Friends Section */}
                 <div 
                   onClick={() => navigate('/invite')}
-                  className="cursor-pointer hover:bg-white/10 transition-all p-6 flex flex-col justify-between min-h-[120px] border-r border-white/10"
+                  className="cursor-pointer hover:bg-white/10 transition-all flex-1 flex flex-col justify-center border-r border-white/10 px-4 py-3"
                 >
-                  <div>
-                    <h3 className="text-white font-bold text-lg mb-2">Invite Friends</h3>
-                    <p className="text-teal-200 text-sm mb-3">
-                      Share Tcpatel<br />
-                      Quantitative<br />
-                      Bonus
-                    </p>
-                  </div>
-                  <div className="flex justify-end">
-                    <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
-                      <ArrowRight className="w-4 h-4 text-white" />
+                  <h3 className="text-white font-bold text-sm mb-1">Invite Friends</h3>
+                  <p className="text-teal-200 text-xs leading-tight">
+                    Share Tcpatel<br />
+                    Quantitative Bonus
+                  </p>
+                  <div className="flex justify-end mt-2">
+                    <div className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center">
+                      <ArrowRight className="w-3 h-3 text-white" />
                     </div>
                   </div>
                 </div>
@@ -170,19 +165,16 @@ const ProfilePage = () => {
                 {/* Wealth Contest Section */}
                 <div 
                   onClick={() => navigate('/rewards')}
-                  className="cursor-pointer hover:bg-white/10 transition-all p-6 flex flex-col justify-between min-h-[120px] bg-gradient-to-r from-gray-800/30 to-gray-700/30"
+                  className="cursor-pointer hover:bg-white/10 transition-all flex-1 flex flex-col justify-center px-4 py-3"
                 >
-                  <div>
-                    <h3 className="text-white font-bold text-lg mb-2">Wealth Contest</h3>
-                    <p className="text-gray-300 text-sm mb-3">
-                      Participate in the<br />
-                      event and get<br />
-                      rewards
-                    </p>
-                  </div>
-                  <div className="flex justify-end">
-                    <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
-                      <ArrowRight className="w-4 h-4 text-white" />
+                  <h3 className="text-white font-bold text-sm mb-1">Wealth Contest</h3>
+                  <p className="text-gray-300 text-xs leading-tight">
+                    Participate in the<br />
+                    event and get rewards
+                  </p>
+                  <div className="flex justify-end mt-2">
+                    <div className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center">
+                      <ArrowRight className="w-3 h-3 text-white" />
                     </div>
                   </div>
                 </div>
