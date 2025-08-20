@@ -142,7 +142,7 @@ const ProfilePage = () => {
               backgroundRepeat: "no-repeat"
             }}
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-teal-500/20 to-blue-500/20 backdrop-blur-sm"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-teal-500/20 to-blue-500/20"></div>
             <div className="relative z-10 h-full">
               <div className="flex h-full">
                 {/* Invite Friends Section */}
