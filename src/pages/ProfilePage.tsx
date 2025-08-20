@@ -132,7 +132,7 @@ const ProfilePage = () => {
           </div>
         </div>
 
-        {/* Updated Invite Section */}
+        {/* Updated Invite Section with smaller font */}
         <div className="px-4 mb-6">
           <div 
             onClick={() => navigate('/invite')}
@@ -148,8 +148,8 @@ const ProfilePage = () => {
           >
             {/* Left side - Invite Friends */}
             <div className="absolute top-4 left-4">
-              <h3 className="text-white font-bold text-lg mb-1">Invite Friends</h3>
-              <p className="text-gray-200 text-sm leading-tight">
+              <h3 className="text-white font-bold text-sm mb-1">Invite Friends</h3>
+              <p className="text-gray-200 text-xs leading-tight">
                 Share Tcpatel<br />
                 Quantitative Bonus
               </p>
@@ -157,8 +157,8 @@ const ProfilePage = () => {
 
             {/* Right side - Wealth Contest */}
             <div className="absolute top-4 right-4 text-right">
-              <h3 className="text-white font-bold text-lg mb-1">Wealth Contest</h3>
-              <p className="text-gray-200 text-sm leading-tight">
+              <h3 className="text-white font-bold text-sm mb-1">Wealth Contest</h3>
+              <p className="text-gray-200 text-xs leading-tight">
                 Participate in the<br />
                 event and get rewards
               </p>
