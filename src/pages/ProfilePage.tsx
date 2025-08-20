@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MobileLayout from "@/components/layout/MobileLayout";
@@ -131,44 +132,36 @@ const ProfilePage = () => {
           </div>
         </div>
 
-        {/* Compact Invite Section - Matching reference image dimensions */}
+        {/* Updated Invite Section */}
         <div className="px-4 mb-6">
           <div 
-            className="rounded-lg overflow-hidden border border-gray-700/30 relative h-[105px]"
+            onClick={() => navigate('/invite')}
+            className="cursor-pointer hover:opacity-90 transition-all relative rounded-lg overflow-hidden"
             style={{
-              backgroundImage: "url('/uploads/invitebg-CWO27YAL.png')",
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-              backgroundRepeat: "no-repeat"
+              padding: '.32rem .28rem',
+              marginBottom: '.32rem',
+              justifyContent: 'space-between',
+              background: "url(/uploads/invitebg-CWO27YAL.png) center no-repeat",
+              backgroundSize: "100% 100%",
+              height: '105px'
             }}
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-teal-500/20 to-blue-500/20"></div>
-            <div className="relative z-10 h-full">
-              <div className="flex h-full">
-                {/* Invite Friends Section */}
-                <div 
-                  onClick={() => navigate('/invite')}
-                  className="cursor-pointer hover:bg-white/10 transition-all flex-1 flex flex-col justify-center border-r border-white/10 px-4 py-3"
-                >
-                  <h3 className="text-white font-bold text-sm mb-1">Invite Friends</h3>
-                  <p className="text-teal-200 text-xs leading-tight">
-                    Share Tcpatel<br />
-                    Quantitative Bonus
-                  </p>
-                </div>
+            {/* Left side - Invite Friends */}
+            <div className="absolute top-4 left-4">
+              <h3 className="text-white font-bold text-lg mb-1">Invite Friends</h3>
+              <p className="text-gray-200 text-sm leading-tight">
+                Share Tcpatel<br />
+                Quantitative Bonus
+              </p>
+            </div>
 
-                {/* Wealth Contest Section */}
-                <div 
-                  onClick={() => navigate('/invite')}
-                  className="cursor-pointer hover:bg-white/10 transition-all flex-1 flex flex-col justify-center px-4 py-3"
-                >
-                  <h3 className="text-white font-bold text-sm mb-1">Wealth Contest</h3>
-                  <p className="text-gray-300 text-xs leading-tight">
-                    Participate in the<br />
-                    event and get rewards
-                  </p>
-                </div>
-              </div>
+            {/* Right side - Wealth Contest */}
+            <div className="absolute top-4 right-4 text-right">
+              <h3 className="text-white font-bold text-lg mb-1">Wealth Contest</h3>
+              <p className="text-gray-200 text-sm leading-tight">
+                Participate in the<br />
+                event and get rewards
+              </p>
             </div>
           </div>
         </div>
