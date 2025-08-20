@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MobileLayout from "@/components/layout/MobileLayout";
@@ -8,7 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useTeam } from '@/hooks/use-team';
 import BottomNavigation from "@/components/BottomNavigation";
 import { 
-  CreditCard, Lock, Calendar, 
+  CreditCard, Lock, 
   Copy, Check, ArrowRight, ScrollText, Banknote, CreditCard as CardIcon, TrendingDown, Users, MessageCircle, Crown, LogOut
 } from "lucide-react";
 
@@ -166,8 +165,60 @@ const ProfilePage = () => {
           </div>
         </div>
 
-        {/* Main Menu Section - 3x2 Grid with Background */}
+        {/* Main Menu Section - 2x2 Grid with Background */}
         <div className="px-4 mb-4">
+          <div 
+            className="rounded-2xl overflow-hidden backdrop-blur-sm border border-gray-700/30 p-4 relative"
+            style={{
+              backgroundImage: "url('/uploads/assetsbg-BsWPbjIy.png')",
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              backgroundRepeat: "no-repeat"
+            }}
+          >
+            <div className="absolute inset-0 bg-gray-900/60 backdrop-blur-sm"></div>
+            <div className="relative z-10 grid grid-cols-2 gap-4">
+              <button 
+                onClick={() => navigate('/bank')}
+                className="flex flex-col items-center p-3 transition-all hover:scale-105"
+              >
+                <img 
+                  src="https://tnl-icons.duckdns.org/green/dash/upload/20241005/c34a3a2fd6b48b9b1b3a5032b50a7aaa.png" 
+                  alt="Bank Card" 
+                  className="w-8 h-8 mb-2"
+                />
+                <span className="text-xs text-white text-center font-medium leading-tight">Bank Card</span>
+              </button>
+
+              <button 
+                onClick={() => navigate('/security')}
+                className="flex flex-col items-center p-3 transition-all hover:scale-105"
+              >
+                <Lock className="w-8 h-8 text-white mb-2" />
+                <span className="text-xs text-white text-center font-medium leading-tight">Security</span>
+              </button>
+
+              <button 
+                onClick={handleTelegramClick}
+                className="flex flex-col items-center p-3 transition-all hover:scale-105"
+              >
+                <MessageCircle className="w-8 h-8 text-white mb-2" />
+                <span className="text-xs text-white text-center font-medium leading-tight">Telegram</span>
+              </button>
+
+              <button 
+                onClick={() => navigate('/contract-records')}
+                className="flex flex-col items-center p-3 transition-all hover:scale-105"
+              >
+                <ScrollText className="w-8 h-8 text-white mb-2" />
+                <span className="text-xs text-white text-center font-medium leading-tight">Contract Records</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Transaction Records Section - Enhanced 1x3 Grid */}
+        <div className="px-4 mb-8">
           <div 
             className="rounded-2xl overflow-hidden backdrop-blur-sm border border-gray-700/30 p-4 relative"
             style={{
@@ -180,77 +231,13 @@ const ProfilePage = () => {
             <div className="absolute inset-0 bg-gray-900/60 backdrop-blur-sm"></div>
             <div className="relative z-10 grid grid-cols-3 gap-3">
               <button 
-                onClick={() => navigate('/bank')}
-                className="flex flex-col items-center p-2 transition-all hover:scale-105"
-              >
-                <img 
-                  src="https://tnl-icons.duckdns.org/green/dash/upload/20241005/c34a3a2fd6b48b9b1b3a5032b50a7aaa.png" 
-                  alt="Bank Card" 
-                  className="w-6 h-6 mb-1"
-                />
-                <span className="text-[10px] text-white text-center font-medium leading-tight">Bank Card</span>
-              </button>
-
-              <button 
-                onClick={() => navigate('/security')}
-                className="flex flex-col items-center p-2 transition-all hover:scale-105"
-              >
-                <Lock className="w-6 h-6 text-white mb-1" />
-                <span className="text-[10px] text-white text-center font-medium leading-tight">Security</span>
-              </button>
-
-              <button 
-                onClick={() => navigate('/checkin')}
-                className="flex flex-col items-center p-2 transition-all hover:scale-105"
-              >
-                <img 
-                  src="https://tnl-icons.duckdns.org/green/dash/upload/20241016/aef64e6784fa317a3baee12d67337107.png" 
-                  alt="Check-in" 
-                  className="w-6 h-6 mb-1"
-                />
-                <span className="text-[10px] text-white text-center font-medium leading-tight">Check-in</span>
-              </button>
-
-              <button 
-                onClick={handleTelegramClick}
-                className="flex flex-col items-center p-2 transition-all hover:scale-105"
-              >
-                <MessageCircle className="w-6 h-6 text-white mb-1" />
-                <span className="text-[10px] text-white text-center font-medium leading-tight">Telegram</span>
-              </button>
-
-              <button 
-                onClick={() => navigate('/contract-records')}
-                className="flex flex-col items-center p-2 transition-all hover:scale-105"
-              >
-                <ScrollText className="w-6 h-6 text-white mb-1" />
-                <span className="text-[10px] text-white text-center font-medium leading-tight">Contract Records</span>
-              </button>
-
-              <button 
                 onClick={() => navigate('/salary-records')}
                 className="flex flex-col items-center p-2 transition-all hover:scale-105"
               >
                 <Banknote className="w-6 h-6 text-white mb-1" />
                 <span className="text-[10px] text-white text-center font-medium leading-tight">Salary Records</span>
               </button>
-            </div>
-          </div>
-        </div>
 
-        {/* Transaction Records Section - 1x2 Grid with Background */}
-        <div className="px-4 mb-8">
-          <div 
-            className="rounded-2xl overflow-hidden backdrop-blur-sm border border-gray-700/30 p-4 relative"
-            style={{
-              backgroundImage: "url('/uploads/assetsbg-BsWPbjIy.png')",
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-              backgroundRepeat: "no-repeat"
-            }}
-          >
-            <div className="absolute inset-0 bg-gray-900/60 backdrop-blur-sm"></div>
-            <div className="relative z-10 grid grid-cols-2 gap-3 justify-center">
               <button 
                 onClick={() => navigate('/transaction-records')}
                 className="flex flex-col items-center p-2 transition-all hover:scale-105"
