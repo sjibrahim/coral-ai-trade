@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MobileLayout from "@/components/layout/MobileLayout";
@@ -148,8 +147,8 @@ const ProfilePage = () => {
           >
             {/* Left side - Invite Friends */}
             <div className="absolute top-4 left-4">
-              <h3 className="text-white font-bold text-lg mb-1">Invite Friends</h3>
-              <p className="text-gray-200 text-sm leading-tight">
+              <h3 className="text-white font-bold text-xl mb-1">Invite Friends</h3>
+              <p className="text-gray-200 text-base leading-tight">
                 Share Tcpatel<br />
                 Quantitative Bonus
               </p>
@@ -157,8 +156,8 @@ const ProfilePage = () => {
 
             {/* Right side - Wealth Contest */}
             <div className="absolute top-4 right-4 text-right">
-              <h3 className="text-white font-bold text-lg mb-1">Wealth Contest</h3>
-              <p className="text-gray-200 text-sm leading-tight">
+              <h3 className="text-white font-bold text-xl mb-1">Wealth Contest</h3>
+              <p className="text-gray-200 text-base leading-tight">
                 Participate in the<br />
                 event and get rewards
               </p>
