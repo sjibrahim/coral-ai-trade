@@ -165,7 +165,7 @@ const ProfilePage = () => {
           </div>
         </div>
 
-        {/* First Menu Section - 4 Grid */}
+        {/* First Menu Section - 1x4 Grid */}
         <div className="px-4 mb-6">
           <div 
             className="rounded-2xl overflow-hidden backdrop-blur-sm border border-gray-700/30 p-4 relative"
@@ -177,7 +177,7 @@ const ProfilePage = () => {
             }}
           >
             <div className="absolute inset-0 bg-gray-900/60 backdrop-blur-sm"></div>
-            <div className="relative z-10 grid grid-cols-2 gap-4">
+            <div className="relative z-10 grid grid-cols-4 gap-4">
               <button 
                 onClick={() => navigate('/bank')}
                 className="flex flex-col items-center p-3 transition-all hover:scale-105"
@@ -217,7 +217,7 @@ const ProfilePage = () => {
           </div>
         </div>
 
-        {/* Second Menu Section - 3 Grid */}
+        {/* Second Menu Section - 1x3 Grid */}
         <div className="px-4 mb-8">
           <div 
             className="rounded-2xl overflow-hidden backdrop-blur-sm border border-gray-700/30 p-4 relative"
@@ -235,7 +235,7 @@ const ProfilePage = () => {
                 className="flex flex-col items-center p-3 transition-all hover:scale-105"
               >
                 <Banknote className="w-8 h-8 text-white mb-2" />
-                <span className="text-xs text-white text-center font-medium leading-tight">Salary Records</span>
+                <span className="text-xs text-white text-center font-medium leading-tight">Salary</span>
               </button>
 
               <button 
@@ -243,7 +243,7 @@ const ProfilePage = () => {
                 className="flex flex-col items-center p-3 transition-all hover:scale-105"
               >
                 <CardIcon className="w-8 h-8 text-white mb-2" />
-                <span className="text-xs text-white text-center font-medium leading-tight">Transaction Records</span>
+                <span className="text-xs text-white text-center font-medium leading-tight">Transaction</span>
               </button>
 
               <button 
@@ -251,7 +251,7 @@ const ProfilePage = () => {
                 className="flex flex-col items-center p-3 transition-all hover:scale-105"
               >
                 <TrendingDown className="w-8 h-8 text-white mb-2" />
-                <span className="text-xs text-white text-center font-medium leading-tight">Withdrawal Records</span>
+                <span className="text-xs text-white text-center font-medium leading-tight">Withdrawal</span>
               </button>
             </div>
           </div>
