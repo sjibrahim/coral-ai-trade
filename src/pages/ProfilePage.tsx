@@ -8,7 +8,7 @@ import { useTeam } from '@/hooks/use-team';
 import BottomNavigation from "@/components/BottomNavigation";
 import { 
   CreditCard, Lock, 
-  Copy, Check, ArrowRight, ScrollText, Banknote, CreditCard as CardIcon, TrendingDown, Users, MessageCircle, Crown, LogOut, Calendar
+  Copy, Check, ArrowRight, ScrollText, Banknote, CreditCard as CardIcon, TrendingDown, Users, MessageCircle, Crown, LogOut
 } from "lucide-react";
 
 const ProfilePage = () => {
@@ -165,7 +165,7 @@ const ProfilePage = () => {
           </div>
         </div>
 
-        {/* Main Menu Section - 2x3 Grid with Background */}
+        {/* Main Menu Section - 2x2 Grid with Background */}
         <div className="px-4 mb-4">
           <div 
             className="rounded-2xl overflow-hidden backdrop-blur-sm border border-gray-700/30 p-4 relative"
@@ -199,14 +199,6 @@ const ProfilePage = () => {
               </button>
 
               <button 
-                onClick={() => navigate('/checkin')}
-                className="flex flex-col items-center p-3 transition-all hover:scale-105"
-              >
-                <Calendar className="w-8 h-8 text-white mb-2" />
-                <span className="text-xs text-white text-center font-medium leading-tight">Daily Check-in</span>
-              </button>
-
-              <button 
                 onClick={handleTelegramClick}
                 className="flex flex-col items-center p-3 transition-all hover:scale-105"
               >
@@ -216,7 +208,7 @@ const ProfilePage = () => {
 
               <button 
                 onClick={() => navigate('/contract-records')}
-                className="flex flex-col items-center p-3 transition-all hover:scale-105 col-span-2"
+                className="flex flex-col items-center p-3 transition-all hover:scale-105"
               >
                 <ScrollText className="w-8 h-8 text-white mb-2" />
                 <span className="text-xs text-white text-center font-medium leading-tight">Contract Records</span>
