@@ -25,6 +25,7 @@ import TransactionRecordsPage from '@/pages/TransactionRecordsPage';
 import SecurityPage from '@/pages/SecurityPage';
 import BankDetailsPage from '@/pages/BankDetailsPage';
 import WithdrawalRecordsPage from '@/pages/WithdrawalRecordsPage';
+import CheckinPage from '@/pages/CheckinPage';
 import ProtectedRoute from "@/components/ProtectedRoute";
 
 // Create a new QueryClient outside of the component
@@ -67,6 +68,7 @@ const App = () => {
               <Route path="/bank" element={<ProtectedRoute><BankDetailsPage /></ProtectedRoute>} />
               <Route path="/withdrawals" element={<ProtectedRoute><WithdrawalRecordsPage /></ProtectedRoute>} />
               <Route path="/withdrawal-records" element={<ProtectedRoute><WithdrawalRecordsPage /></ProtectedRoute>} />
+              <Route path="/checkin" element={<ProtectedRoute><CheckinPage /></ProtectedRoute>} />
             </Routes>
           </TooltipProvider>
         </AuthProvider>
