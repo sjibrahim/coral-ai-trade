@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MobileLayout from "@/components/layout/MobileLayout";
@@ -166,8 +165,8 @@ const ProfilePage = () => {
           </div>
         </div>
 
-        {/* Combined Menu Section - All buttons in one card */}
-        <div className="px-4 mb-8">
+        {/* First Menu Section - 4 Grid */}
+        <div className="px-4 mb-6">
           <div 
             className="rounded-2xl overflow-hidden backdrop-blur-sm border border-gray-700/30 p-4 relative"
             style={{
@@ -214,7 +213,23 @@ const ProfilePage = () => {
                 <ScrollText className="w-8 h-8 text-white mb-2" />
                 <span className="text-xs text-white text-center font-medium leading-tight">Contract Records</span>
               </button>
+            </div>
+          </div>
+        </div>
 
+        {/* Second Menu Section - 3 Grid */}
+        <div className="px-4 mb-8">
+          <div 
+            className="rounded-2xl overflow-hidden backdrop-blur-sm border border-gray-700/30 p-4 relative"
+            style={{
+              backgroundImage: "url('/uploads/assetsbg-BsWPbjIy.png')",
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              backgroundRepeat: "no-repeat"
+            }}
+          >
+            <div className="absolute inset-0 bg-gray-900/60 backdrop-blur-sm"></div>
+            <div className="relative z-10 grid grid-cols-3 gap-4">
               <button 
                 onClick={() => navigate('/salary-records')}
                 className="flex flex-col items-center p-3 transition-all hover:scale-105"
@@ -233,7 +248,7 @@ const ProfilePage = () => {
 
               <button 
                 onClick={() => navigate('/withdrawal-records')}
-                className="flex flex-col items-center p-3 transition-all hover:scale-105 col-span-2"
+                className="flex flex-col items-center p-3 transition-all hover:scale-105"
               >
                 <TrendingDown className="w-8 h-8 text-white mb-2" />
                 <span className="text-xs text-white text-center font-medium leading-tight">Withdrawal Records</span>
