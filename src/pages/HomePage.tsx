@@ -93,7 +93,7 @@ const HomePage = () => {
         {/* Action Grid with Blur Background */}
         <div className="px-4 mb-6">
           <div className="bg-gray-800/80 rounded-2xl overflow-hidden backdrop-blur-sm border border-gray-700/30 p-4">
-            <ActionGrid />
+            <ActionGrid hideCheckin={true} hideRewards={true} />
           </div>
         </div>
 
