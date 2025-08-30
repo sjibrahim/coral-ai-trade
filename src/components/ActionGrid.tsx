@@ -1,4 +1,5 @@
 
+
 import { Link } from "react-router-dom";
 
 interface ActionGridProps {
@@ -58,7 +59,7 @@ const ActionGrid = ({ hideCheckin = false, hideRewards = false }: ActionGridProp
   });
 
   return (
-    <div className="grid grid-cols-4 gap-3 p-2">
+    <div className="grid grid-cols-3 gap-3 p-2">
       {actions.map((action, index) => (
         <Link
           key={index}
@@ -82,3 +83,4 @@ const ActionGrid = ({ hideCheckin = false, hideRewards = false }: ActionGridProp
 };
 
 export default ActionGrid;
+
