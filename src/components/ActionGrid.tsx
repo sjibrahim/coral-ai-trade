@@ -1,8 +1,13 @@
 
 import { Link } from "react-router-dom";
 
-const ActionGrid = () => {
-  const actions = [
+interface ActionGridProps {
+  hideCheckin?: boolean;
+  hideRewards?: boolean;
+}
+
+const ActionGrid = ({ hideCheckin = false, hideRewards = false }: ActionGridProps) => {
+  const allActions = [
     {
       icon: "https://tnl-icons.duckdns.org/green/dash/upload/20241005/dad254440ae366e04554ed8f859a8852.png",
       label: "Deposit",
@@ -44,6 +49,13 @@ const ActionGrid = () => {
       link: "/support"
     }
   ];
+
+  // Filter out actions based on props
+  const actions = allActions.filter(action => {
+    if (hideCheckin && action.label === "Check in") return false;
+    if (hideRewards && action.label === "Promo rewards") return false;
+    return true;
+  });
 
   return (
     <div className="grid grid-cols-4 gap-3 p-2">
