@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MobileLayout from "@/components/layout/MobileLayout";
@@ -165,8 +166,8 @@ const ProfilePage = () => {
           </div>
         </div>
 
-        {/* Main Menu Section - 2x2 Grid with Background */}
-        <div className="px-4 mb-4">
+        {/* Combined Menu Section - All buttons in one card */}
+        <div className="px-4 mb-8">
           <div 
             className="rounded-2xl overflow-hidden backdrop-blur-sm border border-gray-700/30 p-4 relative"
             style={{
@@ -213,45 +214,29 @@ const ProfilePage = () => {
                 <ScrollText className="w-8 h-8 text-white mb-2" />
                 <span className="text-xs text-white text-center font-medium leading-tight">Contract Records</span>
               </button>
-            </div>
-          </div>
-        </div>
 
-        {/* Transaction Records Section - Enhanced 1x3 Grid */}
-        <div className="px-4 mb-8">
-          <div 
-            className="rounded-2xl overflow-hidden backdrop-blur-sm border border-gray-700/30 p-4 relative"
-            style={{
-              backgroundImage: "url('/uploads/assetsbg-BsWPbjIy.png')",
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-              backgroundRepeat: "no-repeat"
-            }}
-          >
-            <div className="absolute inset-0 bg-gray-900/60 backdrop-blur-sm"></div>
-            <div className="relative z-10 grid grid-cols-3 gap-3">
               <button 
                 onClick={() => navigate('/salary-records')}
-                className="flex flex-col items-center p-2 transition-all hover:scale-105"
+                className="flex flex-col items-center p-3 transition-all hover:scale-105"
               >
-                <Banknote className="w-6 h-6 text-white mb-1" />
-                <span className="text-[10px] text-white text-center font-medium leading-tight">Salary Records</span>
+                <Banknote className="w-8 h-8 text-white mb-2" />
+                <span className="text-xs text-white text-center font-medium leading-tight">Salary Records</span>
               </button>
 
               <button 
                 onClick={() => navigate('/transaction-records')}
-                className="flex flex-col items-center p-2 transition-all hover:scale-105"
+                className="flex flex-col items-center p-3 transition-all hover:scale-105"
               >
-                <CardIcon className="w-6 h-6 text-white mb-1" />
-                <span className="text-[10px] text-white text-center font-medium leading-tight">Transaction Records</span>
+                <CardIcon className="w-8 h-8 text-white mb-2" />
+                <span className="text-xs text-white text-center font-medium leading-tight">Transaction Records</span>
               </button>
 
               <button 
                 onClick={() => navigate('/withdrawal-records')}
-                className="flex flex-col items-center p-2 transition-all hover:scale-105"
+                className="flex flex-col items-center p-3 transition-all hover:scale-105 col-span-2"
               >
-                <TrendingDown className="w-6 h-6 text-white mb-1" />
-                <span className="text-[10px] text-white text-center font-medium leading-tight">Withdrawal Records</span>
+                <TrendingDown className="w-8 h-8 text-white mb-2" />
+                <span className="text-xs text-white text-center font-medium leading-tight">Withdrawal Records</span>
               </button>
             </div>
           </div>
