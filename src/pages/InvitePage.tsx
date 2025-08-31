@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
@@ -50,8 +49,8 @@ const InvitePage = () => {
     if (navigator.share) {
       try {
         await navigator.share({
-          title: "Join Trexo Trading",
-          text: "Join me on Trexo and start earning with crypto trading!",
+          title: "Join Coral Trading",
+          text: "Join me on Coral and start earning with crypto trading!",
           url: referralLink,
         });
       } catch (error) {

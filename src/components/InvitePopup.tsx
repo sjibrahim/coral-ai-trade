@@ -21,7 +21,7 @@ const InvitePopup = ({ isOpen, onClose }: InvitePopupProps) => {
   useEffect(() => {
     if (isOpen && user) {
       const baseUrl = window.location.origin;
-      const referralCode = user.invite_code || user.referral_code || user.id || "TREXO";
+      const referralCode = user.invite_code || user.referral_code || user.id || "CORAL";
       setInviteLink(`${baseUrl}/register?referral=${referralCode}`);
     }
   }, [isOpen, user]);
@@ -40,8 +40,8 @@ const InvitePopup = ({ isOpen, onClose }: InvitePopupProps) => {
     if (navigator.share) {
       try {
         await navigator.share({
-          title: "Join Trexo Trading",
-          text: "Join Trexo and start earning with crypto trading!",
+          title: "Join Coral Trading",
+          text: "Join Coral and start earning with crypto trading!",
           url: inviteLink,
         });
       } catch (error) {
@@ -52,7 +52,7 @@ const InvitePopup = ({ isOpen, onClose }: InvitePopupProps) => {
     }
   };
   
-  const referralCode = user?.invite_code || user?.referral_code || "TREXO";
+  const referralCode = user?.invite_code || user?.referral_code || "CORAL";
   const level1Commission = generalSettings?.level_1_commission || "10";
   const level2Commission = generalSettings?.level_2_commission || "5";
   const level3Commission = generalSettings?.level_3_commission || "2";
@@ -69,7 +69,7 @@ const InvitePopup = ({ isOpen, onClose }: InvitePopupProps) => {
               Invite & Earn
             </DialogTitle>
             <p className="text-emerald-100 text-xs">
-              Build your Trexo network and earn commissions
+              Build your Coral network and earn commissions
             </p>
           </DialogHeader>
           
