@@ -239,14 +239,14 @@ const TeamPage = () => {
                 { 
                   level: 2, 
                   members: level2Members.length, 
-                  commission: "5%", 
+                  commission: "0%", 
                   color: "from-blue-400 to-purple-500",
                   activeMembers: level2Members.filter(m => m.active_member === "1").length
                 },
                 { 
                   level: 3, 
                   members: level3Members.length, 
-                  commission: "3%", 
+                  commission: "0%", 
                   color: "from-green-400 to-teal-500",
                   activeMembers: level3Members.filter(m => m.active_member === "1").length
                 },
