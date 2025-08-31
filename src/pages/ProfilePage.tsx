@@ -40,7 +40,7 @@ const ProfilePage = () => {
   };
 
   const handleTelegramClick = () => {
-    window.open('https://t.me/coral_official', '_blank');
+    window.open('https://t.me/Coral_Official11', '_blank');
   };
 
   const handleLogout = () => {
