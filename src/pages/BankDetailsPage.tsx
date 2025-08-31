@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import MobileLayout from "@/components/layout/MobileLayout";
@@ -77,7 +76,7 @@ const BankDetailsPage = () => {
           title: "Success",
           description: "Bank details updated successfully",
         });
-        navigate(-1);
+        navigate("/home");
       } else {
         toast({
           title: "Error",
@@ -99,7 +98,19 @@ const BankDetailsPage = () => {
   const isValidForm = formData.account_holder_name && formData.account_number && formData.account_ifsc;
 
   return (
-    <MobileLayout showBackButton title="Bank Details" hideFooter>
+    <MobileLayout 
+      showBackButton 
+      title="Bank Details" 
+      hideFooter
+      headerAction={
+        <button
+          onClick={() => navigate("/home")}
+          className="text-white hover:bg-gray-800 rounded-lg transition-colors p-2"
+        >
+          Home
+        </button>
+      }
+    >
       <div className="min-h-screen bg-gray-900 flex flex-col">
         
         <div className="flex-1 px-4 py-6 space-y-4 pb-24">
