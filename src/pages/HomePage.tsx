@@ -106,11 +106,15 @@ const HomePage = () => {
         </div>
       </div>
 
-      {/* AI Assistant Button */}
+      {/* AI Assistant Button - Now links to coral.apk */}
       <div className="fixed bottom-28 right-4 z-40">
-        <button className="w-14 h-14 bg-gradient-to-r from-teal-400 to-cyan-500 rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+        <a
+          href="/coral.apk"
+          download
+          className="w-14 h-14 bg-gradient-to-r from-teal-400 to-cyan-500 rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+        >
           <Bot className="w-6 h-6 text-white" />
-        </button>
+        </a>
       </div>
 
       {/* Background decoration */}
