@@ -7,13 +7,18 @@ interface MobileNavbarProps {
   showBackButton?: boolean;
   title?: string;
   headerAction?: ReactNode;
+  onBackClick?: () => void;
 }
 
-const MobileNavbar = ({ showBackButton = false, title = "Trexo", headerAction }: MobileNavbarProps) => {
+const MobileNavbar = ({ showBackButton = false, title = "Trexo", headerAction, onBackClick }: MobileNavbarProps) => {
   const navigate = useNavigate();
 
   const handleBackClick = () => {
-    navigate(-1);
+    if (onBackClick) {
+      onBackClick();
+    } else {
+      navigate(-1);
+    }
   };
 
   return (

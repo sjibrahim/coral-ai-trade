@@ -10,6 +10,7 @@ interface MobileLayoutProps {
   hideFooter?: boolean;
   hideNavbar?: boolean;
   headerAction?: ReactNode;
+  onBackClick?: () => void;
 }
 
 const MobileLayout = ({ 
@@ -19,7 +20,8 @@ const MobileLayout = ({
   noScroll = false,
   hideFooter = false,
   hideNavbar = false,
-  headerAction
+  headerAction,
+  onBackClick
 }: MobileLayoutProps) => {
   return (
     <div className="flex flex-col h-screen bg-background">
@@ -28,6 +30,7 @@ const MobileLayout = ({
           showBackButton={showBackButton} 
           title={title} 
           headerAction={headerAction}
+          onBackClick={onBackClick}
         />
       )}
       <main 

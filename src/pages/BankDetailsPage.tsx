@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import MobileLayout from "@/components/layout/MobileLayout";
@@ -102,14 +103,7 @@ const BankDetailsPage = () => {
       showBackButton 
       title="Bank Details" 
       hideFooter
-      headerAction={
-        <button
-          onClick={() => navigate("/home")}
-          className="text-white hover:bg-gray-800 rounded-lg transition-colors p-2"
-        >
-          Home
-        </button>
-      }
+      onBackClick={() => navigate("/home")}
     >
       <div className="min-h-screen bg-gray-900 flex flex-col">
         
