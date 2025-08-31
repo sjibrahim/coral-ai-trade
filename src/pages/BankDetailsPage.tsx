@@ -33,6 +33,17 @@ const BankDetailsPage = () => {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+    
+    // For account number, only allow digits
+    if (name === 'account_number') {
+      const numericValue = value.replace(/[^0-9]/g, '');
+      setFormData(prev => ({
+        ...prev,
+        [name]: numericValue
+      }));
+      return;
+    }
+    
     setFormData(prev => ({
       ...prev,
       [name]: value
@@ -138,6 +149,7 @@ const BankDetailsPage = () => {
               id="account_number"
               name="account_number"
               type="text"
+              inputMode="numeric"
               placeholder="Enter your bank account number"
               value={formData.account_number}
               onChange={handleInputChange}
