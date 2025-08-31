@@ -46,13 +46,13 @@ const ActionGrid = ({ hideCheckin = false, hideRewards = false }: ActionGridProp
     },
     {
       icon: "https://tnl-icons.duckdns.org/green/dash/upload/20241005/178523e6a82fdc9243f46a2736b6b466.png",      label: "Instruction",
-      link: "https://t.me/Coral_Official11",
+      link: "https://t.me/Coral_official",
       isExternal: true
     },
     {
       icon: "https://cdn-icons-png.flaticon.com/512/3059/3059590.png",
       label: "Help",
-      link: "https://t.me/Coral_Official11",
+      link: "https://t.me/Coral_official",
       isExternal: true
     }
   ];
