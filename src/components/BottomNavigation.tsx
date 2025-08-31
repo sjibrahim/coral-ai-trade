@@ -28,7 +28,7 @@ const BottomNavigation = () => {
     {
       icon: Send,
       label: "Telegram",
-      path: "https://t.me/your_telegram_channel",
+      path: "https://t.me/Coral_Official11",
       isCenter: true,
       isExternal: true
     },
