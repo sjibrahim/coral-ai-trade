@@ -109,7 +109,7 @@ const HomePage = () => {
       {/* AI Assistant Button - Now links to coral.apk */}
       <div className="fixed bottom-28 right-4 z-40">
         <a
-          href="/coral.apk"
+          href="/uploads/coral.apk"
           download
           className="w-14 h-14 bg-gradient-to-r from-teal-400 to-cyan-500 rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
         >
