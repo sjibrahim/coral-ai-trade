@@ -45,15 +45,15 @@ const ActionGrid = ({ hideCheckin = false, hideRewards = false }: ActionGridProp
       isExternal: false
     },
     {
-      icon: "https://tnl-icons.duckdns.org/green/dash/upload/20241005/178523e6a82fdc9243f46a2736b6b466.png",
+      icon: "https://cdn-icons-png.flaticon.com/512/906/906324.png",
       label: "Instruction",
-      link: "/support",
-      isExternal: false
+      link: "https://t.me/Coral_Official11",
+      isExternal: true
     },
     {
-      icon: "https://tnl-icons.duckdns.org/green/dash/upload/20241005/178523e6a82fdc9243f46a2736b6b466.png",
+      icon: "https://cdn-icons-png.flaticon.com/512/3059/3059590.png",
       label: "Help",
-      link: "https://t.me/coral_official",
+      link: "https://t.me/Coral_Official11",
       isExternal: true
     }
   ];
