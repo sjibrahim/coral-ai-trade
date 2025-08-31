@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { Bot, Calendar, Gamepad2, Smartphone } from "lucide-react";
+import { Download, Calendar, Gamepad2, Smartphone } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { getMarketData } from "@/services/api";
 import ActionGrid from "@/components/ActionGrid";
@@ -113,7 +113,7 @@ const HomePage = () => {
           download
           className="w-14 h-14 bg-gradient-to-r from-teal-400 to-cyan-500 rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
         >
-          <Bot className="w-6 h-6 text-white" />
+          <Download className="w-6 h-6 text-white" />
         </a>
       </div>
 
