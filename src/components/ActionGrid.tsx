@@ -45,8 +45,7 @@ const ActionGrid = ({ hideCheckin = false, hideRewards = false }: ActionGridProp
       isExternal: false
     },
     {
-      icon: "https://cdn-icons-png.flaticon.com/512/906/906324.png",
-      label: "Instruction",
+      icon: "https://tnl-icons.duckdns.org/green/dash/upload/20241005/178523e6a82fdc9243f46a2736b6b466.png",      label: "Instruction",
       link: "https://t.me/Coral_Official11",
       isExternal: true
     },
