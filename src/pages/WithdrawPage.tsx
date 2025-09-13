@@ -170,8 +170,8 @@ const WithdrawPage = () => {
                 <Clock className="w-4 h-4 text-blue-400 mr-1" />
                 <h3 className="text-blue-300 font-medium text-sm">Processing</h3>
               </div>
-              <p className="text-blue-200 text-sm font-medium">8:00 AM - 10:00 AM</p>
-              <p className="text-blue-300 text-xs">Full weekend available</p>
+              <p className="text-blue-200 text-sm font-medium">Monday To Saturday</p>
+              <p className="text-blue-300 text-xs">7am to 9am</p>
             </div>
           </div>
 
@@ -254,8 +254,8 @@ const WithdrawPage = () => {
               <h4 className="text-blue-400 font-medium text-sm">Processing Times</h4>
             </div>
             <div className="space-y-1">
-              <p className="text-blue-300 text-xs">• Weekdays: 8:00 AM - 10:00 AM</p>
-              <p className="text-blue-300 text-xs">• Weekends: Available all day</p>
+              <p className="text-blue-300 text-xs">• Monday To Saturday: 7am to 9am</p>
+              <p className="text-blue-300 text-xs">• Sunday: No processing</p>
               <p className="text-blue-300 text-xs">• Instant processing for VIP members</p>
             </div>
           </div>
